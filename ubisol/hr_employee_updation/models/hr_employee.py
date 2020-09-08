@@ -91,6 +91,9 @@ class HrEmployee(models.Model):
                                               help='You can attach the copy of Passport')
     fam_ids = fields.One2many('hr.employee.family', 'employee_id', string='Family', help='Family Information')
 
+    surname = fields.Char(string='Surname')
+    family_name = fields.Char(string='Family Name')
+
     @api.depends('contract_id')
     def compute_joining(self):
         if self.contract_id:
