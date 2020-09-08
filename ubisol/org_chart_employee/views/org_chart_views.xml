@@ -7,12 +7,10 @@
 
   <menuitem id="menu_org_chart_department" name="Бүтэц" action="action_org_chart_employee" parent="hr.menu_hr_root" sequence="0"/>
 
-  <template id="assets_backend" name="Org Chart Department assets" inherit_id="web.assets_backend">
+  <template id="assets_backend" name="Org Chart Department assets" inherit_id="web.assets_backend" priority="6">
     <xpath expr="." position="inside">
-      <link href="/org_chart_employee/static/src/css/font-awesome_min.css" rel="stylesheet" />
       <link href="/org_chart_employee/static/src/css/jquery_orgchart.css" rel="stylesheet" />
       <link href="/org_chart_employee/static/src/css/style.css" rel="stylesheet" />
-
       <script src="/org_chart_employee/static/js/jquery_orgchart.js"></script>
       <script src="/org_chart_employee/static/js/org_chart_employee.js"></script>
 
