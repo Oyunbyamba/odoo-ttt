@@ -37,9 +37,12 @@ class HrEmployeeFamilyInfo(models.Model):
     employee_id = fields.Many2one('hr.employee', string="Employee", help='Select corresponding Employee',
                                   invisible=1)
     relation_id = fields.Many2one('hr.employee.relation', string="Relation", help="Relationship with the employee")
-    member_name = fields.Char(string='Name')
+    last_name = fields.Char(string='Lastname')
+    member_name = fields.Char(string='Firstname')
     member_contact = fields.Char(string='Contact No')
     birth_date = fields.Date(string="DOB", tracking=True)
+    birth_place = fields.Many2one('res.country.state', string="POB")
+    current_job = fields.Char(string='Current job')
 
 
 class HrEmployee(models.Model):
@@ -90,9 +93,6 @@ class HrEmployee(models.Model):
                                               string="Attachment",
                                               help='You can attach the copy of Passport')
     fam_ids = fields.One2many('hr.employee.family', 'employee_id', string='Family', help='Family Information')
-
-    surname = fields.Char(string='Surname')
-    family_name = fields.Char(string='Family Name')
 
     @api.depends('contract_id')
     def compute_joining(self):
