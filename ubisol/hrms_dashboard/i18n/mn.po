@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-10 07:47+0000\n"
-"PO-Revision-Date: 2020-09-10 07:47+0000\n"
+"POT-Creation-Date: 2020-09-08 23:19+0000\n"
+"PO-Revision-Date: 2020-09-08 23:19+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -21,6 +21,20 @@ msgstr ""
 #, python-format
 msgid "Add job title"
 msgstr ""
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Age"
+msgstr "Нас"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Ago"
+msgstr "Өмнө"
 
 #. module: hrms_dashboard
 #. openerp-web
@@ -49,12 +63,15 @@ msgid "Birthday"
 msgstr ""
 
 #. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
 #: model:ir.actions.report,name:hrms_dashboard.action_report_broad_factor
 #: model:ir.model.fields,field_description:hrms_dashboard.field_hr_employee_broad_factor__broad_factor
 #: model:ir.model.fields,field_description:hrms_dashboard.field_hr_leave_type__emp_broad_factor
 #: model_terms:ir.ui.view,arch_db:hrms_dashboard.report_broadfactor
+#, python-format
 msgid "Broad Factor"
-msgstr ""
+msgstr "Амралт, Чөлөө"
 
 #. module: hrms_dashboard
 #: model_terms:ir.ui.view,arch_db:hrms_dashboard.report_broadfactor
@@ -204,6 +221,7 @@ msgstr "Ажилд орох анкетууд"
 #. module: hrms_dashboard
 #. openerp-web
 #: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
 #, python-format
 msgid "Joined"
 msgstr ""
@@ -219,7 +237,14 @@ msgstr "Сүүлд зассан огноо"
 #: code:addons/hrms_dashboard/static/src/js/hrms_dashboard.js:0
 #, python-format
 msgid "Leave Allocation Request"
-msgstr ""
+msgstr "Цалинтай чөлөөний хүсэлт"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Leave Allocation Requests"
+msgstr "Цалинтай чөлөөний хүсэлтүүд"
 
 #. module: hrms_dashboard
 #. openerp-web
@@ -406,32 +431,4 @@ msgstr ""
 #. module: hrms_dashboard
 #: model:ir.model,name:hrms_dashboard.model_report_hrms_dashboard_report_broadfactor
 msgid "report.hrms_dashboard.report_broadfactor"
-msgstr ""
-
-#. module: hrms_dashboard
-#. openerp-web
-#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
-#, python-format
-msgid "Амралт,Чөлөө"
-msgstr ""
-
-#. module: hrms_dashboard
-#. openerp-web
-#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
-#, python-format
-msgid "Нас"
-msgstr ""
-
-#. module: hrms_dashboard
-#. openerp-web
-#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
-#, python-format
-msgid "Нэгдэж орсон"
-msgstr ""
-
-#. module: hrms_dashboard
-#. openerp-web
-#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
-#, python-format
-msgid "Цалинтай чөлөөний хуриарлалт"
 msgstr ""
