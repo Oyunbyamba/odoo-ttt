@@ -27,9 +27,15 @@
                 <xpath expr="//field[@name='name']" position="replace">
                     <div>
                         <h2>
-                            <field name="surname" placeholder="Эцэг/эх/-ийн нэр" style="width:45%; " />
-                            <field name="name" placeholder="Ажилтаны нэр" required="True" style="width:45%; margin-left:9%;" />
+                            <group>
+                                <field name="surname" placeholder="Эцэг/эх/-ийн нэр" style="width:45%; " />
+                            </group>
                         </h2>
+                        <h1>
+                            <group>
+                                <field name="name" placeholder="Ажилтаны нэр" required="True" style="width:45%; margin-left:9%;" />
+                            </group>
+                        </h1>
                     </div>
                 </xpath>
 
