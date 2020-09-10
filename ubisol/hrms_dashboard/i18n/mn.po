@@ -1,0 +1,437 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* hrms_dashboard
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 13.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-09-10 07:47+0000\n"
+"PO-Revision-Date: 2020-09-10 07:47+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Add job title"
+msgstr ""
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Announcements"
+msgstr "Зарлал"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/js/hrms_dashboard.js:0
+#, python-format
+msgid "Applications"
+msgstr "Ажилд орох өргөдлүүд"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Attrition Rate"
+msgstr ""
+
+#. module: hrms_dashboard
+#: model:ir.model.fields,help:hrms_dashboard.field_hr_employee__birthday
+msgid "Birthday"
+msgstr ""
+
+#. module: hrms_dashboard
+#: model:ir.actions.report,name:hrms_dashboard.action_report_broad_factor
+#: model:ir.model.fields,field_description:hrms_dashboard.field_hr_employee_broad_factor__broad_factor
+#: model:ir.model.fields,field_description:hrms_dashboard.field_hr_leave_type__emp_broad_factor
+#: model_terms:ir.ui.view,arch_db:hrms_dashboard.report_broadfactor
+msgid "Broad Factor"
+msgstr ""
+
+#. module: hrms_dashboard
+#: model_terms:ir.ui.view,arch_db:hrms_dashboard.report_broadfactor
+msgid "Broad Factor Report"
+msgstr ""
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Check In"
+msgstr "Орсон"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Check out"
+msgstr ""
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/js/hrms_dashboard.js:0
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Contracts"
+msgstr "Гэрээнүүд"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "DOB"
+msgstr "Төрсөн огноо"
+
+#. module: hrms_dashboard
+#: model:ir.actions.client,name:hrms_dashboard.hr_action_dashboard
+#: model:ir.ui.menu,name:hrms_dashboard.menu_hrms_dashboard
+msgid "Dashboard"
+msgstr "Хяналтын самбар"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/js/hrms_dashboard.js:0
+#, python-format
+msgid "Dashboard "
+msgstr ""
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Date"
+msgstr "Огноо"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Date :"
+msgstr ""
+
+#. module: hrms_dashboard
+#: model:ir.model.fields,field_description:hrms_dashboard.field_hr_employee__birthday
+msgid "Date of Birth"
+msgstr "Төрсөн Огноо"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Departments"
+msgstr "Хэлтэсүүд"
+
+#. module: hrms_dashboard
+#: model:ir.model.fields,field_description:hrms_dashboard.field_hr_employee_broad_factor__display_name
+#: model:ir.model.fields,field_description:hrms_dashboard.field_report_hrms_dashboard_report_broadfactor__display_name
+msgid "Display Name"
+msgstr "Дэлгэрэнгүй нэр"
+
+#. module: hrms_dashboard
+#: model:ir.model,name:hrms_dashboard.model_hr_employee
+#: model_terms:ir.ui.view,arch_db:hrms_dashboard.report_broadfactor
+msgid "Employee"
+msgstr "Ажилтан"
+
+#. module: hrms_dashboard
+#: model:ir.model,name:hrms_dashboard.model_hr_employee_broad_factor
+msgid "Employee Broadfactor"
+msgstr ""
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/js/hrms_dashboard.js:0
+#, python-format
+msgid "Employee Payslips"
+msgstr "Ажилтны Цалингийн хуудас"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Error : Could not find employee linked to user"
+msgstr ""
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Female"
+msgstr "Эмэгтэй"
+
+#. module: hrms_dashboard
+#: model:ir.model.fields,help:hrms_dashboard.field_hr_leave__duration_display
+msgid ""
+"Field allowing to see the leave request duration in days or hours depending "
+"on the leave_type_request_unit"
+msgstr ""
+"Чөлөөний хүсэлтийн хугацааг хоногоор эсвэл цагаар харуулахыг тодорхойлох "
+"type_request_unit талбар."
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Gender"
+msgstr "Хүйс"
+
+#. module: hrms_dashboard
+#: model:ir.model.fields,field_description:hrms_dashboard.field_hr_employee_broad_factor__id
+#: model:ir.model.fields,field_description:hrms_dashboard.field_report_hrms_dashboard_report_broadfactor__id
+msgid "ID"
+msgstr ""
+
+#. module: hrms_dashboard
+#: model:ir.model.fields,help:hrms_dashboard.field_hr_leave_type__emp_broad_factor
+msgid "If check it will display in broad factor type"
+msgstr ""
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Job Applications"
+msgstr "Ажилд орох анкетууд"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Joined"
+msgstr ""
+
+#. module: hrms_dashboard
+#: model:ir.model.fields,field_description:hrms_dashboard.field_hr_employee_broad_factor____last_update
+#: model:ir.model.fields,field_description:hrms_dashboard.field_report_hrms_dashboard_report_broadfactor____last_update
+msgid "Last Modified on"
+msgstr "Сүүлд зассан огноо"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/js/hrms_dashboard.js:0
+#, python-format
+msgid "Leave Allocation Request"
+msgstr ""
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/js/hrms_dashboard.js:0
+#: code:addons/hrms_dashboard/static/src/js/hrms_dashboard.js:0
+#, python-format
+msgid "Leave Request"
+msgstr "Амралт, Чөлөөний Хүсэлт"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Leave Requests"
+msgstr "Амралт, Чөлөөний Хүсэлт"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/js/hrms_dashboard.js:0
+#, python-format
+msgid "Leaves Today"
+msgstr ""
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Male"
+msgstr "Эрэгтэй"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Mobile"
+msgstr "Гар утас"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Monthly Join/Resign Analysis"
+msgstr "Ажилд орсон/ажлаас гарсан /сараар/"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Monthly Leave Analysis"
+msgstr "Амралт, Чөлөө /сараар/"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "My Leave Analysis"
+msgstr "Миний амралт, чөлөө"
+
+#. module: hrms_dashboard
+#: model:ir.model.fields,field_description:hrms_dashboard.field_hr_employee_broad_factor__name
+msgid "Name"
+msgstr "Нэр"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Nationality"
+msgstr "Иргэншил"
+
+#. module: hrms_dashboard
+#: model:ir.model.fields,field_description:hrms_dashboard.field_hr_employee_broad_factor__no_of_days
+msgid "No Of Days"
+msgstr ""
+
+#. module: hrms_dashboard
+#: model:ir.model.fields,field_description:hrms_dashboard.field_hr_employee_broad_factor__no_of_occurrence
+msgid "No Of Occurrence"
+msgstr ""
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Online"
+msgstr "Онлайн"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Other"
+msgstr "Бусад"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Payslips"
+msgstr "Цалингийн хуудас"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Please contact system admin for the setup"
+msgstr ""
+
+#. module: hrms_dashboard
+#: model:ir.model.fields,field_description:hrms_dashboard.field_hr_leave__duration_display
+msgid "Requested (Days/Hours)"
+msgstr "Хүсэлт илгээсэн (Хоног/цаг)"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/js/hrms_dashboard.js:0
+#, python-format
+msgid "Successfully "
+msgstr ""
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "This Month"
+msgstr "Энэ сар"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/js/hrms_dashboard.js:0
+#, python-format
+msgid "This Month Leaves"
+msgstr ""
+
+#. module: hrms_dashboard
+#: model:ir.model,name:hrms_dashboard.model_hr_leave
+msgid "Time Off"
+msgstr "Чөлөө"
+
+#. module: hrms_dashboard
+#: model:ir.model,name:hrms_dashboard.model_hr_leave_type
+msgid "Time Off Type"
+msgstr "Чөлөөний төрөл"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/js/hrms_dashboard.js:0
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Timesheets"
+msgstr "Цагийн хуудас"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Today"
+msgstr "Өнөөдөр"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Upcoming Birthdays"
+msgstr "Удахгүй болох төрсөн өдөр"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Upcoming Events"
+msgstr "Удахгүй болох арга хэмжээ"
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Venue :"
+msgstr ""
+
+#. module: hrms_dashboard
+#: model:ir.model,name:hrms_dashboard.model_report_hrms_dashboard_report_broadfactor
+msgid "report.hrms_dashboard.report_broadfactor"
+msgstr ""
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Амралт,Чөлөө"
+msgstr ""
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Нас"
+msgstr ""
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Нэгдэж орсон"
+msgstr ""
+
+#. module: hrms_dashboard
+#. openerp-web
+#: code:addons/hrms_dashboard/static/src/xml/hrms_dashboard.xml:0
+#, python-format
+msgid "Цалинтай чөлөөний хуриарлалт"
+msgstr ""
