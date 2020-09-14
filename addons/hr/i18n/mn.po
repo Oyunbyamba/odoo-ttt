@@ -439,12 +439,12 @@ msgstr "Хуурмаг холбогчийн нууцлал"
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_config_settings_view_form
 msgid "Allow employees to update their own data"
-msgstr "Ажилтнууд өөрсдийнхөө мэдээллийг шинэчлэх боломжийг олгох"
+msgstr "Ажилчид өөрсдийнхөө мэдээллийг шинэчлэх боломжийг олгох"
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.res_config_settings_view_form
 msgid "Allow employees to update their own data."
-msgstr "Ажилтнууд өөрсдийнхөө мэдээллийг шинэчлэх боломжийг олгох."
+msgstr "Ажилчид өөрсдийнхөө мэдээллийг шинэчлэх боломжийг олгох."
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.hr_employee_public_view_form
@@ -836,7 +836,7 @@ msgstr "Хэрэглэгчтэй харилцах харилцаа:"
 #: model:ir.model.fields,field_description:hr.field_hr_employee__birthday
 #: model:ir.model.fields,field_description:hr.field_res_users__birthday
 msgid "Date of Birth"
-msgstr "Төрсөн Огноо"
+msgstr "Төрсөн огноо"
 
 #. module: hr
 #: model:ir.model.fields,help:hr.field_hr_employee__resource_calendar_id
@@ -1007,7 +1007,7 @@ msgstr "Ажилчдын тоо"
 #. module: hr
 #: model:ir.ui.menu,name:hr.menu_hr_employee
 msgid "Employee Directory"
-msgstr "Ажилчдийн Лавлах"
+msgstr "Ажилчдын Лавлах"
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_res_config_settings__hr_employee_self_edit
@@ -1085,12 +1085,12 @@ msgstr "Ажилтан(ууд)"
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_tree
 #: model_terms:ir.ui.view,arch_db:hr.view_partner_tree2
 msgid "Employees"
-msgstr "Ажилтнууд"
+msgstr "Ажилчид"
 
 #. module: hr
 #: model:ir.actions.act_window,name:hr.open_view_employee_tree
 msgid "Employees Structure"
-msgstr "Ажилтнуудын бүтэц"
+msgstr "Ажилчдын бүтэц"
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_category_list
@@ -1608,7 +1608,7 @@ msgstr "Ажилтны менежер %s тохируулагдаагүй бай
 #: model_terms:ir.ui.view,arch_db:hr.res_users_view_form_profile
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_form
 msgid "Marital Status"
-msgstr "Гэрлэлтийн Байдал"
+msgstr "Гэрлэлтийн байдал"
 
 #. module: hr
 #: model:hr.job,name:hr.job_marketing
@@ -1792,7 +1792,7 @@ msgstr "Хүүхдийн тоо"
 #. module: hr
 #: model:ir.model.fields,help:hr.field_hr_job__no_of_employee
 msgid "Number of employees currently occupying this job position."
-msgstr "Ажлын байран дахь ажилтнуудын тоо."
+msgstr "Ажлын байран дахь ажилчдын тоо."
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_department__message_has_error_counter
@@ -1805,7 +1805,7 @@ msgstr "Алдааны тоо"
 #: model:ir.model.fields,help:hr.field_hr_job__no_of_hired_employee
 msgid ""
 "Number of hired employees for this job position during recruitment phase."
-msgstr "Тухайн ажлын байран дахь хөлсөөр ажиллаж буй ажилтнуудын тоо"
+msgstr "Тухайн ажлын байран дахь хөлсөөр ажиллаж буй ажилчдын тоо"
 
 #. module: hr
 #: model:ir.model.fields,help:hr.field_hr_department__message_needaction_counter
@@ -2276,7 +2276,7 @@ msgstr "Тэтгэвэртээ гарсан"
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__sinid
 msgid "SIN No"
-msgstr "Даатгалын Дугаар"
+msgstr "Нийгмийн даатгалын дугаар"
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__ssnid
@@ -2351,12 +2351,12 @@ msgstr "Чадварын менежмент"
 #. module: hr
 #: model:ir.model.fields,help:hr.field_hr_employee__sinid
 msgid "Social Insurance Number"
-msgstr "Нийгмийн Даатгалын Дугаар"
+msgstr "Нийгмийн даатгалын дугаар"
 
 #. module: hr
 #: model:ir.model.fields,help:hr.field_hr_employee__ssnid
 msgid "Social Security Number"
-msgstr "Регистрийн Дугаар"
+msgstr ""
 
 #. module: hr
 #: model:ir.model.fields,help:hr.field_hr_plan_activity_type__responsible_id

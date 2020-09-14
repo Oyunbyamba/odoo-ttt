@@ -1,0 +1,294 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* ubisol_hr_employee_upgrade
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 13.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-09-14 05:12+0000\n"
+"PO-Revision-Date: 2020-09-14 05:12+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.hr_employee_inherit_form_view
+msgid "<span> овогтой </span>"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_family__address_id
+msgid "Address"
+msgstr "Хаяг"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_family__birth_place
+msgid "Birthday"
+msgstr "Төрсөн өдөр"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_family__member_contact
+msgid "Contact No"
+msgstr "Холбоо барих дугаар"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_ethnicity__create_uid
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_family__create_uid
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_relation__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_ethnicity__create_date
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_family__create_date
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_relation__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_family__current_job
+msgid "Current job"
+msgstr "Одоо эрхэлж буй ажил"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_family__birth_date
+msgid "DOB"
+msgstr "Төрсөн өдөр"
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.hr_employee_inherit_form_view
+msgid "Dependence Details"
+msgstr "Гэр бүлийн байдал"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_ethnicity__display_name
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_family__display_name
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_relation__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.hr_employee_inherit_form_view
+msgid "Driver Info"
+msgstr "Жолооны мэдээлэл"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee__driver_blood_type
+msgid "Driver's blood type"
+msgstr "Цусны бүлэг"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee__driver_license_number
+msgid "Driver's license number"
+msgstr "Жолооны үнэмлэхний дугаар"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee__driving_classification
+msgid "Driving Classification"
+msgstr "Жолооны ангилал"
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.hr_employee_inherit_form_view
+msgid "Email"
+msgstr "Имэйл"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model,name:ubisol_hr_employee_upgrade.model_hr_employee
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_family__employee_id
+msgid "Employee"
+msgstr "Ажилтан"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee__ethnicity
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_ethnicity__name
+msgid "Ethnicity"
+msgstr "Яс үндэс"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,help:ubisol_hr_employee_upgrade.field_hr_employee__ethnicity
+#: model:ir.model.fields,help:ubisol_hr_employee_upgrade.field_hr_employee_ethnicity__name
+msgid "Ethnicity with the employee"
+msgstr "Ажилтаны яс үндэс"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee__fam_ids
+msgid "Family"
+msgstr "Гэр бүл"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee__family_income
+msgid "Family Income"
+msgstr "Гэр бүлийн орлого"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,help:ubisol_hr_employee_upgrade.field_hr_employee__fam_ids
+msgid "Family Information"
+msgstr "Гэр бүлийн мэдээлэл"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee__family_name
+msgid "Family Name"
+msgstr "Ургийн овог"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_family__member_name
+msgid "Firstname"
+msgstr "Нэр"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model,name:ubisol_hr_employee_upgrade.model_hr_employee_ethnicity
+msgid "HR Employee Ethnicity"
+msgstr "Ажилтаны яс үндэс"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model,name:ubisol_hr_employee_upgrade.model_hr_employee_family
+msgid "HR Employee Family"
+msgstr "Ажилтаны гэр бүл"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model,name:ubisol_hr_employee_upgrade.model_hr_employee_relation
+msgid "HR Employee Relation"
+msgstr "Ажилтаны хамаарал"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee__home_owner
+msgid "Home owner"
+msgstr "Орон сууц/хашаа байшин/-ны байдал"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_ethnicity__id
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_family__id
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_relation__id
+msgid "ID"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee__is_served_in_military
+msgid "Is served in the military"
+msgstr "Цэргийн алба хаасан эсэх"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_ethnicity____last_update
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_family____last_update
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_relation____last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_ethnicity__write_uid
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_family__write_uid
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_relation__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_ethnicity__write_date
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_family__write_date
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_relation__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_family__last_name
+msgid "Lastname"
+msgstr "Эцэг/эхийн нэр"
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.hr_employee_inherit_form_view
+msgid "Main Info"
+msgstr "Үндсэн мэдээлэл"
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.hr_employee_inherit_form_view
+msgid "Phone"
+msgstr "Утас"
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.hr_employee_inherit_form_view
+msgid "Private Contact"
+msgstr "Холбоо барих"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_family__relation_id
+msgid "Relation"
+msgstr "Хамаарал"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_relation__name
+msgid "Relationship"
+msgstr "Харилцаа"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,help:ubisol_hr_employee_upgrade.field_hr_employee_family__relation_id
+#: model:ir.model.fields,help:ubisol_hr_employee_upgrade.field_hr_employee_relation__name
+msgid "Relationship with the employee"
+msgstr "Ямар төрлийн хамааралтай болох"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee__relative_employee_id
+msgid "Relative"
+msgstr "Хамаатан"
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.hr_employee_inherit_form_view
+msgid "Relative employee of work"
+msgstr "Тус компанид хамаатан ажилладаг эсэх"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,help:ubisol_hr_employee_upgrade.field_hr_employee_family__employee_id
+msgid "Select corresponding Employee"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee__surname
+msgid "Surname"
+msgstr "Эцэг/эх/-ийн нэр"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee__years_of_driving
+msgid "Years of driving"
+msgstr "Жолоо барисан жил"
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.hr_employee_inherit_form_view
+msgid "Ажилтаны нэр"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_upgrade.selection__hr_employee__home_owner__laon
+msgid "Зээл"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_upgrade.selection__hr_employee__is_served_in_military__yes
+msgid "Тийм"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_upgrade.selection__hr_employee__home_owner__tenancy
+msgid "Түрээсийн"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_upgrade.selection__hr_employee__home_owner__parent
+msgid "Эцэг, эх"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.hr_employee_inherit_form_view
+msgid "Эцэг/эх/-ийн нэр"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_upgrade.selection__hr_employee__is_served_in_military__no
+msgid "Үгүй"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_upgrade.selection__hr_employee__home_owner__own
+msgid "Өөрийн"
+msgstr ""

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="employee_relationship" model="hr.employee.relation">
+    <record id="employee_relationship_spouse" model="hr.employee.relation">
             <field name="name">Spouse</field>
     </record>
 
@@ -10,5 +10,24 @@
 
     <record id="employee_relationship_mother" model="hr.employee.relation">
             <field name="name">Mother</field>
+    </record>
+
+    <record id="employee_ethnicity_khalkh" model="hr.employee.ethnicity">
+            <field name="name">Халх</field>
+    </record>
+    <record id="employee_ethnicity_dorwod" model="hr.employee.ethnicity">
+            <field name="name">Дөрвөд</field>
+    </record>
+    <record id="employee_ethnicity_dariganga" model="hr.employee.ethnicity">
+            <field name="name">Дарьганга</field>
+    </record>
+    <record id="employee_ethnicity_bayaad" model="hr.employee.ethnicity">
+            <field name="name">Баяд</field>
+    </record>
+    <record id="employee_ethnicity_buriad" model="hr.employee.ethnicity">
+            <field name="name">Буриад</field>
+    </record>
+    <record id="employee_ethnicity_kazakh" model="hr.employee.ethnicity">
+            <field name="name">Казах</field>
     </record>
 </odoo>
