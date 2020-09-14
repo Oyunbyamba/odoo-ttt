@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'hr'],
+    'depends': ['base', 'hr', 'hr_skills'],
 
     # always loaded
     'data': [
@@ -28,6 +28,7 @@
         'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
+        'views/hr_resume_views.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

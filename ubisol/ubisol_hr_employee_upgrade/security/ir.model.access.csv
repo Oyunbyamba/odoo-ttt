@@ -2,5 +2,6 @@
 "access_hr_employee_family_employee","hr.employee.family_employee","model_hr_employee_family","base.group_user",1,0,0,0
 "access_hr_employee_family_manager","hr.employee.family_manager","model_hr_employee_family","hr.group_hr_manager",1,1,1,1
 "access_hr_employee_family_user","hr.employee.family_user","model_hr_employee_family","hr.group_hr_user",1,1,1,1
-"access_hr_employee_relation",access_access_hr_employee_relation,"model_hr_employee_relation",base.group_user,1,1,1,1
-"access_hr_employee_ethnicity",access_access_hr_employee_ethnicity,"model_hr_employee_ethnicity",base.group_user,1,1,1,1
+"access_hr_employee_relation","access_hr_employee_relation","model_hr_employee_relation","hr.group_hr_user",1,1,1,1
+"access_hr_employee_ethnicity","access_hr_employee_ethnicity","model_hr_employee_ethnicity","hr.group_hr_user",1,1,1,1
+"access_hr_education_degree","access_hr_education_degree","model_hr_education_degree","hr.group_hr_user",1,1,1,1

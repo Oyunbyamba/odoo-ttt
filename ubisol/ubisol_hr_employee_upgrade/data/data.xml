@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="employee_relationship_spouse" model="hr.employee.relation">
-            <field name="name">Spouse</field>
+            <field name="name">Эхнэр/нөхөр</field>
     </record>
 
     <record id="employee_relationship_father" model="hr.employee.relation">
-            <field name="name">Father</field>
+            <field name="name">Аав</field>
     </record>
 
     <record id="employee_relationship_mother" model="hr.employee.relation">
-            <field name="name">Mother</field>
+            <field name="name">Ээж</field>
     </record>
 
     <record id="employee_ethnicity_khalkh" model="hr.employee.ethnicity">
@@ -29,5 +29,21 @@
     </record>
     <record id="employee_ethnicity_kazakh" model="hr.employee.ethnicity">
             <field name="name">Казах</field>
+    </record>
+
+    <record id="education_degree_of_high_school" model="hr.education.degree">
+            <field name="name">Ерөнхий боловсрол</field>
+    </record>
+    <record id="education_degree_of_special_secondary" model="hr.education.degree">
+            <field name="name">Тусгай дунд боловсрол</field>
+    </record>
+    <record id="education_degree_of_bachelor" model="hr.education.degree">
+            <field name="name">Дээд боловсрол</field>
+    </record>
+    <record id="education_degree_of_master" model="hr.education.degree">
+            <field name="name">Магистр</field>
+    </record>
+    <record id="education_degree_of_doctor" model="hr.education.degree">
+            <field name="name">Доктор</field>
     </record>
 </odoo>
