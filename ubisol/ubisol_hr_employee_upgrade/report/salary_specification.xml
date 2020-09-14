@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id ="report_specification_pdf">
+        <t t-call="web.html_container">
+        <t t-set="company" t-value="env.company"/>
+            <t t-foreach="docs" t-as="employee">
+                <t t-call="ubisol_hr_employee_upgrade.external_layout_mn_standard" t-lang="mn_MN">
+                    <div class="col-12 page" style="font-size: 16px !important;">
+                        <div>
+                            <br/><br/><br/><br/>
+                            <br/><br/><br/><br/>
+                            <br/><br/><br/><br/>
+                            <br/><br/>
+                        </div>
+                        <p class="text-center">ТОДОРХОЙЛОЛТ</p>
+                        <div class="col-12">
+                            <t t-esc="employee.job_id.name"/> <t t-esc="employee.surname"/> овогтой <t t-esc="employee.name"/> нь
+                            <t t-esc="employee.contract_id.wage"/> төгрөгийн үндсэн болон нэмэгдэл цалинтай ажилладаг болно.
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id ="report_specification">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="ubisol_hr_employee_upgrade.report_specification_pdf"/>
+            </t>
+        </t>
+    </template>
+
+</odoo>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="create_bank_definition_form" model="ir.ui.view">
+         <field name="name">create.bank_definition.wizard</field>
+         <field name="model">create.bank_definition</field>
+         <field name="arch" type="xml">
+            <form string="Create Bank definition">
+                <group>
+                    <field name="employee_id"/>
+                    <field name="organization_name"/>
+                    <field name="get_definition_date"/>
+                </group>
+                <footer>
+                    <button name="print_report" string="Print" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+         </field>
+     </record>
+
+    <record id="create_bank_definition_wizard" model="ir.actions.act_window">
+        <field name="name">Create Bank definition</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">create.bank_definition</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="create_bank_definition_form"/>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

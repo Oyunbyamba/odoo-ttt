@@ -1,6 +1,8 @@
 <odoo>
   <data>
 
+    <menuitem id="create_bank_definition" name="Create Bank definition" parent="hr.menu_hr_root" sequence="5"
+            groups="hr.group_hr_manager" action="create_bank_definition_wizard"/>
     <record model="ir.ui.view" id="hr_employee_inherit_form_view">
 
       <field name="name">hr.employee.form.view</field>
@@ -18,12 +20,14 @@
           <group name="fam_ids" colspan="4" string="Dependence Details">
             <field name="fam_ids">
               <tree editable="bottom">
-                <field name="relation_id" required="1"/>
+                <field name="last_name"/>
                 <field name="member_name" required="1"/>
+                <field name="relation_id" required="1"/>
                 <field name="birth_date"/>
                 <field name="member_contact"/>
                 <field name="current_job"/>
                 <field name="address_id"/>
+                <field name="birth_place"/>
               </tree>
             </field>
           </group>

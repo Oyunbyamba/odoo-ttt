@@ -1,49 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="employee_relationship_spouse" model="hr.employee.relation">
-            <field name="name">Эхнэр/нөхөр</field>
+            <field name="name">Spouse</field>
     </record>
 
     <record id="employee_relationship_father" model="hr.employee.relation">
-            <field name="name">Аав</field>
+            <field name="name">Father</field>
     </record>
 
     <record id="employee_relationship_mother" model="hr.employee.relation">
-            <field name="name">Ээж</field>
+            <field name="name">Mother</field>
     </record>
 
-    <record id="employee_ethnicity_khalkh" model="hr.employee.ethnicity">
-            <field name="name">Халх</field>
-    </record>
-    <record id="employee_ethnicity_dorwod" model="hr.employee.ethnicity">
-            <field name="name">Дөрвөд</field>
-    </record>
-    <record id="employee_ethnicity_dariganga" model="hr.employee.ethnicity">
-            <field name="name">Дарьганга</field>
-    </record>
-    <record id="employee_ethnicity_bayaad" model="hr.employee.ethnicity">
-            <field name="name">Баяд</field>
-    </record>
-    <record id="employee_ethnicity_buriad" model="hr.employee.ethnicity">
-            <field name="name">Буриад</field>
-    </record>
-    <record id="employee_ethnicity_kazakh" model="hr.employee.ethnicity">
-            <field name="name">Казах</field>
-    </record>
-
-    <record id="education_degree_of_high_school" model="hr.education.degree">
-            <field name="name">Ерөнхий боловсрол</field>
-    </record>
-    <record id="education_degree_of_special_secondary" model="hr.education.degree">
-            <field name="name">Тусгай дунд боловсрол</field>
-    </record>
-    <record id="education_degree_of_bachelor" model="hr.education.degree">
-            <field name="name">Дээд боловсрол</field>
-    </record>
-    <record id="education_degree_of_master" model="hr.education.degree">
-            <field name="name">Магистр</field>
-    </record>
-    <record id="education_degree_of_doctor" model="hr.education.degree">
-            <field name="name">Доктор</field>
-    </record>
 </odoo>

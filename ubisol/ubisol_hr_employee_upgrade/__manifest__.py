@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'hr', 'hr_skills'],
+    'depends': ['base', 'hr'],
 
     # always loaded
     'data': [
@@ -28,7 +28,10 @@
         'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
-        'views/hr_resume_views.xml'
+        'report/report.xml',
+        'report/bank_definition.xml',
+        'report/salary_specification.xml',
+        'wizards/create_bank_definition.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
