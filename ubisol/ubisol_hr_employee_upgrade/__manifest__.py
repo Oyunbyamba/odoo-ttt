@@ -28,6 +28,10 @@
         'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
+        'report/report.xml',
+        'report/bank_definition.xml',
+        'report/salary_specification.xml',
+        'wizards/create_bank_definition.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
