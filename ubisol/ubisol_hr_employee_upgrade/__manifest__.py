@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'hr'],
+    'depends': ['base', 'hr', 'hr_skills'],
 
     # always loaded
     'data': [
@@ -32,6 +32,7 @@
         'report/bank_definition.xml',
         'report/salary_specification.xml',
         'wizards/create_bank_definition.xml',
+        'views/hr_resume_views.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
