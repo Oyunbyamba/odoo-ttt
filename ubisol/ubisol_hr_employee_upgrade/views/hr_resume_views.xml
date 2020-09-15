@@ -6,17 +6,32 @@
             <field name="model">hr.resume.line</field>
             <field name="inherit_id" ref="hr_skills.resume_line_view_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='description']" position="before">
-                    <group>
-                        <group>
-                            <field name="education_degree_id"/>
-                        </group>
-                        <group>
-                            <field name="diploma_number"/>
-                        </group>
-                    </group>
+
+                <xpath expr="//form[1]/div" position="replace"></xpath>
+            
+                <xpath expr="//form[1]/group[1]" position="before">
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" placeholder="Profession" required="True"/>
+                        </h1>
+                    </div>
                 </xpath>
-                    
+
+                <xpath expr="//form[1]/group/group[1]/field[@name='display_type']" position="replace"></xpath>
+
+                <xpath expr="//form[1]/group/group[1]" position="inside">
+                    <field name="education_degree_id" attrs="{'invisible': ['|', ('line_type_id', 'in', [1]), ('line_type_id', '=', True) ]}"/>
+                </xpath>
+                <xpath expr="//form[1]/group/group[1]" position="inside">
+                    <field name="diploma_number" attrs="{'invisible': ['|', ('line_type_id', 'in', [1]), ('line_type_id', '=', True) ]}"/>
+                </xpath>
+                <xpath expr="//form[1]/group/group[2]" position="inside">
+                    <field name="is_highest_degree" attrs="{'invisible': ['|', ('line_type_id', 'in', [1]), ('line_type_id', '=', True) ]}"/>
+                </xpath>
+                <xpath expr="//form[1]/group/group[1]" position="inside">
+                    <field name="company_name" attrs="{'invisible': [('line_type_id', 'not in', [1])]}"/>
+                </xpath>
             </field>
         </record>
     </data>
