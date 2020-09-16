@@ -6,7 +6,9 @@
             <field name="model">hr.resume.line</field>
             <field name="inherit_id" ref="hr_skills.resume_line_view_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//form[1]/group/group[1]/field[@name='display_type']" position="replace"></xpath>
+                <xpath expr="//form[1]/group/group[1]/field[@name='display_type']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
 
                 <xpath expr="//form[1]/group/group[1]" position="inside">
                     <field name="education_degree_id" attrs="{'invisible': ['|', ('line_type_id', 'in', [1]), ('line_type_id', '=', True) ]}"/>

@@ -14,10 +14,27 @@ class ResumeLine(models.Model):
 
     @api.onchange('is_highest_degree')
     def _onchange_is_highest_degree(self):
+            
+
         if self.is_highest_degree:
-            self._origin.employee_id.study_field = self._origin.profession
-            self._origin.employee_id.study_school = self._origin.name
-            self._origin.employee_id.certificate = self._origin.education_degree_id.name
+            self._origin.employee_id.study_field = self.profession
+            self._origin.employee_id.study_school = self.name
+            self._origin.employee_id.certificate = self.education_degree_id.name
+            print('__________origin______________')
+            print(self._origin.employee_id.study_field)
+            print(self._origin.employee_id)
+            print('__________else______________')
+            print(self.employee_id.study_field)
+            print(self.employee_id)
+
+            # if self._origin.employee_id.study_field:
+                # self._origin.employee_id.study_field = self.profession
+                # self._origin.employee_id.study_school = self.name
+                # self._origin.employee_id.certificate = self.education_degree_id.name
+            # else:
+            #     self.employee_id.study_field = self.profession
+            #     self.employee_id.study_school = self.name
+            #     self.employee_id.certificate = self.education_degree_id.name
 
 
 class EducationDegree(models.Model):
