@@ -16,4 +16,6 @@ class CreateBankDefinition(models.TransientModel):
             'model': 'create.bank_definition',
             'form': self.read()[0]
         }
-        return self.env.ref('ubisol_hr_employee_upgrade.bank_definition_report_pdf').with_context(landscape=True).report_action(self, data=data)
+        # import pdb
+        # pdb.set_trace()
+        return self.env.ref('ubisol_hr_employee_upgrade.bank_definition_report_pdf').report_action(self, data=data)

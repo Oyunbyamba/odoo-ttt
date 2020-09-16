@@ -73,25 +73,26 @@
 
     <!--    # Salary specification report    -->
     <report
-            id="salary_specification_report_pdf"
-            model="hr.employee" 
-            string="Salary Specification"
-            report_type="qweb-pdf"
-            name="ubisol_hr_employee_upgrade.report_specification"
-            file="ubisol_hr_employee_upgrade.report_specification"
-            print_report_name="'Salary specification - %s' % (object.name)"
-            paperformat="ubisol_hr_employee_upgrade.paperformat_mn"
+        id="salary_specification_report_pdf"
+        model="hr.employee" 
+        string="Salary Specification"
+        report_type="qweb-pdf"
+        name="ubisol_hr_employee_upgrade.report_specification"
+        file="ubisol_hr_employee_upgrade.report_specification"
+        print_report_name="'Salary specification - %s' % (object.name)"
+        paperformat="ubisol_hr_employee_upgrade.paperformat_mn"
     />
 
     <!--    # Bank definition report    -->
     <report
-            id="bank_definition_report_pdf"
-            model="hr.employee" 
-            string="Bank Definition"
-            report_type="qweb-pdf"
-            name="ubisol_hr_employee_upgrade.report_definition_pdf"
-            file="ubisol_hr_employee_upgrade.report_definition_pdf"
-            print_report_name="'Bank Definition - %s' % (object.name)"
-            paperformat="ubisol_hr_employee_upgrade.paperformat_mn"
+        id="bank_definition_report_pdf"
+        model="hr.employee" 
+        string="Bank Definition"
+        report_type="qweb-pdf"
+        menu="False"
+        name="ubisol_hr_employee_upgrade.report_definition_pdf"
+        file="ubisol_hr_employee_upgrade.report_definition_pdf"
+        print_report_name="'Bank Definition - %s' % (object.name)"
+        paperformat="ubisol_hr_employee_upgrade.paperformat_mn"
     />
 </odoo>
