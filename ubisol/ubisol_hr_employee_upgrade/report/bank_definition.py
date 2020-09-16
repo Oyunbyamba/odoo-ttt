@@ -1,17 +1,17 @@
 from odoo import api, models, _
 
-
 class ReportDefinitionPdf(models.AbstractModel):
     _name = 'report.ubisol_hr_employee_upgrade.report_definition'
     _description = 'Bank Definition Report'
 
     @api.model
     def _get_report_values(self, docids, data=None):
-        if data['form']['employee_id']:
-            bank_definition = self.env['ubisol_hr_employee_upgrade.bank_definition'].search([('employee_id', '=', data['form']['employee_id'][0])])
-        else:
-            bank_definition = self.env['ubisol_hr_employee_upgrade.bank_definition'].search([])
+        # import pdb
+        # pdb.set_trace()
+        docs = self.env['create.bank_definition'].browse(data['form']['id'])    
+        employee = self.env['hr.employee'].browse(data['form']['employee_id'][0])
         return {
             'doc_model': 'hr.employee',
-            'bank_definition': bank_definition,
+            'docs': docs,
+            'employee': employee
         }
