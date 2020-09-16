@@ -4,32 +4,23 @@
     <template id ="report_definition_pdf">
         <t t-call="web.html_container">
         <t t-set="company" t-value="env.company"/>
-            <!-- <t t-foreach="employee" t-as="e"> -->
-                <!-- <t t-call="ubisol_hr_employee_upgrade.external_layout_mn_standard" t-lang="mn_MN"> -->
+            <t t-foreach="employee" t-as="e">
+                <t t-call="ubisol_hr_employee_upgrade.external_layout_mn_standard">
                     <div class="col-12 page" style="font-size: 16px !important;">
-                    <t t-esc="employee"/>
-                    <t t-foreach="employee" t-as="e">
-                        <t t-esc="e.name"/>
-                        <p>1</p>
-                    </t>
-                    <t t-esc="docs"/>
-                    <t t-foreach="docs" t-as="d">
-                        <p>2</p>
-                    </t>
-                        <!-- <div>
+                        <div>
                             <br/><br/><br/><br/>
                             <br/><br/><br/><br/>
                             <br/><br/><br/><br/>
                             <br/><br/>
-                        </div> -->
-                        <!-- <p class="text-center"><t t-esc="d.organization_name"/></p> -->
-                        <!-- <div class="col-12">
+                        </div>
+                        <p class="text-center"><t t-esc="organization_name"/></p>
+                        <div class="col-12">
                             <t t-esc="e.job_id.name"/> <t t-esc="e.surname"/> овогтой <t t-esc="e.name"/> нь
                             <t t-esc="e.contract_id.wage"/> төгрөгийн үндсэн болон нэмэгдэл цалинтай ажилладаг болно.
-                        </div> -->
+                        </div>
                     </div>
-                <!-- </t> -->
-            <!-- </t> -->
+                </t>
+            </t>
         </t>
     </template>
 
