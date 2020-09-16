@@ -56,6 +56,9 @@ class HrEmployee(models.Model):
     ], string="Driver's blood type")
     years_of_driving = fields.Integer(string='Years of driving')
     relative_employee_id = fields.Many2one('hr.employee', 'Relative', domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+    size_of_shirt = fields.Char(string='The size of shirt')
+    size_of_pants = fields.Char(string='The size of pants')
+    size_of_shoes = fields.Char(string='The size of shoes')
 
     @api.onchange('spouse_complete_name', 'spouse_birthdate')
     def onchange_spouse(self):
