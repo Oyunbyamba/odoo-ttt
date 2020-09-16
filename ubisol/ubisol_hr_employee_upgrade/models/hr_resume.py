@@ -12,30 +12,14 @@ class ResumeLine(models.Model):
     profession = fields.Char(string='Profession')
     position = fields.Char(string='Job position')
 
-    @api.onchange('is_highest_degree')
-    def _onchange_is_highest_degree(self):
-            
-
-        if self.is_highest_degree:
-            self._origin.employee_id.study_field = self.profession
-            self._origin.employee_id.study_school = self.name
-            self._origin.employee_id.certificate = self.education_degree_id.name
-            print('__________origin______________')
-            print(self._origin.employee_id.study_field)
-            print(self._origin.employee_id)
-            print('__________else______________')
-            print(self.employee_id.study_field)
-            print(self.employee_id)
-
-            # if self._origin.employee_id.study_field:
-                # self._origin.employee_id.study_field = self.profession
-                # self._origin.employee_id.study_school = self.name
-                # self._origin.employee_id.certificate = self.education_degree_id.name
-            # else:
-            #     self.employee_id.study_field = self.profession
-            #     self.employee_id.study_school = self.name
-            #     self.employee_id.certificate = self.education_degree_id.name
-
+    @api.model
+    def create(self, vals):
+        resume = super(ResumeLine, self).create(vals)
+        if resume.is_highest_degree:
+            resume.employee_id.study_field = resume.profession
+            resume.employee_id.study_school = resume.name
+            resume.employee_id.certificate = resume.education_degree_id.name
+        return resume
 
 class EducationDegree(models.Model):
     """Table for keep education degree information"""
