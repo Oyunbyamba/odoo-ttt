@@ -4,7 +4,6 @@
     <menuitem id="create_bank_definition" name="Create Bank definition" parent="hr.menu_hr_root" sequence="5"
             groups="hr.group_hr_manager" action="create_bank_definition_wizard"/>
     <record model="ir.ui.view" id="hr_employee_inherit_form_view">
-
       <field name="name">hr.employee.form.view</field>
       <field name="model">hr.employee</field>
       <field name="inherit_id" ref="hr.view_employee_form"/>
@@ -84,6 +83,14 @@
           </group>
         </xpath>
 
+        <xpath expr="//page[@name='public']/div/div/group[3]" position="after">
+          <group name="size_of_cloth" string="The size of clothes">
+            <field name="size_of_shirt"/>
+            <field name="size_of_pants"/>
+            <field name="size_of_shoes"/>
+          </group>
+        </xpath>
+
         <xpath expr="//group[@name='departure']" position="attributes">
           <attribute name="invisible">1</attribute> 
         </xpath>
@@ -114,6 +121,18 @@
       </field>
     </record>
 
+    <record id="view_employee_inherit_filter" model="ir.ui.view">
+      <field name="name">hr.employee.search</field>
+      <field name="model">hr.employee</field>
+      <field name="inherit_id" ref="hr.view_employee_filter"/>
+      <field name="arch" type="xml">
+
+        <xpath expr="//group[1]" position="inside">
+          <filter name="group_study" string="Эзэмшсэн мэргэжил" domain="[]" context="{'group_by': 'study_field'}"/>
+        </xpath>
+
+      </field>
+    </record>
 
   </data>
 </odoo>
