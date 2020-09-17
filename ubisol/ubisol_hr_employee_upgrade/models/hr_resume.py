@@ -18,8 +18,22 @@ class ResumeLine(models.Model):
         if resume.is_highest_degree:
             resume.employee_id.study_field = resume.profession
             resume.employee_id.study_school = resume.name
-            resume.employee_id.certificate = resume.education_degree_id.name
+            if(resume.education_degree_id.create_uid == 1):
+                resume.employee_id.certificate = resume.education_degree_id.name
+            else: 
+                resume.employee_id.certificate = 'Бусад'
         return resume
+
+    def write(self, vals):
+        resume = super(ResumeLine, self).write(vals)
+        if self.is_highest_degree:
+            self.employee_id.study_field = self.profession
+            self.employee_id.study_school = self.name
+            if(self.education_degree_id.create_uid == 1):
+                self.employee_id.certificate = self.education_degree_id.name
+            else: 
+                self.employee_id.certificate = 'Бусад'
+        return resume        
 
 class EducationDegree(models.Model):
     """Table for keep education degree information"""

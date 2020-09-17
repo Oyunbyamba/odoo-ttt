@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-16 05:17+0000\n"
-"PO-Revision-Date: 2020-09-16 05:17+0000\n"
+"POT-Creation-Date: 2020-09-17 08:48+0000\n"
+"PO-Revision-Date: 2020-09-17 08:48+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -49,6 +49,11 @@ msgid "Bank Definition"
 msgstr "Банкны тодорхойлолт"
 
 #. module: ubisol_hr_employee_upgrade
+#: model:ir.model,name:ubisol_hr_employee_upgrade.model_report_ubisol_hr_employee_upgrade_report_definition_pdf
+msgid "Bank Definition Report"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_family__birth_place
 msgid "Birthday"
 msgstr "Төрсөн өдөр"
@@ -73,7 +78,7 @@ msgstr "Холбоо барих дугаар"
 #: model:ir.ui.menu,name:ubisol_hr_employee_upgrade.create_bank_definition
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.create_bank_definition_form
 msgid "Create Bank definition"
-msgstr ""
+msgstr "Банкны тодорхойлолт үүсгэх"
 
 #. module: ubisol_hr_employee_upgrade
 #: model:ir.model,name:ubisol_hr_employee_upgrade.model_create_bank_definition
@@ -124,6 +129,7 @@ msgstr "Гэрчилгээ, дипломын дугаар"
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_ethnicity__display_name
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_family__display_name
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_relation__display_name
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_report_ubisol_hr_employee_upgrade_report_definition_pdf__display_name
 msgid "Display Name"
 msgstr ""
 
@@ -202,6 +208,12 @@ msgid "Firstname"
 msgstr "Нэр"
 
 #. module: ubisol_hr_employee_upgrade
+#: code:addons/ubisol_hr_employee_upgrade/report/bank_definition.py:0
+#, python-format
+msgid "Form content is missing, this report cannot be printed."
+msgstr "Өгөгдөл байхгүй тул тайланг хэвлэх боломжгүй."
+
+#. module: ubisol_hr_employee_upgrade
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_create_bank_definition__get_definition_date
 msgid "Get definition Date"
 msgstr ""
@@ -242,6 +254,7 @@ msgstr "Орон сууц/хашаа байшин/-ны байдал"
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_ethnicity__id
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_family__id
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_relation__id
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_report_ubisol_hr_employee_upgrade_report_definition_pdf__id
 msgid "ID"
 msgstr ""
 
@@ -266,6 +279,7 @@ msgstr "Албан тушаал"
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_ethnicity____last_update
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_family____last_update
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_relation____last_update
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_report_ubisol_hr_employee_upgrade_report_definition_pdf____last_update
 msgid "Last Modified on"
 msgstr ""
 
@@ -324,7 +338,6 @@ msgstr "Холбоо барих"
 
 #. module: ubisol_hr_employee_upgrade
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_resume_line__profession
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.view_employee_inherit_filter
 msgid "Profession"
 msgstr "Эзэмшсэн мэргэжил"
 
@@ -355,6 +368,11 @@ msgid "Relative employee of work"
 msgstr "Тус компанид хамаатан ажилладаг эсэх"
 
 #. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.hr_employee_view_search
+msgid "Resumé"
+msgstr "Боловсрол, туршлага"
+
+#. module: ubisol_hr_employee_upgrade
 #: model:ir.model,name:ubisol_hr_employee_upgrade.model_hr_resume_line
 msgid "Resumé line of an employee"
 msgstr "Ажилтны мэдлэг, ур чадвар"
@@ -368,6 +386,11 @@ msgstr "Цалингийн тодорхойлолт"
 #: model:ir.model.fields,help:ubisol_hr_employee_upgrade.field_hr_employee_family__employee_id
 msgid "Select corresponding Employee"
 msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.view_employee_inherit_filter
+msgid "Study Field"
+msgstr "Эзэмшсэн мэргэжил"
 
 #. module: ubisol_hr_employee_upgrade
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee__surname
@@ -442,6 +465,11 @@ msgstr ""
 #. module: ubisol_hr_employee_upgrade
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.external_layout_mn_standard
 msgid "ХЯЗГААРЛАГДМАЛ ХАРИУЦЛАГАТАЙ КОМПАНИ"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.view_employee_inherit_filter
+msgid "Эзэмшсэн мэргэжил"
 msgstr ""
 
 #. module: ubisol_hr_employee_upgrade

@@ -89,6 +89,7 @@ class HrEmployeePrivate(models.Model):
         ('Дээд боловсрол', 'Дээд боловсрол'),
         ('Магистр', 'Магистр'),
         ('Доктор', 'Доктор'),
+        ('Бусад', 'Бусад'),
     ], 'Certificate Level', default='Дээд боловсрол', groups="hr.group_hr_user", tracking=True)
     study_field = fields.Char("Field of Study", groups="hr.group_hr_user", tracking=True)
     study_school = fields.Char("School", groups="hr.group_hr_user", tracking=True)
