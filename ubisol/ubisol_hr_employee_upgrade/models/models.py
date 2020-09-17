@@ -62,7 +62,7 @@ class HrEmployee(models.Model):
 
     @api.onchange('spouse_complete_name', 'spouse_birthdate')
     def onchange_spouse(self):
-        relation = self.env.ref('ubisol_hr_employee_upgrade.employee_relationship')
+        relation = self.env.ref('ubisol_hr_employee_upgrade.employee_relationship_spouse')
         lines_info = []
         spouse_name = self.spouse_complete_name
         date = self.spouse_birthdate
