@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ubisol_login_template_ubisol_login_template,ubisol_login_template.ubisol_login_template,model_ubisol_login_template_ubisol_login_template,base.group_user,1,1,1,1
