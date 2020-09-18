@@ -55,8 +55,8 @@ msgstr ""
 
 #. module: ubisol_hr_employee_upgrade
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_family__birth_place
-msgid "Birthday"
-msgstr "Төрсөн өдөр"
+msgid "Birth place"
+msgstr "Төрсөн газар"
 
 #. module: ubisol_hr_employee_upgrade
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.create_bank_definition_form

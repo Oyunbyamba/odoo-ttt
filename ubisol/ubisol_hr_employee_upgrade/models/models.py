@@ -19,7 +19,7 @@ class HrEmployeeFamilyInfo(models.Model):
     member_name = fields.Char(string='Firstname')
     member_contact = fields.Char(string='Contact No')
     birth_date = fields.Date(string="DOB", tracking=True)
-    birth_place = fields.Many2one('res.country.state', string="Birthday")
+    birth_place = fields.Many2one('res.country.state', string="Birth place")
     current_job = fields.Char(string='Current job')
     address_id = fields.Many2one('res.partner', string='Address')
 
