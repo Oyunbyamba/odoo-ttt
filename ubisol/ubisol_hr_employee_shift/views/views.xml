@@ -2,22 +2,53 @@
   <data>
     <!-- explicit list view definition -->
 
-    <record model="ir.ui.view" id="ubisol_hr_employee_shift.list">
-      <field name="name">ubisol_hr_employee_shift list</field>
-      <field name="model">hr.employee.shift</field>
+    <record id="employee_form_inherited" model="ir.ui.view">
+      <field name="name">hr.employee.resource</field>
+      <field name="model">hr.employee</field>
+      <field name="inherit_id" ref="hr.view_employee_form"/>
       <field name="arch" type="xml">
-        <field name="name"/>
-        <field name="hr_department"/>
-        <field name="shift_type"/>
-        <group name="day_ids" colspan="3" string="Day Plan">
-            <field name="day_ids">
-                <tree editable="bottom">
-                  <field name="start_date" required="1"/>
-                  <field name="end_date" required="1"/>
-                  <field name="work_type" required="1"/>
-                </tree>
-            </field>
-        </group>
+          <xpath expr="//page[@name='public']//field[@name='resource_calendar_id']" position="replace">
+              <field name="resource_calendar_ids"/>
+          </xpath>
+      </field>
+    </record>
+
+    <record id="resource_calendar_form" model="ir.ui.view">
+      <field name="name">resource.calendar</field>
+      <field name="model">resource.calendar</field>
+      <field name="inherit_id" ref="resource.resource_calendar_form"/>
+      <field name="arch" type="xml">
+          <xpath expr="//group[@name='resource_details']" position="replace">
+            <group>
+              <field name="shift_type" style="height:30px;width:200px;font-size:16;"/>
+            </group>
+          </xpath>
+          <xpath expr="//notebook" position="replace">
+              <group string="Shift Schedule" attrs="{'invisible':[('shift_type', '=', 'days')]}">
+                <field name="factory_day_ids" nolabel="1">
+                    <tree editable="bottom">
+                      <field name="name"/>
+                      <field name="day_period"/>
+                      <field name="start_work" widget="float_time"/>
+                      <field name="end_work" widget="float_time"/>
+                      <field name="lunch_time_from" widget="float_time"/>
+                      <field name="lunch_time_to" widget="float_time"/>
+                    </tree>
+                </field>
+              </group>
+              <group string="Days Schedule" attrs="{'invisible':[('shift_type', '=', 'shift')]}">
+                <field name="normal_day_ids" nolabel="1">
+                    <tree editable="bottom">
+                      <field name="name"/>
+                      <field name="week_day"/>
+                      <field name="start_work" widget="float_time"/>
+                      <field name="end_work" widget="float_time"/>
+                      <field name="lunch_time_from" widget="float_time"/>
+                      <field name="lunch_time_to" widget="float_time"/>
+                    </tree>
+                </field>
+              </group>
+          </xpath>
       </field>
     </record>
 
@@ -26,10 +57,16 @@
 
     <record model="ir.actions.act_window" id="ubisol_hr_employee_shift.action_window">
       <field name="name">Employee Shifts</field>
-      <field name="res_model">hr.employee.shift</field>
+      <field name="res_model">resource.calendar</field>
       <field name="view_mode">kanban,tree,form</field>
+      <field name="view_id" eval="False"/>
+      <field name="search_view_id" ref="resource.view_resource_calendar_search"/>
+      <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+          Define working hours and time table that could be scheduled to your project members
+        </p>
+      </field>
     </record>
-
 
     <!-- server action to the one above -->
 <!-- 
