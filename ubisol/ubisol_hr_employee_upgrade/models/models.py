@@ -59,6 +59,8 @@ class HrEmployee(models.Model):
     size_of_shirt = fields.Char(string='The size of shirt')
     size_of_pants = fields.Char(string='The size of pants')
     size_of_shoes = fields.Char(string='The size of shoes')
+    create_contract = fields.Boolean(string='Create contract')
+    contract_ids = fields.One2many('hr.contract', 'employee_id', string='Contract')
 
     @api.onchange('spouse_complete_name', 'spouse_birthdate')
     def onchange_spouse(self):
@@ -72,8 +74,22 @@ class HrEmployee(models.Model):
                 'relation_id': relation.id,
                 'birth_date': date,
             }))
-        self.fam_ids = [(6, 0, 0)] + lines_info
-
+        self.fam_ids = [(6, 0, 0)] + lines_info  
+        
+    @api.onchange('contract_signed_date')
+    def onchange_create_signed_date(self):
+        contract = []
+        contract_signed_date = self.contract_signed_date
+        if contract_signed_date:
+            contract = {
+                'name': self.name,
+                'employee_id': self.id,
+                'department_id': self.department_id,
+                'date_start': contract_signed_date,
+                'state': 'open',
+                'kanban_state': 'done',
+            }
+        self.contract_ids = contract
 
 class EmployeeRelationInfo(models.Model):
     """Table for keep employee family information"""
@@ -92,3 +108,4 @@ class EmployeeEthnicity(models.Model):
 
     name = fields.Char(string="Ethnicity",
                        help="Ethnicity with the employee")
+                  

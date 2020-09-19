@@ -66,12 +66,20 @@
         </xpath>
 
         <xpath expr="//page[@name='public']/div/div/group[1]" position="after">
+          <group name="create_contract" string="Contract">
+            <field name="contract_ids" attrs="{'invisible': 1}"/>
+            <field name="create_contract"/>
+            <field name="contract_signed_date" attrs="{'invisible': [('create_contract', '=', [0])]}"/>
+          </group>
+        </xpath>
+
+        <xpath expr="//page[@name='public']/div/div/group[2]" position="after">
           <group name="relative_of_work" string="Relative employee of work">
             <field name="relative_employee_id"/>
           </group>
         </xpath>
 
-        <xpath expr="//page[@name='public']/div/div/group[2]" position="after">
+        <xpath expr="//page[@name='public']/div/div/group[3]" position="after">
           <group name="driver_info" string="Driver Info">
             <field name="driving_classification"/>
             <field name="driver_license_number" attrs="{'invisible': [('driving_classification', 'not in', ['A', 'B', 'C', 'D', 'E'])]}"/>
@@ -80,7 +88,7 @@
           </group>
         </xpath>
 
-        <xpath expr="//page[@name='public']/div/div/group[3]" position="after">
+        <xpath expr="//page[@name='public']/div/div/group[4]" position="after">
           <group name="size_of_cloth" string="The size of clothes">
             <field name="size_of_shirt"/>
             <field name="size_of_pants"/>
