@@ -2,36 +2,53 @@
 
 from odoo import models, fields, api
 
+class HrEmployeeInherited(models.Model):
+    _inherit = 'hr.employee'
+
+    resource_calendar_ids = fields.Many2one('resource.calendar', 'Working Hours')
+
 class HrEmployeeShift(models.Model):
     """Ээлжээр ажиллах мастер өгөгдөл хадгалах хүснэгт"""
-    _name = 'hr.employee.shift'
+    _inherit = 'resource.calendar'
     _description = 'hr.employee.shift'
 
-    name = fields.Char()
     shift_type = fields.Selection([
-        ('normal', 'Normal'),
-        ('factory', 'Factory')
-    ], default="normal", tracking=True)
-    schedule_days = fields.Integer(string="Schedule Days", required=True, default=8, help="Schedule Days")
-    hr_department = fields.Many2one('hr.department', string="Department", required=True, help="Department")
-    day_ids = fields.One2many('hr.employee.shift.dayplan', 'shift_id', string='Day Plan', help='Day Plan')
-
-    @api.depends('value')
-    def _value_pc(self):
-        for record in self:
-            record.value2 = float(record.value) / 100
+        ('days', 'Days'),
+        ('shift', 'Shift')
+    ], default="days", tracking=True)
+    factory_day_ids = fields.One2many('resource.calendar.shift', 'shift_id', string='Day Plan', help='Day Plan')
+    normal_day_ids = fields.One2many('resource.calendar.shift', 'shift_id', 'Workings Time')
 
 
 class HrEmployeeDayPlan(models.Model):
     """Ээлжээр ажиллах мастер өгөгдлийн тухайн өдрийн мэдээлэл хадгалах хүснэгт"""
 
-    _name = 'hr.employee.shift.dayplan'
+    _name = 'resource.calendar.shift'
     _description = 'HR Employee Shift Day Plan'
 
-    shift_id = fields.Many2one('hr.employee.shift', string="Shift", help='Shift', invisible=1)
-    start_date = fields.Date(string="Start Date", tracking=True)
-    end_date = fields.Date(string="End Date", tracking=True)
-    work_type = fields.Selection([
-        ('day', 'Day'),
-        ('night', 'Night')
-    ], default="day", tracking=True)
+    shift_id = fields.Many2one('resource.calendar', string="Shift", help='Shift', invisible=1, ondelete='cascade')
+
+    name = fields.Char(required=True)
+    week_day = fields.Selection([
+        ('0', 'Monday'),
+        ('1', 'Tuesday'),
+        ('2', 'Wednesday'),
+        ('3', 'Thursday'),
+        ('4', 'Friday'),
+        ('5', 'Saturday'),
+        ('6', 'Sunday')
+        ], 'Day of Week', required=True, index=True, default='0')
+    day_period = fields.Many2one('resource.calendar.dayperiod', string="Day Period", help="Day Period of Work")
+
+    lunch_time_from = fields.Float(string='Lunch time from', required=True)
+    lunch_time_to = fields.Float(string='Lunch time to', required=True)
+
+    start_work = fields.Float(string="Start Work", required=True, help="Start Work")
+    end_work = fields.Float(string="End Work", required=True, help="End Work")
+
+class HrEmployeeDayPeriod(models.Model):
+    """Ээлжийн төлөв хадгалах хүснэгт"""
+
+    _name = 'resource.calendar.dayperiod'
+
+    name = fields.Char(string="Day Period")

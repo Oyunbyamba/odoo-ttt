@@ -22,10 +22,11 @@
     'application': True,
 
     # any module necessary for this one to work correctly
-    'depends': ['base'],
+    'depends': ['base', 'hr', 'resource'],
 
     # always loaded
     'data': [
+        'data/data.xml',
         'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
