@@ -67,9 +67,8 @@
 
         <xpath expr="//page[@name='public']/div/div/group[1]" position="after">
           <group name="create_contract" string="Contract">
-            <field name="contract_ids" attrs="{'invisible': 1}"/>
             <field name="create_contract"/>
-            <field name="contract_signed_date" attrs="{'invisible': [('create_contract', '=', [0])]}"/>
+            <field name="contract_signed_date" attrs="{'invisible': [('create_contract', '=', 0)]}"/>
           </group>
         </xpath>
 

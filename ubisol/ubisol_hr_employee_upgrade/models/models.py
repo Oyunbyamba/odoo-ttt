@@ -61,6 +61,7 @@ class HrEmployee(models.Model):
     size_of_shoes = fields.Char(string='The size of shoes')
     create_contract = fields.Boolean(string='Create contract')
     contract_ids = fields.One2many('hr.contract', 'employee_id', string='Contract')
+    contract_signed_date = fields.Date(string="Contract signed date")
 
     @api.onchange('spouse_complete_name', 'spouse_birthdate')
     def onchange_spouse(self):
@@ -76,20 +77,36 @@ class HrEmployee(models.Model):
             }))
         self.fam_ids = [(6, 0, 0)] + lines_info  
         
-    @api.onchange('contract_signed_date')
-    def onchange_create_signed_date(self):
-        contract = []
-        contract_signed_date = self.contract_signed_date
-        if contract_signed_date:
-            contract = {
+    @api.model
+    def create(self, vals):
+        employee = super(HrEmployee, self).create(vals)
+        contract_values = []
+        if employee.contract_signed_date:
+                contract_values.append({
+                    'name': self.name,
+                    'employee_id': self.id,
+                    'date_start': self.contract_signed_date,
+                    'department_id': self.department_id.id,
+                    'job_id': self.job_id.id,
+                    'wage': 0
+                })
+                self.env['hr.contract'].create(contract_values)
+        return employee
+
+    def write(self, vals):
+        employee = super(HrEmployee, self).write(vals)
+        contract_values = []
+        if self.contract_signed_date and self.create_contract:           
+            contract_values.append({
                 'name': self.name,
                 'employee_id': self.id,
-                'department_id': self.department_id,
-                'date_start': contract_signed_date,
-                'state': 'open',
-                'kanban_state': 'done',
-            }
-        self.contract_ids = contract
+                'date_start': self.contract_signed_date,
+                'department_id': self.department_id.id,
+                'job_id': self.job_id.id,
+                'wage': 0
+            })
+            self.env['hr.contract'].create(contract_values)
+        return employee    
 
 class EmployeeRelationInfo(models.Model):
     """Table for keep employee family information"""
