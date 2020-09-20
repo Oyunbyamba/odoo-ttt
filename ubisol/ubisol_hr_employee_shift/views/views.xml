@@ -2,7 +2,7 @@
   <data>
     <!-- explicit list view definition -->
 
-    <record id="employee_form_inherited" model="ir.ui.view">
+    <!-- <record id="employee_form_inherited" model="ir.ui.view">
       <field name="name">hr.employee.resource</field>
       <field name="model">hr.employee</field>
       <field name="inherit_id" ref="hr.view_employee_form"/>
@@ -10,6 +10,24 @@
           <xpath expr="//page[@name='public']//field[@name='resource_calendar_id']" position="replace">
               <field name="resource_calendar_ids"/>
           </xpath>
+      </field>
+    </record> -->
+
+    <record id="hr_employee_shift_form" model="ir.ui.view">
+      <field name="name">hr.employee.shift</field>
+      <field name="model">hr.employee.shift</field>
+      <field name="arch" type="xml">
+        <form string="shifts">
+          <sheet>
+            <group col="4">
+              <field name="name"/>
+              <field name="assign_type"/>
+              <field name="hr_department" attrs="{'invisible':[('assign_type', '!=', 'department')]}"/>
+              <field name="hr_employee" attrs="{'invisible':[('assign_type', '!=', 'employee')]}"/>
+              <field name="resource_calendar_ids"/>
+            </group>
+          </sheet>
+        </form>
       </field>
     </record>
 
@@ -24,7 +42,7 @@
             </group>
           </xpath>
           <xpath expr="//notebook" position="replace">
-              <group string="Shift Schedule" attrs="{'invisible':[('shift_type', '=', 'days')]}">
+              <group string="Shift Schedule" attrs="{'invisible':[('shift_type', '!=', 'shift')]}">
                 <field name="factory_day_ids" nolabel="1">
                     <tree editable="bottom">
                       <field name="name"/>
@@ -36,7 +54,7 @@
                     </tree>
                 </field>
               </group>
-              <group string="Days Schedule" attrs="{'invisible':[('shift_type', '=', 'shift')]}">
+              <group string="Days Schedule" attrs="{'invisible':[('shift_type', '!=', 'days')]}">
                 <field name="normal_day_ids" nolabel="1">
                     <tree editable="bottom">
                       <field name="name"/>
@@ -55,8 +73,8 @@
 
     <!-- actions opening views on models -->
 
-    <record model="ir.actions.act_window" id="ubisol_hr_employee_shift.action_window">
-      <field name="name">Employee Shifts</field>
+    <record model="ir.actions.act_window" id="ubisol_hr_employee_shift.action_window_calendar">
+      <field name="name">Shift Template</field>
       <field name="res_model">resource.calendar</field>
       <field name="view_mode">kanban,tree,form</field>
       <field name="view_id" eval="False"/>
@@ -64,6 +82,17 @@
       <field name="help" type="html">
         <p class="oe_view_nocontent_create">
           Define working hours and time table that could be scheduled to your project members
+        </p>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="ubisol_hr_employee_shift.action_window_shift">
+      <field name="name">Employee Shifts</field>
+      <field name="res_model">hr.employee.shift</field>
+      <field name="view_mode">tree,form</field>
+      <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+          Click here to configure new periodic reminder.
         </p>
       </field>
     </record>
@@ -95,13 +124,15 @@
 
     <!-- menu categories -->
 
-    <menuitem name="Menu 1" id="ubisol_hr_employee_shift.menu_1" parent="ubisol_hr_employee_shift.employee_shift"/>
-    <menuitem name="Menu 2" id="ubisol_hr_employee_shift.menu_2" parent="ubisol_hr_employee_shift.employee_shift"/>
+    <menuitem name="Shifts" id="ubisol_hr_employee_shift.shifts" parent="ubisol_hr_employee_shift.employee_shift"
+              action="ubisol_hr_employee_shift.action_window_shift"/>
+    <menuitem name="Configure" id="ubisol_hr_employee_shift.configure" parent="ubisol_hr_employee_shift.employee_shift"
+              action="ubisol_hr_employee_shift.action_window_calendar"/>
 
     <!-- actions -->
 
-    <menuitem name="List" id="ubisol_hr_employee_shift.menu_1_list" parent="ubisol_hr_employee_shift.menu_1"
-              action="ubisol_hr_employee_shift.action_window"/>
+    <!-- <menuitem name="List" id="ubisol_hr_employee_shift.menu_1_list" parent="ubisol_hr_employee_shift.menu_1"
+              action="ubisol_hr_employee_shift.action_window"/> -->
     <!-- <menuitem name="Server to list" id="ubisol_hr_employee_shift" parent="ubisol_hr_employee_shift.menu_2"
               action="ubisol_hr_employee_shift.action_server"/> -->
 
