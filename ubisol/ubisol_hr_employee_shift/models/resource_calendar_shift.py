@@ -2,9 +2,6 @@
 
 from odoo import models, fields, api
 
-class HrEmployeeInherited(models.Model):
-    _inherit = 'hr.employee'
-
 class ResourceCalendarShift(models.Model):
     """Ээлжээр ажиллах мастер өгөгдөл хадгалах хүснэгт"""
     _inherit = 'resource.calendar'
@@ -14,6 +11,7 @@ class ResourceCalendarShift(models.Model):
         ('days', 'Days'),
         ('shift', 'Shift')
     ], default="days", tracking=True)
+    color = fields.Integer(string='Color Index', help="Color")
     factory_day_ids = fields.One2many('resource.calendar.shift', 'shift_id', string='Day Plan', help='Day Plan')
     normal_day_ids = fields.One2many('resource.calendar.shift', 'shift_id', 'Workings Time')
 

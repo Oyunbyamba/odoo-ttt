@@ -15,8 +15,9 @@
                         </div>
                         <p class="text-center">ТОДОРХОЙЛОЛТ</p>
                         <div class="col-12">
-                            <t t-esc="employee.job_id.name"/> <t t-esc="employee.surname"/> овогтой <t t-esc="employee.name"/> нь
-                            <t t-esc="employee.contract_id.wage"/> төгрөгийн үндсэн болон нэмэгдэл цалинтай ажилладаг болно.
+                            <t t-esc="employee.surname"/> овогтой <t t-esc="employee.name"/> нь <t t-esc="employee.company_id.name"/> ХХК-д
+                            <t t-esc="employee.job_id.name"/> албан тушаалтай <t t-esc="employee.contract_id.wage"/> төгрөгийн үндсэн болон нэмэгдэл цалинтай 
+                            ажилладаг нь үнэн болно.
                         </div>
                     </div>
                 </t>

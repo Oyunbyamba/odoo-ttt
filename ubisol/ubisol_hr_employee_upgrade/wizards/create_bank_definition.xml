@@ -7,9 +7,9 @@
          <field name="arch" type="xml">
             <form string="Create Bank definition">
                 <group>
-                    <field name="employee_id"/>
-                    <field name="organization_name"/>
-                    <field name="get_definition_date"/>
+                    <!-- <field name="employee_id"/> -->
+                    <field name="bank_name"/>
+                    <!-- <field name="get_definition_date"/> -->
                 </group>
                 <footer>
                     <button name="print_report" string="Print" type="object" class="btn-primary"/>
@@ -26,6 +26,8 @@
         <field name="view_mode">form</field>
         <field name="view_id" ref="create_bank_definition_form"/>
         <field name="target">new</field>
+        <field name="binding_model_id" ref="hr.model_hr_employee" />
+        <field name="binding_type">report</field>
     </record>
 
 </odoo>
