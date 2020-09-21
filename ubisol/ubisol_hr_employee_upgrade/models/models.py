@@ -62,6 +62,7 @@ class HrEmployee(models.Model):
     create_contract = fields.Boolean(string='Create contract')
     contract_ids = fields.One2many('hr.contract', 'employee_id', string='Contract')
     contract_signed_date = fields.Date(string="Contract signed date")
+    years_of_civil_service = fields.Integer(string='Years')
 
     @api.onchange('spouse_complete_name', 'spouse_birthdate')
     def onchange_spouse(self):
@@ -90,22 +91,33 @@ class HrEmployee(models.Model):
                     'job_id': self.job_id.id,
                     'wage': 0
                 })
-                self.env['hr.contract'].create(contract_values)
+                hr_contract = self.env['hr.contract'].create(contract_values)
+                hr_contract.write({'state': 'open', 'kanban_state': 'done'})
         return employee
 
     def write(self, vals):
         employee = super(HrEmployee, self).write(vals)
         contract_values = []
-        if self.contract_signed_date and self.create_contract:           
-            contract_values.append({
-                'name': self.name,
-                'employee_id': self.id,
-                'date_start': self.contract_signed_date,
-                'department_id': self.department_id.id,
-                'job_id': self.job_id.id,
-                'wage': 0
-            })
-            self.env['hr.contract'].create(contract_values)
+        if(self.contract_id.id == 0): 
+            if self.contract_signed_date and self.create_contract:           
+                contract_values.append({
+                    'name': self.name,
+                    'employee_id': self.id,
+                    'date_start': self.contract_signed_date,
+                    'department_id': self.department_id.id,
+                    'job_id': self.job_id.id,
+                    'wage': 0
+                })
+                hr_contract = self.env['hr.contract'].create(contract_values)
+                hr_contract.write({'state': 'open', 'kanban_state': 'done'})
+                self.contract_id = hr_contract.id
+        else:
+            if self.contract_signed_date:           
+                prev_hr_contract = self.env['hr.contract'].browse(self.contract_id.id)
+                prev_hr_contract.name = self.name
+                prev_hr_contract.date_start = self.contract_signed_date
+                prev_hr_contract.department_id = self.department_id.id
+                prev_hr_contract.job_id = self.job_id.id
         return employee    
 
 class EmployeeRelationInfo(models.Model):
