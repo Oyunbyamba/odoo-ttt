@@ -1,7 +1,7 @@
 <odoo>
   <data>
     <!-- explicit list view definition -->
-    
+
     <record id="hr_employee_shift_form" model="ir.ui.view">
       <field name="name">hr.employee.shift</field>
       <field name="model">hr.employee.shift</field>
@@ -40,11 +40,11 @@
             </group>
           </xpath>
           <xpath expr="//notebook" position="replace">
-              <group string="Shift Schedule" attrs="{'invisible':[('shift_type', '!=', 'shift')]}">
+              <group string="Days Schedule" attrs="{'invisible':[('shift_type', '!=', 'days')]}">
                 <field name="factory_day_ids" nolabel="1">
                     <tree editable="bottom">
                       <field name="name"/>
-                      <field name="day_period"/>
+                      <field name="week_day"/>
                       <field name="start_work" widget="float_time"/>
                       <field name="end_work" widget="float_time"/>
                       <field name="lunch_time_from" widget="float_time"/>
@@ -52,11 +52,11 @@
                     </tree>
                 </field>
               </group>
-              <group string="Days Schedule" attrs="{'invisible':[('shift_type', '!=', 'days')]}">
+              <group string="Shift Schedule" attrs="{'invisible':[('shift_type', '!=', 'shift')]}">
                 <field name="normal_day_ids" nolabel="1">
                     <tree editable="bottom">
                       <field name="name"/>
-                      <field name="week_day"/>
+                      <field name="day_period"/>
                       <field name="start_work" widget="float_time"/>
                       <field name="end_work" widget="float_time"/>
                       <field name="lunch_time_from" widget="float_time"/>
@@ -108,44 +108,42 @@
       </field>
     </record>
 
-    <record id="hr_employee_shift_template_kanban_view" model="ir.ui.view">
-      <field name="name">hr.employee.shift.kanban</field>
-      <field name="model">hr.employee.shift</field>
-      <field name="arch" type="xml">
-        <kanban class="oe_background_grey o_kanban_dashboard o_shift_kanban">
-          <field name="color"/>
-          <templates>
-            <t t-name="kanban-box">
-              <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card oe_kanban_global_click ">
-                <div class="o_dropdown_kanban dropdown">
-                    <a class="dropdown-toggle btn" data-toggle="dropdown" href="#" >
-                      <span class="fa fa-bars fa-lg"/>
-                    </a>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                      <t t-if="widget.editable"><li><a type="edit">Edit</a></li></t>
-                      <t t-if="widget.deletable"><li><a type="delete">Delete</a></li></t>
-                      <li><ul class="oe_kanban_colorpicker" data-field="color"/></li>
-                    </ul>
-                </div>
-                <div class="oe_kanban_content">
-                  <div class="row">
-                    <div class="o_primary style_shift">
-                      <div class="text-center"><span style="margin-left:25px;"><strong><field name="name"/></strong></span></div>
-                    </div>
-                  </div>
-                </div>
-                <div class="oe_kanban_details">
-                  <strong>
-                    <div class="text-center">
-                      <span t-if="record.hr_department.value">[<field name="hr_department"/>]</span>
-                    </div>
-                  </strong>
-                </div>
-              </div>
-            </t>
-          </templates>
-        </kanban>
-      </field>
+    <record id="hr_employee_schedule_timeline" model="ir.ui.view">
+        <field name="model">hr.employee.schedule</field>
+        <field name="type">timeline</field>
+        <field name="arch" type="xml">
+            <timeline
+                date_start="work_day"
+                date_stop="work_day"
+                default_group_by="hr_department"
+                event_open_popup="true"
+            >
+                <field name="hr_employee" />
+                <field name="day_period" />
+                <templates>
+                    <t t-name="timeline-item">
+                        <div class="o_project_timeline_item">
+                            <!-- <img
+                                t-if="record.hr_employee"
+                                t-attf-src="/web/image/res.users/#{record.hr_employee[0]}/image_128/16x16"
+                                t-att-title="record.hr_employee[1]"
+                                width="16"
+                                height="16"
+                                class="mr8"
+                            /> -->
+                            <span name="display_name">
+                                <t t-esc="record.day_period[1]" />
+                            </span>
+                            <!-- <small name="day_period" class="text-info ml4">
+                                <t
+                                    t-esc="field_utils.format.float_time(record.day_period)"
+                                />
+                            </small> -->
+                        </div>
+                    </t>
+                </templates>
+            </timeline>
+        </field>
     </record>
 
     <!-- actions opening views on models -->
@@ -166,7 +164,18 @@
     <record model="ir.actions.act_window" id="ubisol_hr_employee_shift.action_window_shift">
       <field name="name">Employee Shifts</field>
       <field name="res_model">hr.employee.shift</field>
-      <field name="view_mode">kanban,tree,form</field>
+      <field name="view_mode">tree,form</field>
+      <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+          Click here to configure new periodic reminder.
+        </p>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="ubisol_hr_employee_shift.action_window_schedule">
+      <field name="name">Employee Shift Schedules</field>
+      <field name="res_model">hr.employee.schedule</field>
+      <field name="view_mode">timeline</field>
       <field name="help" type="html">
           <p class="oe_view_nocontent_create">
           Click here to configure new periodic reminder.
@@ -196,15 +205,17 @@
       name="Employee Shifts" 
       id="ubisol_hr_employee_shift.employee_shift" 
       groups="hr.group_hr_manager" 
-      sequence="0"
+      sequence="10"
     />
 
     <!-- menu categories -->
 
+    <menuitem name="Schedules" id="ubisol_hr_employee_shift.schedules" parent="ubisol_hr_employee_shift.employee_shift"
+              action="ubisol_hr_employee_shift.action_window_schedule" sequence="0"/>
     <menuitem name="Shifts" id="ubisol_hr_employee_shift.shifts" parent="ubisol_hr_employee_shift.employee_shift"
-              action="ubisol_hr_employee_shift.action_window_shift"/>
+              action="ubisol_hr_employee_shift.action_window_shift" sequence="1"/>
     <menuitem name="Configure" id="ubisol_hr_employee_shift.configure" parent="ubisol_hr_employee_shift.employee_shift"
-              action="ubisol_hr_employee_shift.action_window_calendar"/>
+              action="ubisol_hr_employee_shift.action_window_calendar" sequence="2"/>
 
     <!-- actions -->
 
