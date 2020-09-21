@@ -59,21 +59,22 @@ class HrEmployeeShift(models.Model):
                             schedule_dict['work_day'] = dates_btwn.date()
                             schedule_dict['hr_employee_shift'] = shift.id
                             schedule_dict['hr_employee_shift_template'] = shift_template.id
-                            schedule_dict['hr_employee_shift_dayplan'] = day_ids[counter].id
+                            schedule_dict['hr_employee_shift_dayplan'] = day.id
                             schedule_dict['shift_type'] = shift_template.shift_type
                             # schedule_dict['week_day'] = day.week_day
-                            schedule_dict['day_period'] = day_ids[counter].day_period.id
-                            schedule_dict['lunch_time_from'] = day_ids[counter].lunch_time_from
-                            schedule_dict['lunch_time_to'] = day_ids[counter].lunch_time_to
-                            schedule_dict['start_work'] = day_ids[counter].start_work
-                            schedule_dict['end_work'] = day_ids[counter].end_work
+                            schedule_dict['day_period'] = day.day_period.id
+                            schedule_dict['lunch_time_from'] = day.lunch_time_from
+                            schedule_dict['lunch_time_to'] = day.lunch_time_to
+                            schedule_dict['start_work'] = day.start_work
+                            schedule_dict['end_work'] = day.end_work
                             schedule = self.env['hr.employee.schedule'].create(schedule_dict)
                             print(schedule)
                             counter = counter + 1
+                        break
                     else:
                         inside_counter = inside_counter + 1
-            if counter > total_len:
-                counter = 0
+                if counter > total_len:
+                    counter = 0
             dates_btwn = dates_btwn + relativedelta(days=1) 
 
         return shift
