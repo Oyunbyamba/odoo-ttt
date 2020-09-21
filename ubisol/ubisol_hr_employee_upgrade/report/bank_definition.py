@@ -12,10 +12,10 @@ class ReportDefinitionPdf(models.AbstractModel):
         if not data.get('form'):
             raise UserError(_("Form content is missing, this report cannot be printed."))
         
-        docs = self.env['create.bank_definition'].browse(data['form']['id'])    
-        employee = self.env['hr.employee'].browse(data['form']['employee_id'][0])
+        # docs = self.env['create.bank_definition'].browse(data['form']['id'])    
+        employee = self.env['hr.employee'].browse(data['employee'])
         return {
             'doc_model': 'hr.employee',
-            'organization_name': str(data['form']['organization_name']).upper(),
+            'organization_name': str(data['form']['bank_name'][1]).upper(),
             'employee': employee,
         }

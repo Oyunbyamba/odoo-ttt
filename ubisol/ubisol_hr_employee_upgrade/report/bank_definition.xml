@@ -13,10 +13,11 @@
                             <br/><br/><br/><br/>
                             <br/><br/>
                         </div>
-                        <p class="text-center"><t t-esc="organization_name"/></p>
+                        <p class="text-center">"<t t-esc="organization_name"/>"-д</p>
                         <div class="col-12">
-                            <t t-esc="e.job_id.name"/> <t t-esc="e.surname"/> овогтой <t t-esc="e.name"/> нь
-                            <t t-esc="e.contract_id.wage"/> төгрөгийн үндсэн болон нэмэгдэл цалинтай ажилладаг болно.
+                            <t t-esc="e.surname"/> овогтой <t t-esc="e.name"/> нь <t t-esc="e.company_id.name"/> ХХК-д
+                            <t t-esc="e.job_id.name"/> албан тушаалтай <t t-esc="e.contract_id.wage"/> төгрөгийн үндсэн болон нэмэгдэл цалинтай 
+                            ажилладаг нь үнэн болно.
                         </div>
                     </div>
                 </t>
