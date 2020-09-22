@@ -147,8 +147,8 @@
       </field>
     </record>
 
-    <!-- <menuitem id="create_bank_definition" name="Create Bank definition" parent="hr.menu_hr_root" sequence="5"
-        groups="hr.group_hr_manager" action="create_bank_definition_wizard"/> -->
+    <menuitem id="create_bank_definition" name="Create Bank definition" parent="hr.menu_hr_root" sequence="5"
+        groups="hr.group_hr_manager" action="create_bank_definition_wizard"/>
 
   </data>
 </odoo>
