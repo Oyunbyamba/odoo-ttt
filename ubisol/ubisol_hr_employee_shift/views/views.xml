@@ -134,9 +134,14 @@
                             <span name="display_name">
                                 <t t-esc="record.day_period[1]" />
                             </span>
-                            <!-- <small name="day_period" class="text-info ml4">
+                            <!-- <small name="start_work" class="text-info ml4">
                                 <t
-                                    t-esc="field_utils.format.float_time(record.day_period)"
+                                    t-esc="field_utils.format.float_time(record.start_work)"
+                                />
+                            </small>
+                            <small name="end_work" class="text-info ml4">
+                                <t
+                                    t-esc="field_utils.format.float_time(record.end_work)"
                                 />
                             </small> -->
                         </div>

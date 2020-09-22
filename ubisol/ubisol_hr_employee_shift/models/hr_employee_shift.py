@@ -30,7 +30,8 @@ class HrEmployeeShift(models.Model):
             day_ids = shift_template.normal_day_ids
         else:
             day_ids = shift_template.factory_day_ids
-            total_len = len(day_ids)
+            total_len = len(day_ids) - 1
+            print('total_len: ' + str(total_len))
             counter = 0
 
         if vals.get('hr_department') == False:
@@ -68,11 +69,11 @@ class HrEmployeeShift(models.Model):
                             schedule_dict['start_work'] = day.start_work
                             schedule_dict['end_work'] = day.end_work
                             schedule = self.env['hr.employee.schedule'].create(schedule_dict)
-                            print(schedule)
+                            print('counter: ' + str(counter))
                             counter = counter + 1
                         break
-                    else:
-                        inside_counter = inside_counter + 1
+                    print('inside_counter: ' + str(inside_counter))
+                    inside_counter = inside_counter + 1
                 if counter > total_len:
                     counter = 0
             dates_btwn = dates_btwn + relativedelta(days=1) 
