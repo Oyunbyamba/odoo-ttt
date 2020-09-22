@@ -1,5 +1,29 @@
 <odoo>
   <data>
+    <record model="ir.ui.view" id="hr_leave_inherit_form_view">
+      <field name="name">hr.leave.view.form</field>
+      <field name="model">hr.leave</field>
+      <field name="inherit_id" ref="hr_holidays.hr_leave_view_form"/>
+      <field name="arch" type="xml">
 
+        <xpath expr="//group/group[1]/field[@name='user_id']" position="after">
+          <div>
+              <label for="years_of_worked_state" string="Улсад ажилласан жил"/>
+              <field name="years_of_worked_state"  class="oe_inline"
+                  attrs="{
+                      'readonly': 1}"/>
+              <label for="years_of_worked_company" string="ТТТ-д ажилласан жил"/>
+              <field name="years_of_worked_company"  class="oe_inline"
+                  attrs="{
+                      'readonly': 1}"/> 
+              <label for="employee_holiday" string="Ээлжийн амралтын хоног"/>
+              <field name="employee_holiday" class="oe_inline"
+                  attrs="{
+                      'readonly': 1}"/>               
+          </div>
+        </xpath>
+        
+      </field>
+    </record>
   </data>
 </odoo>

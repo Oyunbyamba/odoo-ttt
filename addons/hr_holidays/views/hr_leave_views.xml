@@ -220,7 +220,6 @@
                 </div>
                 <group>
                     <group>
-
                         <label for="request_date_from" string="From"/>
                         <div>
                             <field name="date_from" invisible="1"/>
