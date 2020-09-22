@@ -113,30 +113,38 @@
         <field name="type">timeline</field>
         <field name="arch" type="xml">
             <timeline
-                date_start="work_day"
-                date_stop="work_day"
+                date_start="start_work"
+                date_stop="end_work"
                 default_group_by="hr_department"
                 event_open_popup="true"
+                zoomKey="ctrlKey"
             >
                 <field name="hr_employee" />
                 <field name="day_period" />
                 <templates>
                     <t t-name="timeline-item">
                         <div class="o_project_timeline_item">
-                            <!-- <img
+                            <img
                                 t-if="record.hr_employee"
                                 t-attf-src="/web/image/res.users/#{record.hr_employee[0]}/image_128/16x16"
-                                t-att-title="record.hr_employee[1]"
+                                t-att-title="record.hr_employee[0]"
                                 width="16"
                                 height="16"
                                 class="mr8"
-                            /> -->
+                            />
+                            <t t-esc="record.hr_employee[1]" />
+                            <br/>
                             <span name="display_name">
                                 <t t-esc="record.day_period[1]" />
                             </span>
-                            <!-- <small name="day_period" class="text-info ml4">
+                            <!-- <small name="start_work" class="text-info ml4">
                                 <t
-                                    t-esc="field_utils.format.float_time(record.day_period)"
+                                    t-esc="field_utils.format.float_time(record.start_work)"
+                                />
+                            </small>
+                            <small name="end_work" class="text-info ml4">
+                                <t
+                                    t-esc="field_utils.format.float_time(record.end_work)"
                                 />
                             </small> -->
                         </div>
