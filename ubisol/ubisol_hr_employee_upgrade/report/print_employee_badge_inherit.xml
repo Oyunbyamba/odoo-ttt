@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="print_employee_badge_inherit" inherit_id="hr.print_employee_badge">
+        <xpath expr="//div[@class='col-md-6']" position="replace">
+            <div class="col-md-6">
+                <img src='/ubisol_hr_employee_upgrade/static/src/img/front' style="max-height:100%;max-width:100%" alt="front"/>
+            </div>
+            <div class="col-md-6">
+                <img src='/ubisol_hr_employee_upgrade/static/src/img/back' style="max-height:100%;max-width:100%" alt="back"/>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>
