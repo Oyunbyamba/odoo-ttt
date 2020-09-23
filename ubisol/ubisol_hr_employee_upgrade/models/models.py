@@ -80,8 +80,6 @@ class HrEmployee(models.Model):
 
     @api.onchange('parent_id')
     def onchange_parent_id(self):
-        print('____parent id______')
-        print(self.parent_id.user_id)
         if(self.parent_id.user_id):
             self.leave_manager_id = self.parent_id.user_id
         else:
