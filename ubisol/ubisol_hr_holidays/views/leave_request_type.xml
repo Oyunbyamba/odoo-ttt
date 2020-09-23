@@ -7,11 +7,18 @@
       <field name="arch" type="xml">
 
         <xpath expr="//group[@name='notification']" position="before">
-          <group name="unpaid" string="Unpaid">
+          <group name="unpaid" string="Цалингүй">
               <field name="unpaid"/>
+          </group>
+          <group name="vacation" string="Ээлжийн амралт">
+              <field name="vacation"/>
           </group>
         </xpath>
         
+        <xpath expr="//field[@name='request_unit']" position="after">
+          <field name="one_step_days"/>
+        </xpath>
+
       </field>
     </record>
   </data>
