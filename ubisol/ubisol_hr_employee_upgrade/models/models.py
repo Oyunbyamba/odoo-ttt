@@ -77,6 +77,15 @@ class HrEmployee(models.Model):
                 'birth_date': date,
             }))
         self.fam_ids = [(6, 0, 0)] + lines_info  
+
+    @api.onchange('parent_id')
+    def onchange_parent_id(self):
+        print('____parent id______')
+        print(self.parent_id.user_id)
+        if(self.parent_id.user_id):
+            self.leave_manager_id = self.parent_id.user_id
+        else:
+           self.leave_manager_id = 0   
         
     @api.model
     def create(self, vals):
