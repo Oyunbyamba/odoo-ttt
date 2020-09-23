@@ -5,6 +5,7 @@
         string="Print Badge"
         model="hr.employee"
         report_type="qweb-pdf"
+        menu="False"
         name="hr.print_employee_badge"
         file="hr.print_employee_badge"
         print_report_name="'Print Badge - %s' % (object.name).replace('/', '')"

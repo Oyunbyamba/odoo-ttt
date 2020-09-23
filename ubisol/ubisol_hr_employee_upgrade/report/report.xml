@@ -71,6 +71,33 @@
         <field name="dpi">90</field>
     </record>
 
+    <record id="badge_paperformat" model="report.paperformat">
+        <field name="name">Badge</field>
+        <field name="default" eval="True"/>
+        <field name="format">custom</field>
+        <field name="page_height">213</field>
+        <field name="page_width">130</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">0</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <report
+        id="hr_employee_print_badge_inherit"
+        string="Print Badge"
+        model="hr.employee"
+        report_type="qweb-pdf"
+        name="ubisol_hr_employee_upgrade.print_employee_badge_inherit"
+        file="ubisol_hr_employee_upgrade.print_employee_badge_inherit"
+        print_report_name="'Print Badge - %s' % (object.name).replace('/', '')"
+        paperformat="ubisol_hr_employee_upgrade.badge_paperformat"
+    />
+
     <!--    # Salary specification report    -->
     <report
         id="salary_specification_report_pdf"
