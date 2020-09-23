@@ -31,6 +31,7 @@
         'report/report.xml',
         'report/bank_definition.xml',
         'report/salary_specification.xml',
+        'report/print_employee_badge_inherit.xml',
         'wizards/create_bank_definition.xml',
         'views/hr_resume_views.xml'
     ],
