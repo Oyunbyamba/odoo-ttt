@@ -7,19 +7,30 @@
       <field name="arch" type="xml">
 
         <xpath expr="//group/group[1]/field[@name='user_id']" position="after">
+          <label for="years_of_worked_state" string="Улсад ажилласан жил" attrs="{'invisible': [('holiday_status_id', '!=', 11)]}"/>
           <div>
-              <label for="years_of_worked_state" string="Улсад ажилласан жил"/>
-              <field name="years_of_worked_state"  class="oe_inline"
-                  attrs="{
-                      'readonly': 1}"/>
-              <label for="years_of_worked_company" string="ТТТ-д ажилласан жил"/>
-              <field name="years_of_worked_company"  class="oe_inline"
-                  attrs="{
-                      'readonly': 1}"/> 
-              <label for="employee_holiday" string="Ээлжийн амралтын хоног"/>
-              <field name="employee_holiday" class="oe_inline"
-                  attrs="{
-                      'readonly': 1}"/>               
+              <field name="years_of_worked_state" class="oe_inline" attrs="{
+                'readonly': 1,
+                'invisible': [('holiday_status_id', '!=', 11)]
+                }"/>          
+          </div>
+          <label for="years_of_worked_company" string="Компанид ажилласан жил" attrs="{'invisible': [('holiday_status_id', '!=', 11)]}"/>
+          <div>
+              <field name="years_of_worked_company" class="oe_inline" attrs="{
+                'readonly': 1,
+                'invisible': [('holiday_status_id', '!=', 11)]
+                }"/> 
+              <field name="warning_of_vacation" class="oe_inline" attrs="{
+                'readonly': 1,
+                'invisible': [('holiday_status_id', '!=', 11)]
+                }"/>  
+          </div>
+          <label for="employee_holiday" string="Ээлжийн амралтын хоног" attrs="{'invisible': [('holiday_status_id', '!=', 11)]}"/>
+          <div>
+              <field name="employee_holiday" class="oe_inline" attrs="{
+                'readonly': 1,
+                'invisible': [('holiday_status_id', '!=', 11)]
+                }"/>    
           </div>
         </xpath>
         

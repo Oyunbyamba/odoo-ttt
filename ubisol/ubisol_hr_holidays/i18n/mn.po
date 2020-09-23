@@ -1,0 +1,73 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* ubisol_hr_holidays
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 13.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-09-23 06:27+0000\n"
+"PO-Revision-Date: 2020-09-23 06:27+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: ubisol_hr_holidays
+#: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave_type__one_step_days
+msgid "1 шатлалт чөлөөнд тооцох хоног"
+msgstr ""
+
+#. module: ubisol_hr_holidays
+#: model:ir.model,name:ubisol_hr_holidays.model_hr_leave_type
+msgid "Leave type"
+msgstr "Чөлөөний төрөл"
+
+#. module: ubisol_hr_holidays
+#: model:ir.model,name:ubisol_hr_holidays.model_hr_leave
+msgid "Time Off"
+msgstr "Чөлөө"
+
+#. module: ubisol_hr_holidays
+#: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave__employee_holiday
+msgid "Ажилласан жил"
+msgstr ""
+
+#. module: ubisol_hr_holidays
+#: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave__years_of_worked_company
+msgid "Байгууллагад ажилласан жил"
+msgstr ""
+
+#. module: ubisol_hr_holidays
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.hr_leave_inherit_form_view
+msgid "Компанид ажилласан жил"
+msgstr ""
+
+#. module: ubisol_hr_holidays
+#: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave__years_of_worked_state
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.hr_leave_inherit_form_view
+msgid "Улсад ажилласан жил"
+msgstr ""
+
+#. module: ubisol_hr_holidays
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.hr_leave_type_inherit_form_view
+msgid "Цалингүй"
+msgstr ""
+
+#. module: ubisol_hr_holidays
+#: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave_type__vacation
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.hr_leave_type_inherit_form_view
+msgid "Ээлжийн амралт"
+msgstr ""
+
+#. module: ubisol_hr_holidays
+#: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave__warning_of_vacation
+msgid "Ээлжийн амралт боломжтой эсэх"
+msgstr ""
+
+#. module: ubisol_hr_holidays
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.hr_leave_inherit_form_view
+msgid "Ээлжийн амралтын хоног"
+msgstr ""
