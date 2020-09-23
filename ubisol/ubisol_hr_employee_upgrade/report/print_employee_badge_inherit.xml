@@ -2,12 +2,30 @@
 <odoo>
 
     <template id="print_employee_badge_inherit" inherit_id="hr.print_employee_badge">
-        <xpath expr="//div[@class='col-md-6']" position="replace">
-            <div class="col-md-6">
-                <img src='/ubisol_hr_employee_upgrade/static/src/img/front' style="max-height:100%;max-width:100%" alt="front"/>
+        <xpath expr="//div[@class='page']" position="replace">
+            <div class="page" style="margin-left:-15px !important">
+                <t t-foreach="docs" t-as="employee">
+                    <p style="text-align:center !important;margin-top:170px;font-size: 42px !important;position:absolute !important; display: inline-block; width: 100%">
+                        <b><t t-esc="employee.department_id.name"/></b>
+                    </p>
+                    <p style="text-align:center !important;margin-top:840px;font-size: 42px !important;position:absolute !important; line-height: 45px; display: inline-block; width: 100%">
+                        <b><t t-esc="employee.surname"/> <t t-esc="employee.name"/></b>
+                    </p>
+                    <p style="text-align:center !important;margin-top:952px;font-size: 42px !important;position:absolute !important; display: inline-block; width: 100%; color: white;">
+                        <b><t t-esc="employee.job_id.name"/></b>
+                    </p>
+                    <img 
+                        t-if="employee.image_1920" 
+                        t-att-src="image_data_uri(employee.image_1920)" 
+                        style="margin-left:150px;margin-top:325px;height:352pt !important;width:264pt !important;position:absolute !important"
+                    />
+                    <img src='/ubisol_hr_employee_upgrade/static/src/img/front.png'/>
+                </t>
             </div>
-            <div class="col-md-6">
-                <img src='/ubisol_hr_employee_upgrade/static/src/img/back' style="max-height:100%;max-width:100%" alt="back"/>
+            <div class="page" style="margin-left:-15px !important">
+                <t t-foreach="docs" t-as="employee">
+                    <img src='/ubisol_hr_employee_upgrade/static/src/img/back.png'/>
+                </t>
             </div>
         </xpath>
     </template>
