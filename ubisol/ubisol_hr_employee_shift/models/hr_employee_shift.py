@@ -91,7 +91,7 @@ class HrEmployeeShift(models.Model):
                     inside_counter = 0
                     for day in day_ids:
                         if inside_counter == week_index:
-                            for employee in employees:
+                            for index, employee in enumerate(employees):
                                 schedule_dict = {}
                                 schedule_dict['hr_department'] = vals.get('hr_department')
                                 schedule_dict['hr_employee'] = employee.id
@@ -105,6 +105,8 @@ class HrEmployeeShift(models.Model):
                                 schedule_dict['week_day'] = day.week_day
                                 schedule_dict['lunch_time_from'], schedule_dict['lunch_time_to'] = self._create_datetime(dates_btwn, day.lunch_time_from, day.lunch_time_to)
                                 schedule_dict['start_work'], schedule_dict['end_work'] = self._create_datetime(dates_btwn, day.start_work, day.end_work)
+                                if index == 0:
+                                    schedule_dict['is_main'] = True
                                 self.env['hr.employee.schedule'].create(schedule_dict)
                             break
                         inside_counter = inside_counter + 1
@@ -112,7 +114,7 @@ class HrEmployeeShift(models.Model):
                 inside_counter = 0
                 for day in day_ids:
                     if inside_counter == counter:
-                        for employee in employees:
+                        for index, employee in enumerate(employees):
                             schedule_dict = {}
                             schedule_dict['hr_department'] = vals.get('hr_department')
                             schedule_dict['hr_employee'] = employee.id
@@ -126,8 +128,10 @@ class HrEmployeeShift(models.Model):
                             schedule_dict['day_period'] = day.day_period.id
                             schedule_dict['lunch_time_from'], schedule_dict['lunch_time_to'] = self._create_datetime(dates_btwn, day.lunch_time_from, day.lunch_time_to)
                             schedule_dict['start_work'], schedule_dict['end_work'] = self._create_datetime(dates_btwn, day.start_work, day.end_work)
+                            if index == 0:
+                                schedule_dict['is_main'] = True
                             self.env['hr.employee.schedule'].create(schedule_dict)
-                            counter = counter + 1
+                        counter = counter + 1
                         break
                     inside_counter = inside_counter + 1
                 if counter > total_len:
@@ -177,6 +181,7 @@ class HrEmployeeSchedule(models.Model):
     """Хуваарилсан ээлж"""
     _name = 'hr.employee.schedule'
     _description = 'Hr Employee Schedule'
+    _rec_name = 'hr_department'
 
     hr_department = fields.Many2one('hr.department', string="Department", help="Department")
     hr_employee = fields.Many2one('hr.employee', string="Employee", help="Employee")
@@ -186,6 +191,7 @@ class HrEmployeeSchedule(models.Model):
     date_from = fields.Date(string='Starting Date')
     date_to = fields.Date(string='End Date')
     work_day = fields.Date(string='End Date')
+    is_main = fields.Boolean('Is Main', default=False)
     shift_type = fields.Selection([
         ('days', 'Days'),
         ('shift', 'Shift')

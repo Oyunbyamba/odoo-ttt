@@ -48,3 +48,4 @@ class HrEmployeeDayPeriod(models.Model):
     _name = 'resource.calendar.dayperiod'
 
     name = fields.Char(string="Day Period")
+    is_rest = fields.Boolean(string="Is Rest")
