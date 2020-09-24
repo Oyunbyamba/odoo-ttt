@@ -123,7 +123,7 @@
         <field name="name">hr.employee.schedule</field>
         <field name="model">hr.employee.schedule</field>
         <field name="arch" type="xml">
-            <calendar string="Employee Schedule Calendar" date_start="start_work" date_stop="end_work" color="day_period" mode="month" quick_add="True">
+            <calendar string="Employee Schedule Calendar" date_start="start_work" date_stop="end_work" color="day_period" mode="month" quick_add="False">
                 <field name="hr_department"/>
                 <field name="day_period"/>
             </calendar>
@@ -131,39 +131,32 @@
     </record>
 
     <record id="hr_employee_schedule_timeline" model="ir.ui.view">
-        <field name="model">hr.employee.schedule</field>
-        <field name="type">timeline</field>
-        <field name="arch" type="xml">
-            <timeline
-                date_start="start_work"
-                date_stop="end_work"
-                default_group_by="hr_department"
-                event_open_popup="true"
-                zoomKey="ctrlKey"
-            >
-                <field name="hr_department" />
-                <field name="day_period" />
-                <templates>
-                    <t t-name="timeline-item">
-                        <div class="o_project_timeline_item">
-                            <!-- <img
-                                t-if="record.hr_employee"
-                                t-attf-src="/web/image/res.users/#{record.hr_employee[0]}/image_128/16x16"
-                                t-att-title="record.hr_employee[0]"
-                                width="16"
-                                height="16"
-                                class="mr8"
-                            /> -->
-                            <t t-esc="record.hr_department[1]" />
-                            <br/>
-                            <span name="display_name">
-                                <t t-esc="record.day_period[1]" />
-                            </span>
-                        </div>
-                    </t>
-                </templates>
-            </timeline>
-        </field>
+      <field name="model">hr.employee.schedule</field>
+      <field name="type">timeline</field>
+      <field name="arch" type="xml">
+        <timeline
+          date_start="start_work"
+          date_stop="end_work"
+          mode="month"
+          default_group_by="hr_department"
+          event_open_popup="false"
+          zoomKey="ctrlKey"
+          colors="#f2d096: day_period_int==1; #49beb7: day_period_int==2; #ed8975: day_period_int==3;"
+        >
+          <field name="day_period" />
+          <templates>
+            <t t-name="timeline-item">
+              <div class="o_project_timeline_item">
+                <!-- <t t-esc="record.hr_department[1]" />
+                <br/> -->
+                <span name="display_name">
+                  <t t-esc="record.day_period[1]" />
+                </span>
+              </div>
+            </t>
+          </templates>
+        </timeline>
+      </field>
     </record>
 
     <!--search view for the patient-->
@@ -173,6 +166,8 @@
         <field name="arch" type="xml">
             <search string="Search">
               <filter string="Department" name="is_main" domain="[('is_main', '=', True)]"/>
+              <separator/>
+              <filter string="Амралтын өдөр харуулахгүй" name="is_rest" domain="[('day_period_int', '!=', 3)]"/>
             </search>
         </field>
     </record>
@@ -186,7 +181,7 @@
       <field name="search_view_id" ref="resource.view_resource_calendar_search"/>
       <field name="help" type="html">
         <p class="oe_view_nocontent_create">
-          Define working hours and time table that could be scheduled to your project members
+          Ээлжийн хуваарийн төлөвлөгөө
         </p>
       </field>
     </record>
@@ -196,8 +191,8 @@
       <field name="res_model">hr.employee.shift</field>
       <field name="view_mode">tree,form</field>
       <field name="help" type="html">
-          <p class="oe_view_nocontent_create">
-          Click here to configure new periodic reminder.
+        <p class="oe_view_nocontent_create">
+          Ээлжийн хуваарийн төлөвлөгөө
         </p>
       </field>
     </record>
@@ -206,10 +201,10 @@
       <field name="name">Employee Shift Schedules</field>
       <field name="res_model">hr.employee.schedule</field>
       <field name="view_mode">timeline,calendar,pivot</field>
-      <field name="context">{"search_default_is_main":True}</field>
+      <field name="context">{"search_default_is_main":1, "search_default_is_rest":1}</field>
       <field name="help" type="html">
-          <p class="oe_view_nocontent_create">
-          Click here to configure new periodic reminder.
+        <p class="oe_view_nocontent_create">
+          Ээлжийн хуваарь
         </p>
       </field>
     </record>

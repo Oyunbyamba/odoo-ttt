@@ -126,6 +126,7 @@ class HrEmployeeShift(models.Model):
                             schedule_dict['hr_employee_shift_dayplan'] = day.id
                             schedule_dict['shift_type'] = shift_template.shift_type
                             schedule_dict['day_period'] = day.day_period.id
+                            schedule_dict['day_period_int'] = day.day_period.id
                             schedule_dict['lunch_time_from'], schedule_dict['lunch_time_to'] = self._create_datetime(dates_btwn, day.lunch_time_from, day.lunch_time_to)
                             schedule_dict['start_work'], schedule_dict['end_work'] = self._create_datetime(dates_btwn, day.start_work, day.end_work)
                             if index == 0:
@@ -147,6 +148,11 @@ class HrEmployeeShift(models.Model):
         return shift
 
     def write(self, vals):
+        # if vals.get('hr_department') != False:
+        #     new_mains = self.env['hr.employee.schedule'].search([('is_main', '=', False)])
+        #     for new_main in new_mains:
+        #         new_main.is_main = True
+        #     vals['is_main'] = False
         shift = super(HrEmployeeShift, self).write(vals)
         self.env['hr.employee.schedule'].search([('hr_employee_shift', '=', self.id)]).unlink()
 
@@ -206,6 +212,7 @@ class HrEmployeeSchedule(models.Model):
         ('6', 'Sunday')
         ], 'Day of Week', required=True, index=True, default='0')
     day_period = fields.Many2one('resource.calendar.dayperiod', string="Day Period", help="Day Period of Work")
+    day_period_int = fields.Integer(string='Day Period Integer', help='Day Period of Work')
     lunch_time_from = fields.Datetime(string='Lunch time from', required=True)
     lunch_time_to = fields.Datetime(string='Lunch time to', required=True)
     start_work = fields.Datetime(string="Start Work", required=True, help="Start Work")
