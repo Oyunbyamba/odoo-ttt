@@ -1085,7 +1085,7 @@ msgstr "Ажилтан(ууд)"
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_tree
 #: model_terms:ir.ui.view,arch_db:hr.view_partner_tree2
 msgid "Employees"
-msgstr "Ажилчид"
+msgstr "Хүний нөөц"
 
 #. module: hr
 #: model:ir.actions.act_window,name:hr.open_view_employee_tree

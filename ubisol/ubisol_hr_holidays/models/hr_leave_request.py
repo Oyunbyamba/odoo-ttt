@@ -17,6 +17,7 @@ class UbisolHolidaysRequest(models.Model):
         'Ажилласан жил', compute='_compute_employee_holiday', readonly=True)
     warning_of_vacation = fields.Char(
         'Ээлжийн амралт боломжтой эсэх', compute='_compute_warning_of_vacation', readonly=True)    
+    vacation_type = fields.Boolean('Ээлжийн амралт эсэх', compute='_compute_vacation_type', default=False)    
    
     @api.depends('number_of_days')
     def _compute_number_of_days_display(self):
@@ -31,8 +32,7 @@ class UbisolHolidaysRequest(models.Model):
                 if(holiday.holiday_status_id.unpaid == True):
                     holiday.holiday_status_id = 8
                 else:
-                    holiday.holiday_status_id = 10
-    
+                    holiday.holiday_status_id = 10  
    
     @api.onchange('holiday_status_id')
     def _compute_years_of_worked_state(self):
@@ -78,3 +78,11 @@ class UbisolHolidaysRequest(models.Model):
                     holiday.employee_holiday = 29    
             else:
                 holiday.employee_holiday = 0        
+
+    @api.onchange('holiday_status_id')
+    def _compute_vacation_type(self):
+        for holiday in self:
+            if(holiday.holiday_status_id.vacation == True):
+                holiday.vacation_type = True
+            else: 
+                holiday.vacation_type = False              

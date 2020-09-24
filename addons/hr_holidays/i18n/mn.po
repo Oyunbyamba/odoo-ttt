@@ -1719,7 +1719,7 @@ msgstr "Менежерийн зөвшөөрөл"
 #: model_terms:ir.ui.view,arch_db:hr_holidays.hr_leave_view_form_manager
 #: model_terms:ir.ui.view,arch_db:hr_holidays.hr_leave_view_form_manager_approve
 msgid "Manager's Comment"
-msgstr "Менежерийн сэтгэгдал"
+msgstr "Менежерийн сэтгэгдэл"
 
 #. module: hr_holidays
 #: model:ir.ui.menu,name:hr_holidays.menu_hr_holidays_approvals

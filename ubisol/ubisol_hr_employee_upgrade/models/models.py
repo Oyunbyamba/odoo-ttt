@@ -22,6 +22,7 @@ class HrEmployeeFamilyInfo(models.Model):
     birth_place = fields.Many2one('res.country.state', string="Birth place")
     current_job = fields.Char(string='Current job')
     address_id = fields.Many2one('res.partner', string='Address')
+   
 
 class HrEmployee(models.Model):
     _inherit = 'hr.employee'
@@ -63,6 +64,8 @@ class HrEmployee(models.Model):
     contract_ids = fields.One2many('hr.contract', 'employee_id', string='Contract')
     contract_signed_date = fields.Date(string="Contract signed date")
     years_of_civil_service = fields.Integer(string='Years')
+    latitude = fields.Char('Latitude')
+    longitude = fields.Char('Longitude')
 
     @api.onchange('spouse_complete_name', 'spouse_birthdate')
     def onchange_spouse(self):
