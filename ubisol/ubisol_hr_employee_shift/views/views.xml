@@ -1,7 +1,7 @@
 <odoo>
   <data>
-    <!-- explicit list view definition -->
 
+    <!-- explicit list view definition -->
     <record id="hr_employee_shift_form" model="ir.ui.view">
       <field name="name">hr.employee.shift</field>
       <field name="model">hr.employee.shift</field>
@@ -37,6 +37,15 @@
             <group>
               <field name="shift_type" style="height:30px;width:200px;font-size:16;"/>
               <field name="color" invisible="1"/>
+            </group>
+            <group colspan="1" string="Амралтын өдрийн цагийн хуваарь" attrs="{'invisible':[('shift_type', '!=', 'shift')]}">
+              <div class="oe_inline">
+                Амралтын өдөр
+                <field nolabel="1" name="weekend_time" style="width: auto" widget="float_time"/>
+                цагийн
+                <field nolabel="1" name="weekend_time_type" style="width: auto"/>
+                ажил эхлэнэ.
+              </div>
             </group>
           </xpath>
           <xpath expr="//notebook" position="replace">
@@ -108,54 +117,71 @@
       </field>
     </record>
 
-    <record id="hr_employee_schedule_timeline" model="ir.ui.view">
+    <record id="hr_employee_schedule_pivot" model="ir.ui.view">
+        <field name="name">hr.employee.schedule</field>
         <field name="model">hr.employee.schedule</field>
-        <field name="type">timeline</field>
         <field name="arch" type="xml">
-            <timeline
-                date_start="start_work"
-                date_stop="end_work"
-                default_group_by="hr_department"
-                event_open_popup="true"
-                zoomKey="ctrlKey"
-            >
-                <field name="hr_employee" />
-                <field name="day_period" />
-                <templates>
-                    <t t-name="timeline-item">
-                        <div class="o_project_timeline_item">
-                            <img
-                                t-if="record.hr_employee"
-                                t-attf-src="/web/image/res.users/#{record.hr_employee[0]}/image_128/16x16"
-                                t-att-title="record.hr_employee[0]"
-                                width="16"
-                                height="16"
-                                class="mr8"
-                            />
-                            <t t-esc="record.hr_employee[1]" />
-                            <br/>
-                            <span name="display_name">
-                                <t t-esc="record.day_period[1]" />
-                            </span>
-                            <!-- <small name="start_work" class="text-info ml4">
-                                <t
-                                    t-esc="field_utils.format.float_time(record.start_work)"
-                                />
-                            </small>
-                            <small name="end_work" class="text-info ml4">
-                                <t
-                                    t-esc="field_utils.format.float_time(record.end_work)"
-                                />
-                            </small> -->
-                        </div>
-                    </t>
-                </templates>
-            </timeline>
+            <pivot string="Employee Schedule">
+                <field name="hr_department" type="row"/>
+                <field name="start_work" type="col" interval="day"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="hr_employee_schedule_calendar" model="ir.ui.view">
+        <field name="name">hr.employee.schedule</field>
+        <field name="model">hr.employee.schedule</field>
+        <field name="arch" type="xml">
+            <calendar string="Employee Schedule Calendar" date_start="start_work" date_stop="end_work" color="day_period" mode="month" quick_add="False">
+                <field name="hr_department"/>
+                <field name="day_period"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="hr_employee_schedule_timeline" model="ir.ui.view">
+      <field name="model">hr.employee.schedule</field>
+      <field name="type">timeline</field>
+      <field name="arch" type="xml">
+        <timeline
+          date_start="start_work"
+          date_stop="end_work"
+          mode="month"
+          default_group_by="hr_department"
+          event_open_popup="true"
+          zoomKey="ctrlKey"
+          colors="#f2d096: day_period_int==1; #49beb7: day_period_int==2; #ed8975: day_period_int==3;"
+        >
+          <field name="day_period" />
+          <templates>
+            <t t-name="timeline-item">
+              <div class="o_project_timeline_item">
+                <!-- <t t-esc="record.hr_department[1]" />
+                <br/> -->
+                <span name="display_name">
+                  <t t-esc="record.day_period[1]" />
+                </span>
+              </div>
+            </t>
+          </templates>
+        </timeline>
+      </field>
+    </record>
+
+    <!--search view for the patient-->
+    <record id="hr_employee_schedule_search" model="ir.ui.view">
+        <field name="name">hr.employee.schedule.search</field>
+        <field name="model">hr.employee.schedule</field>
+        <field name="arch" type="xml">
+            <search string="Search">
+              <filter string="Department" name="is_main" domain="[('is_main', '=', True)]"/>
+              <separator/>
+              <filter string="Амралтын өдөр харуулахгүй" name="is_rest" domain="[('day_period_int', '!=', 3)]"/>
+            </search>
         </field>
     </record>
 
     <!-- actions opening views on models -->
-
     <record model="ir.actions.act_window" id="ubisol_hr_employee_shift.action_window_calendar">
       <field name="name">Shift Template</field>
       <field name="res_model">resource.calendar</field>
@@ -164,7 +190,7 @@
       <field name="search_view_id" ref="resource.view_resource_calendar_search"/>
       <field name="help" type="html">
         <p class="oe_view_nocontent_create">
-          Define working hours and time table that could be scheduled to your project members
+          Ээлжийн хуваарийн төлөвлөгөө
         </p>
       </field>
     </record>
@@ -174,8 +200,8 @@
       <field name="res_model">hr.employee.shift</field>
       <field name="view_mode">tree,form</field>
       <field name="help" type="html">
-          <p class="oe_view_nocontent_create">
-          Click here to configure new periodic reminder.
+        <p class="oe_view_nocontent_create">
+          Ээлжийн хуваарийн төлөвлөгөө
         </p>
       </field>
     </record>
@@ -183,32 +209,16 @@
     <record model="ir.actions.act_window" id="ubisol_hr_employee_shift.action_window_schedule">
       <field name="name">Employee Shift Schedules</field>
       <field name="res_model">hr.employee.schedule</field>
-      <field name="view_mode">timeline</field>
+      <field name="view_mode">timeline,calendar,pivot</field>
+      <field name="context">{"search_default_is_main":1, "search_default_is_rest":1}</field>
       <field name="help" type="html">
-          <p class="oe_view_nocontent_create">
-          Click here to configure new periodic reminder.
+        <p class="oe_view_nocontent_create">
+          Ээлжийн хуваарь
         </p>
       </field>
     </record>
 
-    <!-- server action to the one above -->
-<!-- 
-    <record model="ir.actions.server" id="ubisol_hr_employee_shift.action_server">
-      <field name="name">ubisol_hr_employee_shift server</field>
-      <field name="model_id" ref="model_ubisol_hr_employee_shift_ubisol_hr_employee_shift"/>
-      <field name="state">code</field>
-      <field name="code">
-        action = {
-          "type": "ir.actions.act_window",
-          "view_mode": "tree,form",
-          "res_model": model._name,
-        }
-      </field>
-    </record>
- -->
-
     <!-- Top menu item -->
-
     <menuitem 
       name="Employee Shifts" 
       id="ubisol_hr_employee_shift.employee_shift" 
@@ -217,7 +227,6 @@
     />
 
     <!-- menu categories -->
-
     <menuitem name="Schedules" id="ubisol_hr_employee_shift.schedules" parent="ubisol_hr_employee_shift.employee_shift"
               action="ubisol_hr_employee_shift.action_window_schedule" sequence="0"/>
     <menuitem name="Shifts" id="ubisol_hr_employee_shift.shifts" parent="ubisol_hr_employee_shift.employee_shift"
@@ -226,7 +235,6 @@
               action="ubisol_hr_employee_shift.action_window_calendar" sequence="2"/>
 
     <!-- actions -->
-
     <!-- <menuitem name="List" id="ubisol_hr_employee_shift.menu_1_list" parent="ubisol_hr_employee_shift.menu_1"
               action="ubisol_hr_employee_shift.action_window"/> -->
     <!-- <menuitem name="Server to list" id="ubisol_hr_employee_shift" parent="ubisol_hr_employee_shift.menu_2"

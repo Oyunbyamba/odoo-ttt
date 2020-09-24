@@ -1,0 +1,387 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* ubisol_hr_employee_shift
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 13.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-09-24 05:46+0000\n"
+"PO-Revision-Date: 2020-09-24 15:24+0800\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: mn\n"
+"X-Generator: Poedit 2.4.1\n"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_shift__assign_type
+msgid "Assign Type"
+msgstr "Төрөл"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,help:ubisol_hr_employee_shift.field_hr_employee_shift__color
+#: model:ir.model.fields,help:ubisol_hr_employee_shift.field_resource_calendar__color
+msgid "Color"
+msgstr "Өнгө"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_shift__color
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar__color
+msgid "Color Index"
+msgstr "Өнгө"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.ui.menu,name:ubisol_hr_employee_shift.configure
+msgid "Configure"
+msgstr "Тохиргоо"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule__create_uid
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_shift__create_uid
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar_dayperiod__create_uid
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar_shift__create_uid
+msgid "Created by"
+msgstr "Үүсгэсэн хэрэглэгч"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule__create_date
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_shift__create_date
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar_dayperiod__create_date
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar_shift__create_date
+msgid "Created on"
+msgstr "Үүсгэсэн хугацаа"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule__day_period
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar_dayperiod__name
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar_shift__day_period
+msgid "Day Period"
+msgstr "Ээлж"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,help:ubisol_hr_employee_shift.field_hr_employee_schedule__day_period
+#: model:ir.model.fields,help:ubisol_hr_employee_shift.field_resource_calendar_shift__day_period
+msgid "Day Period of Work"
+msgstr ""
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar__factory_day_ids
+#: model:ir.model.fields,help:ubisol_hr_employee_shift.field_resource_calendar__factory_day_ids
+msgid "Day Plan"
+msgstr "Ээлж"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule__week_day
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar_shift__week_day
+msgid "Day of Week"
+msgstr "Гараг"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_shift.selection__hr_employee_schedule__shift_type__days
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_shift.selection__resource_calendar__shift_type__days
+msgid "Days"
+msgstr "7 хоног"
+
+#. module: ubisol_hr_employee_shift
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_shift.resource_calendar_form
+msgid "Days Schedule"
+msgstr "Оффисын хуваарь"
+
+#. module: ubisol_hr_employee_shift
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_shift.shift_template_kanban_view
+msgid "Delete"
+msgstr "Устгах"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule__hr_department
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_shift__hr_department
+#: model:ir.model.fields,help:ubisol_hr_employee_shift.field_hr_employee_schedule__hr_department
+#: model:ir.model.fields,help:ubisol_hr_employee_shift.field_hr_employee_shift__hr_department
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_shift.selection__hr_employee_shift__assign_type__department
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_shift.hr_employee_schedule_search
+msgid "Department"
+msgstr "Хэлтэс"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule__display_name
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_shift__display_name
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar_dayperiod__display_name
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar_shift__display_name
+msgid "Display Name"
+msgstr "Нэр"
+
+#. module: ubisol_hr_employee_shift
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_shift.shift_template_kanban_view
+msgid "Edit"
+msgstr "Засах"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule__hr_employee
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_shift__hr_employee
+#: model:ir.model.fields,help:ubisol_hr_employee_shift.field_hr_employee_schedule__hr_employee
+#: model:ir.model.fields,help:ubisol_hr_employee_shift.field_hr_employee_shift__hr_employee
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_shift.selection__hr_employee_shift__assign_type__employee
+msgid "Employee"
+msgstr "Ажилтан"
+
+#. module: ubisol_hr_employee_shift
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_shift.hr_employee_schedule_pivot
+msgid "Employee Schedule"
+msgstr ""
+
+#. module: ubisol_hr_employee_shift
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_shift.hr_employee_schedule_calendar
+msgid "Employee Schedule Calendar"
+msgstr ""
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule__hr_employee_shift
+#: model:ir.model.fields,help:ubisol_hr_employee_shift.field_hr_employee_schedule__hr_employee_shift
+msgid "Employee Shift"
+msgstr "Ажиллах хуваарь"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule__hr_employee_shift_dayplan
+msgid "Employee Shift Plan of Day"
+msgstr "Ажлын өдөр"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.actions.act_window,name:ubisol_hr_employee_shift.action_window_schedule
+msgid "Employee Shift Schedules"
+msgstr "Ажиллах график"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule__hr_employee_shift_template
+msgid "Employee Shift Template"
+msgstr "Ажлын хуваарийн загвар"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.actions.act_window,name:ubisol_hr_employee_shift.action_window_shift
+#: model:ir.ui.menu,name:ubisol_hr_employee_shift.employee_shift
+msgid "Employee Shifts"
+msgstr "Ажиллах хуваарь"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule__date_to
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule__work_day
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_shift__date_to
+msgid "End Date"
+msgstr "Дуусах хугацаа"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule__end_work
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar_shift__end_work
+#: model:ir.model.fields,help:ubisol_hr_employee_shift.field_hr_employee_schedule__end_work
+#: model:ir.model.fields,help:ubisol_hr_employee_shift.field_resource_calendar_shift__end_work
+msgid "End Work"
+msgstr "Ажил дуусах огноо"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_shift.selection__hr_employee_schedule__week_day__4
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_shift.selection__resource_calendar_shift__week_day__4
+msgid "Friday"
+msgstr "Баасан"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model,name:ubisol_hr_employee_shift.model_resource_calendar_shift
+msgid "HR Employee Shift Day Plan"
+msgstr "Ажлын өдөр"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model,name:ubisol_hr_employee_shift.model_hr_employee_shift
+msgid "HR Employee Shifts"
+msgstr ""
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model,name:ubisol_hr_employee_shift.model_hr_employee_schedule
+msgid "Hr Employee Schedule"
+msgstr ""
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule__id
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_shift__id
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar_dayperiod__id
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar_shift__id
+msgid "ID"
+msgstr "ID"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule__is_main
+msgid "Is Main"
+msgstr "Үндсэн эсэх"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar_dayperiod__is_rest
+msgid "Is Rest"
+msgstr "Амралтын өдөр эсэх"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule____last_update
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_shift____last_update
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar_dayperiod____last_update
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar_shift____last_update
+msgid "Last Modified on"
+msgstr "Сүүлд хандсан хугацаа"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule__write_uid
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_shift__write_uid
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar_dayperiod__write_uid
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar_shift__write_uid
+msgid "Last Updated by"
+msgstr "Сүүлд засвар оруулсан хэрэглэгч"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule__write_date
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_shift__write_date
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar_dayperiod__write_date
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar_shift__write_date
+msgid "Last Updated on"
+msgstr "Сүүлд засвар оруулсан хугацаа"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule__lunch_time_from
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar_shift__lunch_time_from
+msgid "Lunch time from"
+msgstr "Цайны цаг эхлэх"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule__lunch_time_to
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar_shift__lunch_time_to
+msgid "Lunch time to"
+msgstr "Цайны цаг дуусах"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_shift.selection__hr_employee_schedule__week_day__0
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_shift.selection__resource_calendar_shift__week_day__0
+msgid "Monday"
+msgstr "Даваа"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_shift__name
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar_shift__name
+msgid "Name"
+msgstr "Нэр"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_shift.selection__hr_employee_schedule__week_day__5
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_shift.selection__resource_calendar_shift__week_day__5
+msgid "Saturday"
+msgstr "Бямба"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.ui.menu,name:ubisol_hr_employee_shift.schedules
+msgid "Schedules"
+msgstr "Ажиллах график"
+
+#. module: ubisol_hr_employee_shift
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_shift.hr_employee_schedule_search
+msgid "Search"
+msgstr "Хайх"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar_shift__shift_id
+#: model:ir.model.fields,help:ubisol_hr_employee_shift.field_resource_calendar_shift__shift_id
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_shift.selection__hr_employee_schedule__shift_type__shift
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_shift.selection__resource_calendar__shift_type__shift
+msgid "Shift"
+msgstr "Ээлж"
+
+#. module: ubisol_hr_employee_shift
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_shift.resource_calendar_form
+msgid "Shift Schedule"
+msgstr "Ээлжийн хуваарь"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.actions.act_window,name:ubisol_hr_employee_shift.action_window_calendar
+msgid "Shift Template"
+msgstr "Ажлын хуваарийн загвар"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule__shift_type
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar__shift_type
+msgid "Shift Type"
+msgstr "Төрөл"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.ui.menu,name:ubisol_hr_employee_shift.shifts
+msgid "Shifts"
+msgstr "Ажлын хуваарь"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule__start_work
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar_shift__start_work
+#: model:ir.model.fields,help:ubisol_hr_employee_shift.field_hr_employee_schedule__start_work
+#: model:ir.model.fields,help:ubisol_hr_employee_shift.field_resource_calendar_shift__start_work
+msgid "Start Work"
+msgstr "Ажил эхлэх огноо"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule__date_from
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_shift__date_from
+msgid "Starting Date"
+msgstr "Эхлэх хугацаа"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_shift.selection__hr_employee_schedule__week_day__6
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_shift.selection__resource_calendar_shift__week_day__6
+msgid "Sunday"
+msgstr "Ням"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_shift.selection__hr_employee_schedule__week_day__3
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_shift.selection__resource_calendar_shift__week_day__3
+msgid "Thursday"
+msgstr "Пүрэв"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_shift.selection__hr_employee_schedule__week_day__1
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_shift.selection__resource_calendar_shift__week_day__1
+msgid "Tuesday"
+msgstr "Мягмар"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_shift.selection__hr_employee_schedule__week_day__2
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_shift.selection__resource_calendar_shift__week_day__2
+msgid "Wednesday"
+msgstr "Лхагва"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_shift__resource_calendar_ids
+msgid "Working Hours"
+msgstr "Хуваарь"
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar__normal_day_ids
+msgid "Workings Time"
+msgstr ""
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model,name:ubisol_hr_employee_shift.model_resource_calendar
+msgid "hr employee shift template"
+msgstr ""
+
+#. module: ubisol_hr_employee_shift
+#: model:ir.model,name:ubisol_hr_employee_shift.model_resource_calendar_dayperiod
+msgid "resource.calendar.dayperiod"
+msgstr ""
+
+#. module: ubisol_hr_employee_shift
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_shift.hr_employee_shift_form
+msgid "shifts"
+msgstr ""
+
+#. module: ubisol_hr_employee_shift
+#: model_terms:ir.actions.act_window,help:ubisol_hr_employee_shift.action_window_calendar
+#: model_terms:ir.actions.act_window,help:ubisol_hr_employee_shift.action_window_shift
+msgid "Ээлжийн хуваарийн төлөвлөгөө"
+msgstr ""
+
+#. module: ubisol_hr_employee_shift
+#: model_terms:ir.actions.act_window,help:ubisol_hr_employee_shift.action_window_schedule
+msgid "Ээлжийн хуваарь"
+msgstr ""

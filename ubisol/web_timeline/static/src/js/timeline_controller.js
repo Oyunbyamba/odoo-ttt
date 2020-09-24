@@ -13,9 +13,9 @@ odoo.define("web_timeline.TimelineController", function(require) {
         custom_events: _.extend({}, AbstractController.prototype.custom_events, {
             onGroupClick: "_onGroupClick",
             onUpdate: "_onUpdate",
-            onRemove: "_onRemove",
-            onMove: "_onMove",
-            onAdd: "_onAdd",
+            // onRemove: "_onRemove",
+            // onMove: "_onMove",
+            // onAdd: "_onAdd",
         }),
 
         /**
