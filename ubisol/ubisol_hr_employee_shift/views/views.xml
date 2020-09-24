@@ -38,6 +38,15 @@
               <field name="shift_type" style="height:30px;width:200px;font-size:16;"/>
               <field name="color" invisible="1"/>
             </group>
+            <group colspan="1" string="Амралтын өдрийн цагийн хуваарь" attrs="{'invisible':[('shift_type', '!=', 'shift')]}">
+              <div class="oe_inline">
+                Амралтын өдөр
+                <field nolabel="1" name="weekend_time" style="width: auto" widget="float_time"/>
+                цагийн
+                <field nolabel="1" name="weekend_time_type" style="width: auto"/>
+                ажил эхлэнэ.
+              </div>
+            </group>
           </xpath>
           <xpath expr="//notebook" position="replace">
               <group string="Days Schedule" attrs="{'invisible':[('shift_type', '!=', 'days')]}">
@@ -139,7 +148,7 @@
           date_stop="end_work"
           mode="month"
           default_group_by="hr_department"
-          event_open_popup="false"
+          event_open_popup="true"
           zoomKey="ctrlKey"
           colors="#f2d096: day_period_int==1; #49beb7: day_period_int==2; #ed8975: day_period_int==3;"
         >

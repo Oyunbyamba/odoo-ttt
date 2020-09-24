@@ -85,8 +85,8 @@ class HrEmployeeShift(models.Model):
         dates_btwn = date_from
 
         while dates_btwn <= date_to:
+            week_index = self._find_week_day_index(dates_btwn.strftime("%A"))
             if shift_template.shift_type == 'days':
-                week_index = self._find_week_day_index(dates_btwn.strftime("%A"))
                 if week_index < 5:
                     inside_counter = 0
                     for day in day_ids:
@@ -127,8 +127,44 @@ class HrEmployeeShift(models.Model):
                             schedule_dict['shift_type'] = shift_template.shift_type
                             schedule_dict['day_period'] = day.day_period.id
                             schedule_dict['day_period_int'] = day.day_period.id
-                            schedule_dict['lunch_time_from'], schedule_dict['lunch_time_to'] = self._create_datetime(dates_btwn, day.lunch_time_from, day.lunch_time_to)
-                            schedule_dict['start_work'], schedule_dict['end_work'] = self._create_datetime(dates_btwn, day.start_work, day.end_work)
+                            if week_index < 4:
+                                schedule_dict['lunch_time_from'], schedule_dict['lunch_time_to'] = self._create_datetime(dates_btwn,day.lunch_time_from,day.lunch_time_to)
+                                schedule_dict['start_work'], schedule_dict['end_work'] = self._create_datetime(dates_btwn,day.start_work,day.end_work)
+                            elif week_index == 4:
+                                end_work = day.end_work
+                                if day.end_work < day.start_work:
+                                    if shift_template.weekend_time_type == 'before':
+                                        end_work = end_work - shift_template.weekend_time
+                                    else:
+                                        end_work = end_work + shift_template.weekend_time
+                                schedule_dict['lunch_time_from'], schedule_dict['lunch_time_to'] = self._create_datetime(dates_btwn,day.lunch_time_from,day.lunch_time_to)
+                                schedule_dict['start_work'], schedule_dict['end_work'] = self._create_datetime(dates_btwn,day.start_work,end_work)
+                            elif week_index == 6:
+                                start_work = day.start_work
+                                if day.start_work > day.end_work:
+                                    if shift_template.weekend_time_type == 'before':
+                                        start_work = start_work - shift_template.weekend_time
+                                    else:
+                                        start_work = start_work + shift_template.weekend_time
+                                schedule_dict['lunch_time_from'], schedule_dict['lunch_time_to'] = self._create_datetime(dates_btwn,day.lunch_time_from,day.lunch_time_to)
+                                schedule_dict['start_work'], schedule_dict['end_work'] = self._create_datetime(dates_btwn,start_work,day.end_work)
+                            else:
+                                lunch_time_from = day.lunch_time_from
+                                lunch_time_to = day.lunch_time_to
+                                start_work = day.start_work
+                                end_work = day.end_work
+                                if shift_template.weekend_time_type == 'before':
+                                    lunch_time_from = lunch_time_from - shift_template.weekend_time
+                                    lunch_time_to = lunch_time_to - shift_template.weekend_time
+                                    start_work = start_work - shift_template.weekend_time
+                                    end_work = end_work - shift_template.weekend_time
+                                else:
+                                    lunch_time_from = lunch_time_from + shift_template.weekend_time
+                                    lunch_time_to = lunch_time_to + shift_template.weekend_time
+                                    start_work = start_work + shift_template.weekend_time
+                                    end_work = end_work + shift_template.weekend_time
+                                schedule_dict['lunch_time_from'], schedule_dict['lunch_time_to'] = self._create_datetime(dates_btwn,lunch_time_from,lunch_time_to)
+                                schedule_dict['start_work'], schedule_dict['end_work'] = self._create_datetime(dates_btwn,start_work,end_work)
                             if index == 0:
                                 schedule_dict['is_main'] = True
                             self.env['hr.employee.schedule'].create(schedule_dict)

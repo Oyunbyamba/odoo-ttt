@@ -12,6 +12,13 @@ class ResourceCalendarShift(models.Model):
         ('shift', 'Shift')
     ], default="days", tracking=True)
     color = fields.Integer(string='Color Index', help="Color")
+    
+    weekend_time_type = fields.Selection([
+        ('before', 'өмнө'),
+        ('after', 'дараа')
+    ], default="after", tracking=True)
+    weekend_time = fields.Float(string='Цаг', required=True, default=1)
+
     factory_day_ids = fields.One2many('resource.calendar.shift', 'shift_id', string='Day Plan', help='Day Plan')
     normal_day_ids = fields.One2many('resource.calendar.shift', 'shift_id', 'Workings Time')
 
