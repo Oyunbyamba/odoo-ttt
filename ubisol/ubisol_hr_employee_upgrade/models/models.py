@@ -64,8 +64,8 @@ class HrEmployee(models.Model):
     contract_ids = fields.One2many('hr.contract', 'employee_id', string='Contract')
     contract_signed_date = fields.Date(string="Contract signed date")
     years_of_civil_service = fields.Integer(string='Years')
-    latitude = fields.Char('Latitude')
-    longitude = fields.Char('Longitude')
+    latitude = fields.Char('Өргөрөг')
+    longitude = fields.Char('Уртраг')
 
     @api.onchange('spouse_complete_name', 'spouse_birthdate')
     def onchange_spouse(self):

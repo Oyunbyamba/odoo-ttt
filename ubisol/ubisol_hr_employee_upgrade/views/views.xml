@@ -128,6 +128,15 @@
         <xpath expr="//field[@name='country_id']" position="attributes">
           <attribute name="invisible">1</attribute>
         </xpath>
+
+        <xpath expr="//page[@name='hr_settings']/group" position="inside">
+          <group>
+            <field name="longitude" string="Уртраг"/> 
+          </group>
+          <group>
+            <field name="latitude" string="Өргөрөг"/> 
+          </group> 
+        </xpath>
       </field>
     </record>
 

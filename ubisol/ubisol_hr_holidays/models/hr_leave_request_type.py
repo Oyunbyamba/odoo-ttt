@@ -12,4 +12,3 @@ class UbisolHolidaysType(models.Model):
     vacation = fields.Boolean('Ээлжийн амралт', default=False)
     one_step_days = fields.Integer('1 шатлалт чөлөөнд тооцох хоног', default=3)
 
-   
