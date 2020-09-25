@@ -2552,7 +2552,7 @@ msgstr "Чөлөөний хувиарлалт"
 #: model:ir.actions.act_window,name:hr_holidays.hr_leave_action_action_department
 #, python-format
 msgid "Time Off Analysis"
-msgstr "Чөлөөнийй шинжилгээ"
+msgstr "Чөлөөний шинжилгээ"
 
 #. module: hr_holidays
 #: model:mail.activity.type,name:hr_holidays.mail_act_leave_approval
