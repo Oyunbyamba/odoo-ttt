@@ -1,4 +1,4 @@
-<odoo>
+<odoo> 
   <data>
     <record model="ir.ui.view" id="hr_leave_inherit_form_view">
       <field name="name">hr.leave.view.form</field>
@@ -37,5 +37,6 @@
         
       </field>
     </record>
+    
   </data>
 </odoo>

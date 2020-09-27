@@ -122,4 +122,15 @@
         print_report_name="'Bank Definition - %s' % (object.name)"
         paperformat="ubisol_hr_employee_upgrade.paperformat_mn"
     />
+
+     <!--    # Bank definition report    -->
+    <report
+        id="employee_detail_report_pdf"
+        model="hr.employee" 
+        string="Employee Detail"
+        report_type="qweb-pdf"
+        name="ubisol_hr_employee_upgrade.employee_detail_report"
+        file="ubisol_hr_employee_upgrade.employee_detail_report"
+       
+    />
 </odoo>

@@ -29,6 +29,7 @@
         'views/views.xml',
         'views/templates.xml',
         'report/report.xml',
+        'report/employee_detail.xml',
         'report/bank_definition.xml',
         'report/salary_specification.xml',
         'report/print_employee_badge_inherit.xml',

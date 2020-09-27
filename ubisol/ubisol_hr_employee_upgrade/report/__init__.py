@@ -1,1 +1,1 @@
-from . import bank_definition
+from . import bank_definition,employee_detail

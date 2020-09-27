@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <report
+        id="leave_definition_report_pdf"
+        model="hr.leave" 
+        string="Leave Definition"
+        report_type="qweb-pdf"
+        name="ubisol_hr_holidays.leave_report"
+        file="ubisol_hr_holidays.leave_report"
+    />
+
+</odoo>
