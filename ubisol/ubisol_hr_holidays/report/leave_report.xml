@@ -1,24 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-   
-    <!-- <template id="leave_definition_report">
-        <t t-call="web.html_container">
-            <t t-foreach="docs" t-as="doc">
-                <h2>Definition</h2>
-            </t>
-        </t>
-    </template> -->
 
     <template id="leave_report">
-        <t t-call="web.html_container">
-            <t t-foreach="docs" t-as="doc">
-                <!-- <t t-call="ubisol_hr_holidays.leave_definition_report"/> -->
-                <t t-foreach="docs" t-as="doc">
-                    <h2>Definition</h2>
-                </t>
+        <p t-call="web.html_container">
+            <t t-foreach="leave" t-as="doc">
+                <p t-call="ubisol_hr_holidays.custom_layout" t-lang="mn_MN">
+                    <div class="col-12 page">
+                        <div class="col-12" style="font-size: 18px !important; text-align: center; padding-top: 200px;">
+                            <span>ЧӨЛӨӨНИЙ ХУУДАС</span>
+                        </div>
+                        <br/>
+                        
+                        <div class="row" style="font-size: 12px !important;">
+                            <div class="col-6">
+                                <p>&#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;
+                                    <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y')"/> оны 
+                                    <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%m')"/> сар 
+                                    <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d')"/> өдөр
+                                </p>
+                            </div>
+                        
+                            <div class="col-6 text-right" style="padding-right:0px;">
+                                <p>Улаанбаатар хот</p>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="col-12" style="text-align: left;">
+                            <p>&#160; &#160; &#160; &#160; &#160; &#160;"Таван толгой түлш" ХХК-ийн <t t-esc="doc.employee_id.department_id.name"/> алба, хэлтэс 
+                                <t t-esc="doc.employee_id.job_id.name" /> албан тушаалтай <t t-esc="doc.employee_id.surname"/> овогтой <t t-esc="doc.employee_id.name"/> 
+                                <br/>
+                                нь
+                                <br/>
+                                <t t-esc="doc.name"/>
+                                <br/>
+                                шалтгааны улмаас <span t-esc="doc.request_date_from.strftime('%Y')"/> оны 
+                                <span t-esc="doc.request_date_from.strftime('%m')"/> дугаар сарын 
+                                <span t-esc="doc.request_date_from.strftime('%d')"/> -ны өдрөөс 
+                                <span t-esc="doc.request_date_to.strftime('%Y')"/> оны 
+                                <span t-esc="doc.request_date_to.strftime('%m')"/> дугаар сарын 
+                                <span t-esc="doc.request_date_to.strftime('%d')"/> -ны өдөр хүртэл 
+                                <span t-if="doc.number_of_days > 1"> <t t-esc="doc.number_of_days"/> өдрийн </span>
+                                <span t-elif="doc.request_unit_half"> хагас өдрийн </span> 
+                                <span t-if="doc.request_date_from_period == 'pm'"> /үдээс хойш/ </span>
+                                <span t-if="doc.request_date_from_period == 'am'"> /үдээс өмнө/</span>
+                                <span t-if="doc.holiday_status_id.unpaid">
+                                    цалингүй олгов.
+                                </span>
+                                <span t-elif="doc.holiday_status_id.unpaid == false">
+                                    цалинтай олгов.
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-12" style="text-align: center;">
+                            <p>
+                                Чөлөөний хуудас нь холбогдох баримтын хамт хүчин төгөлдөр болно.
+                            </p>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <p style="font-size: 18px;">АЛБА ХЭЛТСИЙН ДАРГА НАР</p>
+                            <p t-if="doc.holiday_status_id.validation_type == 'both'">
+                                Албаны дарга: <span t-esc="doc.employee_id.department_id.parent_id.manager_id.name"/>
+                                Гүйцэтгэх захирал: 
+                        
+                            </p>
+                        </div>
+                    </div>
+                </p>
             </t>
-            </t>
-        </t>
+        </p>
     </template>
 
 </odoo>

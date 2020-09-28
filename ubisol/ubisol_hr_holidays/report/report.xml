@@ -1,5 +1,41 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
+    <template id="custom_layout">
+        <div class="header">
+            <div class="row">
+                <div class="col-5">
+                </div>
+                
+                <div class="col-7 text-right" style="padding-right:0px;">
+                    <span>"Таван толгой түлш" ХХК-ийн <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y')"/> оны</span>
+                    <br/>
+                    <span><span t-esc="context_timestamp(datetime.datetime.now()).strftime('%m')"/> сарын <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d')"/> -ны өдрийн .... дугаар</span>
+                    <br/>
+                    <span>тушаалын 2 дугаар хавсралт</span>
+                </div>
+            </div>
+        </div>
+        <div class="article o_report_layout_standard o_company_#{res_company.id}_layout" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+          <t t-raw="0"/>
+        </div>
+
+    </template>
+
+    <record id="paperformat_mn" model="report.paperformat">
+        <field name="name">Mongolian A4</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">25</field>
+        <field name="margin_bottom">20</field>
+        <field name="margin_left">15</field>
+        <field name="margin_right">20</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
 
     <report
         id="leave_definition_report_pdf"
@@ -8,6 +44,8 @@
         report_type="qweb-pdf"
         name="ubisol_hr_holidays.leave_report"
         file="ubisol_hr_holidays.leave_report"
+        print_report_name="'Leave definition'"
+        paperformat="ubisol_hr_holidays.paperformat_mn"
     />
 
 </odoo>
