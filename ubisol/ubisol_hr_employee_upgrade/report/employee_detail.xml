@@ -4,21 +4,247 @@
     <template id ="employee_detail_pdf">
         <t t-call="web.html_container">
         <t t-set="company" t-value="env.company"/>
-            <t t-foreach="docs" t-as="employee">
-                <t t-call="ubisol_hr_employee_upgrade.external_layout_mn_standard" t-lang="mn_MN">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="ubisol_hr_employee_upgrade.employee_print_header" t-lang="mn_MN">
                     <div class="col-12 page" style="font-size: 16px !important;">
-                        <div>
-                            <br/><br/><br/><br/>
-                            <br/><br/><br/><br/>
-                            <br/><br/><br/><br/>
-                            <br/><br/>
+                        <div name="private_info" style="padding-top: 140px;">
+                            <div class="col-12">
+                                <p style="font-size: 16px !important; text-align: center;"> 1. ХУВЬ ХҮНИЙ ТАЛААРХ МЭДЭЭЛЭЛ</p>                         
+                            </div>
+                            <div class="col-12 row">
+                                <div class="col-10" style="font-size:12px !important">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <span>1.1. Регистерийн дугаар:&#160; <span t-esc="doc.identification_id"/> </span>
+                                        </div>
+                                        <div class="col-6">
+                                            <span>1.2. Ургийн овог:&#160; <span t-esc="doc.family_name"/></span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <span>1.3. Эцэг/эх/-ийн нэр:&#160; <span t-esc="doc.surname"/> </span>
+                                        </div>
+                                        <div class="col-6">
+                                            <span>1.4. Нэр:&#160; <span t-esc="doc.name"/></span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <span>1.5. Яс үндэс:&#160; <span t-esc="doc.ethnicity.name"/></span>
+                                        </div>
+                                        <div class="col-6">
+                                            <span>1.6. Нийгмийн гарал:&#160; </span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <span>1.7. Цэргийн алба хаасан эсэх:&#160; <span t-if="doc.is_served_in_military"></span> Тийм <span t-if="doc.is_served_in_military == False"> Үгүй </span> </span>
+                                        </div>
+                                        <div class="col-6">
+                                            <span>1.8. Нийгмийн даатгалын №:&#160; <span t-esc="doc.sinid"/></span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <span>1.9. Өрхийн орлого:&#160; <span t-esc="doc.family_income"/></span>
+                                        </div>
+                                        <div class="col-6">
+                                            <span>1.10. Орон сууц/хашаа байшин/-ы байдал:&#160; <span t-esc="doc.home_owner"/></span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <span>1.11. Төрсөн аймаг хот:&#160; <span t-esc="doc.country_of_birth.name"/> Сум, дүүрэг:&#160; <span t-esc="doc.place_of_birth"/> </span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <span>1.12. Оршин суугаа хаяг:&#160; <span t-esc="doc.address_home_id.display_name"/></span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <span>1.13. Холбоо барих дугаар:&#160; <span t-esc="doc.work_phone"/> <span t-if="doc.mobile_phone"> &#160;,<span t-esc="doc.mobile_phone"/></span>, Имэйл хаяг: &#160; <span t-esc="doc.work_email"/></span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <span>1.14. Онцгой шаардлага гарвал холбогдох хүн:</span>
+                                            <div>&#160; &#160; &#160; &#160; &#160; &#160;Нэр:&#160; <span t-esc="doc.emergency_contact"/> </div>
+                                            <div>&#160; &#160; &#160; &#160; &#160; &#160;Утас:&#160; <span t-esc="doc.emergency_phone"/> </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <span>1.15. Тус компанид садан төрөл ажилладаг эсэх:&#160; <span t-if="doc.relative_employee_id"><span t-esc="doc.relative_employee_id.name"/></span> </span>
+                                        </div>
+                                    </div>
+                                    <div class="row">    
+                                        <div class="col-12">
+                                            <span>1.16. Жолооны мэдээлэл: 
+                                                <div>&#160; &#160; &#160; &#160; &#160; &#160;Жолооны үнэмлэхний дугаар:&#160; <span t-esc="doc.driver_license_number"/> </div>
+                                                <div>&#160; &#160; &#160; &#160; &#160; &#160;Жолооны ангилал:&#160; <span t-esc="doc.driving_classification"/> </div>
+                                                <div>&#160; &#160; &#160; &#160; &#160; &#160;Цусны бүлэг:&#160; <span t-esc="doc.driver_blood_type"/> </div>
+                                                <div>&#160; &#160; &#160; &#160; &#160; &#160;Жолоо барисан жил:&#160; <span t-esc="doc.years_of_driving"/> </div>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                <div class="col-2">
+                                    <img 
+                                    t-if="doc.image_1920" 
+                                    t-att-src="image_data_uri(doc.image_1920)" 
+                                    style="height:210px!important; width:151px!important; "
+                                    />
+                                </div>
+                            </div>
                         </div>
-                        <p class="text-center">ТОДОРХОЙЛОЛТ</p>
-                        <div class="col-12">
-                            <t t-esc="employee.surname"/> овогтой <t t-esc="employee.name"/> нь <t t-esc="employee.company_id.name"/> ХХК-д
-                            <t t-esc="employee.job_id.name"/> албан тушаалтай <t t-esc="employee.contract_id.wage"/> төгрөгийн үндсэн болон нэмэгдэл цалинтай 
-                            ажилладаг нь үнэн болно.
+
+                        <br/>
+                        <div name="education_info">
+                            <p style="font-size: 16px !important; text-align: center;"> 2. БОЛОВСРОЛ, МЭРГЭШЛИЙН ТАЛААРХ МЭДЭЭЛЭЛ</p>
+                            <div class="col-12" style="font-size:12px !important">
+                                <span>2.1. Боловсрол: </span>
+                                <table style="border: 1px solid #ccc; width: 100%;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Сургуулийн нэр</td>
+                                            <td style="border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Орсон он, сар</td>
+                                            <td style="border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Төгссөн он, сар</td>
+                                            <td style="border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Эзэмшсэн мэргэжил</td>
+                                            <td style="border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Боловсролын зэрэг</td>
+                                            <td style="border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Дипломын дугаар</td>
+                                        </tr>
+                                        <tr t-foreach="resume_lines" t-as="resume">
+                                            <t t-if="resume.line_type_id.id == 2">
+                                                <td style="border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.name"/></td>
+                                                <td style="border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.date_start"/></td>
+                                                <td style="border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.date_end"/></td>
+                                                <td style="border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.profession"/></td> 
+                                                <td style="border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.education_degree_id.name"/></td> 
+                                                <td style="border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.diploma_number"/></td> 
+                                            </t>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <br/>
+                                <span>2.2. Мэргэшлийн бэлтгэл: </span>
+                                <table style="border: 1px solid #ccc; width: 100%;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Хаана ямар байгууллагад</td>
+                                            <td style="border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Орсон он, сар</td>
+                                            <td style="border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Төгссөн он, сар</td>
+                                            <td style="border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Ямар чиглэлээр</td>
+                                            <td style="border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Үнэмлэх, гэрчилгээний дугаар</td>
+                                        </tr>
+                                        <tr t-foreach="resume_lines" t-as="resume">
+                                            <t t-if="resume.line_type_id.id != 1 and resume.line_type_id.id != 2">
+                                                <td style="border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.name"/></td>
+                                                <td style="border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.date_start"/></td>
+                                                <td style="border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.date_end"/></td>
+                                                <td style="border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.profession"/></td> 
+                                                <td style="border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.diploma_number"/></td> 
+                                            </t>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
+
+                        <br/>
+                        <div name="experience_info">
+                            <p style="font-size: 16px !important; text-align: center;"> 3. УР ЧАДВАРЫН ТАЛААРХ МЭДЭЭЛЭЛ</p>
+                            <div class="col-12" style="font-size:12px !important">
+                                <span>3.1. Ур чадвар: </span>
+                                <table style="border: 1px solid #ccc; width: 100%;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Чадварын төрөл</td>
+                                            <td style="border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Ур чадвар</td>
+                                            <td style="border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Чадварын түвшин явц</td>
+                                        </tr>
+                                        <tr t-foreach="employee_skills" t-as="skill">
+                                            <td style="border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="skill.skill_type_id.name"/></td>
+                                            <td style="border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="skill.skill_id.name"/></td>
+                                            <td style="border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="skill.skill_level_id.name"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <br/>
+                        <div name="experience_info">
+                            <p style="font-size: 16px !important; text-align: center;"> 4. ТУРШЛАГЫН ТАЛААРХ МЭДЭЭЛЭЛ</p>
+                            <div class="col-12" style="font-size:12px !important">
+                                <span>4.1. Хөдөлмөр эрхлэлтийн байдал: </span>
+                                <table style="border: 1px solid #ccc; width: 100%;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Байгууллагын нэр</td>
+                                            <td style="border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Эрхэлж байсан албан тушаал</td>
+                                            <td style="border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Ажилд орсон огноо</td>
+                                            <td style="border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Ажлаас шарсан огноо</td>
+                                            <td style="border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Ажлаас гарсан шалтгаан</td>
+                                        </tr>
+                                        <tr t-foreach="resume_lines" t-as="resume">
+                                            <t t-if="resume.line_type_id.id == 1">
+                                                <td style="border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.name"/></td>
+                                                <td style="border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.position"/></td>
+                                                <td style="border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.date_start"/></td>
+                                                <td style="border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.date_end"/></td> 
+                                                <td style="border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.description"/></td> 
+                                            </t>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <br/>
+                        <div name="family_info">
+                            <p style="font-size: 16px !important; text-align: center;"> 5. ГЭР БҮЛИЙН ТАЛААРХ МЭДЭЭЛЭЛ</p>
+                            <div class="col-12" style="font-size:12px !important">
+                                <span>5.1. Гэр бүлийн байдал: </span>
+                                <table style="border: 1px solid #ccc; width: 100%;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Таны юу болох</td>
+                                            <td style="border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Овог нэр</td>
+                                            <td style="border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Төрсөн огноо</td>
+                                            <td style="border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Төрсөн газар</td>
+                                            <td style="border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Одоо эрхэлж буй ажил</td>
+                                            <td style="border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Утас</td>
+                                        </tr>
+                                        <tr t-foreach="doc.fam_ids" t-as="family">
+                                            <td style="border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="family.relation_id.name"/></td>
+                                            <td style="border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="family.member_name"/></td>
+                                            <td style="border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="family.birth_date"/></td>
+                                            <td style="border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="family.birth_place.name"/>, <t t-esc="family.address_id.display_name"/></td>
+                                            <td style="border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="family.current_job"/></td>
+                                            <td style="border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="family.member_contact"/></td>
+                                        </tr>
+                                    
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <br/>
+                        <div name="other_info">
+                            <p style="font-size: 16px !important; text-align: center;"> 6. БУСАД МЭДЭЭЛЭЛ</p>
+                            <div class="col-12" style="font-size:12px !important">
+                                <div>6.1. Хувцасны өмсгөлийн хэмжээ: </div>
+                                <div>&#160; &#160; &#160; &#160; &#160; &#160;Цамц: &#160;<span t-esc="doc.size_of_shirt"/></div>
+                                <div>&#160; &#160; &#160; &#160; &#160; &#160;Өмд: &#160;<span t-esc="doc.size_of_pants"/></div>
+                                <div>&#160; &#160; &#160; &#160; &#160; &#160;Гутал: &#160;<span t-esc="doc.size_of_shoes"/></div>
+                            </div>
+                        </div>
+
                     </div>
                 </t>
             </t>

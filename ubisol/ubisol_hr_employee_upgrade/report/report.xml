@@ -55,6 +55,20 @@
         </div>
     </template>
 
+    <template id="employee_print_header">
+        <div class="header">
+            <div class="row">
+                <div class="col-12" style="text-align: center;">
+                    <p>"ТАВАН ТОЛГОЙ ТҮЛШ" ХХК </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="article o_report_layout_standard o_company_#{company.id}_layout" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+          <t t-raw="0"/>
+        </div>
+    </template>
+
     <record id="paperformat_mn" model="report.paperformat">
         <field name="name">Mongolian A4</field>
         <field name="default" eval="True"/>
@@ -82,6 +96,22 @@
         <field name="margin_bottom">0</field>
         <field name="margin_left">0</field>
         <field name="margin_right">0</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="emp_paperformat" model="report.paperformat">
+        <field name="name">Mongolian A4</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">10</field>
+        <field name="margin_bottom">15</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
         <field name="header_line" eval="False"/>
         <field name="header_spacing">0</field>
         <field name="dpi">90</field>
@@ -131,6 +161,7 @@
         report_type="qweb-pdf"
         name="ubisol_hr_employee_upgrade.employee_detail_report"
         file="ubisol_hr_employee_upgrade.employee_detail_report"
-       
+        print_report_name="'Employee Definition'"
+        paperformat="ubisol_hr_employee_upgrade.emp_paperformat"
     />
 </odoo>
