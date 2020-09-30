@@ -6,7 +6,7 @@
             <t t-foreach="leave" t-as="doc">
                 <p t-call="ubisol_hr_holidays.custom_layout" t-lang="mn_MN">
                     <div class="col-12 page">
-                        <div class="col-12" style="font-size: 18px !important; text-align: center; padding-top: 210px;">
+                        <div class="col-12" style="font-size: 18px !important; text-align: center; margin-top: 210px;">
                             <span>ЧӨЛӨӨНИЙ ХУУДАС</span>
                         </div>
                         <br/>
