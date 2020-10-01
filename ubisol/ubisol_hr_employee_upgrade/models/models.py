@@ -148,3 +148,11 @@ class EmployeeEthnicity(models.Model):
     name = fields.Char(string="Ethnicity",
                        help="Ethnicity with the employee")
                   
+class EmployeePicture(models.Model):
+    """Table for keep ethnicity information"""
+
+    _name = 'hr.employee.picture'
+    _description = 'HR Employee Picture'
+
+    name = fields.Char(string="Employee Picture",
+                       help="Ethnicity with the employee")                  

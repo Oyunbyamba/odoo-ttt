@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 import base64
+import json
 from odoo import http, fields
 from odoo.http import request
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from odoo.modules.module import get_module_resource
+
 
 class UbisolHrEmployeeUpgrade(http.Controller):
    
@@ -65,5 +67,15 @@ class UbisolHrEmployeeUpgrade(http.Controller):
     @http.route('/ubisol_hr_employee_upgrade/test', type="json", auth='user')
     def index(self, **rec):
         print("____set_lat_long_____")
-        print(rec["image"])
+        
+        image_str = rec["image"]
+        content = base64.b64decode(image_str)
+        print(content)
+        image_path = get_module_resource('ubisol_hr_employee_upgrade', 'static/src/img', 'default_image.jpeg')
+        # open(image_path, 'rb').write()
+
+        with open(image_path, "wb") as fp:    
+            fp.write(content)
+            print(fp)
+         
         return "Hello, world"
