@@ -136,6 +136,18 @@
           <group>
             <field name="latitude" string="Өргөрөг"/> 
           </group> 
+
+          <group string="Employee picture">
+            <field name="employee_pictures">
+              <tree create="false" delete="false" edit="false" editable="top">
+                <field name="check_in"/>
+                <field name="name" widget='image' class="oe_avatar" options='{"zoom": true, "preview_image":"image_128"}'/>
+                <field name="check_out"/>
+                <field name="second_pic" widget='image' class="oe_avatar" options='{"zoom": true, "preview_image":"image_128"}'/>
+              </tree>
+            </field>
+          </group> 
+
         </xpath>
       </field>
     </record>

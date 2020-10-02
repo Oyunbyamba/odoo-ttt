@@ -32,18 +32,25 @@ class UbisolHrEmployeeUpgrade(http.Controller):
 
     @http.route('/ubisol_hr_employee_upgrade/set_my_lat_long', type='json', auth='user')
     def set_my_lat_long(self, **rec):
-        
+        # print(rec)
         now = fields.Datetime.now()
         today = fields.Date.today()
         create_date = False
         if request.jsonrequest:
-            if(rec['uid'] and rec['state']):
+            if(rec['uid'] and rec['state'] and rec['file']):
+                image_str = rec["file"]
                 employee = request.env['hr.employee'].sudo().search([('user_id', '=', rec['uid'])])
                 if employee:
                     last_attendance_before_check_in = request.env['hr.attendance'].search([
                             ('employee_id', '=', employee.id),
                             ('check_in', '<', now),
                         ], order='check_in desc', limit=1)
+                    print(last_attendance_before_check_in)
+                    last_picture_before_check_in = request.env['hr.employee.picture'].search([
+                                ('employee_id', '=', employee.id),
+                                ('check_in', '<', now),
+                            ], order='check_in desc', limit=1)
+
                     if(last_attendance_before_check_in): 
                         create_date = last_attendance_before_check_in.create_date.date()    
                     
@@ -54,28 +61,18 @@ class UbisolHrEmployeeUpgrade(http.Controller):
                                 'check_in': now,
                             }
                             request.env['hr.attendance'].create(vals)
+
+                            vals = {
+                                'employee_id': employee.id,
+                                'name': image_str,
+                                'check_in': now,
+                            }
+                            request.env['hr.employee.picture'].create(vals)
                     elif(rec['state'] == 'check_out'):
                         if(create_date and create_date == today):
                             last_attendance_before_check_in.check_out = now
-
-                    # if(rec['file']):            
-                 
+                            last_picture_before_check_in.check_out = now
+                            last_picture_before_check_in.second_pic = image_str
                         
             args = {'success': True}           
             return args         
-
-    @http.route('/ubisol_hr_employee_upgrade/test', type="json", auth='user')
-    def index(self, **rec):
-        print("____set_lat_long_____")
-        
-        image_str = rec["image"]
-        content = base64.b64decode(image_str)
-        print(content)
-        image_path = get_module_resource('ubisol_hr_employee_upgrade', 'static/src/img', 'default_image.jpeg')
-        # open(image_path, 'rb').write()
-
-        with open(image_path, "wb") as fp:    
-            fp.write(content)
-            print(fp)
-         
-        return "Hello, world"
