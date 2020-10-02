@@ -154,5 +154,5 @@ class EmployeePicture(models.Model):
     _name = 'hr.employee.picture'
     _description = 'HR Employee Picture'
 
-    name = fields.Char(string="Employee Picture",
-                       help="Ethnicity with the employee")                  
+    name = fields.Char(string="Employee Picture")
+    employee_id = fields.Integer(string='Employee ID')                  
