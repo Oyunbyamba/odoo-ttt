@@ -5,3 +5,4 @@
 "access_hr_employee_relation","access_hr_employee_relation","model_hr_employee_relation","hr.group_hr_user",1,1,1,1
 "access_hr_employee_ethnicity","access_hr_employee_ethnicity","model_hr_employee_ethnicity","hr.group_hr_user",1,1,1,1
 "access_hr_education_degree","access_hr_education_degree","model_hr_education_degree","hr.group_hr_user",1,1,1,1
+"access_hr_employee_picture","access_hr_employee_picture","model_hr_employee_picture","hr.group_hr_user",1,1,1,1

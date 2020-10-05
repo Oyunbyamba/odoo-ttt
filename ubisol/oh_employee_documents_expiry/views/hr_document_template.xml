@@ -33,19 +33,19 @@
     </record>
 
     <record id="hr_document_template_action" model="ir.actions.act_window">
-        <field name="name">Document Templates</field>
+        <field name="name">Баримтын загвар</field>
         <field name="res_model">hr.document</field>
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref=""/>
         <field name="domain">[]</field>
         <field name="help" type="html">
-            <p class="oe_view_nocontent_create">Create First Document Template
+            <p class="oe_view_nocontent_create">Анхны баримтын загвар
             </p>
         </field>
     </record>
 
     <menuitem id="hr_document_template_menuitem"
-              name="Document Templates"
+              name="Баримтын загвар"
               parent="hr.menu_hr_root"
               sequence="4"
               action="oh_employee_documents_expiry.hr_document_template_action"

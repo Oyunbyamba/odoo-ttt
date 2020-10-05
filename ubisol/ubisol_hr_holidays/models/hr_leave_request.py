@@ -25,14 +25,14 @@ class UbisolHolidaysRequest(models.Model):
             holiday.number_of_days_display = holiday.number_of_days  
             if(holiday.number_of_days <= holiday.holiday_status_id.one_step_days and holiday.holiday_status_id.validation_type == 'both'):
                 if(holiday.holiday_status_id.unpaid == True):
-                    holiday.holiday_status_id = 7
+                    holiday.holiday_status_id = 6
                 else:
-                    holiday.holiday_status_id = 9
+                    holiday.holiday_status_id = 8
             elif(holiday.number_of_days > holiday.holiday_status_id.one_step_days and holiday.holiday_status_id.validation_type != 'both'):
                 if(holiday.holiday_status_id.unpaid == True):
-                    holiday.holiday_status_id = 8
+                    holiday.holiday_status_id = 7
                 else:
-                    holiday.holiday_status_id = 10  
+                    holiday.holiday_status_id = 9  
    
     @api.onchange('holiday_status_id')
     def _compute_years_of_worked_state(self):
@@ -86,3 +86,6 @@ class UbisolHolidaysRequest(models.Model):
                 holiday.vacation_type = True
             else: 
                 holiday.vacation_type = False              
+
+
+               

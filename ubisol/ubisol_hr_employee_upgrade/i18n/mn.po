@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-24 10:58+0000\n"
-"PO-Revision-Date: 2020-09-24 10:58+0000\n"
+"POT-Creation-Date: 2020-09-30 07:25+0000\n"
+"PO-Revision-Date: 2020-09-30 07:25+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -21,6 +21,11 @@ msgid "'Bank Definition - %s' % (object.name)"
 msgstr ""
 
 #. module: ubisol_hr_employee_upgrade
+#: model:ir.actions.report,print_report_name:ubisol_hr_employee_upgrade.employee_detail_report_pdf
+msgid "'Employee Definition'"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
 #: model:ir.actions.report,print_report_name:ubisol_hr_employee_upgrade.hr_employee_print_badge_inherit
 msgid "'Print Badge - %s' % (object.name).replace('/', '')"
 msgstr ""
@@ -31,8 +36,172 @@ msgid "'Salary specification - %s' % (object.name)"
 msgstr ""
 
 #. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid ", Имэйл хаяг:"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "1. ХУВЬ ХҮНИЙ ТАЛААРХ МЭДЭЭЛЭЛ"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "1.1. Регистерийн дугаар:"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "1.10. Орон сууц/хашаа байшин/-ы байдал:"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "1.11. Төрсөн аймаг хот:"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "1.12. Оршин суугаа хаяг:"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "1.13. Холбоо барих дугаар:"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "1.15. Тус компанид садан төрөл ажилладаг эсэх:"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "1.16. Жолооны мэдээлэл:"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "1.2. Ургийн овог:"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "1.3. Эцэг/эх/-ийн нэр:"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "1.4. Нэр:"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "1.5. Яс үндэс:"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "1.7. Цэргийн алба хаасан эсэх:"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "1.8. Нийгмийн даатгалын №:"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "1.9. Өрхийн орлого:"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "2. БОЛОВСРОЛ, МЭРГЭШЛИЙН ТАЛААРХ МЭДЭЭЛЭЛ"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "3. УР ЧАДВАРЫН ТАЛААРХ МЭДЭЭЛЭЛ"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "4. ТУРШЛАГЫН ТАЛААРХ МЭДЭЭЛЭЛ"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "5. ГЭР БҮЛИЙН ТАЛААРХ МЭДЭЭЛЭЛ"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "6. ШАГНАЛЫН ТАЛААРХ МЭДЭЭЛЭЛ"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "7. БУСАД МЭДЭЭЛЭЛ"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "7.1. Хувцасны өмсгөлийн хэмжээ:"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid ""
+"<br/>\n"
+"                                <span>2.2. Мэргэшлийн бэлтгэл: </span>"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.hr_employee_inherit_form_view
 msgid "<span> овогтой </span>"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "<span>\"ТАВАН ТОЛГОЙ ТҮЛШ\" ХХК</span>"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "<span>1.14. Онцгой шаардлага гарвал холбогдох хүн:</span>"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "<span>1.6. Нийгмийн гарал:  </span>"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "<span>2.1. Боловсрол: </span>"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "<span>3.1. Ур чадвар: </span>"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "<span>4.1. Хөдөлмөр эрхлэлтийн байдал: </span>"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "<span>5.1. Гэр бүлийн байдал: </span>"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid ""
+"<span>6.1. Гавьяа шагнал, спортын зэрэг цол /төрийн, салбарын, "
+"байгууллагын/: </span>"
 msgstr ""
 
 #. module: ubisol_hr_employee_upgrade
@@ -61,7 +230,7 @@ msgstr "Банкны тодорхойлолтын тайлан"
 #. module: ubisol_hr_employee_upgrade
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_create_bank_definition__bank_name
 msgid "Bank name"
-msgstr ""
+msgstr "Банкны нэр"
 
 #. module: ubisol_hr_employee_upgrade
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_family__birth_place
@@ -154,6 +323,7 @@ msgstr "Гэрчилгээ, дипломын дугаар"
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_ethnicity__display_name
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_family__display_name
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_relation__display_name
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_report_ubisol_hr_employee_upgrade_employee_detail_report__display_name
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_report_ubisol_hr_employee_upgrade_report_definition_pdf__display_name
 msgid "Display Name"
 msgstr ""
@@ -193,6 +363,16 @@ msgstr "Имэйл"
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_family__employee_id
 msgid "Employee"
 msgstr "Ажилтан"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model,name:ubisol_hr_employee_upgrade.model_report_ubisol_hr_employee_upgrade_employee_detail_report
+msgid "Employee Anket Report"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.actions.report,name:ubisol_hr_employee_upgrade.employee_detail_report_pdf
+msgid "Employee Detail"
+msgstr "Ажилтаны тодорхойлолт"
 
 #. module: ubisol_hr_employee_upgrade
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee__ethnicity
@@ -273,6 +453,7 @@ msgstr "Орон сууц/хашаа байшин/-ны байдал"
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_ethnicity__id
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_family__id
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_relation__id
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_report_ubisol_hr_employee_upgrade_employee_detail_report__id
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_report_ubisol_hr_employee_upgrade_report_definition_pdf__id
 msgid "ID"
 msgstr ""
@@ -298,6 +479,7 @@ msgstr "Албан тушаал"
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_ethnicity____last_update
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_family____last_update
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_relation____last_update
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_report_ubisol_hr_employee_upgrade_employee_detail_report____last_update
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_report_ubisol_hr_employee_upgrade_report_definition_pdf____last_update
 msgid "Last Modified on"
 msgstr ""
@@ -326,19 +508,10 @@ msgid "Lastname"
 msgstr "Эцэг/эхийн нэр"
 
 #. module: ubisol_hr_employee_upgrade
-#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee__latitude
-msgid "Latitude"
-msgstr ""
-
-#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.external_layout_mn_standard
 msgid "Logo"
 msgstr "Лого"
-
-#. module: ubisol_hr_employee_upgrade
-#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee__longitude
-msgid "Longitude"
-msgstr ""
 
 #. module: ubisol_hr_employee_upgrade
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.hr_employee_inherit_form_view
@@ -358,7 +531,7 @@ msgstr "Хэвлэх"
 #. module: ubisol_hr_employee_upgrade
 #: model:ir.actions.report,name:ubisol_hr_employee_upgrade.hr_employee_print_badge_inherit
 msgid "Print Badge"
-msgstr ""
+msgstr "Үнэмлэх хэвлэх"
 
 #. module: ubisol_hr_employee_upgrade
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.hr_employee_inherit_form_view
@@ -462,13 +635,63 @@ msgid "Years of worked for civil service"
 msgstr "Улсад ажилласан жил"
 
 #. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Ажилд орсон огноо"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.hr_employee_inherit_form_view
 msgid "Ажилтаны нэр"
 msgstr ""
 
 #. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Ажлаас гарсан шалтгаан"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Ажлаас шарсан огноо"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Байгууллагын нэр"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Боловсролын зэрэг"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.external_layout_mn_standard
 msgid "Веб:"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Гутал:"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Дипломын дугаар"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Жолоо барисан жил:"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Жолооны ангилал:"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Жолооны үнэмлэхний дугаар:"
 msgstr ""
 
 #. module: ubisol_hr_employee_upgrade
@@ -482,12 +705,48 @@ msgid "И-мэйл:"
 msgstr ""
 
 #. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Нэр:"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Овог нэр"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Одоо эрхэлж буй ажил"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Орсон он, сар"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Сум, дүүрэг:"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Сургуулийн нэр"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.report_specification_pdf
 msgid "ТОДОРХОЙЛОЛТ"
 msgstr ""
 
 #. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Таны юу болох"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
 #: model:ir.model.fields.selection,name:ubisol_hr_employee_upgrade.selection__hr_employee__is_served_in_military__yes
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
 msgid "Тийм"
 msgstr ""
 
@@ -497,6 +756,38 @@ msgid "Түрээсийн"
 msgstr ""
 
 #. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Төгссөн он, сар"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Төрсөн газар"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Төрсөн огноо"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Ур чадвар"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee__longitude
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.hr_employee_inherit_form_view
+msgid "Уртраг"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Утас"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.external_layout_mn_standard
 msgid "Утас:"
 msgstr ""
@@ -513,8 +804,49 @@ msgid "ХЯЗГААРЛАГДМАЛ ХАРИУЦЛАГАТАЙ КОМПАНИ"
 msgstr ""
 
 #. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Хаана ямар байгууллагад"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Цамц:"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Цусны бүлэг:"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Чадварын түвшин явц"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Чадварын төрөл"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Шагнагдсан огноо"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Шагналын нэр"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.view_employee_inherit_filter
 msgid "Эзэмшсэн мэргэжил"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Эрхэлж байсан албан тушаал"
 msgstr ""
 
 #. module: ubisol_hr_employee_upgrade
@@ -525,6 +857,11 @@ msgstr ""
 #. module: ubisol_hr_employee_upgrade
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.hr_employee_inherit_form_view
 msgid "Эцэг/эх/-ийн нэр"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Ямар чиглэлээр"
 msgstr ""
 
 #. module: ubisol_hr_employee_upgrade
@@ -565,7 +902,29 @@ msgstr ""
 
 #. module: ubisol_hr_employee_upgrade
 #: model:ir.model.fields.selection,name:ubisol_hr_employee_upgrade.selection__hr_employee__is_served_in_military__no
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
 msgid "Үгүй"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Үнэмлэх, гэрчилгээний дугаар"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Үнэмлэхний дугаар"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
+msgid "Өмд:"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee__latitude
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.hr_employee_inherit_form_view
+msgid "Өргөрөг"
 msgstr ""
 
 #. module: ubisol_hr_employee_upgrade

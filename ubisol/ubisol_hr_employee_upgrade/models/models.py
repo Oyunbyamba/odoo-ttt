@@ -64,8 +64,10 @@ class HrEmployee(models.Model):
     contract_ids = fields.One2many('hr.contract', 'employee_id', string='Contract')
     contract_signed_date = fields.Date(string="Contract signed date")
     years_of_civil_service = fields.Integer(string='Years')
-    latitude = fields.Char('Latitude')
-    longitude = fields.Char('Longitude')
+    latitude = fields.Char('Өргөрөг')
+    longitude = fields.Char('Уртраг')
+    employee_pictures = fields.One2many('hr.employee.picture', 'employee_id', string='Employee picture')
+    # image=fields.Binary(compute='_getBase64Image') 
 
     @api.onchange('spouse_complete_name', 'spouse_birthdate')
     def onchange_spouse(self):
@@ -130,6 +132,18 @@ class HrEmployee(models.Model):
                 prev_hr_contract.job_id = self.job_id.id
         return employee    
 
+    # @api.model
+    # def _getBase64Image(self):
+    #     print('base64')
+    #     if(self.employee_picture):
+    #         for emp_pic in self.employee_picture:
+    #             images.append({ emp_pic.name })
+    #             print(images)    
+    #             self.image = images        
+    #     else:
+    #         self.image = images      
+            
+
 class EmployeeRelationInfo(models.Model):
     """Table for keep employee family information"""
 
@@ -148,3 +162,16 @@ class EmployeeEthnicity(models.Model):
     name = fields.Char(string="Ethnicity",
                        help="Ethnicity with the employee")
                   
+class EmployeePicture(models.Model):
+    """Table for keep ethnicity information"""
+
+    _name = 'hr.employee.picture'
+    _description = 'HR Employee Picture'
+
+    name = fields.Char(string="Check in img")
+    employee_id = fields.Many2one('hr.employee', string="Employee", ondelete='cascade')   
+    check_in = fields.Datetime(string="Check In")
+    check_out = fields.Datetime(string="Check Out")   
+    second_pic = fields.Char(string="Check out img")
+
+    

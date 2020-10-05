@@ -28,6 +28,8 @@
         'views/leave_request_type.xml',
         'views/leave_request.xml',
         'views/templates.xml',
+        'report/report.xml',
+        'report/leave_report.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
