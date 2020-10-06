@@ -1,53 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <template id="external_layout_mn_standard">
-        <div t-attf-class="header o_company_#{company.id}_layout" t-att-style="report_header_style">
-            <div class="row">
-                <div class="col-12" style="text-align: center;">
-                    <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 80px;" alt="Logo"/>
-                </div>
-            </div>
-            <br/>
-            <div class="row">
-                <div class="col-12 text-center" name="company_address" style=" margin-top:-10px; font-size: 13px !important;">
-                    <span>
-                        <div style="margin-top:-20px; font-size: 24px !important;">
-                            <t t-esc="company.name"/>
-                        </div>
-                        <div>
-                            ХЯЗГААРЛАГДМАЛ ХАРИУЦЛАГАТАЙ КОМПАНИ
-                        </div>
-                        <br/>
-                    </span>
-                    <span>
-                        <t t-esc="company.partner_id.country_id.name"/> улс,
-                        <t t-esc="company.partner_id.city"/> хот,
-                    </span>
-                    <br/>
-                    <t t-esc="company.partner_id.street"/>
-                    <br/>
-                    <span>
-                        Утас: <t t-esc="company.partner_id.phone"/>
-                    </span>
-                    <br/>
-                    <span>
-                        И-мэйл: <t t-esc="company.partner_id.email"/>
-                    </span>
-                    <br/>
-                    <span>
-                        Веб: <t t-esc="company.partner_id.website"/>
-                    </span>
-                </div>
-            </div>
-            <div class="col-12 text-center" style="font-size: 13px !important;">
-                <span>__________________________ № __________________________</span>
-                <br/>
-                <span>танай____________________-ны № _____________________</span>
-            </div>
+        <div t-attf-class="header">
         </div>
 
         <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout"  t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
-            <t t-call="web.address_layout"/>
             <t t-raw="0"/>
         </div>
 
@@ -129,6 +86,7 @@
         model="hr.employee" 
         string="Salary Specification"
         report_type="qweb-pdf"
+        menu="False"
         name="ubisol_hr_employee_upgrade.report_specification"
         file="ubisol_hr_employee_upgrade.report_specification"
         print_report_name="'Salary specification - %s' % (object.name)"
@@ -148,11 +106,11 @@
         paperformat="ubisol_hr_employee_upgrade.paperformat_mn"
     />
 
-     <!--    # Bank definition report    -->
+     <!--    # Employee definition report    -->
     <report
         id="employee_detail_report_pdf"
         model="hr.employee" 
-        string="Employee Detail"
+        string="Employee Anket"
         report_type="qweb-pdf"
         name="ubisol_hr_employee_upgrade.employee_detail_report"
         file="ubisol_hr_employee_upgrade.employee_detail_report"

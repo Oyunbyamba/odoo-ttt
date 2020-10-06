@@ -139,16 +139,17 @@
 
           <group string="Employee picture">
             <field name="employee_pictures">
-              <tree create="false" delete="false" edit="false" editable="top">
+              <tree create="false" delete="false" edit="false" duplicate="false">
                 <field name="check_in"/>
-                <field name="name" widget='image' class="oe_avatar" options='{"zoom": true, "preview_image":"image_128"}'/>
+                <field name="name" widget='image' class="oe_avatar" />
                 <field name="check_out"/>
-                <field name="second_pic" widget='image' class="oe_avatar" options='{"zoom": true, "preview_image":"image_128"}'/>
+                <field name="second_pic" widget='image' class="oe_avatar" />
               </tree>
             </field>
-          </group> 
-
+          </group>
         </xpath>
+
+        
       </field>
     </record>
 

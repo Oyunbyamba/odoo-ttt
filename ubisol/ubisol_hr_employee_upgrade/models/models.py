@@ -174,4 +174,4 @@ class EmployeePicture(models.Model):
     check_out = fields.Datetime(string="Check Out")   
     second_pic = fields.Char(string="Check out img")
 
-    
+   
