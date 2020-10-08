@@ -38,15 +38,17 @@
         
         <xpath expr="//page[@name='personal_information']/group/group[1]" position="before">
             <group name="identification_id" string="Main Info">
-                <field name="identification_id"/>
-                <field name="family_name" />
-                <field name="gender"/>
-                <field name="birthday"/>
-                <field name="ethnicity"/>
-                <field name="is_served_in_military"/>
-                <field name="sinid"/>
-                <field name="home_owner"/>
-                <field name="family_income"/>
+              <field name="identification_id"/>
+              <field name="family_name" />
+              <field name="gender"/>
+              <field name="birthday"/>
+              <field name="ethnicity"/>
+              <field name="is_served_in_military"/>
+              <field name="sinid"/>
+              <field name="home_owner"/>
+              <field name="family_income"/>
+              <field name="is_disabled"/>
+              <field name="is_in_group"/>
             </group>
         </xpath>
 
@@ -102,7 +104,7 @@
         </xpath>
 
         <xpath expr="//page[@name='public']/div/div/group[6]" position="after">
-          <group name="resignation" string="Ажлаас чөлөөлөлт" attrs="{'invisible': [('departure_reason', '=', False)]}">
+          <group name="resignation" string="Ажлаас чөлөөлөлт" attrs="{'invisible': [('active', '=', True)]}">
             <field name="departure_reason"/>
             <field name="departure_description"/>
             <field name="resign_date"/>
@@ -157,7 +159,6 @@
           </group>
         </xpath>
 
-        
       </field>
     </record>
 
@@ -174,6 +175,10 @@
           <filter name="group_study" string="Эзэмшсэн мэргэжил" domain="[]" context="{'group_by': 'study_field'}"/>
         </xpath>
 
+        <field name="job_id" position="after">
+            <filter string="Хөгжлийн бэрхшээлтэй" name="is_disabled" domain="[('is_disabled', '=', True)]"/>
+            <filter string="Групп-д байдаг" name="is_in_group" domain="[('is_in_group', '=', True)]"/>
+        </field>
       </field>
     </record>
 
