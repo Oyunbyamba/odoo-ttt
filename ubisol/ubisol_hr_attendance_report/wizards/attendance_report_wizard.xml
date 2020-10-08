@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+<odoo>
+    <record
+        id="act_wizard_compute_attendance_report"
+        model="ir.actions.act_window"
+    >
+        <field name="name">Compute Attendance Report</field>
+        <field name="res_model">attendance.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    <record id="attendance_report_wizard_form" model="ir.ui.view">
+        <field name="model">attendance.report.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="start_date" />
+                        <field name="end_date" />
+                    </group>
+                </group>
+                <footer>
+                    <button
+                        name="action_compute"
+                        type="object"
+                        string="Compute"
+                        class="oe_highlight"
+                    />
+                    <button special="cancel" string="Cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <menuitem
+        action="act_wizard_compute_attendance_report"
+        id="menu_compute_attendance_report"
+        parent="menu_hr_attendance_report_root"
+        sequence="99"
+        groups="hr_attendance.group_hr_attendance_manager"
+    />
+</odoo>
