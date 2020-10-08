@@ -19,7 +19,7 @@ class HrDepartureWizard(models.TransientModel):
     departure_reason = fields.Selection([
         ('fired', 'Fired'),
         ('resigned', 'Resigned'),
-        ('retired', 'Retired')
+        ('retired', 'Retired'),
     ], string="Departure Reason", default="fired")
     departure_description = fields.Text(string="Additional Information")
     plan_id = fields.Many2one('hr.plan', default=lambda self: self.env['hr.plan'].search([], limit=1))

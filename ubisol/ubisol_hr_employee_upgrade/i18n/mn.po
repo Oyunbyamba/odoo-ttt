@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-06 11:41+0000\n"
-"PO-Revision-Date: 2020-10-06 11:41+0000\n"
+"POT-Creation-Date: 2020-10-08 07:02+0000\n"
+"PO-Revision-Date: 2020-10-08 07:02+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -200,6 +200,7 @@ msgid ""
 msgstr ""
 
 #. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.report_definition_pdf
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.report_specification
 msgid "<span>Баталсан: </span> /"
 msgstr ""
@@ -234,6 +235,11 @@ msgstr "Төрсөн газар"
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.print_employee_definition_form
 msgid "Cancel"
 msgstr "Цуцлах"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee__certificate
+msgid "Certificate Level"
+msgstr "Боловсролын түвшин"
 
 #. module: ubisol_hr_employee_upgrade
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee_picture__check_in
@@ -330,9 +336,15 @@ msgid "DOB"
 msgstr "Төрсөн өдөр"
 
 #. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_create_bank_definition__manager_id
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_print_employee_definition__manager_id
 msgid "Definition Manager"
 msgstr "Батлах ажилтан"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee__departure_reason
+msgid "Departure Reason"
+msgstr "Чөлөөлөх шалтгаан"
 
 #. module: ubisol_hr_employee_upgrade
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.hr_employee_inherit_form_view
@@ -576,6 +588,11 @@ msgid "Main Info"
 msgstr "Үндсэн мэдээлэл"
 
 #. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_upgrade.selection__hr_employee__departure_reason__other
+msgid "Other"
+msgstr "Бусад"
+
+#. module: ubisol_hr_employee_upgrade
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.hr_employee_inherit_form_view
 msgid "Phone"
 msgstr "Утас"
@@ -636,6 +653,11 @@ msgstr "Хамаатан"
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.hr_employee_inherit_form_view
 msgid "Relative employee of work"
 msgstr "Тус компанид хамаатан ажилладаг эсэх"
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee__resign_date
+msgid "Resign Date"
+msgstr "Ажлаас гарсан өдөр"
 
 #. module: ubisol_hr_employee_upgrade
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.hr_employee_view_search
@@ -723,6 +745,11 @@ msgid "Ажлаас гарсан шалтгаан"
 msgstr ""
 
 #. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.hr_employee_inherit_form_view
+msgid "Ажлаас чөлөөлөлт"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
 msgid "Ажлаас шарсан огноо"
 msgstr ""
@@ -738,6 +765,21 @@ msgid "Боловсролын зэрэг"
 msgstr ""
 
 #. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_upgrade.selection__hr_employee__certificate__бусад
+msgid "Бусад"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.view_employee_inherit_filter
+msgid "Групп-д байдаг"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee__is_in_group
+msgid "Группд байдаг эсэх"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
 msgid "Гутал:"
 msgstr ""
@@ -745,6 +787,21 @@ msgstr ""
 #. module: ubisol_hr_employee_upgrade
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
 msgid "Дипломын дугаар"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_upgrade.selection__hr_employee__certificate__доктор
+msgid "Доктор"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_upgrade.selection__hr_employee__certificate__дээд_боловсрол
+msgid "Дээд боловсрол"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_upgrade.selection__hr_employee__certificate__ерөнхий_боловсрол
+msgid "Ерөнхий боловсрол"
 msgstr ""
 
 #. module: ubisol_hr_employee_upgrade
@@ -765,6 +822,11 @@ msgstr ""
 #. module: ubisol_hr_employee_upgrade
 #: model:ir.model.fields.selection,name:ubisol_hr_employee_upgrade.selection__hr_employee__home_owner__laon
 msgid "Зээл"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_upgrade.selection__hr_employee__certificate__магистр
+msgid "Магистр"
 msgstr ""
 
 #. module: ubisol_hr_employee_upgrade
@@ -806,6 +868,11 @@ msgstr ""
 #: model:ir.model.fields.selection,name:ubisol_hr_employee_upgrade.selection__hr_employee__is_served_in_military__yes
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
 msgid "Тийм"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields.selection,name:ubisol_hr_employee_upgrade.selection__hr_employee__certificate__тусгай_дунд_боловсрол
+msgid "Тусгай дунд боловсрол"
 msgstr ""
 
 #. module: ubisol_hr_employee_upgrade
@@ -858,6 +925,16 @@ msgstr ""
 #. module: ubisol_hr_employee_upgrade
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
 msgid "Хаана ямар байгууллагад"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.view_employee_inherit_filter
+msgid "Хөгжлийн бэрхшээлтэй"
+msgstr ""
+
+#. module: ubisol_hr_employee_upgrade
+#: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee__is_disabled
+msgid "Хөгжлийн бэрхшээлтэй эсэх"
 msgstr ""
 
 #. module: ubisol_hr_employee_upgrade

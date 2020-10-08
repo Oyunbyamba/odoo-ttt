@@ -55,6 +55,14 @@ class HrEmployee(models.Model):
         ('3', '3'),
         ('4', '4')
     ], string="Driver's blood type")
+    certificate = fields.Selection([
+        ('Ерөнхий боловсрол', 'Ерөнхий боловсрол'),
+        ('Тусгай дунд боловсрол', 'Тусгай дунд боловсрол'),
+        ('Дээд боловсрол', 'Дээд боловсрол'),
+        ('Магистр', 'Магистр'),
+        ('Доктор', 'Доктор'),
+        ('Бусад', 'Бусад'),
+    ], 'Certificate Level', default='Дээд боловсрол', groups="hr.group_hr_user", tracking=True)
     years_of_driving = fields.Integer(string='Years of driving')
     relative_employee_id = fields.Many2one('hr.employee', 'Relative', domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
     size_of_shirt = fields.Char(string='The size of shirt')
@@ -68,6 +76,10 @@ class HrEmployee(models.Model):
     longitude = fields.Char('Уртраг')
     employee_pictures = fields.One2many('hr.employee.picture', 'employee_id', string='Employee picture')
     # image=fields.Binary(compute='_getBase64Image') 
+    departure_reason = fields.Selection(selection_add=[('other', 'Other')])
+    resign_date = fields.Date('Resign Date', compute='_compute_resign_date', inverse='_set_document', store=True)
+    is_disabled = fields.Boolean('Хөгжлийн бэрхшээлтэй эсэх', default=False)
+    is_in_group = fields.Boolean('Группд байдаг эсэх', default=False)
 
     @api.onchange('spouse_complete_name', 'spouse_birthdate')
     def onchange_spouse(self):
@@ -88,8 +100,20 @@ class HrEmployee(models.Model):
         if(self.parent_id.user_id):
             self.leave_manager_id = self.parent_id.user_id
         else:
-           self.leave_manager_id = 0   
-        
+           self.leave_manager_id = 0
+
+    @api.depends('departure_reason')
+    def _compute_resign_date(self):
+        for employee in self:
+            if(employee.departure_reason):
+                employee.resign_date = fields.Date.context_today(self)
+            else:
+                employee.resign_date = fields.Date.context_today(self)
+    
+    def _set_document(self):
+        for employee in self:
+            employee.resign_date = employee.resign_date
+
     @api.model
     def create(self, vals):
         employee = super(HrEmployee, self).create(vals)
@@ -109,29 +133,33 @@ class HrEmployee(models.Model):
 
     def write(self, vals):
         employee = super(HrEmployee, self).write(vals)
-        contract_values = []
-        if(self.contract_id.id == 0): 
-            if self.contract_signed_date and self.create_contract:           
-                contract_values.append({
-                    'name': self.name,
-                    'employee_id': self.id,
-                    'date_start': self.contract_signed_date,
-                    'department_id': self.department_id.id,
-                    'job_id': self.job_id.id,
-                    'wage': 0
-                })
-                hr_contract = self.env['hr.contract'].create(contract_values)
-                hr_contract.write({'state': 'open', 'kanban_state': 'done'})
-                self.contract_id = hr_contract.id
-        else:
-            if self.contract_signed_date:           
-                prev_hr_contract = self.env['hr.contract'].browse(self.contract_id.id)
-                prev_hr_contract.name = self.name
-                prev_hr_contract.date_start = self.contract_signed_date
-                prev_hr_contract.department_id = self.department_id.id
-                prev_hr_contract.job_id = self.job_id.id
+        for hr_emp in self:
+            contract_values = []
+            for contract_id in hr_emp.contract_id:
+                if(contract_id.id == 0): 
+                    if hr_emp.contract_signed_date and hr_emp.create_contract:           
+                        contract_values.append({
+                            'name': hr_emp.name,
+                            'employee_id': hr_emp.id,
+                            'date_start': hr_emp.contract_signed_date,
+                            'department_id': hr_emp.department_id.id,
+                            'job_id': hr_emp.job_id.id,
+                            'wage': 0
+                        })
+                        hr_contract = hr_emp.env['hr.contract'].create(contract_values)
+                        hr_contract.write({'state': 'open', 'kanban_state': 'done'})
+                        contract_id.id = hr_contract.id
+                else:
+                    if hr_emp.contract_signed_date:           
+                        prev_hr_contract = hr_emp.env['hr.contract'].browse(contract_id.id)
+                        prev_hr_contract.name = hr_emp.name
+                        prev_hr_contract.date_start = hr_emp.contract_signed_date
+                        prev_hr_contract.department_id = hr_emp.department_id.id
+                        prev_hr_contract.job_id = hr_emp.job_id.id
+        
         return employee    
 
+   
     # @api.model
     # def _getBase64Image(self):
     #     print('base64')
@@ -173,5 +201,3 @@ class EmployeePicture(models.Model):
     check_in = fields.Datetime(string="Check In")
     check_out = fields.Datetime(string="Check Out")   
     second_pic = fields.Char(string="Check out img")
-
-   
