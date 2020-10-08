@@ -68,6 +68,7 @@ class HrEmployee(models.Model):
     longitude = fields.Char('Уртраг')
     employee_pictures = fields.One2many('hr.employee.picture', 'employee_id', string='Employee picture')
     # image=fields.Binary(compute='_getBase64Image') 
+    resign_date = fields.Date('Resign Date', compute='_compute_resign_date', store=True)
 
     @api.onchange('spouse_complete_name', 'spouse_birthdate')
     def onchange_spouse(self):
@@ -88,7 +89,15 @@ class HrEmployee(models.Model):
         if(self.parent_id.user_id):
             self.leave_manager_id = self.parent_id.user_id
         else:
-           self.leave_manager_id = 0   
+           self.leave_manager_id = 0
+
+    @api.depends('departure_reason')
+    def _compute_resign_date(self):
+        for employee in self:
+            if(employee.departure_reason):
+                employee.resign_date = fields.Date.context_today(self)
+            else:
+                employee.resign_date = fields.Date.context_today(self)
         
     @api.model
     def create(self, vals):
@@ -130,8 +139,10 @@ class HrEmployee(models.Model):
                 prev_hr_contract.date_start = self.contract_signed_date
                 prev_hr_contract.department_id = self.department_id.id
                 prev_hr_contract.job_id = self.job_id.id
+        
         return employee    
 
+   
     # @api.model
     # def _getBase64Image(self):
     #     print('base64')
@@ -173,5 +184,3 @@ class EmployeePicture(models.Model):
     check_in = fields.Datetime(string="Check In")
     check_out = fields.Datetime(string="Check Out")   
     second_pic = fields.Char(string="Check out img")
-
-   

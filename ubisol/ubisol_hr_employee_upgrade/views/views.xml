@@ -101,6 +101,14 @@
           </group>
         </xpath>
 
+        <xpath expr="//page[@name='public']/div/div/group[6]" position="after">
+          <group name="resignation" string="Ажлаас чөлөөлөлт" attrs="{'invisible': [('departure_reason', '=', False)]}">
+            <field name="departure_reason"/>
+            <field name="departure_description"/>
+            <field name="resign_date"/>
+          </group>
+        </xpath>
+
         <xpath expr="//group[@name='departure']" position="attributes">
           <attribute name="invisible">1</attribute> 
         </xpath>
