@@ -1,34 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <template id ="report_specification_pdf">
+    <template id="report_specification">
         <t t-call="web.html_container">
         <t t-set="company" t-value="env.company"/>
             <t t-foreach="docs" t-as="employee">
-                <t t-call="ubisol_hr_employee_upgrade.external_layout_mn_standard" t-lang="mn_MN">
-                    <div class="col-12 page" style="font-size: 16px !important;">
+                <t t-call="ubisol_hr_employee_upgrade.external_layout_mn_standard">
+                    <div class="col-12 page" style="font-size: 16px !important; line-height: 135%; padding-top:260px;">
+            
+                        <div class="text-center"><t t-esc="title"/></div>
+                            <hr style="border-top: 1px solid white;"/>
+                            <hr style="border-top: 1px solid white;"/>
                         <div>
-                            <br/><br/><br/><br/>
-                            <br/><br/><br/><br/>
-                            <br/><br/><br/><br/>
-                            <br/><br/>
-                        </div>
-                        <p class="text-center">ТОДОРХОЙЛОЛТ</p>
-                        <div class="col-12">
-                            <t t-esc="employee.surname"/> овогтой <t t-esc="employee.name"/> нь <t t-esc="employee.company_id.name"/> ХХК-д
+                            &#160; &#160; &#160; &#160; &#160;<t t-esc="employee.surname"/> овогтой <t t-esc="employee.name"/> нь <t t-esc="employee.company_id.name"/> ХХК-д
                             <t t-esc="employee.job_id.name"/> албан тушаалтай <t t-esc="employee.contract_id.wage"/> төгрөгийн үндсэн болон нэмэгдэл цалинтай 
                             ажилладаг нь үнэн болно.
                         </div>
+
+                        <div>
+                            <hr style="border-top: 1px solid white;"/>
+                            <hr style="border-top: 1px solid white;"/>
+                            <hr style="border-top: 1px solid white;"/>
+                            <span>Баталсан: </span> / <t t-esc="manager"/> /
+                        </div>
+
                     </div>
                 </t>
-            </t>
-        </t>
-    </template>
-
-    <template id ="report_specification">
-        <t t-call="web.html_container">
-            <t t-foreach="docs" t-as="doc">
-                <t t-call="ubisol_hr_employee_upgrade.report_specification_pdf"/>
             </t>
         </t>
     </template>

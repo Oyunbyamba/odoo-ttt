@@ -34,7 +34,9 @@
         'report/salary_specification.xml',
         'report/print_employee_badge_inherit.xml',
         'wizards/create_bank_definition.xml',
-        'views/hr_resume_views.xml'
+        'wizards/print_employee_definition.xml',
+        'views/hr_resume_views.xml',
+        'views/hr_departure.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

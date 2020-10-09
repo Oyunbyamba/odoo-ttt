@@ -6,18 +6,21 @@
         <t t-set="company" t-value="env.company"/>
             <t t-foreach="employee" t-as="e">
                 <t t-call="ubisol_hr_employee_upgrade.external_layout_mn_standard">
-                    <div class="col-12 page" style="font-size: 16px !important;">
+                    <div class="col-12 page" style="font-size: 16px !important; line-height: 135%; padding-top:260px;">
+                        <div class="text-center">"<t t-esc="organization_name"/>"-д</div>
+                            <hr style="border-top: 1px solid white;"/>
+                            <hr style="border-top: 1px solid white;"/>
                         <div>
-                            <br/><br/><br/><br/>
-                            <br/><br/><br/><br/>
-                            <br/><br/><br/><br/>
-                            <br/><br/>
-                        </div>
-                        <p class="text-center">"<t t-esc="organization_name"/>"-д</p>
-                        <div class="col-12">
-                            <t t-esc="e.surname"/> овогтой <t t-esc="e.name"/> нь <t t-esc="e.company_id.name"/> ХХК-д
+                            &#160; &#160; &#160; &#160; &#160;<t t-esc="e.surname"/> овогтой <t t-esc="e.name"/> нь <t t-esc="e.company_id.name"/> ХХК-д
                             <t t-esc="e.job_id.name"/> албан тушаалтай <t t-esc="e.contract_id.wage"/> төгрөгийн үндсэн болон нэмэгдэл цалинтай 
                             ажилладаг нь үнэн болно.
+                        </div>
+
+                        <div>
+                            <hr style="border-top: 1px solid white;"/>
+                            <hr style="border-top: 1px solid white;"/>
+                            <hr style="border-top: 1px solid white;"/>
+                            <span>Баталсан: </span> / <t t-esc="manager"/> /
                         </div>
                     </div>
                 </t>

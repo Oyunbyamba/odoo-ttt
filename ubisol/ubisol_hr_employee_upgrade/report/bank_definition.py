@@ -18,4 +18,5 @@ class ReportDefinitionPdf(models.AbstractModel):
             'doc_model': 'hr.employee',
             'organization_name': str(data['form']['bank_name'][1]).upper(),
             'employee': employee,
+            'manager': data['form']['manager_id'][1],
         }

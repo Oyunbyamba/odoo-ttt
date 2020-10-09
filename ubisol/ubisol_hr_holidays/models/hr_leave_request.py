@@ -9,15 +9,12 @@ class UbisolHolidaysRequest(models.Model):
     _inherit = 'hr.leave'
     _description = "Time Off"
 
-    years_of_worked_state = fields.Integer(
-        'Улсад ажилласан жил', compute='_compute_years_of_worked_state', readonly=True)
-    years_of_worked_company = fields.Float(
-        'Байгууллагад ажилласан жил', digits=(2,1), compute='_compute_years_of_worked_company', readonly=True)
-    employee_holiday = fields.Integer(
-        'Ажилласан жил', compute='_compute_employee_holiday', readonly=True)
-    warning_of_vacation = fields.Char(
-        'Ээлжийн амралт боломжтой эсэх', compute='_compute_warning_of_vacation', readonly=True)    
+    years_of_worked_state = fields.Integer('Улсад ажилласан жил', compute='_compute_years_of_worked_state', readonly=True)
+    years_of_worked_company = fields.Float('Байгууллагад ажилласан жил', digits=(2,1), compute='_compute_years_of_worked_company', readonly=True)
+    employee_holiday = fields.Integer('Ажилласан жил', compute='_compute_employee_holiday', readonly=True)
+    warning_of_vacation = fields.Char('Ээлжийн амралт боломжтой эсэх', compute='_compute_warning_of_vacation', readonly=True)    
     vacation_type = fields.Boolean('Ээлжийн амралт эсэх', compute='_compute_vacation_type', default=False)    
+    company_holiday_days = fields.Integer('Суурь амралтын хоног', compute='_compute_company_holiday_days')
    
     @api.depends('number_of_days')
     def _compute_number_of_days_display(self):
@@ -33,6 +30,18 @@ class UbisolHolidaysRequest(models.Model):
                     holiday.holiday_status_id = 7
                 else:
                     holiday.holiday_status_id = 9  
+                    
+    @api.onchange('holiday_status_id')
+    def _compute_company_holiday_days(self):
+        for holiday in self:
+            if(holiday.holiday_status_id.vacation == True):
+                contract_date = holiday.employee_id.contract_signed_date
+                if(contract_date):
+                    today = fields.Date.context_today(self)
+                    months = (today.year - contract_date.year)*12+today.month-contract_date.month
+                    if(months < 11): 
+                        holiday.company_holiday_days = round((months*15)/11)
+                
    
     @api.onchange('holiday_status_id')
     def _compute_years_of_worked_state(self):
@@ -51,31 +60,31 @@ class UbisolHolidaysRequest(models.Model):
                     today = fields.Date.context_today(self)
                     months = (today.year - contract_date.year)*12+today.month-contract_date.month
                     if(months < 11): 
-                        holiday.warning_of_vacation = 'Ажилласан сар 11-с илүү бол ээлжийн амралт авах боломжтой.'
+                        holiday.warning_of_vacation = 'Ажилласан сар 11-с бага байна.'
                     years = months/12
                     holiday.years_of_worked_company = years
             else:
                 holiday.years_of_worked_company = 0
-                holiday.warning_of_vacation = ''    
+                holiday.warning_of_vacation = ''  
                 
     @api.onchange('holiday_status_id')
     def _compute_employee_holiday(self):
         for holiday in self:
             if(holiday.holiday_status_id.vacation == True):
                 if(holiday.employee_id.years_of_civil_service <= 5):  
-                    holiday.employee_holiday = 15
+                    holiday.employee_holiday = holiday.company_holiday_days
                 elif(holiday.employee_id.years_of_civil_service >= 6 and holiday.employee_id.years_of_civil_service <= 10):
-                    holiday.employee_holiday = 18
+                    holiday.employee_holiday = holiday.company_holiday_days+3
                 elif(holiday.employee_id.years_of_civil_service >= 11 and holiday.employee_id.years_of_civil_service <= 15):
-                    holiday.employee_holiday = 20
+                    holiday.employee_holiday = holiday.company_holiday_days+5
                 elif(holiday.employee_id.years_of_civil_service >= 16 and holiday.employee_id.years_of_civil_service <= 20):
-                    holiday.employee_holiday = 22                 
+                    holiday.employee_holiday = holiday.company_holiday_days+7                 
                 elif(holiday.employee_id.years_of_civil_service >= 21 and holiday.employee_id.years_of_civil_service <= 25):
-                    holiday.employee_holiday = 24
+                    holiday.employee_holiday = holiday.company_holiday_days+9
                 elif(holiday.employee_id.years_of_civil_service >= 26 and holiday.employee_id.years_of_civil_service <= 31):
-                    holiday.employee_holiday = 26        
+                    holiday.employee_holiday = holiday.company_holiday_days+11        
                 elif(holiday.employee_id.years_of_civil_service >= 32):
-                    holiday.employee_holiday = 29    
+                    holiday.employee_holiday = holiday.company_holiday_days+14    
             else:
                 holiday.employee_holiday = 0        
 
