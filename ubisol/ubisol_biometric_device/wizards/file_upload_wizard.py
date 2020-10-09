@@ -48,18 +48,24 @@ class LogFileImportWizard(models.TransientModel):
             if duplicate_atten_ids:
                 return {}
             else:
-                status = self.check_in_out(get_user_id, atten_time)
-                print(atten_time)
+                status = self.check_in_out(att_obj, get_user_id, atten_time)
+                print(atten_time, status)
                 if(status == 'check_out'):
-                    att_obj.create(
-                        {'employee_id': get_user_id.id, 'check_out': atten_time})
+                    att_var1 = att_obj.search(
+                        [('employee_id', '=', get_user_id.id)])
+                    if att_var1:
+                        att_var1[-1].write({'check_out': atten_time})
+                elif (status == "update"):
+                    att_var = att_obj.search(
+                        [('employee_id', '=', get_user_id.id), ('check_out', '=', False)])
+                    att_var.write({'check_out': atten_time})
                 else:
                     att_obj.create(
                         {'employee_id': get_user_id.id, 'check_in': atten_time})
 
         return {}
 
-    def check_in_out(self, get_user_id, dt):
+    def check_in_out(self, att_obj, get_user_id, dt):
 
         d1 = datetime.strftime(dt, "%Y-%m-%d 00:00:00")
         d2 = datetime.strftime(dt, "%Y-%m-%d 23:59:59")
@@ -79,9 +85,12 @@ class LogFileImportWizard(models.TransientModel):
         elif(shift_start):
             return "check_in"
         else:
-            att_var = self.env['hr.attendance'].search(
+            att_var = att_obj.search(
                 [('employee_id', '=', get_user_id.id), ('check_out', '=', False)])
             if not att_var:
                 return "check_in"
+            elif len(att_var) == 1:
+                print("1 oldson")
+                return "update"
             else:
                 return "check_out"
