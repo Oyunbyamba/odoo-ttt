@@ -21,7 +21,6 @@
           <label for="employee_holiday" string="Ээлжийн амралтын хоног" attrs="{'invisible':[('vacation_type', '!=', True)]}"/>
           <div>
               <field name="employee_holiday" class="oe_inline" attrs="{'readonly': 1, 'invisible':[('vacation_type', '!=', True)] }"/>  
-              <field name="company_holiday_days" class="oe_inline" attrs="{'invisible': True}"/>  
           </div>
         </xpath>
         
