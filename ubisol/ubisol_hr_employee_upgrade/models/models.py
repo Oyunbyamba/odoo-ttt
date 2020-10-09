@@ -119,43 +119,53 @@ class HrEmployee(models.Model):
         employee = super(HrEmployee, self).create(vals)
         contract_values = []
         if employee.contract_signed_date:
-                contract_values.append({
-                    'name': self.name,
-                    'employee_id': self.id,
-                    'date_start': self.contract_signed_date,
-                    'department_id': self.department_id.id,
-                    'job_id': self.job_id.id,
-                    'wage': 0
-                })
-                hr_contract = self.env['hr.contract'].create(contract_values)
-                hr_contract.write({'state': 'open', 'kanban_state': 'done'})
+            print(self.contract_signed_date)
+            trail_date =  self.contract_signed_date + timedelta(days=+90)
+            print(trail_date)
+            contract_values.append({
+                'name': self.name,
+                'employee_id': self.id,
+                'date_start': self.contract_signed_date,
+                'department_id': self.department_id.id,
+                'job_id': self.job_id.id,
+                'wage': 0
+            })
+            hr_contract = self.env['hr.contract'].create(contract_values)
+            hr_contract.write({'state': 'open', 'kanban_state': 'done'})
         return employee
 
     def write(self, vals):
         employee = super(HrEmployee, self).write(vals)
         for hr_emp in self:
             contract_values = []
-            for contract_id in hr_emp.contract_id:
-                if(contract_id.id == 0): 
-                    if hr_emp.contract_signed_date and hr_emp.create_contract:           
+            if(hr_emp.contract_id.id == False):
+                if hr_emp.contract_signed_date and hr_emp.create_contract:    
+                        trial_date =  hr_emp.contract_signed_date + timedelta(days=+90)
                         contract_values.append({
                             'name': hr_emp.name,
                             'employee_id': hr_emp.id,
                             'date_start': hr_emp.contract_signed_date,
                             'department_id': hr_emp.department_id.id,
                             'job_id': hr_emp.job_id.id,
-                            'wage': 0
+                            'wage': 0,
+                            'trial_date_end': trial_date
                         })
                         hr_contract = hr_emp.env['hr.contract'].create(contract_values)
-                        hr_contract.write({'state': 'open', 'kanban_state': 'done'})
-                        contract_id.id = hr_contract.id
-                else:
-                    if hr_emp.contract_signed_date:           
+                        if(trial_date < fields.Date.context_today(self)):
+                            hr_contract.write({'state': 'open', 'kanban_state': 'done'})
+                        else:
+                            hr_contract.write({'state': 'draft', 'kanban_state': 'normal'})
+                        hr_emp.contract_id = hr_contract.id
+            else:            
+                for contract_id in hr_emp.contract_id:
+                    if hr_emp.contract_signed_date:    
+                        trial_date =  hr_emp.contract_signed_date + timedelta(days=+90)
                         prev_hr_contract = hr_emp.env['hr.contract'].browse(contract_id.id)
                         prev_hr_contract.name = hr_emp.name
                         prev_hr_contract.date_start = hr_emp.contract_signed_date
                         prev_hr_contract.department_id = hr_emp.department_id.id
                         prev_hr_contract.job_id = hr_emp.job_id.id
+                        prev_hr_contract.trial_date_end = trial_date
         
         return employee    
 

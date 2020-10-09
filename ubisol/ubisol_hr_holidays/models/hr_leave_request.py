@@ -14,7 +14,7 @@ class UbisolHolidaysRequest(models.Model):
     employee_holiday = fields.Integer('Ажилласан жил', compute='_compute_employee_holiday', readonly=True)
     warning_of_vacation = fields.Char('Ээлжийн амралт боломжтой эсэх', compute='_compute_warning_of_vacation', readonly=True)    
     vacation_type = fields.Boolean('Ээлжийн амралт эсэх', compute='_compute_vacation_type', default=False)    
-    company_holiday_days = fields.Integer('Суурь амралтын хоног', compute='_compute_company_holiday_days')
+    company_holiday_days = fields.Integer('Суурь амралтын хоног', compute='_compute_company_holiday_days', default=15, readonly=True)
    
     @api.depends('number_of_days')
     def _compute_number_of_days_display(self):
@@ -35,13 +35,13 @@ class UbisolHolidaysRequest(models.Model):
     def _compute_company_holiday_days(self):
         for holiday in self:
             if(holiday.holiday_status_id.vacation == True):
+                holiday.company_holiday_days = 15
                 contract_date = holiday.employee_id.contract_signed_date
                 if(contract_date):
-                    today = fields.Date.context_today(self)
+                    today = fields.Date.today()
                     months = (today.year - contract_date.year)*12+today.month-contract_date.month
                     if(months < 11): 
                         holiday.company_holiday_days = round((months*15)/11)
-                
    
     @api.onchange('holiday_status_id')
     def _compute_years_of_worked_state(self):
