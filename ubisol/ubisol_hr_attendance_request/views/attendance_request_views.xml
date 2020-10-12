@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<odoo>
+
+    <record id="hr_attendance_request_view_form" model="ir.ui.view">
+        <field name="name">hr.attendance.request.view.form</field>
+        <field name="model">hr.attendance.request</field>
+        <field name="arch" type="xml">
+            <form string="Ирцийн хүсэлт">
+            <header>
+            </header>
+            <sheet> 
+                <h1>
+                    <field name="name"/>
+                </h1>
+                <group>
+                    <field name="state"/>
+                    <field name="start_datetime"></field>
+                    <field name="end_datetime"></field>
+                    <field name="request_type"></field>
+                    <field name="request_status_type"></field>
+                    <field name="validation_type"></field>
+                    <field name="notes"/>
+                    <field name="state"/>
+                </group>
+            </sheet>
+            
+            </form>
+        </field>
+    </record>
+
+    <record id="hr_attendance_request_view_tree" model="ir.ui.view">
+        <field name="name">hr.attendance.request.tree</field>
+        <field name="model">hr.attendance.request</field>
+        <field name="arch" type="xml">
+            <tree string="Attendance Requests">
+                <field name="name"/>
+                <field name="start_datetime"/>
+                <field name="end_datetime"/>
+                <field name="request_status_type"/>
+                <field name="validation_type"/>
+                <field name="notes"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="hr_attendance_request_action_my" model="ir.actions.act_window">
+        <field name="name">Attendance Requests</field>
+        <field name="res_model">hr.attendance.request</field>
+        <field name="view_mode">tree,form</field>
+       
+    </record>
+
+</odoo>
