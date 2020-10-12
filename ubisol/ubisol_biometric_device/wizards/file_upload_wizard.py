@@ -28,6 +28,8 @@ class LogFileImportWizard(models.TransientModel):
 
     def import_attendance(self, row):
 
+        device_id = self.env.context.get('active_ids')
+
         atten_time = row[1]
         atten_time = datetime.strptime(
             atten_time, '%Y-%m-%d %H:%M:%S')
@@ -42,26 +44,36 @@ class LogFileImportWizard(models.TransientModel):
 
         get_user_id = self.env['hr.employee'].search(
             [('pin', '=', str(row[0]).strip())])
+
+        duplicate_atten_ids = self.env['biometric.attendance'].search(
+            [('pin_code', '=', str(row[0]).strip()),  ('punch_date_time', '=', atten_time)])
+        if duplicate_atten_ids:
+            return {}
+        else:
+            self.env['biometric.attendance'].create({'device_id': device_id[0],
+                                                     'pin_code': str(row[0]).strip(),
+                                                     'punch_date_time': atten_time,
+                                                     'attendance_data': str(row[2]),
+                                                     'attendance_data1': str(row[3]),
+                                                     'attendance_data2': str(row[4]),
+                                                     'attendance_data3': str(row[5])})
+
+        # Herev hereglegch oldson bol
         if get_user_id:
-            duplicate_atten_ids = self.env['hr.attendance'].search(
-                [('employee_id', '=', str(get_user_id.id)),  ('check_in', '=', atten_time)])
-            if duplicate_atten_ids:
-                return {}
+            status = self.check_in_out(att_obj, get_user_id, atten_time)
+            print(atten_time, status)
+            if(status == 'check_out'):
+                att_var1 = att_obj.search(
+                    [('employee_id', '=', get_user_id.id)])
+                if att_var1:
+                    att_var1[-1].write({'check_out': atten_time})
+            elif (status == "update"):
+                att_var = att_obj.search(
+                    [('employee_id', '=', get_user_id.id), ('check_out', '=', False)])
+                att_var.write({'check_out': atten_time})
             else:
-                status = self.check_in_out(att_obj, get_user_id, atten_time)
-                print(atten_time, status)
-                if(status == 'check_out'):
-                    att_var1 = att_obj.search(
-                        [('employee_id', '=', get_user_id.id)])
-                    if att_var1:
-                        att_var1[-1].write({'check_out': atten_time})
-                elif (status == "update"):
-                    att_var = att_obj.search(
-                        [('employee_id', '=', get_user_id.id), ('check_out', '=', False)])
-                    att_var.write({'check_out': atten_time})
-                else:
-                    att_obj.create(
-                        {'employee_id': get_user_id.id, 'check_in': atten_time})
+                att_obj.create(
+                    {'employee_id': get_user_id.id, 'check_in': atten_time})
 
         return {}
 
