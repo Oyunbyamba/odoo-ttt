@@ -67,10 +67,10 @@ class LogFileImportWizard(models.TransientModel):
                     [('employee_id', '=', get_user_id.id)])
                 if att_var1:
                     att_var1[-1].write({'check_out': atten_time})
-            elif (status == "update"):
+            elif (status == "update_check_out"):
                 att_var = att_obj.search(
-                    [('employee_id', '=', get_user_id.id), ('check_out', '=', False)])
-                att_var.write({'check_out': atten_time})
+                    [('employee_id', '=', get_user_id.id)])
+                att_var[-1].write({'check_out': atten_time})
             else:
                 att_obj.create(
                     {'employee_id': get_user_id.id, 'check_in': atten_time})
@@ -97,12 +97,34 @@ class LogFileImportWizard(models.TransientModel):
         elif(shift_start):
             return "check_in"
         else:
-            att_var = att_obj.search(
-                [('employee_id', '=', get_user_id.id), ('check_out', '=', False)])
-            if not att_var:
-                return "check_in"
-            elif len(att_var) == 1:
-                print("1 oldson")
-                return "update"
-            else:
+            work_start = datetime.strptime(
+                datetime.strftime(dt, "%Y-%m-%d  01:00:00"), "%Y-%m-%d %H:%M:%S")
+            work_end = datetime.strptime(datetime.strftime(
+                dt, "%Y-%m-%d 10:00:00"), "%Y-%m-%d %H:%M:%S")
+
+            check_out = abs(dt - work_end).total_seconds()
+            check_in = abs(dt - work_start).total_seconds()
+
+            if(check_out < check_in):
+
+                update_check_out = self.env['hr.attendance'].search(
+                    [('employee_id', '=', get_user_id.id), ('check_out', '>=', work_start), ('check_out', '<', dt)])
+                if(update_check_out):
+                    return "update_check_out"
                 return "check_out"
+            else:
+                update_check_out = self.env['hr.attendance'].search(
+                    [('employee_id', '=', get_user_id.id), ('check_in', '>=', work_start), ('check_out', '<', dt)])
+                if(update_check_out):
+                    return "update_check_in"
+                return "check_in"
+
+            # att_var = att_obj.search(
+            #     [('employee_id', '=', get_user_id.id), ('check_out', '=', False)])
+            # if not att_var:
+            #     return "check_in"
+            # elif len(att_var) == 1:
+            #     print("1 oldson")
+            #     return "update"
+            # else:
+            #     return "check_out"

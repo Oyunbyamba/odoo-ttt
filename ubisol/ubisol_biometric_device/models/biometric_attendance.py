@@ -2,7 +2,7 @@
 
 import pytz
 import sys
-import datetime
+from datetime import datetime
 import logging
 import binascii
 
