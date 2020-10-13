@@ -82,8 +82,7 @@ class HrAttendanceReport(models.Model):
     def _compute_worked_hours(self):
         for record in self:
             is_rest = True
-            if record.day_period:
-                is_rest = record.day_period.is_rest
+            is_rest = record.day_period.is_rest
             if is_rest:
                 record.worked_hours = 0.0
             else:
@@ -160,6 +159,7 @@ class HrAttendanceReport(models.Model):
                         ('check_in', '<=', self._convert_datetime_field(date_to)),
                         ('employee_id', '=', employee['hr_employee']),
                     ])
+
                     for attendance in attendances:
                         if attendance:
                             values['hr_attendance'] = attendance.id
@@ -169,6 +169,5 @@ class HrAttendanceReport(models.Model):
 
                             self.env['hr.attendance.report'].search([('hr_attendance', '=', attendance.id)]).unlink()
                         
-                    dates_btwn = dates_btwn + relativedelta(days=1)
                     super(HrAttendanceReport, self).create(values)
-                
+                dates_btwn = dates_btwn + relativedelta(days=1)

@@ -16,7 +16,27 @@ class HrAttendance(models.Model):
     device_id = fields.Char(string='Biometric Device ID', help="Device Id")
 
     check_in = fields.Datetime(
-        string="Check In", required=False)
+        string="Check In", default=None, required=False)
+
+
+    @api.depends('check_in', 'check_out')
+    def _compute_worked_hours(self):
+        for attendance in self:
+            if attendance.check_in and attendance.check_out:
+                delta = attendance.check_out - attendance.check_in
+                attendance.worked_hours = delta.total_seconds() / 3600.0
+            else:
+                attendance.worked_hours = False
+
+    @api.constrains('check_in', 'check_out')
+    def _check_validity_check_in_check_out(self):
+        """ verifies if check_in is earlier than check_out. """
+        # for attendance in self:
+        #     if attendance.check_in and attendance.check_out:
+        #         if attendance.check_out < attendance.check_in:
+        #             raise exceptions.ValidationError(
+        #                 _('"Check Out" time cannot be earlier than "Check In" time.'))
+
 
     @api.constrains('check_in',  'employee_id')
     def _check_validity(self):

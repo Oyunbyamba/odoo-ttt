@@ -33,47 +33,47 @@
       <field name="model">resource.calendar</field>
       <field name="inherit_id" ref="resource.resource_calendar_form"/>
       <field name="arch" type="xml">
-          <xpath expr="//group[@name='resource_details']" position="replace">
-            <group>
-              <field name="shift_type" style="height:30px;width:200px;font-size:16;"/>
-              <field name="color" invisible="1"/>
-            </group>
-            <group colspan="1" string="Амралтын өдрийн цагийн хуваарь" attrs="{'invisible':[('shift_type', '!=', 'shift')]}">
-              <div class="oe_inline">
-                Амралтын өдөр
-                <field nolabel="1" name="weekend_time" style="width: auto" widget="float_time"/>
-                цагийн
-                <field nolabel="1" name="weekend_time_type" style="width: auto"/>
-                ажил эхлэнэ.
-              </div>
-            </group>
-          </xpath>
-          <xpath expr="//notebook" position="replace">
-              <group string="Days Schedule" attrs="{'invisible':[('shift_type', '!=', 'days')]}">
-                <field name="factory_day_ids" nolabel="1">
-                    <tree editable="bottom">
-                      <field name="name"/>
-                      <field name="week_day"/>
-                      <field name="start_work" widget="float_time"/>
-                      <field name="end_work" widget="float_time"/>
-                      <field name="lunch_time_from" widget="float_time"/>
-                      <field name="lunch_time_to" widget="float_time"/>
-                    </tree>
-                </field>
-              </group>
-              <group string="Shift Schedule" attrs="{'invisible':[('shift_type', '!=', 'shift')]}">
-                <field name="normal_day_ids" nolabel="1">
-                    <tree editable="bottom">
-                      <field name="name"/>
-                      <field name="day_period"/>
-                      <field name="start_work" widget="float_time"/>
-                      <field name="end_work" widget="float_time"/>
-                      <field name="lunch_time_from" widget="float_time"/>
-                      <field name="lunch_time_to" widget="float_time"/>
-                    </tree>
-                </field>
-              </group>
-          </xpath>
+        <xpath expr="//group[@name='resource_details']" position="replace">
+          <group>
+            <field name="shift_type" style="height:30px;width:200px;font-size:16;"/>
+            <field name="color" invisible="1"/>
+          </group>
+          <group colspan="1" string="Амралтын өдрийн цагийн хуваарь" attrs="{'invisible':[('shift_type', '!=', 'shift')]}">
+            <div class="oe_inline">
+              Амралтын өдөр
+              <field nolabel="1" name="weekend_time" style="width: auto" widget="float_time"/>
+              цагийн
+              <field nolabel="1" name="weekend_time_type" style="width: auto"/>
+              ажил эхлэнэ.
+            </div>
+          </group>
+        </xpath>
+        <xpath expr="//notebook" position="replace">
+          <group string="Days Schedule" attrs="{'invisible':[('shift_type', '!=', 'days')]}">
+            <field name="factory_day_ids" nolabel="1">
+              <tree editable="bottom">
+                <field name="name"/>
+                <field name="week_day"/>
+                <field name="start_work" widget="float_time"/>
+                <field name="end_work" widget="float_time"/>
+                <field name="lunch_time_from" widget="float_time"/>
+                <field name="lunch_time_to" widget="float_time"/>
+              </tree>
+            </field>
+          </group>
+          <group string="Shift Schedule" attrs="{'invisible':[('shift_type', '!=', 'shift')]}">
+            <field name="normal_day_ids" nolabel="1">
+              <tree editable="bottom">
+                <field name="name"/>
+                <field name="day_period"/>
+                <field name="start_work" widget="float_time"/>
+                <field name="end_work" widget="float_time"/>
+                <field name="lunch_time_from" widget="float_time"/>
+                <field name="lunch_time_to" widget="float_time"/>
+              </tree>
+            </field>
+          </group>
+        </xpath>
       </field>
     </record>
 
