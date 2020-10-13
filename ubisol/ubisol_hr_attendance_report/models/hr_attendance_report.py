@@ -42,7 +42,7 @@ class HrAttendanceReport(models.Model):
 
     check_in = fields.Datetime(string="Check In")
     check_out = fields.Datetime(string="Check Out")
-    worked_hours = fields.Float(string='Worked Hours')
+    worked_hours = fields.Float(string='Worked Hours', compute="_compute_worked_hours", store=True, compute_sudo=True)
 
     difference_check_in = fields.Float(compute="_compute_difference_check_in", store=True, compute_sudo=True)
     difference_check_out = fields.Float(compute="_compute_difference_check_out", store=True, compute_sudo=True)
@@ -52,11 +52,14 @@ class HrAttendanceReport(models.Model):
     def _compute_difference_check_in(self):
         for record in self:
             if record.check_in:
-                record.difference_check_in = (
-                    ((record.start_work).day*3600*24 + (record.start_work).hour*3600 + (record.start_work).minute*60 + (record.start_work).second) 
-                    - 
-                    ((record.check_in).day*3600*24 + (record.check_in).hour*3600 + (record.check_in).minute*60 + (record.check_in).second)
-                    ) / 3600
+                if record.start_work >= record.check_in:
+                    record.difference_check_in = 0
+                else:
+                    record.difference_check_in = (
+                        ((record.check_in).day*3600*24 + (record.check_in).hour*3600 + (record.check_in).minute*60 + (record.check_in).second)
+                        - 
+                        ((record.start_work).day*3600*24 + (record.start_work).hour*3600 + (record.start_work).minute*60 + (record.start_work).second) 
+                        ) / 3600
             else:
                 record.difference_check_in = 0
 
@@ -64,13 +67,47 @@ class HrAttendanceReport(models.Model):
     def _compute_difference_check_out(self):
         for record in self:
             if record.check_out:
-                record.difference_check_out = (
-                    ((record.check_out).day*3600*24 + (record.check_out).hour*3600 + (record.check_out).minute*60 + (record.check_out).second) 
-                    - 
-                    ((record.end_work).day*3600*24 + (record.end_work).hour*3600 + (record.end_work).minute*60 + (record.end_work).second)
-                    ) / 3600
+                if record.check_out >= record.end_work:
+                    record.difference_check_out = 0
+                else:
+                    record.difference_check_out = (
+                        ((record.end_work).day*3600*24 + (record.end_work).hour*3600 + (record.end_work).minute*60 + (record.end_work).second)
+                        -
+                        ((record.check_out).day*3600*24 + (record.check_out).hour*3600 + (record.check_out).minute*60 + (record.check_out).second)
+                        ) / 3600
             else:
                 record.difference_check_out = 0
+
+    @api.depends('check_in', "start_work", 'check_out', "end_work", "day_period")
+    def _compute_worked_hours(self):
+        for record in self:
+            is_rest = True
+            if record.day_period:
+                is_rest = record.day_period.is_rest
+            if is_rest:
+                record.worked_hours = 0.0
+            else:
+                check_in = record.start_work
+                check_out = record.end_work
+                if record.check_out and record.check_in:
+                    if record.start_work < record.check_in:
+                        check_in = record.check_in
+                    if record.check_out < record.end_work:
+                        check_out = record.check_out
+                    delta = check_out - check_in
+                    record.worked_hours = delta.total_seconds() / 3600.0
+                elif record.check_out:
+                    if record.check_out < record.end_work:
+                        check_out = record.check_out
+                    delta = check_out - check_in
+                    record.worked_hours = delta.total_seconds() / 3600.0
+                elif record.check_in:
+                    if record.start_work < record.check_in:
+                        check_in = record.check_in
+                    delta = check_out - check_in
+                    record.worked_hours = delta.total_seconds() / 3600.0
+                else:
+                    record.worked_hours = 0.0
 
     def _convert_datetime_field(self, datetime_field, user=None):
         user_tz = self.env.user.tz or pytz.utc

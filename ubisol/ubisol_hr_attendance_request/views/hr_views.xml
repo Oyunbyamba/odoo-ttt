@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<odoo>
+
+    <menuitem name="Attendance Request"
+      id="menu_hr_attendance_request_root"
+      web_icon="hr_holidays,static/description/icon.png"
+      parent="hr.menu_hr_root"
+      groups="base.group_user"/>
+
+    <menuitem
+        id="menu_hr_attendance_my_requests"
+        name="My Attendance Request"
+        action="hr_attendance_request_action_my"
+        parent="menu_hr_attendance_request_root"
+        sequence="1"/>
+    
+</odoo>

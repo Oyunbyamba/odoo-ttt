@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-09 02:32+0000\n"
-"PO-Revision-Date: 2020-10-09 02:32+0000\n"
+"POT-Creation-Date: 2020-10-12 03:15+0000\n"
+"PO-Revision-Date: 2020-10-12 03:15+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -38,7 +38,7 @@ msgid ""
 "<p class=\"oe_view_nocontent_create\">\n"
 "                           Click to Create for New Documents\n"
 "                        </p>"
-msgstr "Шинэ баримт үүсгэх"
+msgstr ""
 
 #. module: oh_employee_documents_expiry
 #: model:ir.model,name:oh_employee_documents_expiry.model_ir_attachment
@@ -53,43 +53,43 @@ msgstr "Хавсралт"
 #: model:ir.model.fields,field_description:oh_employee_documents_expiry.field_hr_document__create_uid
 #: model:ir.model.fields,field_description:oh_employee_documents_expiry.field_hr_employee_document__create_uid
 msgid "Created by"
-msgstr ""
+msgstr "Үүсгэсэн этгээд"
 
 #. module: oh_employee_documents_expiry
 #: model:ir.model.fields,field_description:oh_employee_documents_expiry.field_document_type__create_date
 #: model:ir.model.fields,field_description:oh_employee_documents_expiry.field_hr_document__create_date
 #: model:ir.model.fields,field_description:oh_employee_documents_expiry.field_hr_employee_document__create_date
 msgid "Created on"
-msgstr ""
+msgstr "Үүсгэсэн огноо"
 
 #. module: oh_employee_documents_expiry
 #: model:ir.model.fields,help:oh_employee_documents_expiry.field_hr_employee_document__expiry_date
 msgid "Date of expiry"
-msgstr "Дуусах огноо"
+msgstr "Хугацаа дуусах огноо"
 
 #. module: oh_employee_documents_expiry
 #: model:ir.model.fields,help:oh_employee_documents_expiry.field_hr_employee_document__issue_date
 msgid "Date of issue"
-msgstr ""
+msgstr "Гаргасан огноо"
 
 #. module: oh_employee_documents_expiry
 #: model:ir.model.fields,field_description:oh_employee_documents_expiry.field_hr_employee_document__before_days
 msgid "Days"
-msgstr "Өдрүүд"
+msgstr "Өдөр"
 
 #. module: oh_employee_documents_expiry
 #: model:ir.model.fields,field_description:oh_employee_documents_expiry.field_hr_employee_document__description
 #: model:ir.model.fields,help:oh_employee_documents_expiry.field_hr_employee_document__description
 #: model_terms:ir.ui.view,arch_db:oh_employee_documents_expiry.employee_document_form_view
 msgid "Description"
-msgstr "Тодорхойлолт"
+msgstr "Тайлбар"
 
 #. module: oh_employee_documents_expiry
 #: model:ir.model.fields,field_description:oh_employee_documents_expiry.field_document_type__display_name
 #: model:ir.model.fields,field_description:oh_employee_documents_expiry.field_hr_document__display_name
 #: model:ir.model.fields,field_description:oh_employee_documents_expiry.field_hr_employee_document__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Дэлгэрэнгүй нэр"
 
 #. module: oh_employee_documents_expiry
 #: model:ir.model.fields,field_description:oh_employee_documents_expiry.field_hr_employee_document__name
@@ -114,7 +114,7 @@ msgstr "Баримтын төрөл"
 #: code:addons/oh_employee_documents_expiry/models/employee_documents.py:0
 #, python-format
 msgid "Document-%s Expired On %s"
-msgstr "Баримт %s дуусна %s"
+msgstr "Баримт-%s дуусна %s"
 
 #. module: oh_employee_documents_expiry
 #: code:addons/oh_employee_documents_expiry/models/employee_documents.py:0
@@ -142,19 +142,19 @@ msgstr "Ажилтан"
 #: model:ir.cron,cron_name:oh_employee_documents_expiry.employee_data_reminder
 #: model:ir.cron,name:oh_employee_documents_expiry.employee_data_reminder
 msgid "Employee Document Expiration"
-msgstr "Ажилтаны баримтын дуусах хугацаа"
+msgstr "Ажилтны баримтын дуусах хугацаа"
 
 #. module: oh_employee_documents_expiry
 #: model:ir.actions.act_window,name:oh_employee_documents_expiry.hr_employee_document_type_action
 #: model:ir.ui.menu,name:oh_employee_documents_expiry.document_types_menuitem
 msgid "Employee Document Types"
-msgstr "Ажилтаны баримтын төрөл"
+msgstr "Ажилтны баримтын төрөл"
 
 #. module: oh_employee_documents_expiry
 #: model:ir.actions.act_window,name:oh_employee_documents_expiry.hr_employee_document_action
 #: model_terms:ir.ui.view,arch_db:oh_employee_documents_expiry.search_employee_documents
 msgid "Employee Documents"
-msgstr "Ажилтаны баримтууд"
+msgstr "Ажилтны баримтууд"
 
 #. module: oh_employee_documents_expiry
 #: model:ir.model.fields,field_description:oh_employee_documents_expiry.field_hr_employee_document__employee_ref
@@ -164,32 +164,32 @@ msgstr ""
 #. module: oh_employee_documents_expiry
 #: model_terms:ir.ui.view,arch_db:oh_employee_documents_expiry.view_employee_category_form2
 msgid "Employee Tags"
-msgstr ""
+msgstr "Ажилтны Пайзууд"
 
 #. module: oh_employee_documents_expiry
 #: model:ir.model.fields.selection,name:oh_employee_documents_expiry.selection__hr_employee_document__notification_type__everyday
 msgid "Everyday till expiry date"
-msgstr ""
+msgstr "Хугацаа дуусах хүртэл өдөр бүр"
 
 #. module: oh_employee_documents_expiry
 #: model:ir.model.fields,field_description:oh_employee_documents_expiry.field_hr_employee_document__expiry_date
 msgid "Expiry Date"
-msgstr "Дуусах хугацаа"
+msgstr "Дуусах огноо"
 
 #. module: oh_employee_documents_expiry
 #: model_terms:ir.ui.view,arch_db:oh_employee_documents_expiry.search_employee_documents
 msgid "Group By"
-msgstr ""
+msgstr "Бүлэглэлт"
 
 #. module: oh_employee_documents_expiry
 #: model:ir.model,name:oh_employee_documents_expiry.model_hr_employee_document
 msgid "HR Employee Documents"
-msgstr "Хүний нөөцийн ажилтаны баримт"
+msgstr "ХН-н ажилтны баримтууд"
 
 #. module: oh_employee_documents_expiry
 #: model:ir.model.fields,help:oh_employee_documents_expiry.field_hr_employee_document__before_days
 msgid "How many number of days before to get the notification email"
-msgstr "Хэдэн өдрийн өмнө имэйл мэдэгдэх вэ?"
+msgstr "Имэйлээр мэдэгдэхээс хэд хоногийн өмнө"
 
 #. module: oh_employee_documents_expiry
 #: model:ir.model.fields,field_description:oh_employee_documents_expiry.field_document_type__id
@@ -201,28 +201,28 @@ msgstr ""
 #. module: oh_employee_documents_expiry
 #: model:ir.model.fields,field_description:oh_employee_documents_expiry.field_hr_employee_document__issue_date
 msgid "Issue Date"
-msgstr ""
+msgstr "Гаргасан огноо"
 
 #. module: oh_employee_documents_expiry
 #: model:ir.model.fields,field_description:oh_employee_documents_expiry.field_document_type____last_update
 #: model:ir.model.fields,field_description:oh_employee_documents_expiry.field_hr_document____last_update
 #: model:ir.model.fields,field_description:oh_employee_documents_expiry.field_hr_employee_document____last_update
 msgid "Last Modified on"
-msgstr "Хамгийн сүүлд зассан"
+msgstr "Сүүлд зассан огноо"
 
 #. module: oh_employee_documents_expiry
 #: model:ir.model.fields,field_description:oh_employee_documents_expiry.field_document_type__write_uid
 #: model:ir.model.fields,field_description:oh_employee_documents_expiry.field_hr_document__write_uid
 #: model:ir.model.fields,field_description:oh_employee_documents_expiry.field_hr_employee_document__write_uid
 msgid "Last Updated by"
-msgstr "Хамгийн сүүлд зассан"
+msgstr "Сүүлд зассан этгээд"
 
 #. module: oh_employee_documents_expiry
 #: model:ir.model.fields,field_description:oh_employee_documents_expiry.field_document_type__write_date
 #: model:ir.model.fields,field_description:oh_employee_documents_expiry.field_hr_document__write_date
 #: model:ir.model.fields,field_description:oh_employee_documents_expiry.field_hr_employee_document__write_date
 msgid "Last Updated on"
-msgstr Хамгийн сүүлд зассан""
+msgstr "Сүүлд зассан огноо"
 
 #. module: oh_employee_documents_expiry
 #: model:ir.model.fields,field_description:oh_employee_documents_expiry.field_document_type__name
@@ -244,7 +244,7 @@ msgstr "Мэдэгдэлийн төрөл"
 #. module: oh_employee_documents_expiry
 #: model:ir.model.fields.selection,name:oh_employee_documents_expiry.selection__hr_employee_document__notification_type__multi
 msgid "Notification before few days"
-msgstr "Хэдэн өдрийн өмнө мэдэгдэх"
+msgstr "Хэд хоногийн өмнө мэдэгдэх"
 
 #. module: oh_employee_documents_expiry
 #: model:ir.model.fields.selection,name:oh_employee_documents_expiry.selection__hr_employee_document__notification_type__everyday_after
@@ -260,7 +260,7 @@ msgstr "Хугацаа дуусах өдөр мэдэгдэх"
 #: model:ir.model.fields,help:oh_employee_documents_expiry.field_hr_document__attach_id
 #: model:ir.model.fields,help:oh_employee_documents_expiry.field_hr_employee_document__doc_attachment_id
 msgid "You can attach the copy of your document"
-msgstr "Баримтын хуулбар хавсаргах"
+msgstr "Баримтын хавсралт оруулах"
 
 #. module: oh_employee_documents_expiry
 #: model:ir.model.fields,help:oh_employee_documents_expiry.field_hr_document__name

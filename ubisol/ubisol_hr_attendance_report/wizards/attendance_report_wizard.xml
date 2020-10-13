@@ -4,7 +4,7 @@
         id="act_wizard_compute_attendance_report"
         model="ir.actions.act_window"
     >
-        <field name="name">Compute Attendance Report</field>
+        <field name="name">Ирцийн график тооцоолох</field>
         <field name="res_model">attendance.report.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
@@ -23,10 +23,10 @@
                     <button
                         name="action_compute"
                         type="object"
-                        string="Compute"
+                        string="Тооцоолох"
                         class="oe_highlight"
                     />
-                    <button special="cancel" string="Cancel" />
+                    <button special="cancel" string="Цуцлах" />
                 </footer>
             </form>
         </field>
