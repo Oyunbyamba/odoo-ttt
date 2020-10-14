@@ -39,6 +39,11 @@ odoo.define("web_timeline.TimelineRenderer", function(require) {
             this.modelClass = params.view.model;
             this.fields = params.fields;
 
+            this.draggable = params.draggable;
+            this.updatable = params.updatable;
+            this.removable = params.removable;
+            this.creatable = params.creatable;
+
             this.timeline = false;
         },
 
@@ -240,7 +245,9 @@ odoo.define("web_timeline.TimelineRenderer", function(require) {
             this.canvas = new TimelineCanvas(this);
             this.canvas.appendTo(this.$centerContainer);
             this.timeline.on("changed", () => {
-                this.draw_canvas();
+                if(this.draggable) {
+                    this.draw_canvas();
+                }
             });
         },
 
@@ -250,9 +257,11 @@ odoo.define("web_timeline.TimelineRenderer", function(require) {
          * @private
          */
         draw_canvas: function() {
-            this.canvas.clear();
-            if (this.dependency_arrow) {
-                this.draw_dependencies();
+            if(this.draggable) {
+                this.canvas.clear();
+                if (this.dependency_arrow) {
+                    this.draw_dependencies();
+                }
             }
         },
 
@@ -262,21 +271,23 @@ odoo.define("web_timeline.TimelineRenderer", function(require) {
          * @private
          */
         draw_dependencies: function() {
-            const items = this.timeline.itemSet.items;
-            const datas = this.timeline.itemsData;
-            if (!items || !datas) {
-                return;
-            }
-            const keys = Object.keys(items);
-            for (const key of keys) {
-                const item = items[key];
-                const data = datas.get(Number(key));
-                if (!data || !data.evt) {
+            if(this.draggable) {
+                const items = this.timeline.itemSet.items;
+                const datas = this.timeline.itemsData;
+                if (!items || !datas) {
                     return;
                 }
-                for (const id of data.evt[this.dependency_arrow]) {
-                    if (keys.indexOf(id.toString()) !== -1) {
-                        this.draw_dependency(item, items[id]);
+                const keys = Object.keys(items);
+                for (const key of keys) {
+                    const item = items[key];
+                    const data = datas.get(Number(key));
+                    if (!data || !data.evt) {
+                        return;
+                    }
+                    for (const id of data.evt[this.dependency_arrow]) {
+                        if (keys.indexOf(id.toString()) !== -1) {
+                            this.draw_dependency(item, items[id]);
+                        }
                     }
                 }
             }
@@ -293,19 +304,21 @@ odoo.define("web_timeline.TimelineRenderer", function(require) {
          * @private
          */
         draw_dependency: function(from, to, options) {
-            if (!from.displayed || !to.displayed) {
-                return;
+            if(this.draggable) {
+                if (!from.displayed || !to.displayed) {
+                    return;
+                }
+                const defaults = _.defaults({}, options, {
+                    line_color: "black",
+                    line_width: 1,
+                });
+                this.canvas.draw_arrow(
+                    from.dom.box,
+                    to.dom.box,
+                    defaults.line_color,
+                    defaults.line_width
+                );
             }
-            const defaults = _.defaults({}, options, {
-                line_color: "black",
-                line_width: 1,
-            });
-            this.canvas.draw_arrow(
-                from.dom.box,
-                to.dom.box,
-                defaults.line_color,
-                defaults.line_width
-            );
         },
 
         /**
@@ -426,7 +439,9 @@ odoo.define("web_timeline.TimelineRenderer", function(require) {
                         : null;
                 }
             } else {
-                date_start = time.auto_str_to_date(evt[this.date_start]);
+                date_start = this.date_start 
+                    ? time.auto_str_to_date(evt[this.date_start]) 
+                    : null;
                 date_stop = this.date_stop
                     ? time.auto_str_to_date(evt[this.date_stop])
                     : null;
@@ -532,7 +547,9 @@ odoo.define("web_timeline.TimelineRenderer", function(require) {
          * @private
          */
         on_update: function(item, callback) {
-            this._trigger(item, callback, "onUpdate");
+            if(this.updatable) {
+                this._trigger(item, callback, "onUpdate");
+            }
         },
 
         /**
@@ -543,7 +560,9 @@ odoo.define("web_timeline.TimelineRenderer", function(require) {
          * @private
          */
         on_move: function(item, callback) {
-            this._trigger(item, callback, "onMove");
+            if(this.draggable) {
+                this._trigger(item, callback, "onMove");
+            }
         },
 
         /**
@@ -554,7 +573,9 @@ odoo.define("web_timeline.TimelineRenderer", function(require) {
          * @private
          */
         on_remove: function(item, callback) {
-            this._trigger(item, callback, "onRemove");
+            if(this.removable) {
+                this._trigger(item, callback, "onRemove");
+            }
         },
 
         /**
@@ -565,7 +586,9 @@ odoo.define("web_timeline.TimelineRenderer", function(require) {
          * @private
          */
         on_add: function(item, callback) {
-            this._trigger(item, callback, "onAdd");
+            if(this.creatable) {
+                this._trigger(item, callback, "onAdd");
+            }
         },
 
         /**

@@ -13,9 +13,9 @@ odoo.define("web_timeline.TimelineController", function(require) {
         custom_events: _.extend({}, AbstractController.prototype.custom_events, {
             onGroupClick: "_onGroupClick",
             onUpdate: "_onUpdate",
-            // onRemove: "_onRemove",
-            // onMove: "_onMove",
-            // onAdd: "_onAdd",
+            onRemove: "_onRemove",
+            onMove: "_onMove",
+            onAdd: "_onAdd",
         }),
 
         /**
@@ -28,6 +28,10 @@ odoo.define("web_timeline.TimelineController", function(require) {
             this.date_stop = params.date_stop;
             this.date_delay = params.date_delay;
             this.context = params.actionContext;
+            this.draggable = params.draggable;
+            this.updatable = params.updatable;
+            this.removable = params.removable;
+            this.creatable = params.creatable;
             this.moveQueue = [];
             this.debouncedInternalMove = _.debounce(this.internalMove, 0);
         },
@@ -105,33 +109,35 @@ odoo.define("web_timeline.TimelineController", function(require) {
          * @param {EventObject} event
          */
         _onUpdate: function(event) {
-            this.renderer = event.data.renderer;
-            const rights = event.data.rights;
-            const item = event.data.item;
-            const id = Number(item.evt.id) || item.evt.id;
-            const title = item.evt.__name;
-            if (this.open_popup_action) {
-                new dialogs.FormViewDialog(this, {
-                    res_model: this.model.modelName,
-                    res_id: id,
-                    context: this.getSession().user_context,
-                    title: title,
-                    view_id: Number(this.open_popup_action),
-                    on_saved: () => {
-                        this.write_completed();
-                    },
-                }).open();
-            } else {
-                let mode = "readonly";
-                if (rights.write) {
-                    mode = "edit";
+            if(this.updatable) {
+                this.renderer = event.data.renderer;
+                const rights = event.data.rights;
+                const item = event.data.item;
+                const id = Number(item.evt.id) || item.evt.id;
+                const title = item.evt.__name;
+                if (this.open_popup_action) {
+                    new dialogs.FormViewDialog(this, {
+                        res_model: this.model.modelName,
+                        res_id: id,
+                        context: this.getSession().user_context,
+                        title: title,
+                        view_id: Number(this.open_popup_action),
+                        on_saved: () => {
+                            this.write_completed();
+                        },
+                    }).open();
+                } else {
+                    let mode = "readonly";
+                    if (rights.write) {
+                        mode = "edit";
+                    }
+                    this.trigger_up("switch_view", {
+                        view_type: "form",
+                        res_id: id,
+                        mode: mode,
+                        model: this.model.modelName,
+                    });
                 }
-                this.trigger_up("switch_view", {
-                    view_type: "form",
-                    res_id: id,
-                    mode: mode,
-                    model: this.model.modelName,
-                });
             }
         },
 
@@ -143,52 +149,54 @@ odoo.define("web_timeline.TimelineController", function(require) {
          * @param {EventObject} event
          */
         _onMove: function(event) {
-            const item = event.data.item;
-            const fields = this.renderer.fields;
-            const event_start = item.start;
-            const event_end = item.end;
-            let group = false;
-            if (item.group !== -1) {
-                group = item.group;
-            }
-            const data = {};
-            // In case of a move event, the date_delay stay the same,
-            // only date_start and stop must be updated
-            data[this.date_start] = time.auto_date_to_str(
-                event_start,
-                fields[this.date_start].type
-            );
-            if (this.date_stop) {
-                // In case of instantaneous event, item.end is not defined
-                if (event_end) {
-                    data[this.date_stop] = time.auto_date_to_str(
-                        event_end,
-                        fields[this.date_stop].type
-                    );
-                } else {
-                    data[this.date_stop] = data[this.date_start];
+            if(this.draggable) {
+                const item = event.data.item;
+                const fields = this.renderer.fields;
+                const event_start = item.start;
+                const event_end = item.end;
+                let group = false;
+                if (item.group !== -1) {
+                    group = item.group;
                 }
-            }
-            if (this.date_delay && event_end) {
-                const diff_seconds = Math.round(
-                    (event_end.getTime() - event_start.getTime()) / 1000
+                const data = {};
+                // In case of a move event, the date_delay stay the same,
+                // only date_start and stop must be updated
+                data[this.date_start] = time.auto_date_to_str(
+                    event_start,
+                    fields[this.date_start].type
                 );
-                data[this.date_delay] = diff_seconds / 3600;
+                if (this.date_stop) {
+                    // In case of instantaneous event, item.end is not defined
+                    if (event_end) {
+                        data[this.date_stop] = time.auto_date_to_str(
+                            event_end,
+                            fields[this.date_stop].type
+                        );
+                    } else {
+                        data[this.date_stop] = data[this.date_start];
+                    }
+                }
+                if (this.date_delay && event_end) {
+                    const diff_seconds = Math.round(
+                        (event_end.getTime() - event_start.getTime()) / 1000
+                    );
+                    data[this.date_delay] = diff_seconds / 3600;
+                }
+                if (
+                    this.renderer.last_group_bys &&
+                    this.renderer.last_group_bys instanceof Array
+                ) {
+                    data[this.renderer.last_group_bys[0]] = group;
+                }
+    
+                this.moveQueue.push({
+                    id: event.data.item.id,
+                    data: data,
+                    event: event,
+                });
+    
+                this.debouncedInternalMove();
             }
-            if (
-                this.renderer.last_group_bys &&
-                this.renderer.last_group_bys instanceof Array
-            ) {
-                data[this.renderer.last_group_bys[0]] = group;
-            }
-
-            this.moveQueue.push({
-                id: event.data.item.id,
-                data: data,
-                event: event,
-            });
-
-            this.debouncedInternalMove();
         },
 
         /**
@@ -199,26 +207,28 @@ odoo.define("web_timeline.TimelineController", function(require) {
          * @returns {jQuery.Deferred}
          */
         internalMove: function() {
-            const queues = this.moveQueue.slice();
-            this.moveQueue = [];
-            const defers = [];
-            for (const item of queues) {
-                defers.push(
-                    this._rpc({
-                        model: this.model.modelName,
-                        method: "write",
-                        args: [[item.event.data.item.id], item.data],
-                        context: this.getSession().user_context,
-                    }).then(() => {
-                        item.event.data.callback(item.event.data.item);
-                    })
-                );
-            }
-            return $.when.apply($, defers).done(() => {
-                this.write_completed({
-                    adjust_window: false,
+            if(this.draggable) {
+                const queues = this.moveQueue.slice();
+                this.moveQueue = [];
+                const defers = [];
+                for (const item of queues) {
+                    defers.push(
+                        this._rpc({
+                            model: this.model.modelName,
+                            method: "write",
+                            args: [[item.event.data.item.id], item.data],
+                            context: this.getSession().user_context,
+                        }).then(() => {
+                            item.event.data.callback(item.event.data.item);
+                        })
+                    );
+                }
+                return $.when.apply($, defers).done(() => {
+                    this.write_completed({
+                        adjust_window: false,
+                    });
                 });
-            });
+            }
         },
 
         /**
@@ -230,17 +240,19 @@ odoo.define("web_timeline.TimelineController", function(require) {
          * @returns {jQuery.Deferred}
          */
         _onRemove: function(event) {
-            var def = $.Deferred();
+            if(this.removable) {
+                var def = $.Deferred();
 
-            Dialog.confirm(this, _t("Are you sure you want to delete this record?"), {
-                title: _t("Warning"),
-                confirm_callback: () => {
-                    this.remove_completed(event).then(def.resolve.bind(def));
-                },
-                cancel_callback: def.resolve.bind(def),
-            });
-
-            return def;
+                Dialog.confirm(this, _t("Are you sure you want to delete this record?"), {
+                    title: _t("Warning"),
+                    confirm_callback: () => {
+                        this.remove_completed(event).then(def.resolve.bind(def));
+                    },
+                    cancel_callback: def.resolve.bind(def),
+                });
+    
+                return def;
+            }
         },
 
         /**
@@ -251,43 +263,45 @@ odoo.define("web_timeline.TimelineController", function(require) {
          * @returns {dialogs.FormViewDialog}
          */
         _onAdd: function(event) {
-            const item = event.data.item;
-            // Initialize default values for creation
-            const default_context = {};
-            default_context["default_".concat(this.date_start)] = item.start;
-            if (this.date_delay) {
-                default_context["default_".concat(this.date_delay)] = 1;
+            if(this.creatable) {
+                const item = event.data.item;
+                // Initialize default values for creation
+                const default_context = {};
+                default_context["default_".concat(this.date_start)] = item.start;
+                if (this.date_delay) {
+                    default_context["default_".concat(this.date_delay)] = 1;
+                }
+                if (this.date_start) {
+                    default_context["default_".concat(this.date_start)] = moment(item.start)
+                        .add(1, "hours")
+                        .format("YYYY-MM-DD HH:mm:ss");
+                }
+                if (this.date_stop && item.end) {
+                    default_context["default_".concat(this.date_stop)] = moment(item.end)
+                        .add(1, "hours")
+                        .format("YYYY-MM-DD HH:mm:ss");
+                }
+                if (item.group > 0) {
+                    default_context["default_".concat(this.renderer.last_group_bys[0])] =
+                        item.group;
+                }
+                // Show popup
+                new dialogs.FormViewDialog(this, {
+                    res_model: this.model.modelName,
+                    res_id: null,
+                    context: _.extend(default_context, this.context),
+                    view_id: Number(this.open_popup_action),
+                    on_saved: record => {
+                        this.create_completed([record.res_id]);
+                    },
+                })
+                    .open()
+                    .on("closed", this, () => {
+                        event.data.callback();
+                    });
+    
+                return false;
             }
-            if (this.date_start) {
-                default_context["default_".concat(this.date_start)] = moment(item.start)
-                    .add(1, "hours")
-                    .format("YYYY-MM-DD HH:mm:ss");
-            }
-            if (this.date_stop && item.end) {
-                default_context["default_".concat(this.date_stop)] = moment(item.end)
-                    .add(1, "hours")
-                    .format("YYYY-MM-DD HH:mm:ss");
-            }
-            if (item.group > 0) {
-                default_context["default_".concat(this.renderer.last_group_bys[0])] =
-                    item.group;
-            }
-            // Show popup
-            new dialogs.FormViewDialog(this, {
-                res_model: this.model.modelName,
-                res_id: null,
-                context: _.extend(default_context, this.context),
-                view_id: Number(this.open_popup_action),
-                on_saved: record => {
-                    this.create_completed([record.res_id]);
-                },
-            })
-                .open()
-                .on("closed", this, () => {
-                    event.data.callback();
-                });
-
-            return false;
         },
 
         /**

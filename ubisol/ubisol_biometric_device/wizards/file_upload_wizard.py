@@ -31,18 +31,15 @@ class LogFileImportWizard(models.TransientModel):
         device_id = self.env.context.get('active_ids')
 
         atten_time = row[1]
-        atten_time = datetime.strptime(
-            atten_time, '%Y-%m-%d %H:%M:%S')
-        local_tz = pytz.timezone(
-            self.env.user.tz or 'GMT')
+        atten_time = datetime.strptime(atten_time, '%Y-%m-%d %H:%M:%S')
+        local_tz = pytz.timezone(self.env.user.tz or 'GMT')
         local_dt = local_tz.localize(atten_time, is_dst=None)
         utc_dt = local_dt.astimezone(pytz.utc)
         utc_dt = utc_dt.strftime("%Y-%m-%d %H:%M:%S")
-        atten_time = datetime.strptime(
-            utc_dt, "%Y-%m-%d %H:%M:%S")
+        atten_time = datetime.strptime(utc_dt, "%Y-%m-%d %H:%M:%S")
         att_obj = self.env['hr.attendance']
 
-        # if str(row[0]).strip() != '1094':
+        # if str(row[0]).strip() != '70':
         #     return {}
 
         get_user_id = self.env['hr.employee'].search(
@@ -50,7 +47,6 @@ class LogFileImportWizard(models.TransientModel):
 
         if not get_user_id:
             record = self.env['hr.employee'].create({'name': str(row[0]).strip(), 'pin': str(row[0]).strip()})
-            # print(record, record.id)
             get_user_id = record
 
         duplicate_atten_ids = self.env['biometric.attendance'].search(
@@ -72,15 +68,13 @@ class LogFileImportWizard(models.TransientModel):
             print(atten_time, status)
             if(status == 'check_out'):
                 att_var1 = att_obj.search(
-                    [('employee_id', '=', get_user_id.id)])
+                    [('employee_id', '=', get_user_id.id)],order="id desc")
                 if att_var1:
                     att_var1[0].write({'check_out': atten_time})
-                print('att_var1: ', att_var1)
             elif (status == "update_check_out"):
                 att_var = att_obj.search(
-                    [('employee_id', '=', get_user_id.id)])
+                    [('employee_id', '=', get_user_id.id)],order="id desc")
                 att_var[0].write({'check_out': atten_time})
-                print('att_var: ', att_var)
             elif status == "new_check_out":
                 att_obj.create({'employee_id': get_user_id.id, 'check_out': atten_time})
             else:
@@ -90,8 +84,6 @@ class LogFileImportWizard(models.TransientModel):
         return {}
 
     def check_in_out(self, att_obj, get_user_id, dt):
-        # 05:00 - 14:00 irsen
-        # 14:01 - 04:59 garsan
         dt1 = dt + timedelta(hours=8)
         dt_diff = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
         dt_diff = datetime.strptime(dt_diff, "%Y-%m-%d %H:%M:%S")
@@ -132,15 +124,31 @@ class LogFileImportWizard(models.TransientModel):
             check_in = abs(dt - work_start).total_seconds()
 
             if(check_out < check_in):
+                days = 0
+                self._cr.execute('select id from hr_attendance where employee_id = '+str(get_user_id.id)+' order by id desc limit 1')
+                last_id = self._cr.fetchone()
+
+                if last_id:
+                    new_check_out = self.env['hr.attendance'].search([('id', '=', last_id[0])])
+                    if new_check_out and new_check_out.check_in:
+                        seconds = abs(dt - new_check_out.check_in).total_seconds()
+                        days = seconds / (24* 3600)
+                else:
+                    new_check_out = None
+
                 update_check_out = self.env['hr.attendance'].search(
                     [('employee_id', '=', get_user_id.id), ('check_out', '>=', work_start), ('check_out', '<', dt)])
-                self._cr.execute('select "id" from "hr_attendance" order by "id" desc limit 1')
-                last_id = self._cr.fetchone()
-                new_check_out = self.env['hr.attendance'].search([('employee_id', '=', last_id)])
 
                 if(update_check_out):
                     return "update_check_out"
-                elif new_check_out and not new_check_out.check_in:
+                elif new_check_out:
+                    if not new_check_out.check_in:
+                        return "new_check_out"
+                    elif days >= 1:
+                        return "new_check_out"
+                    else:
+                        return "check_out"
+                elif not last_id:
                     return "new_check_out"
                 return "check_out"
             else:
