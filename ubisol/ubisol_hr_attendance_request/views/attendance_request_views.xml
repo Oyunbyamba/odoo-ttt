@@ -6,21 +6,64 @@
         <field name="model">hr.attendance.request</field>
         <field name="arch" type="xml">
             <form string="Ирцийн хүсэлт">
+            <field name="can_reset" invisible="1"/>
+            <field name="can_approve" invisible="1"/>
             <header>
+                <button string="Confirm" name="action_confirm" states="draft" type="object" class="oe_highlight"/>
+                <button string="Approve" name="action_approve" type="object" class="oe_highlight"/>
+                <button string="Validate" name="action_validate" states="validate1" type="object"/>
+                <button string="Refuse" name="action_refuse" type="object" />
+                <button string="Reset to Draft" name="action_draft" type="object"/>
+                <field name="state" widget="statusbar" statusbar_visible="confirm,validate"/>
             </header>
             <sheet> 
-                <h1>
-                    <field name="name"/>
-                </h1>
+                <div class="oe_title" name="title">
+                    <h2>
+                        <field name="name" nolabel="1"/>
+                    </h2>
+                </div>
+            
                 <group>
-                    <field name="state"/>
-                    <field name="start_datetime"></field>
-                    <field name="end_datetime"></field>
-                    <field name="request_type"></field>
-                    <field name="request_status_type"></field>
-                    <field name="validation_type"></field>
-                    <field name="notes"/>
-                    <field name="state"/>
+                    <group>
+                        <label for="start_datetime" string="Хаанаас"/>
+                        <div class="o_row o_row_readonly">
+                            <field name="start_datetime"/>
+                            <span class="oe_inline"> хүртэл </span>
+                            <field name="end_datetime"/>
+                        </div>    
+    
+                        <label for="number_of_days" string="Үргэжлэх хугацаа"/>
+                        <div>
+
+                        </div>
+
+                        <label for="description" string="Тайлбар"/>
+                        <div>
+                            <field name="description"/>
+                        </div>
+                    </group>
+                    <group>
+                        <field name="validation_type" string="Шатлал"/>
+                        <field name="request_status_type" string="Хүсэлтийн төрөл"/>
+                        <field name="request_type" string="Горим" groups="hr_holidays.group_hr_holidays_user"/>
+                        <field name="employee_id" string="Ажилтан" attrs="{
+                            'required': [('request_type', '=', 'employee')],
+                            'invisible': [('request_type', '!=', 'employee')]
+                            }"/>
+                        <field name="mode_company_id" string="Компани" groups="hr_holidays.group_hr_holidays_user" attrs="{
+                            'required': [('request_type', '=', 'company')],
+                            'invisible': [('request_type', '!=', 'company')]
+                            }"/>
+                        <field name="category_id" string="Пайз" groups="hr_holidays.group_hr_holidays_user" attrs="{
+                            'required': [('request_type', '=', 'category')],
+                            'invisible': [('request_type', '!=', 'category')]
+                            }"/>
+                        <field name="department_id" string="Хэлтэс" groups="hr_holidays.group_hr_holidays_user" attrs="{
+                            'required': [('request_type', '=', 'department')],
+                            'invisible': [('request_type', 'not in', ('employee', 'department'))]
+                            }"/>
+                    </group>
+                    
                 </group>
             </sheet>
             
@@ -32,7 +75,7 @@
         <field name="name">hr.attendance.request.tree</field>
         <field name="model">hr.attendance.request</field>
         <field name="arch" type="xml">
-            <tree string="Attendance Requests">
+            <tree string="Ирцийн хүсэлт">
                 <field name="name"/>
                 <field name="start_datetime"/>
                 <field name="end_datetime"/>
@@ -44,11 +87,11 @@
         </field>
     </record>
 
+
     <record id="hr_attendance_request_action_my" model="ir.actions.act_window">
-        <field name="name">Attendance Requests</field>
+        <field name="name">Ирцийн хүсэлт</field>
         <field name="res_model">hr.attendance.request</field>
         <field name="view_mode">tree,form</field>
-       
     </record>
 
 </odoo>

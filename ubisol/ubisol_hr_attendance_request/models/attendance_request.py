@@ -21,44 +21,7 @@ from odoo.osv import expression
 
 _logger = logging.getLogger(__name__)
 
-# Used to agglomerate the attendances in order to find the hour_from and hour_to
-# See _onchange_request_parameters
-
 class AttendanceRequest(models.Model):
-    """ Leave Requests Access specifications
-
-     - a regular employee / user
-      - can see all leaves;
-      - cannot see name field of leaves belonging to other user as it may contain
-        private information that we don't want to share to other people than
-        HR people;
-      - can modify only its own not validated leaves (except writing on state to
-        bypass approval);
-      - can discuss on its leave requests;
-      - can reset only its own leaves;
-      - cannot validate any leaves;
-     - an Officer
-      - can see all leaves;
-      - can validate "HR" single validation leaves from people if
-       - he is the employee manager;
-       - he is the department manager;
-       - he is member of the same department;
-       - target employee has no manager and no department manager;
-      - can validate "Manager" single validation leaves from people if
-       - he is the employee manager;
-       - he is the department manager;
-       - target employee has no manager and no department manager;
-      - can first validate "Both" double validation leaves from people like "HR"
-        single validation, moving the leaves to validate1 state;
-      - cannot validate its own leaves;
-      - can reset only its own leaves;
-      - can refuse all leaves;
-     - a Manager
-      - can do everything he wants
-
-    On top of that multicompany rules apply based on company defined on the
-    leave request leave type.
-    """
     _name = "hr.attendance.request"
     _description = "Attendance request"
     _order = "start_datetime desc"
@@ -66,7 +29,25 @@ class AttendanceRequest(models.Model):
     def _default_employee(self):
         return self.env.context.get('default_employee_id') or self.env.user.employee_id
 
-    # description
+    # def _default_get_request_parameters(self, values):
+    #     new_values = dict(values)
+        # global_from, global_to = False, False
+        # # TDE FIXME: consider a mapping on several days that is not the standard
+        # # calendar widget 7-19 in user's TZ is some custom input
+        # if values.get('date_from'):
+        #     user_tz = self.env.user.tz or 'UTC'
+        #     localized_dt = timezone('UTC').localize(values['date_from']).astimezone(timezone(user_tz))
+        #     global_from = localized_dt.time().hour == 7 and localized_dt.time().minute == 0
+        #     new_values['request_date_from'] = localized_dt.date()
+        # if values.get('date_to'):
+        #     user_tz = self.env.user.tz or 'UTC'
+        #     localized_dt = timezone('UTC').localize(values['date_to']).astimezone(timezone(user_tz))
+        #     global_to = localized_dt.time().hour == 19 and localized_dt.time().minute == 0
+        #     new_values['request_date_to'] = localized_dt.date()
+        # if global_from and global_to:
+        #     new_values['request_unit_custom'] = True
+        # return new_values    
+
     name = fields.Char('Name', required=True)
     state = fields.Selection([
         ('draft', 'To Submit'),
@@ -81,24 +62,32 @@ class AttendanceRequest(models.Model):
         "\nThe status is 'Refused', when time off request is refused by manager." +
         "\nThe status is 'Approved', when time off request is approved by manager.")
     user_id = fields.Many2one('res.users', string='User')
-    manager_id = fields.Many2one('hr.employee')
     request_status_type = fields.Selection([
-        ('overtime', 'Overtime'),
-        ('outside_work', 'Outside Work')
+        ('overtime', 'Илүү цаг'),
+        ('outside_work', 'Гадуур ажил')
         ], string="Request Status Type")
     validation_type = fields.Selection([
-        ('both', 'Both'),
-        ('manager', 'Manager')
+        ('both', '2 алхамт'),
+        ('manager', 'Ахлах')
         ], string="Validation Type")
+
+    def _employee_id_domain(self):
+        if self.user_has_groups('hr_holidays.group_hr_holidays_user') or self.user_has_groups('hr_holidays.group_hr_holidays_manager'):
+            return []
+        if self.user_has_groups('hr_holidays.group_hr_holidays_responsible'):
+            return ['|', ('parent_id', '=', self.env.user.employee_id.id), ('user_id', '=', self.env.user.id)]
+        return [('user_id', '=', self.env.user.id)]
+
     employee_id = fields.Many2one(
-        'hr.employee', string='Employee')
+        'hr.employee', string='Employee', states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]}, default=_default_employee, domain=_employee_id_domain)
     notes = fields.Text('Reasons')
+    description = fields.Text('Description')
     # duration
     start_datetime = fields.Datetime(
-        'Start Date', copy=False, required=True,
+        'Start Date', required=True,
         default=fields.Datetime.now)
     end_datetime = fields.Datetime(
-        'End Date', copy=False, required=True,
+        'End Date', required=True,
         default=fields.Datetime.now)
     request_type = fields.Selection([
         ('employee', 'By Employee'),
@@ -113,9 +102,77 @@ class AttendanceRequest(models.Model):
     department_id = fields.Many2one(
         'hr.department', string='Department')
     first_approver_id = fields.Many2one(
-        'hr.employee', string='First Approval', copy=False)
+        'hr.employee', string='First Approval')
     second_approver_id = fields.Many2one(
-        'hr.employee', string='Second Approval', copy=False)
+        'hr.employee', string='Second Approval')
+    can_reset = fields.Boolean('Can reset', compute='_compute_can_reset')
+    can_approve = fields.Boolean('Can Approve', compute='_compute_can_approve')    
     
 
-   
+    def _check_approval_update(self, state):
+        """ Check if target state is achievable. """
+        if self.env.is_superuser():
+            return
+
+        current_employee = self.env.user.employee_id
+        is_officer = self.env.user.has_group('hr_holidays.group_hr_holidays_user')
+        is_manager = self.env.user.has_group('hr_holidays.group_hr_holidays_manager')
+        for attendance in self:
+            val_type = attendance.validation_type
+            if not is_manager and state != 'confirm':
+                if state == 'draft':
+                    if attendance.state == 'refuse':
+                        raise UserError(_('Only a Leave Manager can reset a refused leave.'))
+                    if attendance.start_datetime and attendance.end_datetime.date() <= fields.Date.today():
+                        raise UserError(_('Only a Leave Manager can reset a started leave.'))
+                    if attendance.employee_id != current_employee:
+                        raise UserError(_('Only a Leave Manager can reset other people leaves.'))
+                else:
+                    # if val_type == 'no_validation' and current_employee == attendance.employee_id:
+                    #     continue
+                    # use ir.rule based first access check: department, members, ... (see security.xml)
+                    attendance.check_access_rule('write')
+
+                    # This handles states validate1 validate and refuse
+                    if attendance.employee_id == current_employee:
+                        raise UserError(_('Only a Leave Manager can approve/refuse its own requests.'))
+
+                    if (state == 'validate1' and val_type == 'both') or (state == 'validate' and val_type == 'manager') and attendance.request_type == 'employee':
+                        if not is_officer and self.env.user != attendance.employee_id.leave_manager_id:
+                            raise UserError(_('You must be either %s\'s manager or Leave manager to approve this leave') % (attendance.employee_id.name))
+                   
+    @api.depends('state', 'employee_id', 'department_id')
+    def _compute_can_reset(self):
+        for attendance in self:
+            try:
+                attendance._check_approval_update('draft')
+            except (AccessError, UserError):
+                attendance.can_reset = False
+            else:
+                attendance.can_reset = True
+
+    @api.depends('state', 'employee_id', 'department_id')
+    def _compute_can_approve(self):
+        for attendance in self:
+            try:
+                if attendance.state == 'confirm':
+                    attendance._check_approval_update('validate1')
+                else:
+                    attendance._check_approval_update('validate')
+            except (AccessError, UserError):
+                attendance.can_approve = False
+            else:
+                attendance.can_approve = True            
+
+    @api.model
+    
+    def action_confirm(self):
+        if self.filtered(lambda holiday: holiday.state != 'draft'):
+            raise UserError(_('Time off request must be in Draft state ("To Submit") in order to confirm it.'))
+        self.write({'state': 'confirm'})
+        holidays = self.filtered(lambda leave: leave.validation_type == 'no_validation')
+        if holidays:
+            # Automatic validation should be done in sudo, because user might not have the rights to do it by himself
+            holidays.sudo().action_validate()
+        self.activity_update()
+        return True
