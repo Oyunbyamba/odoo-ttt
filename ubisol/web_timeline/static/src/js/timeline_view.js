@@ -96,6 +96,50 @@ odoo.define("web_timeline.TimelineView", function(require) {
             ) {
                 open_popup_action = attrs.event_open_popup;
             }
+
+            let draggable = true;
+            let updatable = true;
+            let removable = true;
+            let creatable = true;
+
+            console.log(attrs);
+            if(attrs.draggable) {
+                if(attrs.draggable == "true") {
+                    draggable = true;
+                } else {
+                    draggable = false;
+                }
+            }
+            if(attrs.updatable) {
+                if(attrs.updatable == "true") {
+                    updatable = true;
+                } else {
+                    updatable = false;
+                }
+            }
+            if(attrs.removable) {
+                if(attrs.removable == "true") {
+                    removable = true;
+                } else {
+                    removable = false;
+                }
+            }
+            if(attrs.creatable) {
+                if(attrs.creatable == "true") {
+                    creatable = true;
+                } else {
+                    creatable = false;
+                }
+            }
+            this.controllerParams.updatable = updatable;
+            this.controllerParams.draggable = draggable;
+            this.controllerParams.removable = removable;
+            this.controllerParams.creatable = creatable;
+            this.rendererParams.updatable = updatable;
+            this.rendererParams.draggable = draggable;
+            this.rendererParams.removable = removable;
+            this.rendererParams.creatable = creatable;
+
             this.rendererParams.mode = mode;
             this.rendererParams.model = this.modelName;
             this.rendererParams.view = this;

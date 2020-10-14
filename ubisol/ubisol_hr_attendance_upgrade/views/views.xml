@@ -1,21 +1,53 @@
 <odoo>
   <data>
     <!-- explicit list view definition -->
-<!--
-    <record model="ir.ui.view" id="ubisol_hr_attendance_upgrade.list">
-      <field name="name">ubisol_hr_attendance_upgrade list</field>
-      <field name="model">ubisol_hr_attendance_upgrade.ubisol_hr_attendance_upgrade</field>
+
+    <record id="hr_attendance_timeline" model="ir.ui.view">
+      <field name="model">hr.attendance</field>
+      <field name="type">timeline</field>
       <field name="arch" type="xml">
-        <tree>
-          <field name="name"/>
-          <field name="value"/>
-          <field name="value2"/>
-        </tree>
+        <timeline
+          date_start="check_in"
+          date_stop="check_out"
+          mode="month"
+          default_group_by="employee_id"
+          event_open_popup="true"
+          zoomKey="ctrlKey"
+          creatable="false"
+          updatable="true"
+          draggable="false"
+          removable="false"
+        >
+          <!-- <field name="employee_id" /> -->
+          <templates>
+            <t t-name="timeline-item">
+              <div class="o_project_timeline_item">
+                <span name="display_name">
+                  <t t-esc="record.employee_id" />
+                </span>
+              </div>
+            </t>
+          </templates>
+        </timeline>
       </field>
     </record>
--->
 
     <!-- actions opening views on models -->
+
+    <record id="hr_attendance.hr_attendance_action" model="ir.actions.act_window">
+        <field name="name">Attendances</field>
+        <field name="res_model">hr.attendance</field>
+        <field name="view_mode">tree,kanban,timeline,form</field>
+        <field name="context">{"search_default_today":1}</field>
+        <field name="search_view_id" ref="hr_attendance.hr_attendance_view_filter" />
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">
+                No attendance records found
+            </p><p>
+                The attendance records of your employees will be displayed here.
+            </p>
+        </field>
+    </record>
 <!--
     <record model="ir.actions.act_window" id="ubisol_hr_attendance_upgrade.action_window">
       <field name="name">ubisol_hr_attendance_upgrade window</field>
