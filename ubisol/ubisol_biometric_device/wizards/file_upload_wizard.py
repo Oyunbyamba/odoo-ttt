@@ -42,8 +42,8 @@ class LogFileImportWizard(models.TransientModel):
             utc_dt, "%Y-%m-%d %H:%M:%S")
         att_obj = self.env['hr.attendance']
 
-        if str(row[0]).strip() != '1094':
-            return {}
+        # if str(row[0]).strip() != '1094':
+        #     return {}
 
         get_user_id = self.env['hr.employee'].search(
             [('pin', '=', str(row[0]).strip())])
