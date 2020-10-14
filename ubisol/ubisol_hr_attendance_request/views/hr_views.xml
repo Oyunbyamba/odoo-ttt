@@ -9,9 +9,50 @@
 
     <menuitem
         id="menu_hr_attendance_my_requests"
-        name="My Attendance Request"
-        action="hr_attendance_request_action_my"
+        name="Миний ирцийн хүсэлт"
         parent="menu_hr_attendance_request_root"
         sequence="1"/>
+
+    <menuitem
+        id="menu_hr_attendance_request_my"
+        name="Ирцийн хүсэлт"
+        action="hr_attendance_request_action_my"
+        parent="menu_hr_attendance_my_requests"
+        sequence="1"/>
+
+    <menuitem
+        id="menu_hr_attendance_request_approvals"
+        name="Менежерүүд"
+        parent="menu_hr_attendance_request_root"
+        sequence="2"/>
+
+    <menuitem
+        id="menu_hr_attendance_request_to_approve"
+        name="Батлах ёстой"
+        parent="menu_hr_attendance_request_approvals"
+        groups="hr_holidays.group_hr_holidays_responsible,hr_holidays.group_hr_holidays_user"
+        sequence="1"/>    
+
+    <menuitem
+        id="menu_hr_attendance_request_approve_list"
+        name="Ирцийн хүсэлт"
+        action="hr_attendance_request_action_approve"
+        parent="menu_hr_attendance_request_to_approve"
+        sequence="1"/>
+
+    <menuitem
+        id="menu_hr_attendance_request_all"
+        name="Бүх"
+        parent="menu_hr_attendance_request_approvals"
+        groups="hr_holidays.group_hr_holidays_manager,hr_holidays.group_hr_holidays_user"
+        sequence="2"/>    
+
+    <menuitem
+        id="menu_hr_attendance_request_all_list"
+        name="Ирцийн хүсэлт"
+        action="hr_attendance_request_action_all"
+        parent="menu_hr_attendance_request_all"
+        groups="hr_holidays.group_hr_holidays_manager,hr_holidays.group_hr_holidays_user"
+        sequence="1"/>        
     
 </odoo>
