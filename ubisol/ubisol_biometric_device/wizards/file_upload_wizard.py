@@ -42,8 +42,8 @@ class LogFileImportWizard(models.TransientModel):
             utc_dt, "%Y-%m-%d %H:%M:%S")
         att_obj = self.env['hr.attendance']
 
-        # if str(row[0]).strip() != '1094':
-        #     return {}
+        if str(row[0]).strip() != '1094':
+            return {}
 
         get_user_id = self.env['hr.employee'].search(
             [('pin', '=', str(row[0]).strip())])
@@ -136,11 +136,18 @@ class LogFileImportWizard(models.TransientModel):
                     [('employee_id', '=', get_user_id.id), ('check_out', '>=', work_start), ('check_out', '<', dt)])
                 self._cr.execute('select "id" from "hr_attendance" order by "id" desc limit 1')
                 last_id = self._cr.fetchone()
-                new_check_out = self.env['hr.attendance'].search([('employee_id', '=', last_id)])
+                days = 0
+                if last_id:
+                    new_check_out = self.env['hr.attendance'].search([('id', '=', last_id[0])])
+                    if new_check_out:
+                        seconds = abs(dt - new_check_out.check_in).total_seconds()
+                        days = seconds / (24* 3600)
+                else:
+                    new_check_out = None
 
                 if(update_check_out):
                     return "update_check_out"
-                elif new_check_out and not new_check_out.check_in:
+                elif new_check_out and days >= 1:
                     return "new_check_out"
                 return "check_out"
             else:
