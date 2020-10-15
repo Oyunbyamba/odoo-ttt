@@ -25,6 +25,7 @@ class AttendanceRequest(models.Model):
     _name = "hr.attendance.request"
     _description = "Attendance request"
     _order = "start_datetime desc"
+    _inherit = ['mail.thread']
 
     @api.model
     def default_get(self, fields_list):
@@ -74,7 +75,7 @@ class AttendanceRequest(models.Model):
     request_status_type = fields.Selection([
         ('overtime', 'Илүү цаг'),
         ('outside_work', 'Гадуур ажил')
-        ], string="Request Status Type")
+        ], string="Request Status Type", required=True)
     validation_type = fields.Selection([
         ('both', '2 шатлалт'),
         ('manager', 'Ахлах')
@@ -89,8 +90,8 @@ class AttendanceRequest(models.Model):
 
     employee_id = fields.Many2one(
         'hr.employee', string='Employee', states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]}, default=_default_employee, domain=_employee_id_domain)
-    notes = fields.Text('Reasons')
-    description = fields.Text('Description')
+    notes = fields.Text('Reasons', tracking=True)
+    description = fields.Text('Description', tracking=True)
     # duration
     start_datetime = fields.Datetime(
         'Start Date', required=True,
@@ -100,7 +101,6 @@ class AttendanceRequest(models.Model):
         default=fields.Datetime.now)
     request_type = fields.Selection([
         ('employee', 'By Employee'),
-        ('company', 'By Company'),
         ('department', 'By Department')],
         string='Allocation Mode', required=True, default='employee')
     category_id = fields.Many2one(
@@ -114,7 +114,31 @@ class AttendanceRequest(models.Model):
     second_approver_id = fields.Many2one(
         'hr.employee', string='Second Approval')
     can_reset = fields.Boolean('Can reset', compute='_compute_can_reset')
-    can_approve = fields.Boolean('Can Approve', compute='_compute_can_approve')    
+    can_approve = fields.Boolean('Can Approve', compute='_compute_can_approve')  
+
+    _sql_constraints = [   
+        ('date_check2', "CHECK ((start_datetime < end_datetime))", "The start date must be anterior to the end date."),
+    ]  
+
+    @api.constrains('start_datetime', 'end_datetime', 'state', 'employee_id')
+    def _check_date(self):
+        
+        if self.end_datetime:
+            if self.start_datetime >= self.end_datetime:
+                raise ValidationError(_('Дуусах хугацаа эхлэх хугацаанаас бага байж болохгүй.'))
+
+        domains = [[
+            ('start_datetime', '<', attendance_req.start_datetime),
+            ('end_datetime', '>', attendance_req.end_datetime),
+            ('employee_id', '=', attendance_req.employee_id.id),
+            ('id', '!=', attendance_req.id),
+        ] for attendance_req in self.filtered('employee_id')]
+        domain = expression.AND([
+            [('state', 'not in', ['cancel', 'refuse'])],
+            expression.OR(domains)
+        ])
+        if self.search_count(domain):
+            raise ValidationError(_('You can not set 2 times off that overlaps on the same day for the same employee.'))
 
     def _check_approval_update(self, state):
         """ Check if target state is achievable. """
