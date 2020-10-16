@@ -66,7 +66,7 @@ class AttendanceRequest(models.Model):
         ('refuse', 'Refused'),
         ('validate1', 'Second Approval'),
         ('validate', 'Approved')
-        ], string='Status', copy=False, default='draft',
+        ], string='Status', copy=False, default='draft', tracking=True,
         help="The status is set to 'To Submit', when a time off request is created." +
         "\nThe status is 'To Approve', when time off request is confirmed by user." +
         "\nThe status is 'Refused', when time off request is refused by manager." +
@@ -75,7 +75,7 @@ class AttendanceRequest(models.Model):
     request_status_type = fields.Selection([
         ('overtime', 'Илүү цаг'),
         ('outside_work', 'Гадуур ажил')
-        ], string="Request Status Type", required=True)
+        ], string="Request Status Type", required=True, tracking=True)
     validation_type = fields.Selection([
         ('both', '2 шатлалт'),
         ('manager', 'Ахлах')
@@ -89,20 +89,22 @@ class AttendanceRequest(models.Model):
         return [('user_id', '=', self.env.user.id)]
 
     employee_id = fields.Many2one(
-        'hr.employee', string='Employee', states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]}, default=_default_employee, domain=_employee_id_domain)
+        'hr.employee', string='Employee', 
+        states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]}, 
+        default=_default_employee, domain=_employee_id_domain, tracking=True)
     notes = fields.Text('Reasons', tracking=True)
     description = fields.Text('Description', tracking=True)
     # duration
     start_datetime = fields.Datetime(
-        'Start Date', required=True,
+        'Start Date', required=True, tracking=True,
         default=fields.Datetime.now)
     end_datetime = fields.Datetime(
-        'End Date', required=True,
+        'End Date', required=True, tracking=True,
         default=fields.Datetime.now)
     request_type = fields.Selection([
         ('employee', 'By Employee'),
         ('department', 'By Department')],
-        string='Allocation Mode', required=True, default='employee')
+        string='Allocation Mode', required=True, default='employee', tracking=True)
     category_id = fields.Many2one(
         'hr.employee.category', string='Employee Tag')
     mode_company_id = fields.Many2one(
@@ -116,6 +118,17 @@ class AttendanceRequest(models.Model):
     can_reset = fields.Boolean('Can reset', compute='_compute_can_reset')
     can_approve = fields.Boolean('Can Approve', compute='_compute_can_approve')  
 
+    @api.onchange('request_type')
+    def _onchange_type(self):
+        if self.request_type == 'employee':
+            if not self.employee_id:
+                self.employee_id = self.env.user.employee_id.id
+            self.department_id = False
+        elif self.request_type == 'department':
+            self.employee_id = False
+            if not self.department_id:
+                self.department_id = self.env.user.employee_id.department_id.id
+        
     
     @api.constrains('start_datetime', 'end_datetime', 'state', 'employee_id')
     def _check_date(self):

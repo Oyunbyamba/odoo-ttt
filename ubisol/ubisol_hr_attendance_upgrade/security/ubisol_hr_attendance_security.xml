@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hide" model="res.groups">
+        <field name="name">Hide</field>
+        <field name="comment">Hide.</field>
+    </record>
+
+</odoo>

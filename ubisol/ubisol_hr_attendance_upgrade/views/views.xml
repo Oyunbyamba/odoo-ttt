@@ -48,6 +48,15 @@
             </p>
         </field>
     </record>
+
+    <menuitem id="hr_attendance.menu_hr_attendance_my_attendances" 
+        name="Check In / Check Out" 
+        groups="ubisol_hr_attendance_upgrade.hide"/>
+
+    <menuitem id="hr_attendance.menu_hr_attendance_kiosk_mode" 
+        name="Kiosk Mode" 
+        groups="ubisol_hr_attendance_upgrade.hide"/>    
+
 <!--
     <record model="ir.actions.act_window" id="ubisol_hr_attendance_upgrade.action_window">
       <field name="name">ubisol_hr_attendance_upgrade window</field>
