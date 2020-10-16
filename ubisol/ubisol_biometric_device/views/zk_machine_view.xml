@@ -6,8 +6,9 @@
         <field name="arch" type="xml">
             <form string="Biometric Device">
                 <header>
-                    <button name="clear_attendance" type="object" string="Clear Data" class="oe_highlight" icon="fa-remove " confirm="Are you sure you want to do this?"/>
-                    <button name="download_attendance" type="object" string="Download Data" class="oe_highlight" icon="fa-download " confirm="Are you sure you want to do this?" />
+                    <button name="test_connection" type="object" string="Холболт шалгах" class="oe_highlight" icon="fa-computer " />
+                    <button name="clear_attendance" type="object" string="Ирц цэвэрлэх" class="oe_highlight" icon="fa-remove " confirm="Are you sure you want to do this?"/>
+                    <button name="download_attendance" type="object" string="Ирц татах" class="oe_highlight" icon="fa-download " confirm="Are you sure you want to do this?" />
                     <button name="%(log_file_import_wizard_action)d" type="action" string="Лог файлаас оруулах" class="oe_highlight" icon="fa-upload " context="context.get('current_id')" />
                 </header>
                 <sheet>
@@ -56,7 +57,7 @@
     </record>
 
     <record id="biometric_machine_action" model="ir.actions.act_window">
-        <field name="name">Attendances</field>
+        <field name="name">Ирцийн мэдээлэл</field>
         <field name="res_model">biometric.machine</field>
         <field name="view_mode">tree,form</field>
     </record>
