@@ -39,8 +39,8 @@ class LogFileImportWizard(models.TransientModel):
         atten_time = datetime.strptime(utc_dt, "%Y-%m-%d %H:%M:%S")
         att_obj = self.env['hr.attendance']
 
-        if str(row[0]).strip() != '70':
-            return {}
+        # if str(row[0]).strip() != '70':
+        #     return {}
 
         get_user_id = self.env['hr.employee'].search(
             [('pin', '=', str(row[0]).strip())])
@@ -65,7 +65,7 @@ class LogFileImportWizard(models.TransientModel):
         # Herev hereglegch oldson bol
         if get_user_id:
             status = self.check_in_out(att_obj, get_user_id, atten_time)
-            print(atten_time, status)
+            # print(atten_time, status)
             if(status == 'check_out'):
                 att_var1 = att_obj.search(
                     [('employee_id', '=', get_user_id.id)],order="id desc")

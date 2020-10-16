@@ -136,19 +136,19 @@ class AttendanceRequest(models.Model):
         if self.search_count(domain):
             raise ValidationError(_('You can not set 2 times off that overlaps on the same day for the same employee.'))
 
-    @api.constrains('start_datetime', 'end_datetime')
-    def _check_double_validation_rules(self, employees, state):
-        if self.user_has_groups('hr_holidays.group_hr_holidays_manager'):
-            return
+    # @api.constrains('start_datetime', 'end_datetime')
+    # def _check_double_validation_rules(self, employees, state):
+    #     if self.user_has_groups('hr_holidays.group_hr_holidays_manager'):
+    #         return
 
-        is_leave_user = self.user_has_groups('hr_holidays.group_hr_holidays_user')
-        if state == 'validate1':
-            employees = employees.filtered(lambda employee: employee.parent_id != self.env.user.employee_id.id)
-            if employees and not is_leave_user:
-                raise AccessError(_('You cannot first approve a leave for %s, because you are not his leave manager' % (employees[0].name,)))
-        elif state == 'validate' and not is_leave_user:
-            # Is probably handled via ir.rule
-            raise AccessError(_('You don\'t have the rights to apply second approval on a leave request'))    
+    #     is_leave_user = self.user_has_groups('hr_holidays.group_hr_holidays_user')
+    #     if state == 'validate1':
+    #         employees = employees.filtered(lambda employee: employee.parent_id != self.env.user.employee_id.id)
+    #         if employees and not is_leave_user:
+    #             raise AccessError(_('You cannot first approve a leave for %s, because you are not his leave manager' % (employees[0].name,)))
+    #     elif state == 'validate' and not is_leave_user:
+    #         # Is probably handled via ir.rule
+    #         raise AccessError(_('You don\'t have the rights to apply second approval on a leave request'))    
 
     def _check_approval_update(self, state):
         if self.env.is_superuser():
