@@ -225,7 +225,7 @@ class HrEmployeeShift(models.Model):
         else:
             values['date_to'] = str(self.date_to)
 
-        print(values)
+        # print(values)
         self._create_schedules(values, self)
 
         return shift
