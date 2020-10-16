@@ -137,7 +137,7 @@ class BiometricMachine(models.Model):
                     conn = zk.connect()
 
                 except Exception as e:
-                    raise exceptions.Warning('Алдаа', 'Холболт амжилттгүй')
+                    raise exceptions.Warning('Холболт амжилттгүй')
                 finally:
                     if conn:
                         conn.disconnect()

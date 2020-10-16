@@ -7,8 +7,8 @@
             <form string="Biometric Device">
                 <header>
                     <button name="test_connection" type="object" string="Холболт шалгах" class="oe_highlight" icon="fa-computer " />
-                    <button name="clear_attendance" type="object" string="Ирц цэвэрлэх" class="oe_highlight" icon="fa-remove " confirm="Are you sure you want to do this?"/>
-                    <button name="download_attendance" type="object" string="Ирц татах" class="oe_highlight" icon="fa-download " confirm="Are you sure you want to do this?" />
+                    <button name="clear_attendance" type="object" string="Ирц цэвэрлэх" class="oe_highlight" icon="fa-remove " confirm="Төхөөрөмжийн бүх ирцийг устгах болно. Та итгэлтэй байна уу?"/>
+                    <button name="download_attendance" type="object" string="Ирц татах" class="oe_highlight" icon="fa-download " confirm="Та төхөөрөмжөөс ирц татахдаа итгэлтэй байна уу?" />
                     <button name="%(log_file_import_wizard_action)d" type="action" string="Лог файлаас оруулах" class="oe_highlight" icon="fa-upload " context="context.get('current_id')" />
                 </header>
                 <sheet>
