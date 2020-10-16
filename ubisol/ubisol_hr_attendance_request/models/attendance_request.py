@@ -60,12 +60,12 @@ class AttendanceRequest(models.Model):
 
     name = fields.Char('Name', required=True)
     state = fields.Selection([
-        ('draft', 'To Submit'),
-        ('cancel', 'Cancelled'),  # YTI This state seems to be unused. To remove
-        ('confirm', 'To Approve'),
-        ('refuse', 'Refused'),
-        ('validate1', 'Second Approval'),
-        ('validate', 'Approved')
+        ('draft', 'Илгээх'),
+        ('cancel', 'Цуцлагдсан'),  # YTI This state seems to be unused. To remove
+        ('confirm', 'Батлах'),
+        ('refuse', 'Татгалзсан'),
+        ('validate1', '2 дахь Зөвшөөрөл'),
+        ('validate', 'Зөвшөөрсөн')
         ], string='Status', copy=False, default='draft', tracking=True,
         help="The status is set to 'To Submit', when a time off request is created." +
         "\nThe status is 'To Approve', when time off request is confirmed by user." +

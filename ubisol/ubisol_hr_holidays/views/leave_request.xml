@@ -8,7 +8,7 @@
 
         <xpath expr="//group/group[1]/field[@name='user_id']" position="after">
           <field name="vacation_type" invisible="1"/>
-          <label for="years_of_worked_state" string="Улсад ажилласан жил" attrs="{'invisible':[('vacation_type', '!=', True)]}"/>
+          <label for="years_of_worked_state" string="Улсад ажилласан жил" asttrs="{'invisible':[('vacation_type', '!=', True)]}"/>
           <div>
               <field name="years_of_worked_state" class="oe_inline" attrs="{'readonly': 1, 'invisible':[('vacation_type', '!=', True)]}"/>          
           </div>
@@ -26,6 +26,13 @@
         
       </field>
     </record>
-    
+
+    <menuitem id="hr_holidays.hr_leave_menu_new_request" groups="ubisol_hr_holidays.hide"/>
+    <menuitem id="hr_holidays.menu_open_allocation" name="Allocation Requests" groups="ubisol_hr_holidays.hide"/>
+    <menuitem id="hr_holidays.hr_holidays_menu_manager_approve_allocations" name="Allocations" groups="ubisol_hr_holidays.hide"/>
+    <menuitem id="hr_holidays.hr_holidays_menu_manager_all_allocations" name="Allocations" groups="ubisol_hr_holidays.hide"/>
+    <menuitem id="hr_holidays.menu_hr_holidays_dashboard" name="Everyone" groups="ubisol_hr_holidays.hide"/>  
+    <menuitem id="hr_holidays.hr_holidays_menu_manager_payroll" name="Payroll" groups="ubisol_hr_holidays.hide"/>             
+
   </data>
 </odoo>

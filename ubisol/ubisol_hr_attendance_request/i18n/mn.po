@@ -53,12 +53,12 @@ msgstr ""
 #. module: ubisol_hr_attendance_request
 #: model:ir.ui.menu,name:ubisol_hr_attendance_request.menu_hr_attendance_request_root
 msgid "Attendance Request"
-msgstr ""
+msgstr "Ирцийн хүсэлт"
 
 #. module: ubisol_hr_attendance_request
 #: model:ir.model,name:ubisol_hr_attendance_request.model_hr_attendance_request
 msgid "Attendance request"
-msgstr ""
+msgstr "Ирцийн хүсэлт"
 
 #. module: ubisol_hr_attendance_request
 #: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-23 06:29+0000\n"
-"PO-Revision-Date: 2020-09-23 06:29+0000\n"
+"POT-Creation-Date: 2020-10-16 10:55+0000\n"
+"PO-Revision-Date: 2020-10-16 10:55+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1049,6 +1049,11 @@ msgid "Company"
 msgstr "Компани"
 
 #. module: hr_holidays
+#: model:hr.leave.type,name:hr_holidays.holiday_status_comp
+msgid "Compensatory Days"
+msgstr ""
+
+#. module: hr_holidays
 #: model:ir.ui.menu,name:hr_holidays.menu_hr_holidays_configuration
 msgid "Configuration"
 msgstr "Тохиргоо"
@@ -1132,7 +1137,6 @@ msgstr "Цагийн заалт"
 
 #. module: hr_holidays
 #: model:ir.actions.act_window,name:hr_holidays.hr_leave_action_new_request
-#: model:ir.ui.menu,name:hr_holidays.hr_leave_menu_new_request
 msgid "Dashboard"
 msgstr "Хяналтын самбар"
 
@@ -1643,6 +1647,11 @@ msgid "Leave type"
 msgstr "Чөлөөний төрөл"
 
 #. module: hr_holidays
+#: model:ir.ui.menu,name:hr_holidays.menu_hr_holidays_root
+msgid "Leaves"
+msgstr ""
+
+#. module: hr_holidays
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_leave_allocation__leaves_taken
 msgid "Leaves Taken"
 msgstr "Авсан чөлөө"
@@ -2092,10 +2101,20 @@ msgid "Out of office"
 msgstr "Ажлаас гадуур"
 
 #. module: hr_holidays
+#: model:hr.leave.type,name:hr_holidays.holiday_status_cl
+msgid "Paid Time Off"
+msgstr ""
+
+#. module: hr_holidays
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_leave__parent_id
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_leave_allocation__parent_id
 msgid "Parent"
 msgstr "Эцэг"
+
+#. module: hr_holidays
+#: model:hr.leave.type,name:hr_holidays.hr_holiday_status_dv
+msgid "Parental Time Off"
+msgstr ""
 
 #. module: hr_holidays
 #: model:ir.ui.menu,name:hr_holidays.hr_holidays_menu_manager_payroll
@@ -2314,6 +2333,7 @@ msgstr ""
 "тэмдэглэлүүд"
 
 #. module: hr_holidays
+#: model:hr.leave.type,name:hr_holidays.holiday_status_sl
 #: model:mail.message.subtype,description:hr_holidays.mt_leave_sick
 #: model:mail.message.subtype,name:hr_holidays.mt_leave_sick
 msgid "Sick Time Off"
@@ -2533,9 +2553,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_employee_public__leave_manager_id
 #: model:ir.model.fields,field_description:hr_holidays.field_res_users__leave_manager_id
 #: model:ir.model.fields.selection,name:hr_holidays.selection__hr_leave_type__time_type__leave
-#: model:ir.ui.menu,name:hr_holidays.menu_hr_holidays_root
-#: model:ir.ui.menu,name:hr_holidays.menu_open_department_leave_approve
-#: model:ir.ui.menu,name:hr_holidays.menu_open_employee_leave
 #: model_terms:ir.ui.view,arch_db:hr_holidays.hr_department_view_kanban
 #: model:mail.message.subtype,name:hr_holidays.mt_leave
 msgid "Time Off"
@@ -2763,6 +2780,11 @@ msgid "To Submit"
 msgstr "Илгээх"
 
 #. module: hr_holidays
+#: model:ir.ui.menu,name:hr_holidays.menu_open_department_leave_approve
+msgid "To approve"
+msgstr ""
+
+#. module: hr_holidays
 #: model_terms:ir.ui.view,arch_db:hr_holidays.hr_leave_view_activity
 msgid "To:"
 msgstr "Хэнд:"
@@ -2829,6 +2851,11 @@ msgstr "Мөчлөг бүрт ногдох цагийн нэгж"
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_leave_allocation__interval_unit
 msgid "Unit of time between two intervals"
 msgstr "Хоёр мөчлөг хоорондын хэмжээ цагаар"
+
+#. module: hr_holidays
+#: model:hr.leave.type,name:hr_holidays.holiday_status_unpaid
+msgid "Unpaid"
+msgstr ""
 
 #. module: hr_holidays
 #: model:mail.message.subtype,description:hr_holidays.mt_leave_unpaid
@@ -3012,8 +3039,9 @@ msgstr ""
 msgid ""
 "You cannot first approve a leave for %s, because you are not his leave "
 "manager"
-msgstr "Та %s чөлөөний эхний зөвшөөрлийг өгч чадахгүй, учир нь та хариуцсан "
-"менежер биш байна"
+msgstr ""
+"Та %s чөлөөний эхний зөвшөөрлийг өгч чадахгүй, учир нь та хариуцсан менежер "
+"биш байна"
 
 #. module: hr_holidays
 #: code:addons/hr_holidays/models/hr_leave.py:0
@@ -3102,6 +3130,11 @@ msgid "hours"
 msgstr "цаг"
 
 #. module: hr_holidays
+#: model:ir.ui.menu,name:hr_holidays.hr_leave_menu_new_request
+msgid "hr_holidays.hr_leave_menu_new_request"
+msgstr ""
+
+#. module: hr_holidays
 #. openerp-web
 #: code:addons/hr_holidays/static/src/xml/leave_stats_templates.xml:0
 #: code:addons/hr_holidays/static/src/xml/leave_stats_templates.xml:0
@@ -3125,3 +3158,8 @@ msgstr "үлдсэн"
 #: model_terms:ir.ui.view,arch_db:hr_holidays.report_holidayssummary
 msgid "to"
 msgstr "очих"
+
+#. module: hr_holidays
+#: model:ir.ui.menu,name:hr_holidays.menu_open_employee_leave
+msgid "Бүх"
+msgstr ""
