@@ -7,8 +7,8 @@ class AttendanceReport(models.TransientModel):
     _name = 'attendance.report.wizard'
     _description = 'Attendance Report Wizard'
 
-    start_date = fields.Date(string="Set Start Date")
-    end_date = fields.Date(string="Set End Date")
+    start_date = fields.Date(string="Эхлэх хугацаа")
+    end_date = fields.Date(string="Дуусах хугацаа")
 
     def action_compute(self):
         reports = self.env["hr.attendance.report"].search([])

@@ -5,7 +5,9 @@
       <field name="model">hr.attendance.report</field>
       <field name="arch" type="xml">
         <pivot disable_linking="1">
+          <field name="hr_department" type="row"/>
           <field name="hr_employee" type="row"/>
+          <field name="work_day" type="col" interval="month"/>
           <field name="work_day" type="col" interval="day"/>
           <field name="worked_hours" string="Ажилласан цаг" type="measure" widget="float_time"/>
           <field name="difference_check_in" string="Хоцролт" type="measure" widget="float_time"/>
@@ -29,9 +31,7 @@
       <field name="model_id" ref="model_hr_attendance_report"/>
       <field name="type">ir.actions.server</field>
       <field name="state">code</field>
-      <field name="code">
-        model.calculate_report()
-      </field>
+      <field name="code">model.calculate_report()</field>
     </record>
 
     <menuitem
