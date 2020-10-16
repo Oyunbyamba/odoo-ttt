@@ -80,6 +80,7 @@ class HrAttendanceReport(models.Model):
 
     @api.depends('check_in', "start_work", 'check_out', "end_work", "day_period")
     def _compute_worked_hours(self):
+        setting_obj = self.env['res.config.settings'].search([], limit=1, order='id desc')
         for record in self:
             is_rest = True
             is_rest = record.day_period.is_rest
@@ -90,7 +91,8 @@ class HrAttendanceReport(models.Model):
                 check_out = record.end_work
                 if record.check_out and record.check_in:
                     if record.start_work < record.check_in:
-                        check_in = record.check_in
+                        if (setting_obj.late_min * 3600) < (record.check_in - record.start_work).total_seconds():
+                            check_in = record.check_in
                     if record.check_out < record.end_work:
                         check_out = record.check_out
                     delta = check_out - check_in
@@ -99,12 +101,17 @@ class HrAttendanceReport(models.Model):
                     if record.check_out < record.end_work:
                         check_out = record.check_out
                     delta = check_out - check_in
-                    record.worked_hours = delta.total_seconds() / 3600.0
+                    record.worked_hours = delta.total_seconds() / 3600.0 - setting_obj.late_subtrack
+                    if record.worked_hours < 0.0:
+                        record.worked_hours = 0.0
                 elif record.check_in:
                     if record.start_work < record.check_in:
-                        check_in = record.check_in
+                        if (setting_obj.late_min * 3600) < (record.check_in - record.start_work).total_seconds():
+                            check_in = record.check_in
                     delta = check_out - check_in
-                    record.worked_hours = delta.total_seconds() / 3600.0
+                    record.worked_hours = delta.total_seconds() / 3600.0 - setting_obj.late_subtrack
+                    if record.worked_hours < 0.0:
+                        record.worked_hours = 0.0
                 else:
                     record.worked_hours = 0.0
 
@@ -155,7 +162,7 @@ class HrAttendanceReport(models.Model):
                     date_from = date_from + timedelta(hours=5) + timedelta(minutes=0) + timedelta(seconds=0)
                     date_to = datetime.combine(dates_btwn, time())
                     date_to = date_to + timedelta(hours=14) + timedelta(minutes=0) + timedelta(seconds=0)
-                    print("date_from: ", date_from, "date_to: ", date_to)
+                    # print("date_from: ", date_from, "date_to: ", date_to)
                     attendances = self.env['hr.attendance'].search([
                         ('check_in', '>=', self._convert_datetime_field(date_from)),
                         ('check_in', '<=', self._convert_datetime_field(date_to)),

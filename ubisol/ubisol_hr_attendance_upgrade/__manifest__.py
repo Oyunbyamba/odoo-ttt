@@ -28,6 +28,7 @@
         'views/hr_attendance_view.xml',
         'views/views.xml',
         'views/templates.xml',
+        'views/res_config_settings_views.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
