@@ -4,7 +4,7 @@
 {
     'name': 'Attendance request',
     'version': '1.5',
-    'category': 'Human Resources/Time Off',
+    'category': 'Human Resources/Attendance Request',
     'summary': 'Overtime, out of office requests',
     'description': """
 Manage overtime requests and out of office

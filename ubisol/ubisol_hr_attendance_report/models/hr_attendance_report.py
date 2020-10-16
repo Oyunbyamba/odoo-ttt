@@ -118,7 +118,7 @@ class HrAttendanceReport(models.Model):
 
     def calculate_report(self, start_date, end_date):
         employees = []
-        self._cr.execute('SELECT DISTINCT hr_employee FROM hr_employee_schedule')
+        self._cr.execute('SELECT DISTINCT id AS hr_employee FROM hr_employee')
         for t in self._cr.dictfetchall():
             employees.append(t)
         for employee in employees:
@@ -152,13 +152,25 @@ class HrAttendanceReport(models.Model):
                         self.env['hr.attendance.report'].search([('hr_employee_schedule', '=', schedule.id)]).unlink()
 
                     date_from = datetime.combine(dates_btwn, time())
+                    date_from = date_from + timedelta(hours=5) + timedelta(minutes=0) + timedelta(seconds=0)
                     date_to = datetime.combine(dates_btwn, time())
-                    date_to = date_to + timedelta(hours=23) + timedelta(minutes=59) + timedelta(seconds=59)
+                    date_to = date_to + timedelta(hours=14) + timedelta(minutes=0) + timedelta(seconds=0)
+                    print("date_from: ", date_from, "date_to: ", date_to)
                     attendances = self.env['hr.attendance'].search([
                         ('check_in', '>=', self._convert_datetime_field(date_from)),
                         ('check_in', '<=', self._convert_datetime_field(date_to)),
                         ('employee_id', '=', employee['hr_employee']),
                     ])
+                    if not attendances:
+                        date_from = datetime.combine(dates_btwn, time())
+                        date_from = date_from + timedelta(hours=14) + timedelta(minutes=0) + timedelta(seconds=1)
+                        date_to = datetime.combine(dates_btwn, time())
+                        date_to = date_to + timedelta(hours=28) + timedelta(minutes=59) + timedelta(seconds=59)
+                        attendances = self.env['hr.attendance'].search([
+                            ('check_out', '>=', self._convert_datetime_field(date_from)),
+                            ('check_out', '<=', self._convert_datetime_field(date_to)),
+                            ('employee_id', '=', employee['hr_employee']),
+                        ])
 
                     for attendance in attendances:
                         if attendance:
