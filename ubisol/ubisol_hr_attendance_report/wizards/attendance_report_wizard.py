@@ -15,7 +15,7 @@ class AttendanceReport(models.TransientModel):
         reports.calculate_report(self.start_date, self.end_date)
         
         action = {
-          "name": "Attendance Time Analysis",
+          "name": "Ирцийн график",
           "type": "ir.actions.act_window",
           "res_model": "hr.attendance.report",
           "view_mode": "pivot",
