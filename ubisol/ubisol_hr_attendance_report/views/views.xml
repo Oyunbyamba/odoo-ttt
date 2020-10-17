@@ -35,19 +35,12 @@
     </record>
 
     <menuitem
-        id="menu_hr_attendance_report_root"
-        name="Ирцийн тайлан"
-        parent="hr_attendance.menu_hr_attendance_report"
-        sequence="15"
-        groups="hr_attendance.group_hr_attendance"
-    />
-    <menuitem
       id="menu_ubisol_hr_attendance_report"
       name="Ирцийн график"
       action="ubisol_hr_attendance_report_action"
-      parent="menu_hr_attendance_report_root"
+      parent="hr_attendance.menu_hr_attendance_report"
       groups="hr_attendance.group_hr_attendance"
-      sequence="20"
+      sequence="15"
     />
     <!-- <menuitem
       id="menu_update_ubisol_hr_attendance_report"
