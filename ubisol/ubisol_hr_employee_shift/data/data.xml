@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="dayperiod_morning" model="resource.calendar.dayperiod">
-            <field name="name">Morning</field>
+            <field name="name">Өглөө</field>
     </record>
     <record id="dayperiod_afternoon" model="resource.calendar.dayperiod">
-            <field name="name">Afternoon</field>
+            <field name="name">Орой</field>
     </record>
     <record id="dayperiod_rest" model="resource.calendar.dayperiod">
-            <field name="name">Rest</field>
+            <field name="name">Амралт</field>
     </record>
 </odoo>
