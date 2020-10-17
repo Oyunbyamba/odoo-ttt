@@ -5,7 +5,12 @@
     <field name="tag">org_chart_employee.org_chart_department</field>
   </record>
 
-  <menuitem id="menu_org_chart_department" name="Бүтэц" action="action_org_chart_employee" parent="hr.menu_hr_root" sequence="5"/>
+  <menuitem id="menu_org_chart_department" 
+        name="Бүтэц" 
+        action="action_org_chart_employee" 
+        groups="hr.group_hr_user,hr.group_hr_manager"
+        parent="hr.menu_hr_root" 
+        sequence="5"/>
 
   <template id="assets_backend" name="Org Chart Department assets" inherit_id="web.assets_backend" priority="6">
     <xpath expr="." position="inside">

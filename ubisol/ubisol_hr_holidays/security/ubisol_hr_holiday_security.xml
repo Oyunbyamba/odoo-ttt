@@ -25,6 +25,9 @@
     <record model="ir.ui.menu" id="hr_holidays.hr_holidays_menu_manager_all">
         <field name="groups_id" eval="[(5,ref('hide'))]"/>
     </record>
-    
+
+    <record model="ir.ui.menu" id="hr_holidays.hr_holidays_menu_config_activity_type">
+        <field name="groups_id" eval="[(5,ref('hide'))]"/>
+    </record>    
 
 </odoo>

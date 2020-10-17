@@ -23,38 +23,41 @@ class HrEmployeeFamilyInfo(models.Model):
     current_job = fields.Char(string='Current job')
     address_id = fields.Many2one('res.partner', string='Address')
    
+class HrEmployeePublic(models.Model):
+    _inherit = 'hr.employee.public'
+    surname = fields.Char(string='Surname')
 
 class HrEmployee(models.Model):
     _inherit = 'hr.employee'
     surname = fields.Char(string='Surname')
-    family_name = fields.Char(string='Family Name')
-    fam_ids = fields.One2many('hr.employee.family', 'employee_id', string='Family', help='Family Information')
+    family_name = fields.Char(string='Family Name', groups="hr.group_hr_user")
+    fam_ids = fields.One2many('hr.employee.family', 'employee_id', string='Family', help='Family Information', groups="hr.group_hr_user")
     home_owner = fields.Selection([
         ('own', 'Өөрийн'),
         ('parent', 'Эцэг, эх'),
         ('tenancy', 'Түрээсийн'),
         ('laon', 'Зээл')
-    ], string='Home owner', default='own', tracking=True)
-    ethnicity = fields.Many2one('hr.employee.ethnicity', string="Ethnicity", help="Ethnicity with the employee")
-    family_income = fields.Float('Family Income', digits=(12,0))
+    ], string='Home owner', default='own', tracking=True, groups="hr.group_hr_user")
+    ethnicity = fields.Many2one('hr.employee.ethnicity', string="Ethnicity", help="Ethnicity with the employee", groups="hr.group_hr_user")
+    family_income = fields.Float('Family Income', digits=(12,0), groups="hr.group_hr_user")
     is_served_in_military = fields.Selection([
         ('yes', 'Тийм'),
         ('no', 'Үгүй')
-    ], string='Is served in the military', default='yes')
+    ], string='Is served in the military', default='yes', groups="hr.group_hr_user")
     driving_classification = fields.Selection([
         ('A', 'A'),
         ('B', 'B'),
         ('C', 'C'),
         ('D', 'D'),
         ('E', 'E')
-    ], string='Driving Classification')
-    driver_license_number = fields.Char(string="Driver's license number")
+    ], string='Driving Classification', groups="hr.group_hr_user")
+    driver_license_number = fields.Char(string="Driver's license number", groups="hr.group_hr_user")
     driver_blood_type = fields.Selection([
         ('1', '1'),
         ('2', '2'),
         ('3', '3'),
         ('4', '4')
-    ], string="Driver's blood type")
+    ], string="Driver's blood type", groups="hr.group_hr_user")
     certificate = fields.Selection([
         ('Ерөнхий боловсрол', 'Ерөнхий боловсрол'),
         ('Тусгай дунд боловсрол', 'Тусгай дунд боловсрол'),
@@ -63,23 +66,23 @@ class HrEmployee(models.Model):
         ('Доктор', 'Доктор'),
         ('Бусад', 'Бусад'),
     ], 'Certificate Level', default='Дээд боловсрол', groups="hr.group_hr_user", tracking=True)
-    years_of_driving = fields.Integer(string='Years of driving')
-    relative_employee_id = fields.Many2one('hr.employee', 'Relative', domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
-    size_of_shirt = fields.Char(string='The size of shirt')
-    size_of_pants = fields.Char(string='The size of pants')
-    size_of_shoes = fields.Char(string='The size of shoes')
-    create_contract = fields.Boolean(string='Create contract')
-    contract_ids = fields.One2many('hr.contract', 'employee_id', string='Contract')
-    contract_signed_date = fields.Date(string="Contract signed date")
-    years_of_civil_service = fields.Integer(string='Years')
-    latitude = fields.Char('Өргөрөг')
-    longitude = fields.Char('Уртраг')
-    employee_pictures = fields.One2many('hr.employee.picture', 'employee_id', string='Employee picture')
+    years_of_driving = fields.Integer(string='Years of driving', groups="hr.group_hr_user")
+    relative_employee_id = fields.Many2one('hr.employee', 'Relative', domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]", groups="hr.group_hr_user")
+    size_of_shirt = fields.Char(string='The size of shirt', groups="hr.group_hr_user")
+    size_of_pants = fields.Char(string='The size of pants', groups="hr.group_hr_user")
+    size_of_shoes = fields.Char(string='The size of shoes', groups="hr.group_hr_user")
+    create_contract = fields.Boolean(string='Create contract', groups="hr.group_hr_user")
+    contract_ids = fields.One2many('hr.contract', 'employee_id', string='Contract', groups="hr.group_hr_user")
+    contract_signed_date = fields.Date(string="Contract signed date", groups="hr.group_hr_user")
+    years_of_civil_service = fields.Integer(string='Years', groups="hr.group_hr_user")
+    latitude = fields.Char('Өргөрөг', groups="hr.group_hr_user")
+    longitude = fields.Char('Уртраг', groups="hr.group_hr_user")
+    employee_pictures = fields.One2many('hr.employee.picture', 'employee_id', string='Employee picture', groups="hr.group_hr_user")
     # image=fields.Binary(compute='_getBase64Image') 
-    departure_reason = fields.Selection(selection_add=[('other', 'Other')])
-    resign_date = fields.Date('Resign Date', compute='_compute_resign_date', inverse='_set_document', store=True)
-    is_disabled = fields.Boolean('Хөгжлийн бэрхшээлтэй эсэх', default=False)
-    is_in_group = fields.Boolean('Группд байдаг эсэх', default=False)
+    departure_reason = fields.Selection(selection_add=[('other', 'Other')], groups="hr.group_hr_user")
+    resign_date = fields.Date('Resign Date', compute='_compute_resign_date', inverse='_set_document', store=True, groups="hr.group_hr_user")
+    is_disabled = fields.Boolean('Хөгжлийн бэрхшээлтэй эсэх', default=False, groups="hr.group_hr_user")
+    is_in_group = fields.Boolean('Группд байдаг эсэх', default=False, groups="hr.group_hr_user")
 
     @api.onchange('spouse_complete_name', 'spouse_birthdate')
     def onchange_spouse(self):

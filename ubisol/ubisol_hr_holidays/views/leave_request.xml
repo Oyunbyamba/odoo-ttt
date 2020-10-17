@@ -32,6 +32,7 @@
     <menuitem id="hr_holidays.hr_holidays_menu_manager_payroll" name="Payroll" groups="ubisol_hr_holidays.hide"/>             
     <menuitem id="hr_holidays.hr_holidays_menu_manager_approve" name="Payroll" groups="ubisol_hr_holidays.hide"/>             
     <menuitem id="hr_holidays.hr_holidays_menu_manager_all" name="Payroll" groups="ubisol_hr_holidays.hide"/>             
+    <menuitem id="hr_holidays.hr_holidays_menu_config_activity_type" name="Ажилбарын төрөл" groups="ubisol_hr_holidays.hide"/> 
 
     <menuitem
         id="hr_holidays.hr_leave_menu_my1"

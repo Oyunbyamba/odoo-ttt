@@ -2,7 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 {
-    'name': 'Attendance request',
+    'name': 'ubisol_hr_attendance_request',
     'version': '1.5',
     'category': 'Human Resources/Attendance Request',
     'summary': 'Overtime, out of office requests',

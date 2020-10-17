@@ -42,20 +42,6 @@ class AttendanceRequest(models.Model):
     def _default_get_request_parameters(self, values):
         new_values = dict(values)
         global_from, global_to = False, False
-        # # TDE FIXME: consider a mapping on several days that is not the standard
-        # # calendar widget 7-19 in user's TZ is some custom input
-        # if values.get('date_from'):
-        #     user_tz = self.env.user.tz or 'UTC'
-        #     localized_dt = timezone('UTC').localize(values['date_from']).astimezone(timezone(user_tz))
-        #     global_from = localized_dt.time().hour == 7 and localized_dt.time().minute == 0
-        #     new_values['request_date_from'] = localized_dt.date()
-        # if values.get('date_to'):
-        #     user_tz = self.env.user.tz or 'UTC'
-        #     localized_dt = timezone('UTC').localize(values['date_to']).astimezone(timezone(user_tz))
-        #     global_to = localized_dt.time().hour == 19 and localized_dt.time().minute == 0
-        #     new_values['request_date_to'] = localized_dt.date()
-        # if global_from and global_to:
-        #     new_values['request_unit_custom'] = True
         return new_values    
 
     name = fields.Char('Name', required=True)
@@ -66,7 +52,7 @@ class AttendanceRequest(models.Model):
         ('refuse', 'Татгалзсан'),
         ('validate1', '2 дахь Зөвшөөрөл'),
         ('validate', 'Зөвшөөрсөн')
-        ], string='Status', copy=False, default='draft', tracking=True,
+        ], string='Төлөв', copy=False, default='draft', tracking=True,
         help="The status is set to 'To Submit', when a time off request is created." +
         "\nThe status is 'To Approve', when time off request is confirmed by user." +
         "\nThe status is 'Refused', when time off request is refused by manager." +
@@ -75,11 +61,11 @@ class AttendanceRequest(models.Model):
     request_status_type = fields.Selection([
         ('overtime', 'Илүү цаг'),
         ('outside_work', 'Гадуур ажил')
-        ], string="Request Status Type", required=True, tracking=True)
+        ], default="overtime", string="Хүсэлтийн төрөл", required=True, tracking=True)
     validation_type = fields.Selection([
         ('both', '2 шатлалт'),
         ('manager', 'Ахлах')
-        ], string="Validation Type", default='both')
+        ], string="Зөвшөөрлийн төрөл", default='both')
 
     def _employee_id_domain(self):
         if self.user_has_groups('hr_holidays.group_hr_holidays_user') or self.user_has_groups('hr_holidays.group_hr_holidays_manager'):
@@ -89,32 +75,32 @@ class AttendanceRequest(models.Model):
         return [('user_id', '=', self.env.user.id)]
 
     employee_id = fields.Many2one(
-        'hr.employee', string='Employee', 
+        'hr.employee', string='Ажилтан', 
         states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]}, 
         default=_default_employee, domain=_employee_id_domain, tracking=True)
-    notes = fields.Text('Reasons', tracking=True)
-    description = fields.Text('Description', tracking=True)
+    notes = fields.Text('Шалтгаан', tracking=True)
+    description = fields.Text('Тодорхойлолт', tracking=True)
     # duration
     start_datetime = fields.Datetime(
-        'Start Date', required=True, tracking=True,
+        'Эхлэх хугацаа', required=True, tracking=True,
         default=fields.Datetime.now)
     end_datetime = fields.Datetime(
-        'End Date', required=True, tracking=True,
+        'Дуусах хугацаа', required=True, tracking=True,
         default=fields.Datetime.now)
     request_type = fields.Selection([
-        ('employee', 'By Employee'),
-        ('department', 'By Department')],
-        string='Allocation Mode', required=True, default='employee', tracking=True)
+        ('employee', 'Ажилтнаар'),
+        ('department', 'Хэлтэсээр')],
+        string='Хүсэлтийн горим', required=True, default='employee', tracking=True)
     category_id = fields.Many2one(
-        'hr.employee.category', string='Employee Tag')
+        'hr.employee.category', string='Ажилтаны пайз')
     mode_company_id = fields.Many2one(
-        'res.company', string='Company')
+        'res.company', string='Компани')
     department_id = fields.Many2one(
-        'hr.department', string='Department')
+        'hr.department', string='Хэлтэс')
     first_approver_id = fields.Many2one(
-        'hr.employee', string='First Approval')
+        'hr.employee', string='Эхний зөвшөөрөл')
     second_approver_id = fields.Many2one(
-        'hr.employee', string='Second Approval')
+        'hr.employee', string='2 дахь зөвшөөрөл')
     can_reset = fields.Boolean('Can reset', compute='_compute_can_reset')
     can_approve = fields.Boolean('Can Approve', compute='_compute_can_approve')  
 
@@ -128,8 +114,30 @@ class AttendanceRequest(models.Model):
             self.employee_id = False
             if not self.department_id:
                 self.department_id = self.env.user.employee_id.department_id.id
+
+    # @api.onchange('date_from', 'date_to', 'employee_id')
+    # def _onchange_leave_dates(self):
+    #     if self.start_datetime and self.end_datetime:
+    #         self.number_of_days = self._get_number_of_days(self.start_datetime, self.end_datetime, self.employee_id.id)['days']
+    #     else:
+    #         self.number_of_days = 0
+
+    # def _get_number_of_days(self, date_from, date_to, employee_id):
+    #     """ Returns a float equals to the timedelta between two dates given as string."""
+    #     if employee_id:
+    #         employee = self.env['hr.employee'].browse(employee_id)
+    #         return employee._get_work_days_data_batch(date_from, date_to)[employee.id]
+
+    #     today_hours = self.env.company.resource_calendar_id.get_work_hours_count(
+    #         datetime.combine(date_from.date(), time.min),
+    #         datetime.combine(date_from.date(), time.max),
+    #         False)
+
+    #     hours = self.env.company.resource_calendar_id.get_work_hours_count(date_from, date_to)
+
+    #     return {'days': hours / (today_hours or HOURS_PER_DAY), 'hours': hours}
+                    
         
-    
     @api.constrains('start_datetime', 'end_datetime', 'state', 'employee_id')
     def _check_date(self):
         if self.end_datetime:
@@ -147,7 +155,7 @@ class AttendanceRequest(models.Model):
             expression.OR(domains)
         ])
         if self.search_count(domain):
-            raise ValidationError(_('You can not set 2 times off that overlaps on the same day for the same employee.'))
+            raise ValidationError(_('1 ажилтанд ижил хугацааны завсар давхар ирцийн хүсэлт бүртгэх боломжгүй.'))
 
     # @api.constrains('start_datetime', 'end_datetime')
     # def _check_double_validation_rules(self, employees, state):
@@ -175,24 +183,24 @@ class AttendanceRequest(models.Model):
             val_type = attendance.validation_type
             if not is_manager and state != 'confirm':
                 if state == 'draft':
+                    print(attendance.employee_id.id)
+                    print(current_employee)
                     if attendance.state == 'refuse':
                         raise UserError(_('Only a Leave Manager can reset a refused leave.'))
                     if attendance.start_datetime and attendance.end_datetime.date() <= fields.Date.today():
                         raise UserError(_('Only a Leave Manager can reset a started leave.'))
-                    if attendance.employee_id != current_employee:
+                    if attendance.employee_id.id != current_employee:
+                        print(attendance.employee_id.id)
+                        print('is_can_reset')
                         raise UserError(_('Only a Leave Manager can reset other people leaves.'))
                 else:
-                    # if val_type == 'no_validation' and current_employee == attendance.employee_id:
-                    #     continue
-                    # use ir.rule based first access check: department, members, ... (see security.xml)
                     attendance.check_access_rule('write')
             
-                    # This handles states validate1 validate and refuse
-                    if attendance.employee_id == current_employee:
+                    if attendance.employee_id.id == current_employee:
                         raise UserError(_('Only a Leave Manager can approve/refuse its own requests.'))
 
                     if (state == 'validate1' and val_type == 'both') or (state == 'validate' and val_type == 'manager') and attendance.request_type == 'employee':
-                        if not is_officer and current_employee != attendance.employee_id.parent_id:
+                        if not is_officer and current_employee != attendance.employee_id.parent_id.id:
                             raise UserError(_('You must be either %s\'s manager or attendance manager to approve this leave') % (attendance.employee_id.name))
                    
     @api.depends('state', 'employee_id', 'department_id')
@@ -204,6 +212,9 @@ class AttendanceRequest(models.Model):
                 attendance.can_reset = False
             else:
                 attendance.can_reset = True
+
+        print("attendance.can_reset")        
+        print(attendance.can_reset)        
 
     @api.depends('state', 'employee_id', 'department_id')
     def _compute_can_approve(self):
@@ -232,37 +243,24 @@ class AttendanceRequest(models.Model):
             'first_approver_id': False,
             'second_approver_id': False,
         })
+
         return True
 
     def action_confirm(self):
         if self.filtered(lambda attendance: attendance.state != 'draft'):
             raise UserError(_('Attendance request must be in Draft state ("To Submit") in order to confirm it.'))
         self.write({'state': 'confirm'})
-        # attendances = self.filtered(lambda attendance_req: attendance_req.validation_type == 'no_validation')
-        # if attendances:
-        #     # Automatic validation should be done in sudo, because user might not have the rights to do it by himself
-        #     attendances.sudo().action_validate()
-        # self.activity_update()
+
         return True
 
     def action_approve(self):
-        # if validation_type == 'both': this method is the first approval approval
-        # if validation_type != 'both': this method calls action_validate() below
         if any(attendance.state != 'confirm' for attendance in self):
             raise UserError(_('Attendance request must be confirmed ("To Approve") in order to approve it.'))
 
         current_employee = self.env.user.employee_id
         self.filtered(lambda att: att.validation_type == 'both').write({'state': 'validate1', 'first_approver_id': current_employee.id})
-
-        # Post a second message, more verbose than the tracking message
-        # for attendance in self.filtered(lambda attendance: attendance.employee_id.user_id):
-        #     attendance.message_post(
-        #         body=_('Your %s planned on %s has been accepted' % (attendance.name, attendance.start_datetime)),
-        #         partner_ids=attendance.employee_id.user_id.partner_id.ids)
-
         self.filtered(lambda att: not att.validation_type == 'both').action_validate()
-        # if not self.env.context.get('leave_fast_create'):
-        #     self.activity_update()
+
         return True    
 
     def action_validate(self):
@@ -273,95 +271,7 @@ class AttendanceRequest(models.Model):
         self.write({'state': 'validate'})
         self.filtered(lambda attendance: attendance.validation_type == 'both').write({'second_approver_id': current_employee.id})
         self.filtered(lambda attendance: attendance.validation_type != 'both').write({'first_approver_id': current_employee.id})
-        # for holiday in self.filtered(lambda holiday: holiday.holiday_type != 'employee'):
-        #     if holiday.holiday_type == 'category':
-        #         employees = holiday.category_id.employee_ids
-        #     elif holiday.holiday_type == 'company':
-        #         employees = self.env['hr.employee'].search([('company_id', '=', holiday.mode_company_id.id)])
-        #     else:
-        #         employees = holiday.department_id.member_ids
 
-        #     conflicting_leaves = self.env['hr.leave'].with_context(
-        #         tracking_disable=True,
-        #         mail_activity_automation_skip=True,
-        #         leave_fast_create=True
-        #     ).search([
-        #         ('date_from', '<=', holiday.date_to),
-        #         ('date_to', '>', holiday.date_from),
-        #         ('state', 'not in', ['cancel', 'refuse']),
-        #         ('holiday_type', '=', 'employee'),
-        #         ('employee_id', 'in', employees.ids)])
-
-        #     if conflicting_leaves:
-        #         # YTI: More complex use cases could be managed in master
-        #         if holiday.leave_type_request_unit != 'day' or any(l.leave_type_request_unit == 'hour' for l in conflicting_leaves):
-        #             raise ValidationError(_('You can not have 2 leaves that overlaps on the same day.'))
-
-        #         # keep track of conflicting leaves states before refusal
-        #         target_states = {l.id: l.state for l in conflicting_leaves}
-        #         conflicting_leaves.action_refuse()
-        #         split_leaves_vals = []
-        #         for conflicting_leave in conflicting_leaves:
-        #             if conflicting_leave.leave_type_request_unit == 'half_day' and conflicting_leave.request_unit_half:
-        #                 continue
-
-        #             # Leaves in days
-        #             if conflicting_leave.date_from < holiday.date_from:
-        #                 before_leave_vals = conflicting_leave.copy_data({
-        #                     'date_from': conflicting_leave.date_from.date(),
-        #                     'date_to': holiday.date_from.date() + timedelta(days=-1),
-        #                     'state': target_states[conflicting_leave.id],
-        #                 })[0]
-        #                 before_leave = self.env['hr.leave'].new(before_leave_vals)
-        #                 before_leave._onchange_request_parameters()
-        #                 # Could happen for part-time contract, that time off is not necessary
-        #                 # anymore.
-        #                 # Imagine you work on monday-wednesday-friday only.
-        #                 # You take a time off on friday.
-        #                 # We create a company time off on friday.
-        #                 # By looking at the last attendance before the company time off
-        #                 # start date to compute the date_to, you would have a date_from > date_to.
-        #                 # Just don't create the leave at that time. That's the reason why we use
-        #                 # new instead of create. As the leave is not actually created yet, the sql
-        #                 # constraint didn't check date_from < date_to yet.
-        #                 if before_leave.date_from < before_leave.date_to:
-        #                     split_leaves_vals.append(before_leave._convert_to_write(before_leave._cache))
-        #             if conflicting_leave.date_to > holiday.date_to:
-        #                 after_leave_vals = conflicting_leave.copy_data({
-        #                     'date_from': holiday.date_to.date() + timedelta(days=1),
-        #                     'date_to': conflicting_leave.date_to.date(),
-        #                     'state': target_states[conflicting_leave.id],
-        #                 })[0]
-        #                 after_leave = self.env['hr.leave'].new(after_leave_vals)
-        #                 after_leave._onchange_request_parameters()
-        #                 # Could happen for part-time contract, that time off is not necessary
-        #                 # anymore.
-        #                 if after_leave.date_from < after_leave.date_to:
-        #                     split_leaves_vals.append(after_leave._convert_to_write(after_leave._cache))
-
-        #         split_leaves = self.env['hr.leave'].with_context(
-        #             tracking_disable=True,
-        #             mail_activity_automation_skip=True,
-        #             leave_fast_create=True,
-        #             leave_skip_state_check=True
-        #         ).create(split_leaves_vals)
-
-        #         split_leaves.filtered(lambda l: l.state in 'validate')._validate_leave_request()
-
-        #     values = holiday._prepare_employees_holiday_values(employees)
-        #     leaves = self.env['hr.leave'].with_context(
-        #         tracking_disable=True,
-        #         mail_activity_automation_skip=True,
-        #         leave_fast_create=True,
-        #         leave_skip_state_check=True,
-        #     ).create(values)
-
-        #     leaves._validate_leave_request()
-
-        # employee_requests = self.filtered(lambda hol: hol.holiday_type == 'employee')
-        # employee_requests._validate_leave_request()
-        # if not self.env.context.get('leave_fast_create'):
-        #     employee_requests.filtered(lambda holiday: holiday.validation_type != 'no_validation').activity_update()
         return True    
 
     def action_refuse(self):
@@ -372,22 +282,7 @@ class AttendanceRequest(models.Model):
         validated_attendances = self.filtered(lambda att: att.state == 'validate1')
         validated_attendances.write({'state': 'refuse', 'first_approver_id': current_employee.id})
         (self - validated_attendances).write({'state': 'refuse', 'second_approver_id': current_employee.id})
-        # # Delete the meeting
-        # self.mapped('meeting_id').unlink()
-        # # If a category that created several holidays, cancel all related
-        # linked_requests = self.mapped('linked_request_ids')
-        # if linked_requests:
-        #     linked_requests.action_refuse()
 
-        # Post a second message, more verbose than the tracking message
-        # for attendance in self:
-        #     if attendance.employee_id.user_id:
-        #         attendance.message_post(
-        #             body=_('Your %s planned on %s has been refused') % (holiday.holiday_status_id.display_name, holiday.date_from),
-        #             partner_ids=holiday.employee_id.user_id.partner_id.ids)
-
-        # self._remove_resource_leave()
-        # self.activity_update()
         return True    
 
     
