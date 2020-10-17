@@ -50,14 +50,14 @@
                                 <span class="o_form_label">Гарах цагийн тохиргоо</span>
                                 <div class="content-group">
                                     <div class="mt16 row">
-                                        <label for="start_work_date_from" string="Эхлэх хугацаа" class="col-4 col-lg-4 o_light_label"/>
+                                        <label for="end_work_date_from" string="Эхлэх хугацаа" class="col-4 col-lg-4 o_light_label"/>
                                         <field name="end_work_date_from" widget="float_time"/>
                                     </div>
                                 </div>
                                 
                                 <div class="content-group">
                                     <div class="mt16 row">
-                                        <label for="start_work_date_to" string="Дуусах хугацаа" class="col-4 col-lg-4 o_light_label"/>
+                                        <label for="end_work_date_to" string="Дуусах хугацаа" class="col-4 col-lg-4 o_light_label"/>
                                         <field name="end_work_date_to" widget="float_time"/>
                                     </div>
                                 </div>
@@ -74,7 +74,7 @@
                                 <span class="o_form_label">Хугацаа /цаг, минутаар/</span>
                                 <div class="content-group">
                                     <div class="mt16 row">
-                                        <label for="start_work_date_to" string="Хугацаа" class="col-4 col-lg-4 o_light_label"/>
+                                        <label for="late_min" string="Хугацаа" class="col-4 col-lg-4 o_light_label"/>
                                         <field name="late_min" widget="float_time"/>
                                     </div>
                                 </div>
@@ -88,7 +88,7 @@
                                 <span class="o_form_label">Хасагдах хугацаа /цаг, минутаар/</span>
                                 <div class="content-group">
                                     <div class="mt16 row">
-                                        <label for="start_work_date_to" string="Хасагдах хугацаа" class="col-4 col-lg-4 o_light_label"/>
+                                        <label for="late_subtrack" string="Хасагдах хугацаа" class="col-4 col-lg-4 o_light_label"/>
                                         <field name="late_subtrack" widget="float_time"/>
                                     </div>
                                 </div>

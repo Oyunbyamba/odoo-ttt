@@ -47,6 +47,21 @@ class HrAttendanceReport(models.Model):
     difference_check_in = fields.Float(compute="_compute_difference_check_in", store=True, compute_sudo=True)
     difference_check_out = fields.Float(compute="_compute_difference_check_out", store=True, compute_sudo=True)
 
+    overtime_req_id = fields.Many2one('hr.attendance.request')
+    outside_work_req_id = fields.Many2one('hr.attendance.request')
+    overtime = fields.Float(compute="_compute_overtime", store=True, compute_sudo=True)
+    outside_work = fields.Float(compute="_compute_outside_work", store=True, compute_sudo=True)
+
+
+    @api.depends("overtime_req_id")
+    def _compute_overtime(self):
+        for record in self:
+            print(record.overtime_req_id)
+    
+    @api.depends("outside_work_req_id")
+    def _compute_outside_work(self):
+        for record in self:
+            print(record.outside_work_req_id)
 
     @api.depends("check_in", "start_work")
     def _compute_difference_check_in(self):
@@ -124,6 +139,7 @@ class HrAttendanceReport(models.Model):
         return datetime.strftime(date_result, '%Y-%m-%d %H:%M:%S')
 
     def calculate_report(self, start_date, end_date):
+        setting_obj = self.env['res.config.settings'].search([], limit=1, order='id desc')
         employees = []
         self._cr.execute('SELECT DISTINCT id AS hr_employee FROM hr_employee')
         for t in self._cr.dictfetchall():
@@ -159,10 +175,10 @@ class HrAttendanceReport(models.Model):
                         self.env['hr.attendance.report'].search([('hr_employee_schedule', '=', schedule.id)]).unlink()
 
                     date_from = datetime.combine(dates_btwn, time())
-                    date_from = date_from + timedelta(hours=5) + timedelta(minutes=0) + timedelta(seconds=0)
+                    date_from = date_from + timedelta(seconds=setting_obj.start_work_date_from * 3600)
                     date_to = datetime.combine(dates_btwn, time())
-                    date_to = date_to + timedelta(hours=14) + timedelta(minutes=0) + timedelta(seconds=0)
-                    # print("date_from: ", date_from, "date_to: ", date_to)
+                    date_to = date_to + timedelta(seconds=setting_obj.start_work_date_to * 3600 + 59)
+
                     attendances = self.env['hr.attendance'].search([
                         ('check_in', '>=', self._convert_datetime_field(date_from)),
                         ('check_in', '<=', self._convert_datetime_field(date_to)),
@@ -170,9 +186,9 @@ class HrAttendanceReport(models.Model):
                     ])
                     if not attendances:
                         date_from = datetime.combine(dates_btwn, time())
-                        date_from = date_from + timedelta(hours=14) + timedelta(minutes=0) + timedelta(seconds=1)
+                        date_from = date_from + timedelta(seconds=setting_obj.end_work_date_from * 3600)
                         date_to = datetime.combine(dates_btwn, time())
-                        date_to = date_to + timedelta(hours=28) + timedelta(minutes=59) + timedelta(seconds=59)
+                        date_to = date_to + timedelta(days=1) + timedelta(seconds=setting_obj.end_work_date_to * 3600 + 59)
                         attendances = self.env['hr.attendance'].search([
                             ('check_out', '>=', self._convert_datetime_field(date_from)),
                             ('check_out', '<=', self._convert_datetime_field(date_to)),
@@ -187,6 +203,22 @@ class HrAttendanceReport(models.Model):
                             values['worked_hours'] = attendance.worked_hours
 
                             self.env['hr.attendance.report'].search([('hr_attendance', '=', attendance.id)]).unlink()
-                        
+
+                    date_from = datetime.combine(dates_btwn, time())
+                    date_to = datetime.combine(dates_btwn, time())
+                    date_to = date_to + timedelta(hours=23, minutes=59, seconds=59)
+
+                    attendance_reqs = self.env['hr.attendance.request'].search([
+                        ('start_datetime', '>=', self._convert_datetime_field(date_from)),
+                        ('start_datetime', '<=', self._convert_datetime_field(date_to)),
+                        ('employee_id', '=', employee['hr_employee']),
+                    ])
+
+                    for attendance_req in attendance_reqs:
+                        if attendance_req.request_status_type == 'outside_work':
+                            values['overtime_req_id'] = attendance_req.id
+                        elif attendance_req.request_status_type == 'overtime':
+                            values['outside_work_req_id'] = attendance_req.id
+
                     super(HrAttendanceReport, self).create(values)
                 dates_btwn = dates_btwn + relativedelta(days=1)

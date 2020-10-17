@@ -39,7 +39,7 @@ class LogFileImportWizard(models.TransientModel):
         atten_time = datetime.strptime(utc_dt, "%Y-%m-%d %H:%M:%S")
         att_obj = self.env['hr.attendance']
 
-        # if str(row[0]).strip() != '70':
+        # if str(row[0]).strip() != '6256':
         #     return {}
 
         get_user_id = self.env['hr.employee'].search(
@@ -65,7 +65,7 @@ class LogFileImportWizard(models.TransientModel):
         # Herev hereglegch oldson bol
         if get_user_id:
             status = self.check_in_out(att_obj, get_user_id, atten_time)
-            # print(atten_time, status)
+            print(atten_time, status)
             if(status == 'check_out'):
                 att_var1 = att_obj.search(
                     [('employee_id', '=', get_user_id.id)],order="id desc")
@@ -75,6 +75,11 @@ class LogFileImportWizard(models.TransientModel):
                 att_var = att_obj.search(
                     [('employee_id', '=', get_user_id.id)],order="id desc")
                 att_var[0].write({'check_out': atten_time})
+            elif (status == "update_check_in"):
+                # att_var = att_obj.search(
+                #     [('employee_id', '=', get_user_id.id)],order="id desc")
+                # att_var[0].write({'check_in': atten_time})
+                pass
             elif status == "new_check_out":
                 att_obj.create({'employee_id': get_user_id.id, 'check_out': atten_time})
             else:
@@ -84,95 +89,119 @@ class LogFileImportWizard(models.TransientModel):
         return {}
 
     def check_in_out(self, att_obj, get_user_id, dt):
-        dt1 = dt + timedelta(hours=8)
-        dt_diff = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
-        dt_diff = datetime.strptime(dt_diff, "%Y-%m-%d %H:%M:%S")
-        if abs(dt1 - dt_diff).total_seconds() < 5 * 3600 and abs(dt1 - dt_diff).total_seconds() > 0:
-            dt1 = dt1 - timedelta(days=1)
-        ds1 = datetime.strftime(dt1, "%Y-%m-%d 05:00:00")
-        ds2 = datetime.strftime(dt1, "%Y-%m-%d 14:00:00")
-        de1 = datetime.strftime(dt1, "%Y-%m-%d 14:00:01")
-        de2 = datetime.strftime(dt1, "%Y-%m-%d 04:59:59")
+        setting_obj = self.env['res.config.settings'].search([], limit=1, order='id desc')
+        general_shift = self.env['hr.employee.schedule'].search(
+            [('hr_employee', '=', int(get_user_id.id))], limit=1, order='id desc')
 
-        ds1 = datetime.strptime(ds1, '%Y-%m-%d %H:%M:%S') - timedelta(hours=8)
-        ds2 = datetime.strptime(ds2, '%Y-%m-%d %H:%M:%S') - timedelta(hours=8)
-        de1 = datetime.strptime(de1, "%Y-%m-%d %H:%M:%S") - timedelta(hours=8)
-        de2 = datetime.strptime(de2, "%Y-%m-%d %H:%M:%S") + timedelta(days=1) - timedelta(hours=8)
+        [ds1, ds2, de1, de2, dt1] = self._calculate_dates(setting_obj, general_shift, dt)
 
         shift_start = self.env['hr.employee.schedule'].search(
-            [('hr_employee', '=', int(get_user_id.id)), ('start_work', '>=', ds1), ('start_work', '<=', ds2)])
+            [('hr_employee', '=', int(get_user_id.id)), ('day_period', '!=', 3), ('start_work', '>=', ds1), ('start_work', '<=', ds2)])
         shift_end = self.env['hr.employee.schedule'].search(
-            [('hr_employee', '=', int(get_user_id.id)), ('end_work', '>=', de1), ('end_work', '<=', de2)])
+            [('hr_employee', '=', int(get_user_id.id)), ('day_period', '!=', 3), ('end_work', '>=', de1), ('end_work', '<=', de2)])
         if(shift_end & shift_start):
             check_out = abs(dt - shift_end.end_work).total_seconds()
             check_in = abs(dt - shift_start.start_work).total_seconds()
-            if(check_out < check_in):
-                return "check_out"
-            else:
-                return "check_in"
+            status = self._check_status(general_shift, get_user_id, dt, shift_start.start_work, shift_end.end_work, check_out, check_in)
+            return status
         elif(shift_end):
             return "check_out"
         elif(shift_start):
             return "check_in"
         else:
-            self._create_schedule(get_user_id, dt1)
-            work_start = datetime.strptime(
-                datetime.strftime(dt1, "%Y-%m-%d  00:30:00"), "%Y-%m-%d %H:%M:%S")
-            work_end = datetime.strptime(datetime.strftime(
-                dt1, "%Y-%m-%d 09:30:00"), "%Y-%m-%d %H:%M:%S")
+            shift_obj = self.env['hr.employee.shift']
+            shift_type = self.env['resource.calendar'].search([('shift_type', '=', 'days')], limit=1, order='id desc')
+            [start_work, end_work] = self._create_schedule(get_user_id, dt1, shift_obj, shift_type)
+            work_start = datetime.strptime(datetime.strftime(dt1, "%Y-%m-%d  00:00:00"), "%Y-%m-%d %H:%M:%S")
+            work_end = datetime.strptime(datetime.strftime(dt1, "%Y-%m-%d 00:00:00"), "%Y-%m-%d %H:%M:%S")
+            work_start = work_start - timedelta(hours=8) + timedelta(seconds=start_work * 3600)
+            work_end = work_end - timedelta(hours=8) + timedelta(seconds=end_work * 3600)
 
             check_out = abs(dt - work_end).total_seconds()
             check_in = abs(dt - work_start).total_seconds()
+            status = self._check_status(general_shift, get_user_id, dt, work_start, work_end, check_out, check_in)
+            return status
 
-            if(check_out < check_in):
-                days = 0
-                self._cr.execute('select id from hr_attendance where employee_id = '+str(get_user_id.id)+' order by id desc limit 1')
-                last_id = self._cr.fetchone()
+    def _calculate_dates(self, setting_obj, general_shift, dt):
+        dt1 = dt + timedelta(hours=8)
+        dt_diff = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
+        dt_diff = datetime.strptime(dt_diff, "%Y-%m-%d %H:%M:%S")
+        if general_shift:
+            if general_shift.shift_type == 'shift':
+                ds1 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
+                ds2 = datetime.strftime(dt1, "%Y-%m-%d 23:59:59")
+                de1 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
+                de2 = datetime.strftime(dt1, "%Y-%m-%d 23:59:59")
 
-                if last_id:
-                    new_check_out = self.env['hr.attendance'].search([('id', '=', last_id[0])])
-                    if new_check_out and new_check_out.check_in:
-                        seconds = abs(dt - new_check_out.check_in).total_seconds()
-                        days = seconds / (24* 3600)
-                else:
-                    new_check_out = None
-
-                update_check_out = self.env['hr.attendance'].search(
-                    [('employee_id', '=', get_user_id.id), ('check_out', '>=', work_start), ('check_out', '<', dt)])
-
-                if(update_check_out):
-                    return "update_check_out"
-                elif new_check_out:
-                    if not new_check_out.check_in:
-                        return "new_check_out"
-                    elif days >= 1:
-                        return "new_check_out"
-                    else:
-                        return "check_out"
-                elif not last_id:
-                    return "new_check_out"
-                return "check_out"
+                ds1 = datetime.strptime(ds1, '%Y-%m-%d %H:%M:%S') - timedelta(hours=8)
+                ds2 = datetime.strptime(ds2, '%Y-%m-%d %H:%M:%S') - timedelta(hours=8)
+                de1 = datetime.strptime(de1, "%Y-%m-%d %H:%M:%S") - timedelta(hours=8)
+                de2 = datetime.strptime(de2, "%Y-%m-%d %H:%M:%S") - timedelta(hours=8)
             else:
-                update_check_out = self.env['hr.attendance'].search(
-                    [('employee_id', '=', get_user_id.id), ('check_in', '>=', work_start), ('check_out', '<', dt)])
-                if(update_check_out):
-                    return "update_check_in"
-                return "check_in"
+                if abs(dt1 - dt_diff).total_seconds() < setting_obj.start_work_date_from * 3600 and abs(dt1 - dt_diff).total_seconds() > 0:
+                    dt1 = dt1 - timedelta(days=1)
+                ds1 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
+                ds2 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
+                de1 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
+                de2 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
 
-            # att_var = att_obj.search(
-            #     [('employee_id', '=', get_user_id.id), ('check_out', '=', False)])
-            # if not att_var:
-            #     return "check_in"
-            # elif len(att_var) == 1:
-            #     print("1 oldson")
-            #     return "update"
-            # else:
-            #     return "check_out"
+                ds1 = datetime.strptime(ds1, '%Y-%m-%d %H:%M:%S') - timedelta(hours=8) + timedelta(seconds=setting_obj.start_work_date_from * 3600)
+                ds2 = datetime.strptime(ds2, '%Y-%m-%d %H:%M:%S') - timedelta(hours=8) + timedelta(seconds=setting_obj.start_work_date_to * 3600 + 59)
+                de1 = datetime.strptime(de1, "%Y-%m-%d %H:%M:%S") - timedelta(hours=8) + timedelta(seconds=setting_obj.end_work_date_from * 3600)
+                de2 = datetime.strptime(de2, "%Y-%m-%d %H:%M:%S") - timedelta(hours=8) + timedelta(days=1) + timedelta(seconds=setting_obj.end_work_date_to * 3600 + 59)
+        else:
+            if abs(dt1 - dt_diff).total_seconds() < setting_obj.start_work_date_from * 3600 and abs(dt1 - dt_diff).total_seconds() > 0:
+                dt1 = dt1 - timedelta(days=1)
+            ds1 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
+            ds2 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
+            de1 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
+            de2 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
 
-    def _create_schedule(self, emp_id, date):
+            ds1 = datetime.strptime(ds1, '%Y-%m-%d %H:%M:%S') - timedelta(hours=8) + timedelta(seconds=setting_obj.start_work_date_from * 3600)
+            ds2 = datetime.strptime(ds2, '%Y-%m-%d %H:%M:%S') - timedelta(hours=8) + timedelta(seconds=setting_obj.start_work_date_to * 3600 + 59)
+            de1 = datetime.strptime(de1, "%Y-%m-%d %H:%M:%S") - timedelta(hours=8) + timedelta(seconds=setting_obj.end_work_date_from * 3600)
+            de2 = datetime.strptime(de2, "%Y-%m-%d %H:%M:%S") - timedelta(hours=8) + timedelta(days=1) + timedelta(seconds=setting_obj.end_work_date_to * 3600 + 59)
+        
+        return [ds1, ds2, de1, de2, dt1]
+
+    def _check_status(self, general_shift, get_user_id, dt, work_start, work_end, check_out, check_in):
+        if(check_out < check_in):
+            days = 0
+            self._cr.execute('select id from hr_attendance where employee_id = '+str(get_user_id.id)+' order by id desc limit 1')
+            last_id = self._cr.fetchone()
+
+            if last_id:
+                new_check_out = self.env['hr.attendance'].search([('id', '=', last_id[0])])
+                if new_check_out and new_check_out.check_in:
+                    seconds = abs(dt - new_check_out.check_in).total_seconds()
+                    days = seconds / (24* 3600)
+            else:
+                new_check_out = None
+
+            update_check_out = self.env['hr.attendance'].search(
+                [('employee_id', '=', get_user_id.id), ('check_out', '>=', work_start), ('check_out', '<', dt)])
+
+            if(update_check_out):
+                return "update_check_out"
+            elif new_check_out:
+                if not new_check_out.check_in:
+                    return "new_check_out"
+                elif days >= 1:
+                    return "new_check_out"
+                else:
+                    return "check_out"
+            elif not last_id:
+                return "new_check_out"
+            return "check_out"
+        else:
+            update_check_in = self.env['hr.attendance'].search(
+                [('employee_id', '=', get_user_id.id), ('check_in', '>=', work_start - timedelta(hours=3)), ('check_in', '<', dt)])
+            if(update_check_in):
+                return "update_check_in"
+            return "check_in"
+
+    def _create_schedule(self, emp_id, date, shift_obj, shift_type):
         d = datetime.strftime(date, "%Y-%m-%d")
-        shift_obj = self.env['hr.employee.shift']
-        shift_type = self.env['resource.calendar'].search([('shift_type', '=', 'days')], limit=1, order='id desc')
         shift = self.env['hr.employee.shift'].search([('resource_calendar_ids', '=', shift_type.id)], limit=1, order='id desc')
 
         values = {}
@@ -183,3 +212,6 @@ class LogFileImportWizard(models.TransientModel):
         values['date_to'] = str(d)
         
         shift_obj._create_schedules(values, shift)
+
+        res = self.env['resource.calendar.shift'].search([('shift_id', '=', shift_type.id)], limit=1, order='id desc')
+        return [res.start_work, res.end_work]
