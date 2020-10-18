@@ -56,12 +56,30 @@ class HrAttendanceReport(models.Model):
     @api.depends("overtime_req_id")
     def _compute_overtime(self):
         for record in self:
-            print(record.overtime_req_id)
+            if record.overtime_req_id:
+                check_out = record.check_out
+                start_datetime = record.overtime_req_id.start_datetime
+                if record.overtime_req_id.end_datetime < record.check_out:
+                    check_out = record.overtime_req_id.end_datetime
+                record.overtime = (
+                    ((check_out).day*3600*24 + (check_out).hour*3600 + (check_out).minute*60 + (check_out).second)
+                    - 
+                    ((start_datetime).day*3600*24 + (start_datetime).hour*3600 + (start_datetime).minute*60 + (start_datetime).second) 
+                    ) / 3600
     
     @api.depends("outside_work_req_id")
     def _compute_outside_work(self):
         for record in self:
-            print(record.outside_work_req_id)
+            if record.outside_work_req_id:
+                check_out = record.check_out
+                start_datetime = record.outside_work_req_id.start_datetime
+                if record.outside_work_req_id.end_datetime < record.check_out:
+                    check_out = record.outside_work_req_id.end_datetime
+                record.outside_work = (
+                    ((check_out).day*3600*24 + (check_out).hour*3600 + (check_out).minute*60 + (check_out).second)
+                    - 
+                    ((start_datetime).day*3600*24 + (start_datetime).hour*3600 + (start_datetime).minute*60 + (start_datetime).second) 
+                    ) / 3600
 
     @api.depends("check_in", "start_work")
     def _compute_difference_check_in(self):
@@ -215,9 +233,9 @@ class HrAttendanceReport(models.Model):
                     ])
 
                     for attendance_req in attendance_reqs:
-                        if attendance_req.request_status_type == 'outside_work':
+                        if attendance_req.request_status_type == 'overtime':
                             values['overtime_req_id'] = attendance_req.id
-                        elif attendance_req.request_status_type == 'overtime':
+                        elif attendance_req.request_status_type == 'outside_work':
                             values['outside_work_req_id'] = attendance_req.id
 
                     super(HrAttendanceReport, self).create(values)

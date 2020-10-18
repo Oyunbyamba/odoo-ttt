@@ -39,7 +39,7 @@ class LogFileImportWizard(models.TransientModel):
         atten_time = datetime.strptime(utc_dt, "%Y-%m-%d %H:%M:%S")
         att_obj = self.env['hr.attendance']
 
-        # if str(row[0]).strip() != '6256':
+        # if str(row[0]).strip() != '10047':
         #     return {}
 
         get_user_id = self.env['hr.employee'].search(
@@ -93,12 +93,13 @@ class LogFileImportWizard(models.TransientModel):
         general_shift = self.env['hr.employee.schedule'].search(
             [('hr_employee', '=', int(get_user_id.id))], limit=1, order='id desc')
 
-        [ds1, ds2, de1, de2, dt1] = self._calculate_dates(setting_obj, general_shift, dt)
-
+        [ds1, ds2, de1, de2, dt1, s_type] = self._calculate_dates(setting_obj, general_shift, dt)
         shift_start = self.env['hr.employee.schedule'].search(
             [('hr_employee', '=', int(get_user_id.id)), ('day_period', '!=', 3), ('start_work', '>=', ds1), ('start_work', '<=', ds2)])
         shift_end = self.env['hr.employee.schedule'].search(
             [('hr_employee', '=', int(get_user_id.id)), ('day_period', '!=', 3), ('end_work', '>=', de1), ('end_work', '<=', de2)])
+        if s_type == 'shift' and not shift_end:
+            shift_end = shift_start
         if(shift_end & shift_start):
             check_out = abs(dt - shift_end.end_work).total_seconds()
             check_in = abs(dt - shift_start.start_work).total_seconds()
@@ -122,34 +123,23 @@ class LogFileImportWizard(models.TransientModel):
             status = self._check_status(general_shift, get_user_id, dt, work_start, work_end, check_out, check_in)
             return status
 
+    def _is_overtime(self, dt):
+        pass
+
     def _calculate_dates(self, setting_obj, general_shift, dt):
         dt1 = dt + timedelta(hours=8)
         dt_diff = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
         dt_diff = datetime.strptime(dt_diff, "%Y-%m-%d %H:%M:%S")
+        s_type = 'days'
         if general_shift:
             if general_shift.shift_type == 'shift':
-                ds1 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
-                ds2 = datetime.strftime(dt1, "%Y-%m-%d 23:59:59")
-                de1 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
-                de2 = datetime.strftime(dt1, "%Y-%m-%d 23:59:59")
-
-                ds1 = datetime.strptime(ds1, '%Y-%m-%d %H:%M:%S') - timedelta(hours=8)
-                ds2 = datetime.strptime(ds2, '%Y-%m-%d %H:%M:%S') - timedelta(hours=8)
-                de1 = datetime.strptime(de1, "%Y-%m-%d %H:%M:%S") - timedelta(hours=8)
-                de2 = datetime.strptime(de2, "%Y-%m-%d %H:%M:%S") - timedelta(hours=8)
+                s_type = 'shift'
             else:
-                if abs(dt1 - dt_diff).total_seconds() < setting_obj.start_work_date_from * 3600 and abs(dt1 - dt_diff).total_seconds() > 0:
-                    dt1 = dt1 - timedelta(days=1)
-                ds1 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
-                ds2 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
-                de1 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
-                de2 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
-
-                ds1 = datetime.strptime(ds1, '%Y-%m-%d %H:%M:%S') - timedelta(hours=8) + timedelta(seconds=setting_obj.start_work_date_from * 3600)
-                ds2 = datetime.strptime(ds2, '%Y-%m-%d %H:%M:%S') - timedelta(hours=8) + timedelta(seconds=setting_obj.start_work_date_to * 3600 + 59)
-                de1 = datetime.strptime(de1, "%Y-%m-%d %H:%M:%S") - timedelta(hours=8) + timedelta(seconds=setting_obj.end_work_date_from * 3600)
-                de2 = datetime.strptime(de2, "%Y-%m-%d %H:%M:%S") - timedelta(hours=8) + timedelta(days=1) + timedelta(seconds=setting_obj.end_work_date_to * 3600 + 59)
+                s_type = 'days'
         else:
+            s_type = 'days'
+            
+        if s_type == 'days':
             if abs(dt1 - dt_diff).total_seconds() < setting_obj.start_work_date_from * 3600 and abs(dt1 - dt_diff).total_seconds() > 0:
                 dt1 = dt1 - timedelta(days=1)
             ds1 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
@@ -161,8 +151,17 @@ class LogFileImportWizard(models.TransientModel):
             ds2 = datetime.strptime(ds2, '%Y-%m-%d %H:%M:%S') - timedelta(hours=8) + timedelta(seconds=setting_obj.start_work_date_to * 3600 + 59)
             de1 = datetime.strptime(de1, "%Y-%m-%d %H:%M:%S") - timedelta(hours=8) + timedelta(seconds=setting_obj.end_work_date_from * 3600)
             de2 = datetime.strptime(de2, "%Y-%m-%d %H:%M:%S") - timedelta(hours=8) + timedelta(days=1) + timedelta(seconds=setting_obj.end_work_date_to * 3600 + 59)
-        
-        return [ds1, ds2, de1, de2, dt1]
+        else:
+            ds1 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
+            ds2 = datetime.strftime(dt1, "%Y-%m-%d 23:59:59")
+            de1 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
+            de2 = datetime.strftime(dt1, "%Y-%m-%d 23:59:59")
+
+            ds1 = datetime.strptime(ds1, '%Y-%m-%d %H:%M:%S') - timedelta(hours=8)
+            ds2 = datetime.strptime(ds2, '%Y-%m-%d %H:%M:%S') - timedelta(hours=8)
+            de1 = datetime.strptime(de1, "%Y-%m-%d %H:%M:%S") - timedelta(hours=8)
+            de2 = datetime.strptime(de2, "%Y-%m-%d %H:%M:%S") - timedelta(hours=8)
+        return [ds1, ds2, de1, de2, dt1, s_type]
 
     def _check_status(self, general_shift, get_user_id, dt, work_start, work_end, check_out, check_in):
         if(check_out < check_in):
