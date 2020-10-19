@@ -182,6 +182,29 @@
       </field>
     </record>
 
+    <record id="view_employee_inherit_tree" model="ir.ui.view">
+      <field name="name">hr.employee.tree</field>
+      <field name="model">hr.employee</field>
+      <field name="inherit_id" ref="hr.view_employee_tree"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='name']" position="before">
+          <field name="surname"/>
+        </xpath>
+      </field>
+    </record>
+
+    <record id="hr_inherit_kanban_view_employees" model="ir.ui.view">
+      <field name="name">hr.employee.kanban</field>
+      <field name="model">hr.employee</field>
+      <field name="inherit_id" ref="hr.hr_kanban_view_employees"/>
+      <field name="priority">10</field>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='name']" position="before">
+          <field name="surname"/>
+        </xpath>
+      </field>
+    </record>
+
     <menuitem name="Recruitment"
       id="hr_recruitment.menu_hr_recruitment_root"
       web_icon="hr_recruitment,static/description/icon.png"

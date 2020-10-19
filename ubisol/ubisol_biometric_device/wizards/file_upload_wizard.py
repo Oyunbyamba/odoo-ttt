@@ -39,7 +39,7 @@ class LogFileImportWizard(models.TransientModel):
         atten_time = datetime.strptime(utc_dt, "%Y-%m-%d %H:%M:%S")
         att_obj = self.env['hr.attendance']
 
-        # if str(row[0]).strip() != '10047':
+        # if str(row[0]).strip() != '6256':
         #     return {}
 
         get_user_id = self.env['hr.employee'].search(
@@ -65,7 +65,7 @@ class LogFileImportWizard(models.TransientModel):
         # Herev hereglegch oldson bol
         if get_user_id:
             status = self.check_in_out(att_obj, get_user_id, atten_time)
-            print(atten_time, status)
+            # print(atten_time, status)
             if(status == 'check_out'):
                 att_var1 = att_obj.search(
                     [('employee_id', '=', get_user_id.id)],order="id desc")
@@ -123,7 +123,14 @@ class LogFileImportWizard(models.TransientModel):
             status = self._check_status(general_shift, get_user_id, dt, work_start, work_end, check_out, check_in)
             return status
 
-    def _is_overtime(self, dt):
+    def _is_overtime(self, get_user_id, dt):
+        attendance_reqs = self.env['hr.attendance.request'].search([
+            ('start_datetime', '>=', dt),
+            ('end_datetime', '<=', dt),
+            ('employee_id', '=', get_user_id.id),
+            ('request_type', '=', 'employee'),
+        ])
+        print(attendance_reqs)
         pass
 
     def _calculate_dates(self, setting_obj, general_shift, dt):
