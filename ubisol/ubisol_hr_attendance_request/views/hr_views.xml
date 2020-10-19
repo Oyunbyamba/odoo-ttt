@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <odoo>
 
-    <menuitem name="Илүү цаг"
+    <menuitem name="Overtime Request"
       id="menu_hr_attendance_request_root"
       web_icon="hr_holidays,static/description/icon.png"
       parent="hr.menu_hr_root"
