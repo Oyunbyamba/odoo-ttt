@@ -103,6 +103,11 @@ class AttendanceRequest(models.Model):
         'hr.employee', string='2 дахь зөвшөөрөл')
     can_reset = fields.Boolean('Can reset', compute='_compute_can_reset')
     can_approve = fields.Boolean('Can Approve', compute='_compute_can_approve')  
+    number_of_hours_display = fields.Float(
+        'Duration in hours', compute='_compute_number_of_hours_display', readonly=True,
+        help='Number of hours of the time off request according to your working schedule. Used for interface.')
+    number_of_days = fields.Float(
+        'Duration (Days)', copy=False, tracking=True, compute='_onchange_leave_dates', readonly=True)    
 
     @api.onchange('request_type')
     def _onchange_type(self):
@@ -115,28 +120,27 @@ class AttendanceRequest(models.Model):
             if not self.department_id:
                 self.department_id = self.env.user.employee_id.department_id.id
 
-    # @api.onchange('date_from', 'date_to', 'employee_id')
-    # def _onchange_leave_dates(self):
-    #     if self.start_datetime and self.end_datetime:
-    #         self.number_of_days = self._get_number_of_days(self.start_datetime, self.end_datetime, self.employee_id.id)['days']
-    #     else:
-    #         self.number_of_days = 0
+    @api.onchange('start_datetime', 'end_datetime', 'employee_id')
+    def _onchange_leave_dates(self):
+        if self.start_datetime and self.end_datetime:
+            self.number_of_days = self._get_number_of_days(self.start_datetime, self.end_datetime, self.employee_id.id)['days']
+        else:
+            self.number_of_days = 0
 
-    # def _get_number_of_days(self, date_from, date_to, employee_id):
-    #     """ Returns a float equals to the timedelta between two dates given as string."""
-    #     if employee_id:
-    #         employee = self.env['hr.employee'].browse(employee_id)
-    #         return employee._get_work_days_data_batch(date_from, date_to)[employee.id]
-
-    #     today_hours = self.env.company.resource_calendar_id.get_work_hours_count(
-    #         datetime.combine(date_from.date(), time.min),
-    #         datetime.combine(date_from.date(), time.max),
-    #         False)
-
-    #     hours = self.env.company.resource_calendar_id.get_work_hours_count(date_from, date_to)
-
-    #     return {'days': hours / (today_hours or HOURS_PER_DAY), 'hours': hours}
-                    
+    def _get_number_of_days(self, date_from, date_to, employee_id):
+        """ Returns a float equals to the timedelta between two dates given as string."""
+        if employee_id:
+            employee = self.env['hr.employee'].browse(employee_id)
+            return employee._get_work_days_data_batch(date_from, date_to)[employee.id]
+        print('get number of days')
+        today_hours = self.env.company.resource_calendar_id.get_work_hours_count(
+            datetime.combine(date_from.date(), time.min),
+            datetime.combine(date_from.date(), time.max),
+            False)
+        print(today_hours)
+        hours = self.env.company.resource_calendar_id.get_work_hours_count(date_from, date_to)
+        print(hours)
+        return {'days': hours / (today_hours or HOURS_PER_DAY), 'hours': hours}
         
     @api.constrains('start_datetime', 'end_datetime', 'state', 'employee_id')
     def _check_date(self):
@@ -155,21 +159,7 @@ class AttendanceRequest(models.Model):
             expression.OR(domains)
         ])
         if self.search_count(domain):
-            raise ValidationError(_('1 ажилтанд ижил хугацааны завсар давхар ирцийн хүсэлт бүртгэх боломжгүй.'))
-
-    # @api.constrains('start_datetime', 'end_datetime')
-    # def _check_double_validation_rules(self, employees, state):
-    #     if self.user_has_groups('hr_holidays.group_hr_holidays_manager'):
-    #         return
-
-    #     is_leave_user = self.user_has_groups('hr_holidays.group_hr_holidays_user')
-    #     if state == 'validate1':
-    #         employees = employees.filtered(lambda employee: employee.parent_id != self.env.user.employee_id.id)
-    #         if employees and not is_leave_user:
-    #             raise AccessError(_('You cannot first approve a leave for %s, because you are not his leave manager' % (employees[0].name,)))
-    #     elif state == 'validate' and not is_leave_user:
-    #         # Is probably handled via ir.rule
-    #         raise AccessError(_('You don\'t have the rights to apply second approval on a leave request'))    
+            raise ValidationError(_('1 ажилтанд ижил хугацааны завсар давхар ирцийн хүсэлт бүртгэх боломжгүй.'))    
 
     def _check_approval_update(self, state):
         if self.env.is_superuser():

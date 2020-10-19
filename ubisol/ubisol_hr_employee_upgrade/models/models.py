@@ -22,10 +22,6 @@ class HrEmployeeFamilyInfo(models.Model):
     birth_place = fields.Many2one('res.country.state', string="Birth place")
     current_job = fields.Char(string='Current job')
     address_id = fields.Many2one('res.partner', string='Address')
-   
-class HrEmployeePublic(models.Model):
-    _inherit = 'hr.employee.public'
-    surname = fields.Char(string='Surname')
 
 class HrEmployee(models.Model):
     _inherit = 'hr.employee'
@@ -214,3 +210,7 @@ class EmployeePicture(models.Model):
     check_in = fields.Datetime(string="Check In")
     check_out = fields.Datetime(string="Check Out")   
     second_pic = fields.Char(string="Check out img")
+
+class HrEmployeePublic(models.Model):
+    _inherit = 'hr.employee.public'
+    surname = fields.Char(string='Surname')

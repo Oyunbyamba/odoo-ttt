@@ -35,7 +35,7 @@
     
                         <label for="number_of_days" string="Үргэжлэх хугацаа"/>
                         <div>
-
+                            <field name="number_of_days"/>
                         </div>
 
                         <label for="description" string="Тайлбар"/>
