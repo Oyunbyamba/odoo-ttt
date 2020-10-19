@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <odoo>
 
-    <menuitem name="Attendance Request"
+    <menuitem name="Илүү цаг"
       id="menu_hr_attendance_request_root"
       web_icon="hr_holidays,static/description/icon.png"
       parent="hr.menu_hr_root"
@@ -9,7 +9,7 @@
 
     <menuitem
         id="menu_hr_attendance_request_my"
-        name="Миний ирцийн хүсэлт"
+        name="Миний илүү цагийн хүсэлт"
         action="hr_attendance_request_action_my"
         parent="menu_hr_attendance_request_root"
         sequence="1"/>
@@ -22,7 +22,7 @@
 
     <menuitem
         id="menu_hr_attendance_request_to_approve"
-        name="Батлах ёстой ирц"
+        name="Батлах ёстой илүү цаг"
         parent="menu_hr_attendance_request_approvals"
         action="hr_attendance_request_action_approve"
         groups="hr_holidays.group_hr_holidays_responsible,hr_holidays.group_hr_holidays_user"
@@ -30,7 +30,7 @@
 
     <menuitem
         id="menu_hr_attendance_request_all"
-        name="Бүх ирц"
+        name="Бүх илүү цаг"
         parent="menu_hr_attendance_request_approvals"
         action="hr_attendance_request_action_all"
         groups="hr_holidays.group_hr_holidays_manager,hr_holidays.group_hr_holidays_user"

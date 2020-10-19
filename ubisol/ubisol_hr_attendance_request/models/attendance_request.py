@@ -127,19 +127,21 @@ class AttendanceRequest(models.Model):
         else:
             self.number_of_days = 0
 
+    def _get_calendar(self):
+        self.ensure_one()
+        return self.employee_id.resource_calendar_id or self.env.company.resource_calendar_id
+
     def _get_number_of_days(self, date_from, date_to, employee_id):
         """ Returns a float equals to the timedelta between two dates given as string."""
         if employee_id:
             employee = self.env['hr.employee'].browse(employee_id)
             return employee._get_work_days_data_batch(date_from, date_to)[employee.id]
-        print('get number of days')
+
         today_hours = self.env.company.resource_calendar_id.get_work_hours_count(
             datetime.combine(date_from.date(), time.min),
             datetime.combine(date_from.date(), time.max),
             False)
-        print(today_hours)
         hours = self.env.company.resource_calendar_id.get_work_hours_count(date_from, date_to)
-        print(hours)
         return {'days': hours / (today_hours or HOURS_PER_DAY), 'hours': hours}
         
     @api.constrains('start_datetime', 'end_datetime', 'state', 'employee_id')
@@ -188,6 +190,28 @@ class AttendanceRequest(models.Model):
                     if (state == 'validate1' and val_type == 'both') or (state == 'validate' and val_type == 'manager') and attendance.request_type == 'employee':
                         if not is_officer and current_employee != attendance.employee_id.parent_id.id:
                             raise UserError(_('You must be either %s\'s manager or attendance manager to approve this leave') % (attendance.employee_id.name))
+
+    @api.depends('number_of_days')
+    def _compute_number_of_hours_display(self):
+        for attendance in self:
+            calendar = attendance._get_calendar()
+            if attendance.start_datetime and attendance.end_datetime:
+                if attendance.state == 'validate':
+                    start_dt = attendance.start_datetime
+                    end_dt = attendance.end_datetime
+                    if not start_dt.tzinfo:
+                        start_dt = start_dt.replace(tzinfo=UTC)
+                    if not end_dt.tzinfo:
+                        end_dt = end_dt.replace(tzinfo=UTC)
+                    resource = attendance.employee_id.resource_id
+                    intervals = calendar._attendance_intervals_batch(start_dt, end_dt, resource)[resource.id] \
+                                - calendar._leave_intervals_batch(start_dt, end_dt, None)[False]  # Substract Global Leaves
+                    number_of_hours = sum((stop - start).total_seconds() / 3600 for start, stop, dummy in intervals)
+                else:
+                    number_of_hours = attendance._get_number_of_days(attendance.start_datetime, attendance.end_datetime, attendance.employee_id.id)['hours']
+                attendance.number_of_hours_display = number_of_hours or (attendance.number_of_days * (calendar.hours_per_day or HOURS_PER_DAY))
+            else:
+                attendance.number_of_hours_display = 0                    
                    
     @api.depends('state', 'employee_id', 'department_id')
     def _compute_can_reset(self):

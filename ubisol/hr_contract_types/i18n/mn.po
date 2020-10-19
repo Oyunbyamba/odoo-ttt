@@ -1,0 +1,102 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* hr_contract_types
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 13.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-10-19 11:09+0000\n"
+"PO-Revision-Date: 2020-10-19 11:09+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: hr_contract_types
+#: model:ir.model,name:hr_contract_types.model_hr_contract
+msgid "Contract"
+msgstr "Гэрээ"
+
+#. module: hr_contract_types
+#: model:ir.model,name:hr_contract_types.model_hr_contract_type
+#: model:ir.model.fields,field_description:hr_contract_types.field_hr_contract_type__name
+#: model_terms:ir.ui.view,arch_db:hr_contract_types.hr_contract_type_view_form
+#: model_terms:ir.ui.view,arch_db:hr_contract_types.hr_contract_type_view_search
+#: model_terms:ir.ui.view,arch_db:hr_contract_types.hr_contract_type_view_tree
+msgid "Contract Type"
+msgstr "Гэрээний төрөл"
+
+#. module: hr_contract_types
+#: model:ir.actions.act_window,name:hr_contract_types.action_hr_contract_type
+#: model:ir.ui.menu,name:hr_contract_types.hr_menu_contract_type
+msgid "Contract Types"
+msgstr "Гэрээний төрлүүд"
+
+#. module: hr_contract_types
+#: model:ir.model.fields,field_description:hr_contract_types.field_hr_contract_type__create_uid
+msgid "Created by"
+msgstr "Үүсгэсэн этгээд"
+
+#. module: hr_contract_types
+#: model:ir.model.fields,field_description:hr_contract_types.field_hr_contract_type__create_date
+msgid "Created on"
+msgstr "Үүсгэсэн огноо"
+
+#. module: hr_contract_types
+#: model:ir.model.fields,field_description:hr_contract_types.field_hr_contract_type__display_name
+msgid "Display Name"
+msgstr "Дэлгэрэнгүй нэр"
+
+#. module: hr_contract_types
+#: model:ir.model.fields,field_description:hr_contract_types.field_hr_contract__type_id
+msgid "Employee Category"
+msgstr "Ажилтны Зэрэглэл"
+
+#. module: hr_contract_types
+#: model:ir.model.fields,help:hr_contract_types.field_hr_contract__type_id
+msgid "Employee category"
+msgstr "Ажилтны пайз"
+
+#. module: hr_contract_types
+#: model:ir.model.fields,help:hr_contract_types.field_hr_contract_type__sequence
+msgid "Gives the sequence when displaying a list of Contract."
+msgstr "Гэрээний жагсаалтыг эрэмбэлэх дугаарлалт"
+
+#. module: hr_contract_types
+#: model:ir.model.fields,field_description:hr_contract_types.field_hr_contract_type__id
+msgid "ID"
+msgstr ""
+
+#. module: hr_contract_types
+#: model:ir.model.fields,field_description:hr_contract_types.field_hr_contract_type____last_update
+msgid "Last Modified on"
+msgstr "Сүүлд зассан огноо"
+
+#. module: hr_contract_types
+#: model:ir.model.fields,field_description:hr_contract_types.field_hr_contract_type__write_uid
+msgid "Last Updated by"
+msgstr "Сүүлд зассан этгээд"
+
+#. module: hr_contract_types
+#: model:ir.model.fields,field_description:hr_contract_types.field_hr_contract_type__write_date
+msgid "Last Updated on"
+msgstr "Сүүлд зассан огноо"
+
+#. module: hr_contract_types
+#: model:ir.model.fields,help:hr_contract_types.field_hr_contract_type__name
+msgid "Name"
+msgstr "Нэр"
+
+#. module: hr_contract_types
+#: model_terms:ir.ui.view,arch_db:hr_contract_types.hr_contract_type_view_search
+msgid "Search Contract Type"
+msgstr "Гэрээний төрөл хайх"
+
+#. module: hr_contract_types
+#: model:ir.model.fields,field_description:hr_contract_types.field_hr_contract_type__sequence
+#: model_terms:ir.ui.view,arch_db:hr_contract_types.hr_contract_type_view_search
+msgid "Sequence"
+msgstr "Дугаарлалт"
