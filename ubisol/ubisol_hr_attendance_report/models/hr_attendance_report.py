@@ -42,6 +42,7 @@ class HrAttendanceReport(models.Model):
 
     check_in = fields.Datetime(string="Check In")
     check_out = fields.Datetime(string="Check Out")
+    work_hours = fields.Float(string='Must Worked Hours', compute="_compute_work_hours", store=True, compute_sudo=True)
     worked_hours = fields.Float(string='Worked Hours', compute="_compute_worked_hours", store=True, compute_sudo=True)
 
     difference_check_in = fields.Float(compute="_compute_difference_check_in", store=True, compute_sudo=True)
@@ -111,6 +112,16 @@ class HrAttendanceReport(models.Model):
                         ) / 3600
             else:
                 record.difference_check_out = 0
+
+    @api.depends("start_work", "end_work")
+    def _compute_work_hours(self):
+        for record in self:
+            is_rest = True
+            is_rest = record.day_period.is_rest
+            if is_rest:
+                record.work_hours = 0.0
+            else:
+                record.work_hours = (record.end_work - record.start_work).total_seconds() / 3600
 
     @api.depends('check_in', "start_work", 'check_out', "end_work", "day_period")
     def _compute_worked_hours(self):

@@ -1,7 +1,7 @@
 <odoo>
   <data>
     <!-- explicit list view definition -->
-    <record id="hr_attendance_theoretical_view_pivot" model="ir.ui.view">
+    <record id="hr_attendance_report_view_pivot" model="ir.ui.view">
       <field name="model">hr.attendance.report</field>
       <field name="arch" type="xml">
         <pivot disable_linking="1">
@@ -9,12 +9,31 @@
           <field name="hr_employee" type="row"/>
           <field name="work_day" type="col" interval="month"/>
           <field name="work_day" type="col" interval="day"/>
+          <field name="work_hours" string="Ажиллавал зохих цаг" type="measure" widget="float_time"/>
           <field name="worked_hours" string="Ажилласан цаг" type="measure" widget="float_time"/>
           <field name="difference_check_in" string="Хоцролт" type="measure" widget="float_time"/>
           <field name="difference_check_out" string="Таслалт" type="measure" widget="float_time"/>
           <field name="overtime" string="Илүү цаг" type="measure" widget="float_time"/>
           <field name="outside_work" string="Гадуур ажил" type="measure" widget="float_time"/>
         </pivot>
+      </field>
+    </record>
+
+    <record id="hr_attendance_report_view_tree" model="ir.ui.view">
+      <field name="name">hr.attendance.report.tree</field>
+      <field name="model">hr.attendance.report</field>
+      <field name="arch" type="xml">
+        <tree create="false" delete="false" string="Ирцийн график">
+          <field name="hr_department"/>
+          <field name="hr_employee"/>
+          <field name="shift_type"/>
+          <field name="work_hours" string="Ажиллавал зохих цаг" widget="float_time"/>
+          <field name="worked_hours" string="Ажилласан цаг" widget="float_time"/>
+          <field name="difference_check_in" string="Хоцролт" widget="float_time"/>
+          <field name="difference_check_out" string="Таслалт" widget="float_time"/>
+          <field name="overtime" string="Илүү цаг" widget="float_time"/>
+          <field name="outside_work" string="Гадуур ажил" widget="float_time"/>
+        </tree>
       </field>
     </record>
 
@@ -25,7 +44,7 @@
       <field name="context" >
         {'search_default_previous_month': 1, 'search_default_current_month': 1, 'search_default_my': 1}
       </field>
-      <field name="view_mode">pivot</field>
+      <field name="view_mode">pivot,tree</field>
     </record>
 
     <record model="ir.actions.server" id="action_update_attendance_report">
