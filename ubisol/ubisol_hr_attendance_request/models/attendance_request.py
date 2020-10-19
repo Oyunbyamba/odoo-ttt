@@ -175,7 +175,7 @@ class AttendanceRequest(models.Model):
         if self.env.is_superuser():
             return
 
-        current_employee = self.env.user.employee_id
+        current_employee = self.env.user.employee_id.id
         is_officer = self.env.user.has_group('hr_holidays.group_hr_holidays_user')
         is_manager = self.env.user.has_group('hr_holidays.group_hr_holidays_manager')
 
@@ -183,19 +183,15 @@ class AttendanceRequest(models.Model):
             val_type = attendance.validation_type
             if not is_manager and state != 'confirm':
                 if state == 'draft':
-                    print(attendance.employee_id.id)
-                    print(current_employee)
                     if attendance.state == 'refuse':
                         raise UserError(_('Only a Leave Manager can reset a refused leave.'))
                     if attendance.start_datetime and attendance.end_datetime.date() <= fields.Date.today():
                         raise UserError(_('Only a Leave Manager can reset a started leave.'))
                     if attendance.employee_id.id != current_employee:
-                        print(attendance.employee_id.id)
-                        print('is_can_reset')
                         raise UserError(_('Only a Leave Manager can reset other people leaves.'))
                 else:
                     attendance.check_access_rule('write')
-            
+
                     if attendance.employee_id.id == current_employee:
                         raise UserError(_('Only a Leave Manager can approve/refuse its own requests.'))
 
@@ -211,10 +207,7 @@ class AttendanceRequest(models.Model):
             except (AccessError, UserError):
                 attendance.can_reset = False
             else:
-                attendance.can_reset = True
-
-        print("attendance.can_reset")        
-        print(attendance.can_reset)        
+                attendance.can_reset = True     
 
     @api.depends('state', 'employee_id', 'department_id')
     def _compute_can_approve(self):
