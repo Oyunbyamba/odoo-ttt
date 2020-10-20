@@ -32,6 +32,23 @@
       </field>
     </record>
 
+    <record id="view_attendance_inherit_tree" model="ir.ui.view">
+      <field name="name">hr.attendance.tree</field>
+      <field name="model">hr.attendance</field>
+      <field name="inherit_id" ref="hr_attendance.view_attendance_tree"/>
+      <field name="arch" type="xml">
+        <xpath expr="//tree" position="replace">
+          <tree string="Employee attendances" default_order='id asc' edit="0">
+            <field name="fullname"/>
+            <field name="pin"/>
+            <field name="check_in"/>
+            <field name="check_out"/>
+            <field name="worked_hours" string="Work Hours" widget="float_time"/>
+          </tree>
+        </xpath>
+      </field>
+    </record>
+
     <!-- actions opening views on models -->
 
     <record id="hr_attendance.hr_attendance_action" model="ir.actions.act_window">

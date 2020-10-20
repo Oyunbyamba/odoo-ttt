@@ -39,8 +39,8 @@ class LogFileImportWizard(models.TransientModel):
         atten_time = datetime.strptime(utc_dt, "%Y-%m-%d %H:%M:%S")
         att_obj = self.env['hr.attendance']
 
-        # if str(row[0]).strip() != '6256':
-        #     return {}
+        if str(row[0]).strip() != '747':
+            return {}
 
         get_user_id = self.env['hr.employee'].search(
             [('pin', '=', str(row[0]).strip())])
@@ -94,12 +94,22 @@ class LogFileImportWizard(models.TransientModel):
             [('hr_employee', '=', int(get_user_id.id))], limit=1, order='id desc')
 
         [ds1, ds2, de1, de2, dt1, s_type] = self._calculate_dates(setting_obj, general_shift, dt)
+        attendance_req = self._is_overtime(get_user_id, dt, dt1)
+        if attendance_req:
+            print(ds1, ds2, de1, de2, dt1)
+            [ds1, ds2, de1, de2, dt1, s_type] = self._calculate_dates(setting_obj, general_shift, attendance_req)
+            print(ds1, ds2, de1, de2, dt1)
+
         shift_start = self.env['hr.employee.schedule'].search(
             [('hr_employee', '=', int(get_user_id.id)), ('day_period', '!=', 3), ('start_work', '>=', ds1), ('start_work', '<=', ds2)])
         shift_end = self.env['hr.employee.schedule'].search(
             [('hr_employee', '=', int(get_user_id.id)), ('day_period', '!=', 3), ('end_work', '>=', de1), ('end_work', '<=', de2)])
+
+        if attendance_req:
+            return "check_out"
         if s_type == 'shift' and not shift_end:
             shift_end = shift_start
+
         if(shift_end & shift_start):
             check_out = abs(dt - shift_end.end_work).total_seconds()
             check_in = abs(dt - shift_start.start_work).total_seconds()
@@ -123,15 +133,20 @@ class LogFileImportWizard(models.TransientModel):
             status = self._check_status(general_shift, get_user_id, dt, work_start, work_end, check_out, check_in)
             return status
 
-    def _is_overtime(self, get_user_id, dt):
+    def _is_overtime(self, get_user_id, dt, dt1):
+        ds = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
+        de = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
+        de = datetime.strptime(de, "%Y-%m-%d %H:%M:%S") + timedelta(hours=23, minutes=59, seconds=59)
         attendance_reqs = self.env['hr.attendance.request'].search([
-            ('start_datetime', '>=', dt),
-            ('end_datetime', '<=', dt),
+            ('end_datetime', '>=', ds),
+            ('end_datetime', '<=', de),
             ('employee_id', '=', get_user_id.id),
             ('request_type', '=', 'employee'),
         ])
-        print(attendance_reqs)
-        pass
+        if attendance_reqs and attendance_reqs.end_datetime > dt:
+            return attendance_reqs.start_datetime + timedelta(hours=8)
+        else:
+            return None
 
     def _calculate_dates(self, setting_obj, general_shift, dt):
         dt1 = dt + timedelta(hours=8)
