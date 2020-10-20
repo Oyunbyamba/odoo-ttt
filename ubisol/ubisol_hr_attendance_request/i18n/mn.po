@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-19 11:46+0000\n"
-"PO-Revision-Date: 2020-10-19 11:46+0000\n"
+"POT-Creation-Date: 2020-10-20 02:19+0000\n"
+"PO-Revision-Date: 2020-10-20 02:19+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,8 +16,20 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: ubisol_hr_attendance_request
+#: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
+#, python-format
+msgid ""
+"1 ажилтанд ижил хугацааны завсар давхар ирцийн хүсэлт бүртгэх боломжгүй."
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
 #: model:ir.model.fields.selection,name:ubisol_hr_attendance_request.selection__hr_attendance_request__state__validate1
 msgid "2 дахь Зөвшөөрөл"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__second_approver_id
+msgid "2 дахь зөвшөөрөл"
 msgstr ""
 
 #. module: ubisol_hr_attendance_request
@@ -33,12 +45,7 @@ msgstr ""
 #. module: ubisol_hr_attendance_request
 #: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__message_needaction
 msgid "Action Needed"
-msgstr "Үйлдэл хэрэгтэйы"
-
-#. module: ubisol_hr_attendance_request
-#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__request_type
-msgid "Allocation Mode"
-msgstr ""
+msgstr "Үйлдэл хэрэгтэй"
 
 #. module: ubisol_hr_attendance_request
 #: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__message_attachment_count
@@ -48,7 +55,7 @@ msgstr ""
 #. module: ubisol_hr_attendance_request
 #: model:ir.model,name:ubisol_hr_attendance_request.model_hr_attendance_request
 msgid "Attendance request"
-msgstr "Илүү цагийн хүсэлт"
+msgstr ""
 
 #. module: ubisol_hr_attendance_request
 #: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
@@ -88,16 +95,6 @@ msgid ""
 msgstr ""
 
 #. module: ubisol_hr_attendance_request
-#: model:ir.model.fields.selection,name:ubisol_hr_attendance_request.selection__hr_attendance_request__request_type__department
-msgid "By Department"
-msgstr ""
-
-#. module: ubisol_hr_attendance_request
-#: model:ir.model.fields.selection,name:ubisol_hr_attendance_request.selection__hr_attendance_request__request_type__employee
-msgid "By Employee"
-msgstr ""
-
-#. module: ubisol_hr_attendance_request
 #: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__can_approve
 msgid "Can Approve"
 msgstr ""
@@ -105,11 +102,6 @@ msgstr ""
 #. module: ubisol_hr_attendance_request
 #: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__can_reset
 msgid "Can reset"
-msgstr ""
-
-#. module: ubisol_hr_attendance_request
-#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__mode_company_id
-msgid "Company"
 msgstr ""
 
 #. module: ubisol_hr_attendance_request
@@ -123,38 +115,18 @@ msgid "Created on"
 msgstr ""
 
 #. module: ubisol_hr_attendance_request
-#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__department_id
-msgid "Department"
-msgstr ""
-
-#. module: ubisol_hr_attendance_request
-#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__description
-msgid "Description"
-msgstr ""
-
-#. module: ubisol_hr_attendance_request
 #: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__display_name
 msgid "Display Name"
 msgstr ""
 
 #. module: ubisol_hr_attendance_request
-#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__employee_id
-msgid "Employee"
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__number_of_days
+msgid "Duration (Days)"
 msgstr ""
 
 #. module: ubisol_hr_attendance_request
-#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__category_id
-msgid "Employee Tag"
-msgstr ""
-
-#. module: ubisol_hr_attendance_request
-#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__end_datetime
-msgid "End Date"
-msgstr ""
-
-#. module: ubisol_hr_attendance_request
-#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__first_approver_id
-msgid "First Approval"
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__number_of_hours_display
+msgid "Duration in hours"
 msgstr ""
 
 #. module: ubisol_hr_attendance_request
@@ -240,6 +212,13 @@ msgid "Number of errors"
 msgstr ""
 
 #. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,help:ubisol_hr_attendance_request.field_hr_attendance_request__number_of_hours_display
+msgid ""
+"Number of hours of the time off request according to your working schedule. "
+"Used for interface."
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
 #: model:ir.model.fields,help:ubisol_hr_attendance_request.field_hr_attendance_request__message_needaction_counter
 msgid "Number of messages which requires an action"
 msgstr ""
@@ -281,33 +260,8 @@ msgstr ""
 "хүсэлтийг сэргээх боломжтой."
 
 #. module: ubisol_hr_attendance_request
-#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__notes
-msgid "Reasons"
-msgstr ""
-
-#. module: ubisol_hr_attendance_request
-#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__request_status_type
-msgid "Request Status Type"
-msgstr ""
-
-#. module: ubisol_hr_attendance_request
 #: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__message_has_sms_error
 msgid "SMS Delivery error"
-msgstr ""
-
-#. module: ubisol_hr_attendance_request
-#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__second_approver_id
-msgid "Second Approval"
-msgstr ""
-
-#. module: ubisol_hr_attendance_request
-#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__start_datetime
-msgid "Start Date"
-msgstr ""
-
-#. module: ubisol_hr_attendance_request
-#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__state
-msgid "Status"
 msgstr ""
 
 #. module: ubisol_hr_attendance_request
@@ -341,11 +295,6 @@ msgid "User"
 msgstr ""
 
 #. module: ubisol_hr_attendance_request
-#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__validation_type
-msgid "Validation Type"
-msgstr ""
-
-#. module: ubisol_hr_attendance_request
 #: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__website_message_ids
 msgid "Website Messages"
 msgstr ""
@@ -359,20 +308,23 @@ msgstr ""
 #: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
 #, python-format
 msgid ""
-"You can not set 2 times off that overlaps on the same day for the same "
-"employee."
-msgstr "Нэг ажилтанд ижилхэн өдөр 2 чөлөө давхцуулж болохгүй"
-
-#. module: ubisol_hr_attendance_request
-#: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
-#, python-format
-msgid ""
 "You must be either %s's manager or attendance manager to approve this leave"
 msgstr ""
 
 #. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__employee_id
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_form
 msgid "Ажилтан"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__category_id
+msgid "Ажилтаны пайз"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields.selection,name:ubisol_hr_attendance_request.selection__hr_attendance_request__request_type__employee
+msgid "Ажилтнаар"
 msgstr ""
 
 #. module: ubisol_hr_attendance_request
@@ -417,9 +369,19 @@ msgid "Горим"
 msgstr ""
 
 #. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__end_datetime
+msgid "Дуусах хугацаа"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
 #: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
 #, python-format
 msgid "Дуусах хугацаа эхлэх хугацаанаас бага байж болохгүй."
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__validation_type
+msgid "Зөвшөөрлийн төрөл"
 msgstr ""
 
 #. module: ubisol_hr_attendance_request
@@ -446,13 +408,18 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_form
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_tree
 msgid "Илүү цаг"
-msgstr "Ирцийн хүсэлт"
+msgstr ""
 
 #. module: ubisol_hr_attendance_request
 #: model_terms:ir.actions.act_window,help:ubisol_hr_attendance_request.hr_attendance_request_action_all
 #: model_terms:ir.actions.act_window,help:ubisol_hr_attendance_request.hr_attendance_request_action_approve
 #: model_terms:ir.actions.act_window,help:ubisol_hr_attendance_request.hr_attendance_request_action_my
 msgid "Ирцийн хүсэлт шинээр үүсгэх"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__mode_company_id
+msgid "Компани"
 msgstr ""
 
 #. module: ubisol_hr_attendance_request
@@ -486,16 +453,38 @@ msgid "Татгалзсан"
 msgstr ""
 
 #. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__description
+msgid "Тодорхойлолт"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__state
+msgid "Төлөв"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_form
 msgid "Хаанаас"
 msgstr ""
 
 #. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__department_id
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_form
 msgid "Хэлтэс"
 msgstr ""
 
 #. module: ubisol_hr_attendance_request
+#: model:ir.model.fields.selection,name:ubisol_hr_attendance_request.selection__hr_attendance_request__request_type__department
+msgid "Хэлтэсээр"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__request_type
+msgid "Хүсэлтийн горим"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__request_status_type
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_form
 msgid "Хүсэлтийн төрөл"
 msgstr ""
@@ -506,6 +495,21 @@ msgid "Цуцлагдсан"
 msgstr ""
 
 #. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__notes
+msgid "Шалтгаан"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_form
 msgid "Шатлал"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__start_datetime
+msgid "Эхлэх хугацаа"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__first_approver_id
+msgid "Эхний зөвшөөрөл"
 msgstr ""

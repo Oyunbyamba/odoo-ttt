@@ -23,7 +23,7 @@ _logger = logging.getLogger(__name__)
 
 class AttendanceRequest(models.Model):
     _name = "hr.attendance.request"
-    _description = "Attendance request"
+    _description = "Overtime request"
     _order = "start_datetime desc"
     _inherit = ['mail.thread']
 
@@ -161,7 +161,7 @@ class AttendanceRequest(models.Model):
             expression.OR(domains)
         ])
         if self.search_count(domain):
-            raise ValidationError(_('1 ажилтанд ижил хугацааны завсар давхар ирцийн хүсэлт бүртгэх боломжгүй.'))    
+            raise ValidationError(_('1 ажилтанд ижил хугацааны завсар давхар илүү цагийн хүсэлт бүртгэх боломжгүй.'))    
 
     def _check_approval_update(self, state):
         if self.env.is_superuser():
@@ -176,16 +176,16 @@ class AttendanceRequest(models.Model):
             if not is_manager and state != 'confirm':
                 if state == 'draft':
                     if attendance.state == 'refuse':
-                        raise UserError(_('Only a Leave Manager can reset a refused leave.'))
+                        raise UserError(_('Only a Overtime Manager can reset a refused overtime.'))
                     if attendance.start_datetime and attendance.end_datetime.date() <= fields.Date.today():
-                        raise UserError(_('Only a Leave Manager can reset a started leave.'))
+                        raise UserError(_('Only a Overtime Manager can reset a started overtime.'))
                     if attendance.employee_id.id != current_employee:
-                        raise UserError(_('Only a Leave Manager can reset other people leaves.'))
+                        raise UserError(_('Only a Overtime Manager can reset other people overtimes.'))
                 else:
                     attendance.check_access_rule('write')
 
                     if attendance.employee_id.id == current_employee:
-                        raise UserError(_('Only a Leave Manager can approve/refuse its own requests.'))
+                        raise UserError(_('Only a Overtime Manager can approve/refuse its own requests.'))
 
                     if (state == 'validate1' and val_type == 'both') or (state == 'validate' and val_type == 'manager') and attendance.request_type == 'employee':
                         if not is_officer and current_employee != attendance.employee_id.parent_id.id:
@@ -244,7 +244,7 @@ class AttendanceRequest(models.Model):
 
     def action_draft(self):
         if any(attendance.state not in ['confirm', 'refuse'] for attendance in self):
-            raise UserError(_('Attendance request state must be "Refused" or "To Approve" in order to be reset to draft.'))
+            raise UserError(_('Overtime request state must be "Refused" or "To Approve" in order to be reset to draft.'))
         self.write({
             'state': 'draft',
             'first_approver_id': False,
@@ -255,14 +255,14 @@ class AttendanceRequest(models.Model):
 
     def action_confirm(self):
         if self.filtered(lambda attendance: attendance.state != 'draft'):
-            raise UserError(_('Attendance request must be in Draft state ("To Submit") in order to confirm it.'))
+            raise UserError(_('Overtime request must be in Draft state ("To Submit") in order to confirm it.'))
         self.write({'state': 'confirm'})
 
         return True
 
     def action_approve(self):
         if any(attendance.state != 'confirm' for attendance in self):
-            raise UserError(_('Attendance request must be confirmed ("To Approve") in order to approve it.'))
+            raise UserError(_('Overtime request must be confirmed ("To Approve") in order to approve it.'))
 
         current_employee = self.env.user.employee_id
         self.filtered(lambda att: att.validation_type == 'both').write({'state': 'validate1', 'first_approver_id': current_employee.id})
@@ -273,7 +273,7 @@ class AttendanceRequest(models.Model):
     def action_validate(self):
         current_employee = self.env.user.employee_id
         if any(attendance.state not in ['confirm', 'validate1'] for attendance in self):
-            raise UserError(_('Attendance request must be confirmed in order to approve it.'))
+            raise UserError(_('Overtime request must be confirmed in order to approve it.'))
 
         self.write({'state': 'validate'})
         self.filtered(lambda attendance: attendance.validation_type == 'both').write({'second_approver_id': current_employee.id})
@@ -284,7 +284,7 @@ class AttendanceRequest(models.Model):
     def action_refuse(self):
         current_employee = self.env.user.employee_id
         if any(attendance.state not in ['draft', 'confirm', 'validate', 'validate1'] for attendance in self):
-            raise UserError(_('Attendance request must be confirmed or validated in order to refuse it.'))
+            raise UserError(_('Overtime request must be confirmed or validated in order to refuse it.'))
 
         validated_attendances = self.filtered(lambda att: att.state == 'validate1')
         validated_attendances.write({'state': 'refuse', 'first_approver_id': current_employee.id})
