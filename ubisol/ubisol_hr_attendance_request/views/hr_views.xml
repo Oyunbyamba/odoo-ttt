@@ -3,9 +3,9 @@
 
     <menuitem name="Илүү цаг"
       id="menu_hr_attendance_request_root"
-      web_icon="hr_holidays,static/description/icon.png"
-      parent="hr.menu_hr_root"
-      groups="base.group_user"/>
+      parent="ubisol_hr_holidays.menu_hr_requests_root"
+      groups="base.group_user"
+      sequence="1"/>
 
     <menuitem
         id="menu_hr_attendance_request_my"

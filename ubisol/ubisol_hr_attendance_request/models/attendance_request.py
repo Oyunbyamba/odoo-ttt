@@ -60,7 +60,8 @@ class AttendanceRequest(models.Model):
     user_id = fields.Many2one('res.users', string='User')
     request_status_type = fields.Selection([
         ('overtime', 'Илүү цаг'),
-        ('outside_work', 'Гадуур ажил')
+        ('outside_work', 'Гадуур ажил'),
+        ('attendance', 'Ирцийн хүсэлт')
         ], default="overtime", string="Хүсэлтийн төрөл", required=True, tracking=True)
     validation_type = fields.Selection([
         ('both', '2 шатлалт'),

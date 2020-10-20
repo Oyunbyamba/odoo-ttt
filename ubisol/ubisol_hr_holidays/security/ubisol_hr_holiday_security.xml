@@ -22,6 +22,14 @@
         <field name="groups_id" eval="[(5,ref('hide'))]"/>
     </record>
 
+    <record model="ir.ui.menu" id="hr_holidays.menu_open_department_leave_approve">
+        <field name="groups_id" eval="[(5,ref('hide'))]"/>
+    </record>
+
+    <record model="ir.ui.menu" id="hr_holidays.hr_holidays_menu_manager_approve_allocations">
+        <field name="groups_id" eval="[(5,ref('hide'))]"/>
+    </record>
+
     <record model="ir.ui.menu" id="hr_holidays.hr_holidays_menu_manager_all">
         <field name="groups_id" eval="[(5,ref('hide'))]"/>
     </record>
