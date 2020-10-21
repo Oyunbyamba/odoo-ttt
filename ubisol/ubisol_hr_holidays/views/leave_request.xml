@@ -27,7 +27,7 @@
       </field>
     </record>
 
-    <record id="hr_leave_action_action_approve_department2" model="ir.actions.act_window">
+    <!-- <record id="hr_leave_action_action_approve_department2" model="ir.actions.act_window">
         <field name="name">Time Off</field>
         <field name="res_model">hr.leave</field>
         <field name="view_mode">tree,kanban,form,calendar,activity</field>
@@ -60,15 +60,18 @@
         <field name="view_mode">form</field>
         <field name="view_id" ref="hr_holidays.hr_leave_view_form_manager_approve"/>
         <field name="act_window_id" ref="hr_leave_action_action_approve_department2"/>
-    </record>
+    </record> -->
+
 
     <menuitem id="hr_holidays.menu_hr_holidays_my_leaves" groups="ubisol_hr_holidays.hide"/>
     <menuitem id="hr_holidays.menu_hr_holidays_dashboard" name="Everyone" groups="ubisol_hr_holidays.hide"/>  
     <menuitem id="hr_holidays.hr_holidays_menu_manager_payroll" name="Payroll" groups="ubisol_hr_holidays.hide"/>             
     <menuitem id="hr_holidays.hr_holidays_menu_manager_approve" name="Approve" groups="ubisol_hr_holidays.hide"/>             
-    <menuitem id="hr_holidays.menu_open_department_leave_approve" name="Approve" groups="ubisol_hr_holidays.hide"/>             
-    <menuitem id="hr_holidays.hr_holidays_menu_manager_approve_allocations" name="Approve" groups="ubisol_hr_holidays.hide"/>             
+    <menuitem id="hr_holidays.menu_open_department_leave_approve" name="Time off" groups="ubisol_hr_holidays.hide"/>             
+    <menuitem id="hr_holidays.hr_holidays_menu_manager_approve_allocations" name="Allocation" groups="ubisol_hr_holidays.hide"/>             
     <menuitem id="hr_holidays.hr_holidays_menu_manager_all" name="Manager" groups="ubisol_hr_holidays.hide"/>             
+    <menuitem id="hr_holidays.menu_open_employee_leave" name="Time off" groups="ubisol_hr_holidays.hide"/>             
+    <menuitem id="hr_holidays.hr_holidays_menu_manager_all_allocations" name="Allocation" groups="ubisol_hr_holidays.hide"/>             
     <menuitem id="hr_holidays.hr_holidays_menu_config_activity_type" name="Ажилбарын төрөл" groups="ubisol_hr_holidays.hide"/> 
 
     <menuitem name="Хүсэлтүүд"
@@ -91,13 +94,21 @@
         sequence="1"/>
 
     <menuitem
+        id="hr_holidays.menu_open_department_leave_approve1"
+        name="Батлах ёстой чөлөө"
+        parent="hr_holidays.menu_hr_holidays_approvals"
+        groups="hr_holidays.group_hr_holidays_responsible"
+        action="hr_holidays.hr_leave_action_action_approve_department"
+        sequence="1"/>
+
+    <!-- <menuitem
         id="hr_holidays.menu_open_department_leave_approve2"
         name="Батлах ёстой чөлөө"
         parent="hr_holidays.menu_hr_holidays_approvals"
-        groups="hr_holidays.group_hr_holidays_manager"
+        groups="hr_holidays.group_hr_holidays_manager,hr_holidays.group_hr_holidays_user"
         action="hr_leave_action_action_approve_department2"
-        sequence="2"/>
-
+        sequence="2"/>     -->
+    
     <menuitem
         id="hr_holidays.menu_open_employee_leave1"
         name="Бүх чөлөө"
