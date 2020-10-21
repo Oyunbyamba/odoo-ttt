@@ -102,7 +102,6 @@ odoo.define("web_timeline.TimelineView", function(require) {
             let removable = true;
             let creatable = true;
 
-            console.log(attrs);
             if(attrs.draggable) {
                 if(attrs.draggable == "true") {
                     draggable = true;

@@ -243,7 +243,7 @@ odoo.define("web_timeline.TimelineController", function(require) {
             if(this.removable) {
                 var def = $.Deferred();
 
-                Dialog.confirm(this, _t("Are you sure you want to delete this record?"), {
+                Dialog.confirm(this, _t("Та үүнийг устгахдаа итгэлтэй байна уу?"), {
                     title: _t("Warning"),
                     confirm_callback: () => {
                         this.remove_completed(event).then(def.resolve.bind(def));
