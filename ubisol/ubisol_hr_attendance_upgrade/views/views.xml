@@ -18,12 +18,11 @@
           draggable="false"
           removable="false"
         >
-          <!-- <field name="employee_id" /> -->
           <templates>
             <t t-name="timeline-item">
               <div class="o_project_timeline_item">
                 <span name="display_name">
-                  <t t-esc="record.employee_id" />
+                  <t t-esc="record.employee_id[1]"/>
                 </span>
               </div>
             </t>
@@ -39,11 +38,11 @@
       <field name="arch" type="xml">
         <xpath expr="//tree" position="replace">
           <tree string="Employee attendances" default_order='id asc' edit="0">
-            <field name="fullname"/>
+            <field name="fullname" string="Нэр"/>
             <field name="pin"/>
             <field name="check_in"/>
             <field name="check_out"/>
-            <field name="worked_hours" string="Work Hours" widget="float_time"/>
+            <field name="worked_hours" string="Ажилласан цаг" widget="float_time"/>
           </tree>
         </xpath>
       </field>

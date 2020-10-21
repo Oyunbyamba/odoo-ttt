@@ -53,6 +53,16 @@ class HrAttendanceReport(models.Model):
     overtime = fields.Float(compute="_compute_overtime", store=True, compute_sudo=True)
     outside_work = fields.Float(compute="_compute_outside_work", store=True, compute_sudo=True)
 
+    leave_id = fields.Many2one('hr.leave')
+    leave_hours = fields.Float(compute="_compute_leave", store=True, compute_sudo=True)
+
+    @api.depends("leave_id")
+    def _compute_leave(self):
+        for record in self:
+            if record.leave_id:
+                date_from = record.leave_id.date_from
+                date_to = record.leave_id.date_to
+                record.overtime = self._diff_by_hours(date_from, date_to)
 
     @api.depends("overtime_req_id")
     def _compute_overtime(self):
@@ -63,11 +73,7 @@ class HrAttendanceReport(models.Model):
                 if record.check_out:
                     if record.overtime_req_id.end_datetime < record.check_out:
                         check_out = record.overtime_req_id.end_datetime
-                    record.overtime = (
-                        ((check_out).day*3600*24 + (check_out).hour*3600 + (check_out).minute*60 + (check_out).second)
-                        - 
-                        ((start_datetime).day*3600*24 + (start_datetime).hour*3600 + (start_datetime).minute*60 + (start_datetime).second) 
-                        ) / 3600
+                    record.overtime = self._diff_by_hours(check_out, start_datetime)
     
     @api.depends("outside_work_req_id")
     def _compute_outside_work(self):
@@ -77,11 +83,7 @@ class HrAttendanceReport(models.Model):
                 start_datetime = record.outside_work_req_id.start_datetime
                 if not record.check_out or record.outside_work_req_id.end_datetime < record.check_out:
                     check_out = record.outside_work_req_id.end_datetime
-                record.outside_work = (
-                    ((check_out).day*3600*24 + (check_out).hour*3600 + (check_out).minute*60 + (check_out).second)
-                    - 
-                    ((start_datetime).day*3600*24 + (start_datetime).hour*3600 + (start_datetime).minute*60 + (start_datetime).second) 
-                    ) / 3600
+                record.outside_work = self._diff_by_hours(check_out, start_datetime)
 
     @api.depends("check_in", "start_work")
     def _compute_difference_check_in(self):
@@ -90,11 +92,7 @@ class HrAttendanceReport(models.Model):
                 if record.start_work >= record.check_in:
                     record.difference_check_in = 0
                 else:
-                    record.difference_check_in = (
-                        ((record.check_in).day*3600*24 + (record.check_in).hour*3600 + (record.check_in).minute*60 + (record.check_in).second)
-                        - 
-                        ((record.start_work).day*3600*24 + (record.start_work).hour*3600 + (record.start_work).minute*60 + (record.start_work).second) 
-                        ) / 3600
+                    record.difference_check_in = self._diff_by_hours(record.start_work, record.check_in)
             else:
                 record.difference_check_in = 0
 
@@ -105,11 +103,7 @@ class HrAttendanceReport(models.Model):
                 if record.check_out >= record.end_work:
                     record.difference_check_out = 0
                 else:
-                    record.difference_check_out = (
-                        ((record.end_work).day*3600*24 + (record.end_work).hour*3600 + (record.end_work).minute*60 + (record.end_work).second)
-                        -
-                        ((record.check_out).day*3600*24 + (record.check_out).hour*3600 + (record.check_out).minute*60 + (record.check_out).second)
-                        ) / 3600
+                    record.difference_check_out = self._diff_by_hours(record.check_out, record.end_work)
             else:
                 record.difference_check_out = 0
 
@@ -159,6 +153,14 @@ class HrAttendanceReport(models.Model):
                         record.worked_hours = 0.0
                 else:
                     record.worked_hours = 0.0
+
+    def _diff_by_hours(self, date1, date2):
+        date = (
+            ((date2).day*3600*24 + (date2).hour*3600 + (date2).minute*60 + (date2).second)
+            -
+            ((date1).day*3600*24 + (date1).hour*3600 + (date1).minute*60 + (date1).second)
+            ) / 3600
+        return date
 
     def _convert_datetime_field(self, datetime_field, user=None):
         user_tz = self.env.user.tz or pytz.utc
@@ -273,6 +275,16 @@ class HrAttendanceReport(models.Model):
                             values['overtime_req_id'] = attendance_req.id
                         elif attendance_req.request_status_type == 'outside_work':
                             values['outside_work_req_id'] = attendance_req.id
+
+                    leaves = self.env['hr.leave'].search([
+                        ('date_from', '>=', self._convert_datetime_field(date_from)),
+                        ('date_to', '<=', self._convert_datetime_field(date_to)),
+                        ('employee_id', '=', employee['hr_employee']),
+                    ])
+
+                    for leave in leaves:
+                        if leave:
+                            values['leave_id'] = leave.id
 
                     super(HrAttendanceReport, self).create(values)
                 dates_btwn = dates_btwn + relativedelta(days=1)
