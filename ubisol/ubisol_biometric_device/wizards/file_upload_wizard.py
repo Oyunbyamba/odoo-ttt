@@ -39,8 +39,8 @@ class LogFileImportWizard(models.TransientModel):
         atten_time = datetime.strptime(utc_dt, "%Y-%m-%d %H:%M:%S")
         att_obj = self.env['hr.attendance']
 
-        if str(row[0]).strip() != '747':
-            return {}
+        # if str(row[0]).strip() != '747':
+        #     return {}
 
         get_user_id = self.env['hr.employee'].search(
             [('pin', '=', str(row[0]).strip())])
@@ -96,9 +96,7 @@ class LogFileImportWizard(models.TransientModel):
         [ds1, ds2, de1, de2, dt1, s_type] = self._calculate_dates(setting_obj, general_shift, dt)
         attendance_req = self._is_overtime(get_user_id, dt, dt1)
         if attendance_req:
-            print(ds1, ds2, de1, de2, dt1)
             [ds1, ds2, de1, de2, dt1, s_type] = self._calculate_dates(setting_obj, general_shift, attendance_req)
-            print(ds1, ds2, de1, de2, dt1)
 
         shift_start = self.env['hr.employee.schedule'].search(
             [('hr_employee', '=', int(get_user_id.id)), ('day_period', '!=', 3), ('start_work', '>=', ds1), ('start_work', '<=', ds2)])
