@@ -16,6 +16,43 @@ class UbisolHolidaysRequest(models.Model):
     vacation_type = fields.Boolean('Ээлжийн амралт эсэх', compute='_compute_vacation_type', default=False)    
     company_holiday_days = fields.Integer('Суурь амралтын хоног', compute='_compute_company_holiday_days', default=15, readonly=True)
    
+    def get_filtered_record(self):
+        print('start filtered record')
+        # if self._context.get('params', False):
+        #     params = self._context.get('params', False)
+        #     if params.get('menu_id', False):
+        #         raise ValidationError(
+        #             "Attention:You are not allowed to access this page due to Security Policy. In case of any query, please contact ERP Admin or Configuration Manager.")
+        # else:
+        #     return False
+        view_id_form = self.env['ir.ui.view'].search([('id', '=', 'ubisol_hr_holidays.action_view_form_manager_approve')])
+        view_id_tree = self.env['ir.ui.view'].search([('id', '=', 'ubisol_hr_holidays.action_view_tree_manager_approve')])
+        view_id_kanban = self.env['ir.ui.view'].search([('id', '=', 'ubisol_hr_holidays.action_view_kanban_manager_approve')])
+        # group_pool = self.env['res.groups']
+        record_ids = []
+        user = self.env['res.users'].browse(self._uid)
+        print('user')
+        print(user)
+        employee_pool = self.env['hr.employee']
+        employee = employee_pool.search([('user_id', '=', user.id)])
+        if user.has_group('hr_holidays.group_hr_holidays_manager') | user.has_group('hr_holidays.group_hr_holidays_user'):
+            print('user has manager group')
+            record_ids = self.env['hr.leave'].search(['|', ('state', '=', "validate1"), ('employee_id.leave_manager_id', '=', user.id)]).ids
+        if user.has_group('hr_holidays.group_hr_holidays_responsible'):
+            print('user has responsible group')
+            record_ids = self.env['hr.leave'].search([('employee_id.leave_manager_id', '=', user.id)]).ids
+        print(record_ids)
+        return {
+            'type': 'ir.actions.act_window',
+            # 'name': _('Product'),
+            'res_model': 'hr.leave',
+            'view_mode': 'tree,kanban,form,calendar,activity',
+            # 'view_id': view_id_tree.id,
+            'views': [(view_id_tree.id, 'tree'), (view_id_form.id, 'form'), (view_id_kanban.id, 'kanban')],
+            'domain': [('id', 'in', record_ids)]
+            # 'res_id': your.model.id,
+        }           
+
     @api.depends('number_of_days')
     def _compute_number_of_days_display(self):
         for holiday in self:
@@ -96,5 +133,4 @@ class UbisolHolidaysRequest(models.Model):
             else: 
                 holiday.vacation_type = False              
 
-
-               
+    
