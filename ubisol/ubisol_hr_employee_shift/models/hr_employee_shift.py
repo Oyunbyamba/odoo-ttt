@@ -74,7 +74,9 @@ class HrEmployeeShift(models.Model):
             total_len = len(day_ids) - 1
             counter = 0
 
-        if vals.get('hr_department') == False:
+        if vals.get('type') == 'employee':
+            employees = self.env['hr.employee'].search([('id', '=', vals.get('hr_employee'))])
+        elif vals.get('hr_department') == False:
             employees = self.env['hr.employee'].search([('id', '=', vals.get('hr_employee'))])
         else:
             employees = self.env['hr.employee'].search([('department_id', '=', vals.get('hr_department'))])
