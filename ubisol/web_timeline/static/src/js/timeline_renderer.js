@@ -390,7 +390,7 @@ odoo.define("web_timeline.TimelineRenderer", function(require) {
                 return events;
             }
             const groups = [];
-            groups.push({id: -1, content: _t("<b>Тодорхойгүй</b>")});
+            // groups.push({id: -1, content: _t("<b>Тодорхойгүй</b>")});
             for (const evt of events) {
                 const group_name = evt[_.first(group_bys)];
                 if (group_name) {
@@ -493,18 +493,18 @@ odoo.define("web_timeline.TimelineRenderer", function(require) {
             }
 
             if(!this.color) {
-                this.color = "#239f85";
+                this.color = "#004A98";
             }
 
             let content1 = '<div>';
             let style = '';
-            if(!evt.check_in) {
+            if(evt.check_in) {
                 content1 += '<div style="width: 0; height: 0; border-top: 10px solid red; border-right: 10px solid transparent; ' + 
-                    ' position: absolute; margin-left: -6.5px; margin-top: -3px;"></div>';
-            } else if(!evt.check_out) {
+                    'position: absolute; margin-left: -6.5px; margin-top: -3px;"></div>';
+            } else if(evt.check_out) {
                 content1 = '<div style="float:right;">';
                 content1 += '<div style="width: 0; height: 0; border-top: 10px solid red; border-left: 10px solid transparent; ' + 
-                    ' float: right; margin-right: -6px; margin-top: -3px;"></div>';
+                    'float: right; margin-right: -6px; margin-top: -3px;"></div>';
             }
 
             content1 += content + "</div>";
