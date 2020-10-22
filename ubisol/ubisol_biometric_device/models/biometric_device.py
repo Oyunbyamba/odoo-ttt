@@ -135,9 +135,9 @@ class BiometricMachine(models.Model):
                 try:
                     print("Connecting to device ...")
                     conn = zk.connect()
-
-                except Exception as e:
-                    raise exceptions.Warning('Холболт амжилттгүй')
+                except:
+                    raise exceptions.ValidationError(
+                        'IP хаяг буруу байна.')
                 finally:
                     if conn:
                         conn.disconnect()
