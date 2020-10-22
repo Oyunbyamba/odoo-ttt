@@ -24,7 +24,9 @@
 
     # always loaded
     'data': [
+        'security/ubisol_hr_attendance_security.xml',
         'security/ir.model.access.csv',
+
         'views/hr_attendance_view.xml',
         'views/views.xml',
         'views/templates.xml',

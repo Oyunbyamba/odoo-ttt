@@ -362,9 +362,10 @@ odoo.define("web_timeline.TimelineRenderer", function(require) {
             const data = [];
             this.grouped_by = group_bys;
             for (const evt of events) {
-                if (evt[this.date_start]) {
-                    data.push(this.event_data_transform(evt));
-                }
+                data.push(this.event_data_transform(evt));
+                // if (evt[this.date_start]) {
+                //     data.push(this.event_data_transform(evt));
+                // }
             }
             const groups = this.split_groups(events, group_bys);
             this.timeline.setGroups(groups);
@@ -389,7 +390,7 @@ odoo.define("web_timeline.TimelineRenderer", function(require) {
                 return events;
             }
             const groups = [];
-            groups.push({id: -1, content: _t("<b>UNASSIGNED</b>")});
+            groups.push({id: -1, content: _t("<b>Тодорхойгүй</b>")});
             for (const evt of events) {
                 const group_name = evt[_.first(group_bys)];
                 if (group_name) {
@@ -453,6 +454,13 @@ odoo.define("web_timeline.TimelineRenderer", function(require) {
                     .add(date_delay, "hours")
                     .toDate();
             }
+            if (!date_start) {
+                let date = new moment(date_stop);
+                date_start = date
+                    .clone()
+                    .subtract(date_delay, "hours")
+                    .toDate();
+            }
 
             return [date_start, date_stop];
         },
@@ -484,13 +492,30 @@ odoo.define("web_timeline.TimelineRenderer", function(require) {
                 content = this.render_timeline_item(evt);
             }
 
+            if(!this.color) {
+                this.color = "#239f85";
+            }
+
+            let content1 = '<div>';
+            let style = '';
+            if(!evt.check_in) {
+                content1 += '<div style="width: 0; height: 0; border-top: 10px solid red; border-right: 10px solid transparent; ' + 
+                    ' position: absolute; margin-left: -6.5px; margin-top: -3px;"></div>';
+            } else if(!evt.check_out) {
+                content1 = '<div style="float:right;">';
+                content1 += '<div style="width: 0; height: 0; border-top: 10px solid red; border-left: 10px solid transparent; ' + 
+                    ' float: right; margin-right: -6px; margin-top: -3px;"></div>';
+            }
+
+            content1 += content + "</div>";
+
             const r = {
                 start: date_start,
-                content: content,
+                content: content1,
                 id: evt.id,
                 group: group,
                 evt: evt,
-                style: `background-color: ${this.color};`,
+                style: `background-color: ${this.color}; color: #fff; border-radius: 0px; padding: 2px; border-color: ${this.color}; ${style}`,
             };
             // Check if the event is instantaneous,
             // if so, display it with a point on the timeline (no 'end')

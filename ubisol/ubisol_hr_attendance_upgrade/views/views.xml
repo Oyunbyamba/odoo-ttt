@@ -18,17 +18,33 @@
           draggable="false"
           removable="false"
         >
-          <!-- <field name="employee_id" /> -->
           <templates>
             <t t-name="timeline-item">
               <div class="o_project_timeline_item">
                 <span name="display_name">
-                  <t t-esc="record.employee_id" />
+                  <t t-esc="record.employee_id[1]"/>
                 </span>
               </div>
             </t>
           </templates>
         </timeline>
+      </field>
+    </record>
+
+    <record id="view_attendance_inherit_tree" model="ir.ui.view">
+      <field name="name">hr.attendance.tree</field>
+      <field name="model">hr.attendance</field>
+      <field name="inherit_id" ref="hr_attendance.view_attendance_tree"/>
+      <field name="arch" type="xml">
+        <xpath expr="//tree" position="replace">
+          <tree string="Employee attendances" default_order='id asc' edit="0">
+            <field name="fullname" string="Нэр"/>
+            <field name="pin"/>
+            <field name="check_in"/>
+            <field name="check_out"/>
+            <field name="worked_hours" string="Ажилласан цаг" widget="float_time"/>
+          </tree>
+        </xpath>
       </field>
     </record>
 
@@ -48,6 +64,18 @@
             </p>
         </field>
     </record>
+
+    <menuitem id="hr_attendance.menu_hr_attendance_my_attendances" 
+        name="Check In / Check Out" 
+        groups="ubisol_hr_attendance_upgrade.hide"/>
+
+    <menuitem id="hr_attendance.menu_hr_attendance_kiosk_mode" 
+        name="Kiosk Mode" 
+        groups="ubisol_hr_attendance_upgrade.hide"/>    
+
+    <menuitem id="hr_attendance.menu_hr_attendance_kiosk_mode" 
+        name="Kiosk Mode" 
+        groups="ubisol_hr_attendance_upgrade.hide"/>    
 <!--
     <record model="ir.actions.act_window" id="ubisol_hr_attendance_upgrade.action_window">
       <field name="name">ubisol_hr_attendance_upgrade window</field>

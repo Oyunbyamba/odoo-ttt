@@ -1,23 +1,17 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <odoo>
 
-    <menuitem name="Attendance Request"
+    <menuitem name="Илүү цаг"
       id="menu_hr_attendance_request_root"
-      web_icon="hr_holidays,static/description/icon.png"
-      parent="hr.menu_hr_root"
-      groups="base.group_user"/>
-
-    <menuitem
-        id="menu_hr_attendance_my_requests"
-        name="Миний ирцийн хүсэлт"
-        parent="menu_hr_attendance_request_root"
-        sequence="1"/>
+      parent="ubisol_hr_holidays.menu_hr_requests_root"
+      groups="base.group_user"
+      sequence="1"/>
 
     <menuitem
         id="menu_hr_attendance_request_my"
-        name="Ирцийн хүсэлт"
+        name="Миний илүү цагийн хүсэлт"
         action="hr_attendance_request_action_my"
-        parent="menu_hr_attendance_my_requests"
+        parent="menu_hr_attendance_request_root"
         sequence="1"/>
 
     <menuitem
@@ -28,31 +22,18 @@
 
     <menuitem
         id="menu_hr_attendance_request_to_approve"
-        name="Батлах ёстой"
+        name="Батлах ёстой илүү цаг"
         parent="menu_hr_attendance_request_approvals"
+        action="hr_attendance_request_action_approve"
         groups="hr_holidays.group_hr_holidays_responsible,hr_holidays.group_hr_holidays_user"
         sequence="1"/>    
 
     <menuitem
-        id="menu_hr_attendance_request_approve_list"
-        name="Ирцийн хүсэлт"
-        action="hr_attendance_request_action_approve"
-        parent="menu_hr_attendance_request_to_approve"
-        sequence="1"/>
-
-    <menuitem
         id="menu_hr_attendance_request_all"
-        name="Бүх"
+        name="Бүх илүү цаг"
         parent="menu_hr_attendance_request_approvals"
+        action="hr_attendance_request_action_all"
         groups="hr_holidays.group_hr_holidays_manager,hr_holidays.group_hr_holidays_user"
         sequence="2"/>    
-
-    <menuitem
-        id="menu_hr_attendance_request_all_list"
-        name="Ирцийн хүсэлт"
-        action="hr_attendance_request_action_all"
-        parent="menu_hr_attendance_request_all"
-        groups="hr_holidays.group_hr_holidays_manager,hr_holidays.group_hr_holidays_user"
-        sequence="1"/>        
     
 </odoo>

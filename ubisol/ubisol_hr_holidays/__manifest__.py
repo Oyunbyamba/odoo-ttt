@@ -24,7 +24,8 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ubisol_hr_holiday_security.xml',
+
         'views/leave_request_type.xml',
         'views/leave_request.xml',
         'views/templates.xml',
