@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-16 10:28+0000\n"
-"PO-Revision-Date: 2020-10-16 10:28+0000\n"
+"POT-Creation-Date: 2020-10-22 12:36+0000\n"
+"PO-Revision-Date: 2020-10-22 12:36+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -24,7 +24,7 @@ msgstr ""
 #. module: ubisol_hr_holidays
 #: model:ir.actions.report,print_report_name:ubisol_hr_holidays.leave_definition_report_pdf
 msgid "'Leave definition'"
-msgstr "Чөлөөний тодорхойлолт"
+msgstr ""
 
 #. module: ubisol_hr_holidays
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.custom_layout
@@ -168,6 +168,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave__years_of_worked_state
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.hr_leave_inherit_form_view
 msgid "Улсад ажилласан жил"
+msgstr ""
+
+#. module: ubisol_hr_holidays
+#: model:ir.ui.menu,name:ubisol_hr_holidays.menu_hr_requests_root
+msgid "Хүсэлтүүд"
 msgstr ""
 
 #. module: ubisol_hr_holidays
