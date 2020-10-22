@@ -43,7 +43,7 @@
         </field>
     </record> -->
 
-    <record id="hr_leave_action_approve_department2" model="ir.actions.server">
+    <!-- <record id="hr_leave_action_approve_department2" model="ir.actions.server">
         <field name="name">Time Off</field>
         <field name="model_id" ref="hr_holidays.model_hr_leave"/>
         <field name="state">code</field>
@@ -69,7 +69,7 @@
         <field name="view_mode">form</field>
         <field name="view_id" ref="hr_holidays.hr_leave_view_form_manager_approve"/>
         <field name="act_window_id" ref="hr_leave_action_approve_department2"/>
-    </record>
+    </record> -->
 
     <menuitem id="hr_holidays.menu_hr_holidays_my_leaves" groups="ubisol_hr_holidays.hide"/>
     <menuitem id="hr_holidays.menu_hr_holidays_dashboard" name="Everyone" groups="ubisol_hr_holidays.hide"/>  
@@ -109,13 +109,13 @@
         action="hr_holidays.hr_leave_action_action_approve_department"
         sequence="1"/>
 
-    <menuitem
+    <!-- <menuitem
         id="hr_holidays.menu_open_department_leave_approve2"
         name="Батлах ёстой чөлөө"
         parent="hr_holidays.menu_hr_holidays_approvals"
         groups="hr_holidays.group_hr_holidays_manager,hr_holidays.group_hr_holidays_user"
         action="hr_leave_action_approve_department2"
-        sequence="2"/>    
+        sequence="2"/>     -->
     
     <menuitem
         id="hr_holidays.menu_open_employee_leave1"
