@@ -79,6 +79,8 @@ class HrEmployee(models.Model):
     resign_date = fields.Date('Resign Date', compute='_compute_resign_date', inverse='_set_document', store=True, groups="hr.group_hr_user")
     is_disabled = fields.Boolean('Хөгжлийн бэрхшээлтэй эсэх', default=False, groups="hr.group_hr_user")
     is_in_group = fields.Boolean('Группд байдаг эсэх', default=False, groups="hr.group_hr_user")
+    employee_code = fields.Char('Ажилтаны код', groups="hr.group_hr_user")
+    rfid_code = fields.Char('Картын дугаар', groups="hr.group_hr_user")
 
     @api.onchange('spouse_complete_name', 'spouse_birthdate')
     def onchange_spouse(self):
@@ -128,7 +130,7 @@ class HrEmployee(models.Model):
                 'wage': 0,
                 'trial_date_end': trial_date
             })
-            hr_contract = self.env['hr.contract'].create(contract_values)
+            hr_contract = employee.env['hr.contract'].create(contract_values)
             hr_contract.write({'state': 'open', 'kanban_state': 'done'})
         return employee
 
@@ -164,7 +166,6 @@ class HrEmployee(models.Model):
                         prev_hr_contract.department_id = hr_emp.department_id.id
                         prev_hr_contract.job_id = hr_emp.job_id.id
                         prev_hr_contract.trial_date_end = trial_date
-        
         return employee    
 
    

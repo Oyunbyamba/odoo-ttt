@@ -238,6 +238,62 @@ class AttendanceRequest(models.Model):
                 attendance.can_approve = True            
 
     @api.model
+    def create(self, vals):
+        attendance = super(AttendanceRequest, self).create(vals)
+        if(attendance.request_type == 'department'):
+            department_employees = attendance.env['hr.employee'].search([
+                ('department_id', '=', attendance.department_id.id)
+            ])
+            if len(department_employees) > 0:
+                for department_employee in department_employees:
+                    attendance_values = []
+                    if(department_employees[0].id == department_employee.id):
+                        attendance.request_type = 'employee'
+                        attendance.employee_id = department_employee.id
+                    else:
+                        attendance_values.append({
+                            'name': attendance.name,
+                            'employee_id': department_employee.id,
+                            'notes': attendance.notes,
+                            'description': attendance.description,
+                            'start_datetime': attendance.start_datetime,
+                            'end_datetime': attendance.end_datetime,
+                            'department_id': attendance.department_id.id,
+                            'state': attendance.state,
+                            'request_status_type': attendance.request_status_type,
+                            'validation_type': attendance.validation_type
+                        })
+                        hr_att_req = attendance.env['hr.attendance.request'].create(attendance_values)
+                        hr_att_req.write({'request_type': 'employee'})
+
+        return attendance
+
+    # def write(self, vals):
+    #     attendance = super(AttendanceRequest, self).write(vals)
+    #     attendance_values = []
+    #     for attendance_req in self:
+    #         if(attendance_req.request_type == 'department'):
+    #             department_employees = attendance_req.env['hr.employee'].search([
+    #                 ('department_id', '=', attendance_req.department_id.id)
+    #             ])
+    #             if len(department_employees) > 0:
+    #                 for department_employee in department_employees:
+    #                     attendance_values.append({
+    #                         'name': attendance_req.name,
+    #                         'employee_id': department_employee.id,
+    #                         'notes': attendance_req.notes,
+    #                         'description': attendance_req.description,
+    #                         'start_datetime': attendance_req.start_datetime,
+    #                         'end_datetime': attendance_req.end_datetime,
+    #                         'department_id': attendance_req.department_id.id,
+    #                         'state': attendance_req.state,
+    #                         'request_status_type': attendance_req.request_status_type,
+    #                         'validation_type': attendance_req.validation_type
+    #                     })
+    #                     hr_att_req = department_employees.env['hr.attendance.request'].create(attendance_values)
+    #                     hr_att_req.write({'request_type': 'employee'})
+    #     return attendance
+
     def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
         if not self.user_has_groups('hr_holidays.group_hr_holidays_user') and 'name' in groupby:
             raise UserError(_('Such grouping is not allowed.'))
