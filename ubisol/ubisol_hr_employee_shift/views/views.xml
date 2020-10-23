@@ -146,11 +146,15 @@
         <timeline
           date_start="start_work"
           date_stop="end_work"
-          mode="month"
+          mode="week"
           default_group_by="hr_department"
           event_open_popup="true"
           zoomKey="ctrlKey"
-          colors="#f2d096: day_period_int==1; #49beb7: day_period_int==2; #ed8975: day_period_int==3;"
+          colors="#f2d096: day_period_int==1; #49beb7: day_period_int==2; #ed8975: day_period_int==3; #2F4858: day_period_int==4; #57423F: day_period_int==5;"
+          creatable="false"
+          updatable="false"
+          draggable="false"
+          removable="false"
         >
           <field name="day_period" />
           <templates>
@@ -177,6 +181,23 @@
               <filter string="Department" name="is_main" domain="[('is_main', '=', True)]"/>
               <separator/>
               <filter string="Амралтын өдөр харуулахгүй" name="is_rest" domain="[('day_period_int', '!=', 3)]"/>
+              <separator/>
+              <filter string="Сүүлийн 1 сар болон ирэх 1 сарын хооронд" name="two_months" 
+                domain="['&amp;', ('work_day','&gt;=', ((context_today()-datetime.timedelta(days=30)).strftime('%Y-%m-%d'))), 
+                  ('work_day','&lt;=', ((context_today()+datetime.timedelta(days=30)).strftime('%Y-%m-%d')))]"
+              />
+              <filter string="Сүүлийн 2 сар болон ирэх 2 сарын хооронд" name="four_months" 
+                domain="['&amp;', ('work_day','&gt;=', ((context_today()-datetime.timedelta(days=60)).strftime('%Y-%m-%d'))), 
+                  ('work_day','&lt;=', ((context_today()+datetime.timedelta(days=60)).strftime('%Y-%m-%d')))]"
+              />
+              <filter string="Сүүлийн 3 сар болон ирэх 3 сарын хооронд" name="six_months" 
+                domain="['&amp;', ('work_day','&gt;=', ((context_today()-datetime.timedelta(days=90)).strftime('%Y-%m-%d'))), 
+                  ('work_day','&lt;=', ((context_today()+datetime.timedelta(days=90)).strftime('%Y-%m-%d')))]"
+              />
+              <filter string="Сүүлийн 6 сар болон ирэх 6 сарын хооронд" name="six_months" 
+                domain="['&amp;', ('work_day','&gt;=', ((context_today()-datetime.timedelta(days=180)).strftime('%Y-%m-%d'))), 
+                  ('work_day','&lt;=', ((context_today()+datetime.timedelta(days=180)).strftime('%Y-%m-%d')))]"
+              />
             </search>
         </field>
     </record>
@@ -210,7 +231,7 @@
       <field name="name">Employee Shift Schedules</field>
       <field name="res_model">hr.employee.schedule</field>
       <field name="view_mode">timeline,calendar,pivot</field>
-      <field name="context">{"search_default_is_main":1, "search_default_is_rest":1}</field>
+      <field name="context">{"search_default_is_main":1, "search_default_is_rest":1, "search_default_two_months":1}</field>
       <field name="help" type="html">
         <p class="oe_view_nocontent_create">
           Ээлжийн хуваарь

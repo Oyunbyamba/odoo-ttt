@@ -245,7 +245,7 @@ class HrEmployeeSchedule(models.Model):
     hr_employee_shift_dayplan = fields.Many2one('resource.calendar.shift', 'Employee Shift Plan of Day')
     date_from = fields.Date(string='Starting Date')
     date_to = fields.Date(string='End Date')
-    work_day = fields.Date(string='End Date')
+    work_day = fields.Date(string='Work Day')
     is_main = fields.Boolean('Is Main', default=False)
     shift_type = fields.Selection([
         ('days', 'Days'),
