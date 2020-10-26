@@ -13,7 +13,8 @@
           <field name="worked_hours" string="Ажилласан цаг" type="measure" widget="float_time"/>
           <field name="difference_check_in" string="Хоцролт" type="measure" widget="float_time"/>
           <field name="difference_check_out" string="Таслалт" type="measure" widget="float_time"/>
-          <field name="overtime" string="Илүү цаг" type="measure" widget="float_time"/>
+          <field name="overtime" string="Баталсан илүү цаг" type="measure" widget="float_time"/>
+          <field name="informal_overtime" string="Илүү цаг" type="measure" widget="float_time"/>
           <field name="outside_work" string="Гадуур ажил" type="measure" widget="float_time"/>
         </pivot>
       </field>
@@ -31,7 +32,8 @@
           <field name="worked_hours" string="Ажилласан цаг" widget="float_time"/>
           <field name="difference_check_in" string="Хоцролт" widget="float_time"/>
           <field name="difference_check_out" string="Таслалт" widget="float_time"/>
-          <field name="overtime" string="Илүү цаг" widget="float_time"/>
+          <field name="overtime" string="Баталсан илүү цаг" widget="float_time"/>
+          <field name="informal_overtime" string="Илүү цаг" widget="float_time"/>
           <field name="outside_work" string="Гадуур ажил" widget="float_time"/>
         </tree>
       </field>
