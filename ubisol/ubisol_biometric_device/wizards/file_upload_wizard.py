@@ -101,7 +101,9 @@ class LogFileImportWizard(models.TransientModel):
         calendar_leaves = self.env['resource.calendar.leaves'].search(
             [('date_from', '<=', dt), ('date_to', '>=', dt)])
         if (week_index >= 5 and general_shift.shift_type == 'days') or (calendar_leaves and general_shift.shift_type == 'days'):
-            if ds1 + timedelta(hours=8) < dt1:
+            end = datetime.strptime(datetime.strftime(dt1, "%Y-%m-%d 00:00:00"), "%Y-%m-%d %H:%M:%S")
+            end = end + timedelta(seconds=setting_obj.start_work_date_from * 3600)
+            if end < dt1:
                 [att_id, status] = self._check_status_holiday(setting_obj, get_user_id, dt)
                 return [att_id, status]
         attendance_req = self._is_overtime(get_user_id, dt, dt1)
