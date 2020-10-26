@@ -5,6 +5,7 @@ class HrAttendance(models.Model):
 
     pin = fields.Char(related='employee_id.pin', string="PIN")
     fullname = fields.Char(compute="_compute_fullname", compute_sudo=True)
+    department_id = fields.Many2one('hr.department', related='employee_id.department_id', string="Хэлтэс", store=True)
 
     @api.depends("employee_id")
     def _compute_fullname(self):

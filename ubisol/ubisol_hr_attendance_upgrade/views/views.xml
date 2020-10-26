@@ -48,13 +48,39 @@
       </field>
     </record>
 
+    <record id="hr_attendance_view_inherit_filter" model="ir.ui.view">
+      <field name="name">hr_attendance_view_filter</field>
+      <field name="model">hr.attendance</field>
+      <field name="inherit_id" ref="hr_attendance.hr_attendance_view_filter"/>
+      <field name="arch" type="xml">
+        <xpath expr="//search" position="replace">
+          <search string="Hr Attendance Search">
+            <field name="employee_id"/>
+            <field name="department_id" operator="child_of"/>
+            <filter string="Миний ирц" name="myattendances" domain="[('employee_id.user_id.id', '=', uid)]" />
+            <separator/>
+            <filter string="Орсон" name="check_in_filter" date="check_in" default_period="last_month"/>
+            <filter string="Гарахдаа дараагүй" name="nocheckout" domain="[('check_out', '=', False)]" />
+            <group expand="0" string="Group By">
+              <filter string="Хэлтэс" name="department" context="{'group_by': 'department_id'}"/>
+              <separator/>
+              <filter string="Ажилтан" name="employee" context="{'group_by': 'employee_id'}"/>
+              <separator/>
+              <filter string="Орсон" name="groupby_name" context="{'group_by': 'check_in'}"/>
+              <filter string="Гарсан" name="groupby_check_out" context="{'group_by': 'check_out'}"/>
+            </group>
+          </search>
+        </xpath>
+      </field>
+    </record>
+
     <!-- actions opening views on models -->
 
     <record id="hr_attendance.hr_attendance_action" model="ir.actions.act_window">
         <field name="name">Attendances</field>
         <field name="res_model">hr.attendance</field>
         <field name="view_mode">tree,kanban,timeline,form</field>
-        <field name="context">{"search_default_today":1, "search_default_employee": 1}</field>
+        <field name="context">{"search_default_today":1, "search_default_employee": 1, "search_default_department": 1}</field>
         <field name="search_view_id" ref="hr_attendance.hr_attendance_view_filter" />
         <field name="help" type="html">
             <p class="o_view_nocontent_empty_folder">
