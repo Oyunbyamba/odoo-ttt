@@ -26,15 +26,20 @@
             
                 <group>
                     <group>
-                        <label for="start_datetime" string="Хаанаас"/>
-                        <div class="o_row o_row_readonly">
+                        <label for="start_datetime" string="Хаанаас" attrs="{'invisible': [('request_status_type', 'in', 'attendance')]}"/>
+                        <div class="o_row o_row_readonly" attrs="{'invisible': [('request_status_type', 'in', 'attendance')]}">
                             <field name="start_datetime"/>
                             <span class="oe_inline"> хүртэл </span>
                             <field name="end_datetime"/>
+                        </div> 
+                        <label for="start_datetime" string="Хэзээ" attrs="{'invisible': [('request_status_type', 'not in', 'attendance')]}"/>
+                        <div class="o_row o_row_readonly" attrs="{'invisible': [('request_status_type', 'not in', 'attendance')]}">
+                            <field name="start_datetime"/>
+                        </div>
+                        <label for="is_frequency_request" string="Өдрөөр үүсгэх эсэх" attrs="{'invisible': [('request_status_type', 'not in', 'overtime')]}"/>
+                        <div class="o_row o_row_readonly" attrs="{'invisible': [('request_status_type', 'not in', 'overtime')]}">
+                            <field name="is_frequency_request"/>
                         </div>    
-    
-                
-
                         <label for="description" string="Тайлбар"/>
                         <div>
                             <field name="description"/>
@@ -68,13 +73,14 @@
         <field name="model">hr.attendance.request</field>
         <field name="arch" type="xml">
             <tree string="Илүү цаг" decoration-danger="state == 'refuse'" decoration-info="state == 'draft'">
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="request_type"/>
                 <field name="name"/>
                 <field name="start_datetime"/>
                 <field name="end_datetime"/>
                 <field name="request_status_type"/>
                 <field name="validation_type"/>
-                <field name="request_type"/>
-                <field name="notes"/>
                 <field name="state"/>
             </tree>
         </field>

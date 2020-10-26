@@ -108,7 +108,11 @@ class AttendanceRequest(models.Model):
         'Duration in hours', compute='_compute_number_of_hours_display', readonly=True,
         help='Number of hours of the time off request according to your working schedule. Used for interface.')
     number_of_days = fields.Float(
-        'Duration (Days)', copy=False, tracking=True, compute='_onchange_leave_dates', readonly=True)    
+        'Duration (Days)', copy=False, tracking=True, compute='_onchange_leave_dates', readonly=True)  
+    is_frequency_request = fields.Boolean(string='Is frequency request', default=1)
+    attendance_date = fields.Datetime(
+        'Нөхөх цаг', required=True, tracking=True, 
+        default=fields.Datetime.now, compute='_onchange_attendance_date')
 
     @api.onchange('request_type')
     def _onchange_type(self):
@@ -120,6 +124,14 @@ class AttendanceRequest(models.Model):
             self.employee_id = False
             if not self.department_id:
                 self.department_id = self.env.user.employee_id.department_id.id
+
+    @api.onchange('request_status_type')
+    def _onchange_request_type(self):
+        if self.request_status_type == 'attendance':
+            self.start_datetime = False
+            self.end_datetime = False
+        else:
+            self.attendance_date = False               
 
     @api.onchange('start_datetime', 'end_datetime', 'employee_id')
     def _onchange_leave_dates(self):
@@ -240,31 +252,67 @@ class AttendanceRequest(models.Model):
     @api.model
     def create(self, vals):
         attendance = super(AttendanceRequest, self).create(vals)
-        if(attendance.request_type == 'department'):
-            department_employees = attendance.env['hr.employee'].search([
-                ('department_id', '=', attendance.department_id.id)
-            ])
-            if len(department_employees) > 0:
-                for department_employee in department_employees:
+        request_type = attendance.request_type
+        if(attendance.request_status_type == 'overtime' and attendance.is_frequency_request == 1):
+            start_date = attendance.start_datetime.date()
+            end_date = attendance.end_datetime.date()
+            start_time =  attendance.start_datetime.time()
+            end_time =  attendance.end_datetime.time()
+            first_att = 1
+            delta = end_date-start_date
+            count = 0
+
+            while count <= delta.days:
+                s_date =  start_date + timedelta(days=+count)
+                if(request_type == 'department'):
+                    department_employees = attendance.env['hr.employee'].search([ ('department_id', '=', attendance.department_id.id) ])
+
+                    if len(department_employees) > 0:
+                        for department_employee in department_employees:
+                            attendance_values = []
+                            if(first_att == 1 and department_employees[0].id == department_employee.id):
+                                attendance.request_type = 'employee'
+                                attendance.employee_id = department_employee.id
+                                attendance.start_datetime = str(s_date) + ' ' + str(start_time)
+                                attendance.end_datetime = str(s_date) + ' ' + str(end_time)
+                                first_att = 2
+                            else:
+                                attendance_values.append({
+                                    'name': attendance.name,
+                                    'employee_id': department_employee.id,
+                                    'notes': attendance.notes,
+                                    'description': attendance.description,
+                                    'start_datetime': str(s_date) + ' ' + str(start_time),
+                                    'end_datetime': str(s_date) + ' ' + str(end_time),
+                                    'department_id': attendance.department_id.id,
+                                    'state': attendance.state,
+                                    'request_status_type': attendance.request_status_type,
+                                    'validation_type': attendance.validation_type
+                                }) 
+                                hr_att_req = attendance.env['hr.attendance.request'].create(attendance_values)
+                                hr_att_req.write({'request_type': 'employee'}) 
+                elif(request_type == 'employee'):
                     attendance_values = []
-                    if(department_employees[0].id == department_employee.id):
-                        attendance.request_type = 'employee'
-                        attendance.employee_id = department_employee.id
+                    if(first_att == 1):
+                        attendance.start_datetime = str(s_date) + ' ' + str(start_time)
+                        attendance.end_datetime = str(s_date) + ' ' + str(end_time)
+                        first_att = 2
                     else:
                         attendance_values.append({
                             'name': attendance.name,
-                            'employee_id': department_employee.id,
+                            'employee_id': attendance.employee_id.id,
                             'notes': attendance.notes,
                             'description': attendance.description,
-                            'start_datetime': attendance.start_datetime,
-                            'end_datetime': attendance.end_datetime,
-                            'department_id': attendance.department_id.id,
+                            'start_datetime': str(s_date) + ' ' + str(start_time),
+                            'end_datetime': str(s_date) + ' ' + str(end_time),
                             'state': attendance.state,
                             'request_status_type': attendance.request_status_type,
-                            'validation_type': attendance.validation_type
-                        })
+                            'validation_type': attendance.validation_type,
+                            'request_type': attendance.request_type
+                        }) 
                         hr_att_req = attendance.env['hr.attendance.request'].create(attendance_values)
-                        hr_att_req.write({'request_type': 'employee'})
+
+                count = count+1                
 
         return attendance
 
