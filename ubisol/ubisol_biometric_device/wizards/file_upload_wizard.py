@@ -102,7 +102,6 @@ class LogFileImportWizard(models.TransientModel):
             [('hr_employee', '=', int(get_user_id.id)), ('day_period', '!=', 3), ('start_work', '>=', ds1), ('start_work', '<=', ds2)])
         shift_end = self.env['hr.employee.schedule'].search(
             [('hr_employee', '=', int(get_user_id.id)), ('day_period', '!=', 3), ('end_work', '>=', de1), ('end_work', '<=', de2)])
-
         if attendance_req:
             return "check_out"
         if s_type == 'shift' and not shift_end:
@@ -119,7 +118,7 @@ class LogFileImportWizard(models.TransientModel):
             return "check_in"
         else:
             shift_obj = self.env['hr.employee.shift']
-            shift_type = self.env['resource.calendar'].search([('shift_type', '=', 'days')], limit=1, order='id desc')
+            shift_type = self.env['resource.calendar'].search([('shift_type', '=', 'days')], limit=1, order='id asc')
             [start_work, end_work] = self._create_schedule(get_user_id, dt1, shift_obj, shift_type)
             work_start = datetime.strptime(datetime.strftime(dt1, "%Y-%m-%d  00:00:00"), "%Y-%m-%d %H:%M:%S")
             work_end = datetime.strptime(datetime.strftime(dt1, "%Y-%m-%d 00:00:00"), "%Y-%m-%d %H:%M:%S")
@@ -224,8 +223,13 @@ class LogFileImportWizard(models.TransientModel):
         shift = self.env['hr.employee.shift'].search([('resource_calendar_ids', '=', shift_type.id)], limit=1, order='id desc')
 
         values = {}
-        values['hr_department'] = False
-        values['hr_employee'] = emp_id.id
+        values['type'] = 'employee'
+        if emp_id.department_id:
+            values['hr_department'] = emp_id.department_id.id
+            values['hr_employee'] = emp_id.id
+        else:
+            values['hr_department'] = False
+            values['hr_employee'] = emp_id.id
         values['resource_calendar_ids'] = shift_type.id
         values['date_from'] = str(d)
         values['date_to'] = str(d)

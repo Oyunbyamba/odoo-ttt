@@ -173,6 +173,8 @@
 
         <xpath expr="//group[1]" position="inside">
           <filter name="group_study" string="Эзэмшсэн мэргэжил" domain="[]" context="{'group_by': 'study_field'}"/>
+          <filter name="children" string="Хүүхдийн тоо" domain="[]" context="{'group_by': 'children'}"/>
+          <filter name="gender" string="Хүйс" domain="[]" context="{'group_by': 'gender'}"/>
         </xpath>
 
         <field name="job_id" position="after">

@@ -14,10 +14,17 @@
         <field name="arch" type="xml">
             <form>
                 <group>
-                    <group>
-                        <field name="start_date" />
-                        <field name="end_date" />
-                    </group>
+                    <field name="calculate_type"/>
+                </group>
+                <group>
+                    <field name="start_date" />
+                    <field name="end_date" />
+                </group>
+                <group attrs="{'invisible':[('calculate_type', '!=', 'department')]}">
+                    <field name="department_id" string="Хэлтэс"/>
+                </group>
+                <group attrs="{'invisible':[('calculate_type', '!=', 'employee')]}">
+                    <field name="employee_id" string="Ажилтан"/>
                 </group>
                 <footer>
                     <button

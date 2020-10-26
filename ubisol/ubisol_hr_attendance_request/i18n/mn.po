@@ -19,7 +19,7 @@ msgstr ""
 #: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
 #, python-format
 msgid ""
-"1 ажилтанд ижил хугацааны завсар давхар ирцийн хүсэлт бүртгэх боломжгүй."
+"1 ажилтанд ижил хугацааны завсар давхар илүү цагийн хүсэлт бүртгэх боломжгүй."
 msgstr ""
 
 #. module: ubisol_hr_attendance_request
@@ -243,13 +243,13 @@ msgstr "Зөвхөн чөлөөний менежер өөрийн хүсэлтэ
 #: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
 #, python-format
 msgid "Only a Leave Manager can reset a refused leave."
-msgstr "Зөвхөн чөлөөний менежер татгалзсан чөлөөг дахин тохируулж чадна"
+msgstr "Зөвхөн чөлөөний менежер татгалзсан хүсэлтийг дахин тохируулж чадна"
 
 #. module: ubisol_hr_attendance_request
 #: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
 #, python-format
 msgid "Only a Leave Manager can reset a started leave."
-msgstr "Зөвхөн чөлөөний менежер эхэлсэн чөлөөг дахин тохируулж чадна"
+msgstr "Зөвхөн чөлөөний менежер эхэлсэн хүсэлтийг дахин тохируулж чадна"
 
 #. module: ubisol_hr_attendance_request
 #: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
@@ -414,7 +414,7 @@ msgstr ""
 #: model_terms:ir.actions.act_window,help:ubisol_hr_attendance_request.hr_attendance_request_action_all
 #: model_terms:ir.actions.act_window,help:ubisol_hr_attendance_request.hr_attendance_request_action_approve
 #: model_terms:ir.actions.act_window,help:ubisol_hr_attendance_request.hr_attendance_request_action_my
-msgid "Ирцийн хүсэлт шинээр үүсгэх"
+msgid "Илүү цагийн хүсэлт шинээр үүсгэх"
 msgstr ""
 
 #. module: ubisol_hr_attendance_request

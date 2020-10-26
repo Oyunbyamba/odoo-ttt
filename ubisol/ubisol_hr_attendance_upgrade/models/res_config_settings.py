@@ -14,3 +14,15 @@ class ResConfigSettings(models.TransientModel):
     start_work_date_to = fields.Float(string='Date to of Start Date', default='14')
     end_work_date_from = fields.Float(string='Date from of End Date', default='14.01666666666')
     end_work_date_to = fields.Float(string='Date to of End Date', default='4.98333333333')
+
+    def set_values(self):
+        super(ResConfigSettings, self).set_values()
+        hr_attendance = self.env.ref('res.groups', False)
+        hr_attendance and hr_attendance.write({
+            'late_subtrack': self.late_subtrack,
+            'late_min': self.late_min,
+            'start_work_date_from': self.start_work_date_from,
+            'start_work_date_to': self.start_work_date_to,
+            'end_work_date_from': self.end_work_date_from,
+            'end_work_date_to': self.end_work_date_to,
+        })

@@ -73,6 +73,7 @@
                 <field name="end_datetime"/>
                 <field name="request_status_type"/>
                 <field name="validation_type"/>
+                <field name="request_type"/>
                 <field name="notes"/>
                 <field name="state"/>
             </tree>

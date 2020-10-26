@@ -74,7 +74,9 @@ class HrEmployeeShift(models.Model):
             total_len = len(day_ids) - 1
             counter = 0
 
-        if vals.get('hr_department') == False:
+        if vals.get('type') == 'employee':
+            employees = self.env['hr.employee'].search([('id', '=', vals.get('hr_employee'))])
+        elif vals.get('hr_department') == False:
             employees = self.env['hr.employee'].search([('id', '=', vals.get('hr_employee'))])
         else:
             employees = self.env['hr.employee'].search([('department_id', '=', vals.get('hr_department'))])
@@ -243,7 +245,7 @@ class HrEmployeeSchedule(models.Model):
     hr_employee_shift_dayplan = fields.Many2one('resource.calendar.shift', 'Employee Shift Plan of Day')
     date_from = fields.Date(string='Starting Date')
     date_to = fields.Date(string='End Date')
-    work_day = fields.Date(string='End Date')
+    work_day = fields.Date(string='Work Day')
     is_main = fields.Boolean('Is Main', default=False)
     shift_type = fields.Selection([
         ('days', 'Days'),

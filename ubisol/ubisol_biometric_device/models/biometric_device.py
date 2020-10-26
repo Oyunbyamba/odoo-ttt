@@ -139,7 +139,7 @@ class BiometricMachine(models.Model):
                     for attendance in attendances:
 
                         row = [attendance.user_id, attendance.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
-                               attendance.status, attendance.punch, 0]
+                               attendance.status, attendance.punch, 0, 0]
 
                         self.import_attendance(row, info.id)
                         # print('  User ID   : {}'.format(attendance.user_id))
@@ -239,7 +239,6 @@ class BiometricMachine(models.Model):
         duplicate_atten_ids = self.env['biometric.attendance'].search(
             [('pin_code', '=', str(row[0]).strip()),  ('punch_date_time', '=', atten_time)])
         if duplicate_atten_ids:
-            print("duplicated")
             return {}
         else:
             self.env['biometric.attendance'].create({'device_id': device_id,
