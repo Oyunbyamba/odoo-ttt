@@ -39,7 +39,7 @@ class LogFileImportWizard(models.TransientModel):
         atten_time = datetime.strptime(utc_dt, "%Y-%m-%d %H:%M:%S")
         att_obj = self.env['hr.attendance']
 
-        # if str(row[0]).strip() != '747':
+        # if str(row[0]).strip() != '6001':
         #     return {}
 
         get_user_id = self.env['hr.employee'].search(
@@ -64,8 +64,7 @@ class LogFileImportWizard(models.TransientModel):
 
         # Herev hereglegch oldson bol
         if get_user_id:
-            status = self.check_in_out(att_obj, get_user_id, atten_time)
-            # print(atten_time, status)
+            [att_id, status] = self.check_in_out(att_obj, get_user_id, atten_time)
             if(status == 'check_out'):
                 att_var1 = att_obj.search(
                     [('employee_id', '=', get_user_id.id)],order="id desc")
@@ -80,6 +79,9 @@ class LogFileImportWizard(models.TransientModel):
                 #     [('employee_id', '=', get_user_id.id)],order="id desc")
                 # att_var[0].write({'check_in': atten_time})
                 pass
+            elif status == "new_check_in":
+                att_var = att_obj.browse(att_id)
+                att_var.write({'check_in': atten_time})
             elif status == "new_check_out":
                 att_obj.create({'employee_id': get_user_id.id, 'check_out': atten_time})
             else:
@@ -110,8 +112,8 @@ class LogFileImportWizard(models.TransientModel):
         if(shift_end & shift_start):
             check_out = abs(dt - shift_end.end_work).total_seconds()
             check_in = abs(dt - shift_start.start_work).total_seconds()
-            status = self._check_status(general_shift, get_user_id, dt, shift_start.start_work, shift_end.end_work, check_out, check_in)
-            return status
+            [att_id, status] = self._check_status(general_shift, get_user_id, dt, shift_start.start_work, shift_end.end_work, check_out, check_in, de1, de2)
+            return [att_id, status]
         elif(shift_end):
             return "check_out"
         elif(shift_start):
@@ -127,8 +129,8 @@ class LogFileImportWizard(models.TransientModel):
 
             check_out = abs(dt - work_end).total_seconds()
             check_in = abs(dt - work_start).total_seconds()
-            status = self._check_status(general_shift, get_user_id, dt, work_start, work_end, check_out, check_in)
-            return status
+            [att_id, status] = self._check_status(general_shift, get_user_id, dt, work_start, work_end, check_out, check_in, de1, de2)
+            return [att_id, status]
 
     def _is_overtime(self, get_user_id, dt, dt1):
         ds = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
@@ -182,7 +184,7 @@ class LogFileImportWizard(models.TransientModel):
             de2 = datetime.strptime(de2, "%Y-%m-%d %H:%M:%S") - timedelta(hours=8)
         return [ds1, ds2, de1, de2, dt1, s_type]
 
-    def _check_status(self, general_shift, get_user_id, dt, work_start, work_end, check_out, check_in):
+    def _check_status(self, general_shift, get_user_id, dt, work_start, work_end, check_out, check_in, de1, de2):
         if(check_out < check_in):
             days = 0
             self._cr.execute('select id from hr_attendance where employee_id = '+str(get_user_id.id)+' order by id desc limit 1')
@@ -200,23 +202,27 @@ class LogFileImportWizard(models.TransientModel):
                 [('employee_id', '=', get_user_id.id), ('check_out', '>=', work_start), ('check_out', '<', dt)])
 
             if(update_check_out):
-                return "update_check_out"
+                return [update_check_out.id, "update_check_out"]
             elif new_check_out:
                 if not new_check_out.check_in:
-                    return "new_check_out"
+                    return [new_check_out.id, "new_check_out"]
                 elif days >= 1:
-                    return "new_check_out"
+                    return [new_check_out.id, "new_check_out"]
                 else:
-                    return "check_out"
+                    return [0, "check_out"]
             elif not last_id:
-                return "new_check_out"
-            return "check_out"
+                return [0, "new_check_out"]
+            return [0, "check_out"]
         else:
             update_check_in = self.env['hr.attendance'].search(
                 [('employee_id', '=', get_user_id.id), ('check_in', '>=', work_start - timedelta(hours=3)), ('check_in', '<', dt)])
-            if(update_check_in):
-                return "update_check_in"
-            return "check_in"
+            new_check_in = self.env['hr.attendance'].search(
+                [('employee_id', '=', get_user_id.id), ('check_out', '>=', de1), ('check_out', '<', de2)])
+            if update_check_in:
+                return [update_check_in, "update_check_in"]
+            elif new_check_in:
+                return [new_check_in.id, "new_check_in"]
+            return [0, "check_in"]
 
     def _create_schedule(self, emp_id, date, shift_obj, shift_type):
         d = datetime.strftime(date, "%Y-%m-%d")
