@@ -48,7 +48,7 @@
             </div>
           </group>
         </xpath>
-        <xpath expr="//notebook" position="replace">
+        <xpath expr="//page[@name='working_hours']" position="replace">
           <group string="Days Schedule" attrs="{'invisible':[('shift_type', '!=', 'days')]}">
             <field name="factory_day_ids" nolabel="1">
               <tree editable="bottom">

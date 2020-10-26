@@ -105,7 +105,7 @@ class LogFileImportWizard(models.TransientModel):
         shift_end = self.env['hr.employee.schedule'].search(
             [('hr_employee', '=', int(get_user_id.id)), ('day_period', '!=', 3), ('end_work', '>=', de1), ('end_work', '<=', de2)])
         if attendance_req:
-            return "check_out"
+            return [0, "check_out"]
         if s_type == 'shift' and not shift_end:
             shift_end = shift_start
 
@@ -115,9 +115,9 @@ class LogFileImportWizard(models.TransientModel):
             [att_id, status] = self._check_status(general_shift, get_user_id, dt, shift_start.start_work, shift_end.end_work, check_out, check_in, de1, de2)
             return [att_id, status]
         elif(shift_end):
-            return "check_out"
+            return [0, "check_out"]
         elif(shift_start):
-            return "check_in"
+            return [0, "check_in"]
         else:
             shift_obj = self.env['hr.employee.shift']
             shift_type = self.env['resource.calendar'].search([('shift_type', '=', 'days')], limit=1, order='id asc')
