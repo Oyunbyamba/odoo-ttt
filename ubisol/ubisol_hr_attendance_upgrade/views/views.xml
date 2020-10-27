@@ -61,10 +61,11 @@
             <separator/>
             <filter string="Орсон" name="check_in_filter" date="check_in" default_period="last_month"/>
             <filter string="Гарахдаа дараагүй" name="nocheckout" domain="[('check_out', '=', False)]" />
+            <filter string="Орохдоо дараагүй" name="nocheckin" domain="[('check_in', '=', False)]" />
             <group expand="0" string="Group By">
-              <filter string="Хэлтэс" name="department" context="{'group_by': 'department_id'}"/>
+              <filter string="Хэлтэлсээр бүлэглэх" name="department" context="{'group_by': 'department_id'}"/>
               <separator/>
-              <filter string="Ажилтан" name="employee" context="{'group_by': 'employee_id'}"/>
+              <filter string="Ажилтнаар бүлэглэх" name="employee" context="{'group_by': 'employee_id'}"/>
               <separator/>
               <filter string="Орсон" name="groupby_name" context="{'group_by': 'check_in'}"/>
               <filter string="Гарсан" name="groupby_check_out" context="{'group_by': 'check_out'}"/>
