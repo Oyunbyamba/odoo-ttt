@@ -37,9 +37,9 @@
                         <div class="o_row o_row_readonly" attrs="{'invisible': [('request_status_type', 'not in', 'attendance')]}">
                             <field name="attendance_date" attrs="{'invisible': [('request_status_type', 'not in', 'attendance')]}"/>
                         </div>
-                        <label for="attendance_check" string="Ирсэн/явсан" attrs="{'invisible': [('request_status_type', 'not in', 'attendance')]}"/>
+                        <label for="attendance_in_out" string="Ирсэн/явсан" attrs="{'invisible': [('request_status_type', 'not in', 'attendance')]}"/>
                         <div class="o_row o_row_readonly" attrs="{'invisible': [('request_status_type', 'not in', 'attendance')]}">
-                            <field name="attendance_check" attrs="{'invisible': [('request_status_type', 'not in', 'attendance')]}"/>
+                            <field name="attendance_in_out" attrs="{'invisible': [('request_status_type', 'not in', 'attendance')]}"/>
                         </div>
 
                         <label for="is_frequency_request" string="Өдрөөр үүсгэх эсэх" attrs="{'invisible': [('request_status_type', 'not in', 'overtime')]}"/>

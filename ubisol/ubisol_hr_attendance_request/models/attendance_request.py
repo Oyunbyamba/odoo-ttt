@@ -21,6 +21,9 @@ from odoo.osv import expression
 
 _logger = logging.getLogger(__name__)
 
+class HrAttendance(models.Model):
+    _inherit = 'hr.attendance'
+
 class AttendanceRequest(models.Model):
     _name = "hr.attendance.request"
     _description = "Overtime request"
@@ -113,7 +116,7 @@ class AttendanceRequest(models.Model):
     attendance_date = fields.Datetime(
         'Нөхөх цаг', tracking=True, 
         default=fields.Datetime.now)
-    attendance_check = fields.Selection([
+    attendance_in_out = fields.Selection([
         ('check_in', 'Ирсэн'),
         ('check_out', 'Явсан')
         ], string='Ирсэн/явсан', required=True, default='check_in')    
@@ -382,25 +385,62 @@ class AttendanceRequest(models.Model):
         self.filtered(lambda att: att.validation_type == 'both').write({'state': 'validate1', 'first_approver_id': current_employee.id})
         self.filtered(lambda att: not att.validation_type == 'both').action_validate()
 
+        if(self.request_status_type == 'attendance'):
+            self.calc_attendance()
+
         return True    
 
     def action_validate(self):
-        for attendance_request in self:
-            current_employee = self.env.user.employee_id
-            if any(attendance.state not in ['confirm', 'validate1'] for attendance in self):
-                raise UserError(_('Overtime request must be confirmed in order to approve it.'))
+        current_employee = self.env.user.employee_id
+        if any(attendance.state not in ['confirm', 'validate1'] for attendance in self):
+            raise UserError(_('Overtime request must be confirmed in order to approve it.'))
 
-            self.write({'state': 'validate'})
-            self.filtered(lambda attendance: attendance.validation_type == 'both').write({'second_approver_id': current_employee.id})
-            self.filtered(lambda attendance: attendance.validation_type != 'both').write({'first_approver_id': current_employee.id})
+        self.write({'state': 'validate'})
+        self.filtered(lambda attendance: attendance.validation_type == 'both').write({'second_approver_id': current_employee.id})
+        self.filtered(lambda attendance: attendance.validation_type != 'both').write({'first_approver_id': current_employee.id})
 
-            if(attendance_request.request_status_type == 'attendance'):
-                hr_attendance = self.env(['hr.attendance']).search([
-                    ('employee_id', '=', attendance_request.employee_id.id),
-                    ('employee_id', '=', attendance_request.employee_id.id),
-                    ])
+        if(self.request_status_type == 'attendance'):
+            self.calc_attendance()
+
+        return True   
+
+    def calc_attendance(self):
+        att_obj = self.env['hr.attendance']
+        now = datetime.now()
+        sdate = datetime.strftime(now, "%Y-%m-%d 00:00:00")
+        edate = datetime.strftime(now, "%Y-%m-%d 23:59:59")
+        request_datetime = self.attendance_date
+
+        hr_attendance_check_in = self.env['hr.attendance'].search(
+            [('employee_id', '=', self.employee_id.id), ('check_in', '>=', sdate), ('check_in', '<=', edate)])
+        print(hr_attendance_check_in)
+        hr_attendance_check_out = self.env['hr.attendance'].search(
+            [('employee_id', '=', self.employee_id.id), ('check_out', '>=', sdate), ('check_out', '<=', edate)])   
+        print(hr_attendance_check_out)
+        if(len(hr_attendance_check_in) == 0 or len(hr_attendance_check_out) == 0): 
+            if hr_attendance_check_in:
+                self.update_attendance(hr_attendance_check_in, request_datetime)
+            elif hr_attendance_check_out:
+                self.update_attendance(hr_attendance_check_out, request_datetime)
+            else:
+                if(self.attendance_in_out == 'check_in'):                        
+                    att_obj.create({'employee_id': self.employee_id.id, 'check_in': request_datetime })
+                else:
+                    att_obj.create({'employee_id': self.employee_id.id, 'check_out': request_datetime })
+        elif(hr_attendance_check_in and hr_attendance_check_out):
+            self.update_attendance(hr_attendance_check_in, request_datetime)
 
         return True    
+
+    def update_attendance(self, attendance, request_datetime):
+        if(self.attendance_in_out == 'check_in'):
+            if(attendance.check_in == False or (attendance.check_in and request_datetime < attendance.check_in)):
+                attendance.write({'check_in': request_datetime})     
+        elif(self.attendance_in_out == 'check_out'):
+            if(attendance.check_out == False or (attendance.check_out and attendance.check_out and request_datetime > attendance.check_out)):
+                attendance.write({'check_out': request_datetime}) 
+
+        return True        
 
     def action_refuse(self):
         current_employee = self.env.user.employee_id
