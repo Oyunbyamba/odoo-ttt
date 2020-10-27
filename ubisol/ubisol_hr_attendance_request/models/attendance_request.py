@@ -83,10 +83,10 @@ class AttendanceRequest(models.Model):
     description = fields.Text('Тодорхойлолт', tracking=True)
     # duration
     start_datetime = fields.Datetime(
-        'Эхлэх хугацаа', required=True, tracking=True,
+        'Эхлэх хугацаа', tracking=True,
         default=fields.Datetime.now)
     end_datetime = fields.Datetime(
-        'Дуусах хугацаа', required=True, tracking=True,
+        'Дуусах хугацаа', tracking=True,
         default=fields.Datetime.now)
     request_type = fields.Selection([
         ('employee', 'Ажилтнаар'),
@@ -111,8 +111,12 @@ class AttendanceRequest(models.Model):
         'Duration (Days)', copy=False, tracking=True, compute='_onchange_leave_dates', readonly=True)  
     is_frequency_request = fields.Boolean(string='Is frequency request', default=1)
     attendance_date = fields.Datetime(
-        'Нөхөх цаг', required=True, tracking=True, 
-        default=fields.Datetime.now, compute='_onchange_attendance_date')
+        'Нөхөх цаг', tracking=True, 
+        default=fields.Datetime.now)
+    attendance_check = fields.Selection([
+        ('check_in', 'Ирсэн'),
+        ('check_out', 'Явсан')
+        ], string='Ирсэн/явсан', required=True, default='check_in')    
 
     @api.onchange('request_type')
     def _onchange_type(self):
@@ -127,11 +131,17 @@ class AttendanceRequest(models.Model):
 
     @api.onchange('request_status_type')
     def _onchange_request_type(self):
+        now = datetime.now()
         if self.request_status_type == 'attendance':
+            if not self.attendance_date:
+                self.attendance_date = now
             self.start_datetime = False
             self.end_datetime = False
         else:
-            self.attendance_date = False               
+            self.attendance_date = False       
+            if not self.start_datetime:        
+                self.start_datetime = now
+                self.end_datetime = now
 
     @api.onchange('start_datetime', 'end_datetime', 'employee_id')
     def _onchange_leave_dates(self):
@@ -252,69 +262,68 @@ class AttendanceRequest(models.Model):
     @api.model
     def create(self, vals):
         attendance = super(AttendanceRequest, self).create(vals)
-        request_type = attendance.request_type
         if(attendance.request_status_type == 'overtime' and attendance.is_frequency_request == 1):
-            start_date = attendance.start_datetime.date()
-            end_date = attendance.end_datetime.date()
-            start_time =  attendance.start_datetime.time()
-            end_time =  attendance.end_datetime.time()
-            first_att = 1
-            delta = end_date-start_date
-            count = 0
-
-            while count <= delta.days:
-                s_date =  start_date + timedelta(days=+count)
-                if(request_type == 'department'):
-                    department_employees = attendance.env['hr.employee'].search([ ('department_id', '=', attendance.department_id.id) ])
-
-                    if len(department_employees) > 0:
-                        for department_employee in department_employees:
-                            attendance_values = []
-                            if(first_att == 1 and department_employees[0].id == department_employee.id):
-                                attendance.request_type = 'employee'
-                                attendance.employee_id = department_employee.id
-                                attendance.start_datetime = str(s_date) + ' ' + str(start_time)
-                                attendance.end_datetime = str(s_date) + ' ' + str(end_time)
-                                first_att = 2
-                            else:
-                                attendance_values.append({
-                                    'name': attendance.name,
-                                    'employee_id': department_employee.id,
-                                    'notes': attendance.notes,
-                                    'description': attendance.description,
-                                    'start_datetime': str(s_date) + ' ' + str(start_time),
-                                    'end_datetime': str(s_date) + ' ' + str(end_time),
-                                    'department_id': attendance.department_id.id,
-                                    'state': attendance.state,
-                                    'request_status_type': attendance.request_status_type,
-                                    'validation_type': attendance.validation_type
-                                }) 
-                                hr_att_req = attendance.env['hr.attendance.request'].create(attendance_values)
-                                hr_att_req.write({'request_type': 'employee'}) 
-                elif(request_type == 'employee'):
-                    attendance_values = []
-                    if(first_att == 1):
-                        attendance.start_datetime = str(s_date) + ' ' + str(start_time)
-                        attendance.end_datetime = str(s_date) + ' ' + str(end_time)
-                        first_att = 2
-                    else:
-                        attendance_values.append({
-                            'name': attendance.name,
-                            'employee_id': attendance.employee_id.id,
-                            'notes': attendance.notes,
-                            'description': attendance.description,
-                            'start_datetime': str(s_date) + ' ' + str(start_time),
-                            'end_datetime': str(s_date) + ' ' + str(end_time),
-                            'state': attendance.state,
-                            'request_status_type': attendance.request_status_type,
-                            'validation_type': attendance.validation_type,
-                            'request_type': attendance.request_type
-                        }) 
-                        hr_att_req = attendance.env['hr.attendance.request'].create(attendance_values)
-
-                count = count+1                
+            self.multiple_overtime(attendance)        
+        elif(attendance.request_status_type == 'attendance'):
+            attendance.start_datetime = attendance.attendance_date       
 
         return attendance
+
+    def create_overtime(self, attendance, s_date, start_time, end_time, employee_id, req_type):
+        attendance_values = []
+        attendance_values.append({
+            'name': attendance.name,
+            'employee_id': employee_id,
+            'notes': attendance.notes,
+            'description': attendance.description,
+            'start_datetime': str(s_date) + ' ' + str(start_time),
+            'end_datetime': str(s_date) + ' ' + str(end_time),
+            'state': attendance.state,
+            'request_status_type': attendance.request_status_type,
+            'validation_type': attendance.validation_type,
+            'request_type': attendance.request_type,
+            'department_id': attendance.department_id.id
+        }) 
+        hr_att_req = attendance.env['hr.attendance.request'].create(attendance_values)
+        if(req_type == 'dep'):
+            hr_att_req.write({'request_type': 'employee'})  
+
+        return True
+
+    def multiple_overtime(self, attendance):
+        request_type = attendance.request_type
+        start_date = attendance.start_datetime.date()
+        end_date = attendance.end_datetime.date()
+        start_time =  attendance.start_datetime.time()
+        end_time =  attendance.end_datetime.time()
+        first_att = 1
+        delta = end_date-start_date
+        count = 0
+
+        while count <= delta.days:
+            s_date =  start_date + timedelta(days=+count)
+            if(request_type == 'department'):
+                department_employees = attendance.env['hr.employee'].search([ ('department_id', '=', attendance.department_id.id) ])
+
+                if len(department_employees) > 0:
+                    for department_employee in department_employees:
+                        if(first_att == 1 and department_employees[0].id == department_employee.id):
+                            attendance.request_type = 'employee'
+                            attendance.employee_id = department_employee.id
+                            attendance.start_datetime = str(s_date) + ' ' + str(start_time)
+                            attendance.end_datetime = str(s_date) + ' ' + str(end_time)
+                            first_att = 2
+                        else:
+                            self.create_overtime(attendance, s_date, start_time, end_time, department_employee.id, 'dep')
+            elif(request_type == 'employee'):
+                if(first_att == 1):
+                    attendance.start_datetime = str(s_date) + ' ' + str(start_time)
+                    attendance.end_datetime = str(s_date) + ' ' + str(end_time)
+                    first_att = 2
+                else:
+                    self.create_overtime(attendance, s_date, start_time, end_time, attendance.employee_id.id, 'emp')
+
+            count = count+1     
 
     # def write(self, vals):
     #     attendance = super(AttendanceRequest, self).write(vals)
@@ -376,13 +385,20 @@ class AttendanceRequest(models.Model):
         return True    
 
     def action_validate(self):
-        current_employee = self.env.user.employee_id
-        if any(attendance.state not in ['confirm', 'validate1'] for attendance in self):
-            raise UserError(_('Overtime request must be confirmed in order to approve it.'))
+        for attendance_request in self:
+            current_employee = self.env.user.employee_id
+            if any(attendance.state not in ['confirm', 'validate1'] for attendance in self):
+                raise UserError(_('Overtime request must be confirmed in order to approve it.'))
 
-        self.write({'state': 'validate'})
-        self.filtered(lambda attendance: attendance.validation_type == 'both').write({'second_approver_id': current_employee.id})
-        self.filtered(lambda attendance: attendance.validation_type != 'both').write({'first_approver_id': current_employee.id})
+            self.write({'state': 'validate'})
+            self.filtered(lambda attendance: attendance.validation_type == 'both').write({'second_approver_id': current_employee.id})
+            self.filtered(lambda attendance: attendance.validation_type != 'both').write({'first_approver_id': current_employee.id})
+
+            if(attendance_request.request_status_type == 'attendance'):
+                hr_attendance = self.env(['hr.attendance']).search([
+                    ('employee_id', '=', attendance_request.employee_id.id),
+                    ('employee_id', '=', attendance_request.employee_id.id),
+                    ])
 
         return True    
 

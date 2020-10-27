@@ -28,14 +28,20 @@
                     <group>
                         <label for="start_datetime" string="Хаанаас" attrs="{'invisible': [('request_status_type', 'in', 'attendance')]}"/>
                         <div class="o_row o_row_readonly" attrs="{'invisible': [('request_status_type', 'in', 'attendance')]}">
-                            <field name="start_datetime"/>
+                            <field name="start_datetime" attrs="{'invisible': [('request_status_type', 'in', 'attendance')]}"/>
                             <span class="oe_inline"> хүртэл </span>
-                            <field name="end_datetime"/>
+                            <field name="end_datetime" attrs="{'invisible': [('request_status_type', 'in', 'attendance')]}"/>
                         </div> 
+
                         <label for="start_datetime" string="Хэзээ" attrs="{'invisible': [('request_status_type', 'not in', 'attendance')]}"/>
                         <div class="o_row o_row_readonly" attrs="{'invisible': [('request_status_type', 'not in', 'attendance')]}">
-                            <field name="start_datetime"/>
+                            <field name="attendance_date" attrs="{'invisible': [('request_status_type', 'not in', 'attendance')]}"/>
                         </div>
+                        <label for="attendance_check" string="Ирсэн/явсан" attrs="{'invisible': [('request_status_type', 'not in', 'attendance')]}"/>
+                        <div class="o_row o_row_readonly" attrs="{'invisible': [('request_status_type', 'not in', 'attendance')]}">
+                            <field name="attendance_check" attrs="{'invisible': [('request_status_type', 'not in', 'attendance')]}"/>
+                        </div>
+
                         <label for="is_frequency_request" string="Өдрөөр үүсгэх эсэх" attrs="{'invisible': [('request_status_type', 'not in', 'overtime')]}"/>
                         <div class="o_row o_row_readonly" attrs="{'invisible': [('request_status_type', 'not in', 'overtime')]}">
                             <field name="is_frequency_request"/>
