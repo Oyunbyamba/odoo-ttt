@@ -66,7 +66,7 @@ class LogFileImportWizard(models.TransientModel):
         if get_user_id:
             setting_obj = self.env['res.config.settings'].search([], limit=1, order='id desc')
             general_shift = self.env['hr.employee.schedule'].search(
-                [('hr_employee', '=', int(get_user_id.id))], limit=1, order='id desc')
+                [('hr_employee', '=', int(get_user_id.id))], limit=1, order='id asc')
             [att_id, status] = self.check_in_out(att_obj, get_user_id, atten_time, setting_obj, general_shift)
             # print(atten_time, status)
             if(status == 'check_out'):
@@ -97,15 +97,16 @@ class LogFileImportWizard(models.TransientModel):
     def check_in_out(self, att_obj, get_user_id, dt, setting_obj, general_shift):
         [ds1, ds2, de1, de2, dt1, s_type] = self._calculate_dates(setting_obj, general_shift, dt)
 
-        week_index = self._find_week_day_index(dt1.strftime("%A"))
-        calendar_leaves = self.env['resource.calendar.leaves'].search(
-            [('date_from', '<=', dt), ('date_to', '>=', dt)])
-        if (week_index >= 5 and general_shift.shift_type == 'days') or (calendar_leaves and general_shift.shift_type == 'days'):
-            end = datetime.strptime(datetime.strftime(dt1, "%Y-%m-%d 00:00:00"), "%Y-%m-%d %H:%M:%S")
-            end = end + timedelta(seconds=setting_obj.start_work_date_from * 3600)
-            if end < dt1:
-                [att_id, status] = self._check_status_holiday(setting_obj, get_user_id, dt)
-                return [att_id, status]
+        # week_index = self._find_week_day_index(dt1.strftime("%A"))
+        # calendar_leaves = self.env['resource.calendar.leaves'].search(
+        #     [('date_from', '<=', dt), ('date_to', '>=', dt)])
+        # if (week_index >= 5 and general_shift.shift_type == 'days') or (calendar_leaves and general_shift.shift_type == 'days'):
+        #     print('in holiday')
+        #     end = datetime.strptime(datetime.strftime(dt1, "%Y-%m-%d 00:00:00"), "%Y-%m-%d %H:%M:%S")
+        #     end = end + timedelta(seconds=setting_obj.start_work_date_from * 3600)
+        #     if end < dt1:
+        #         [att_id, status] = self._check_status_holiday(setting_obj, get_user_id, dt)
+        #         return [att_id, status]
 
         attendance_req = self._is_overtime(get_user_id, dt, dt1)
         if attendance_req:
