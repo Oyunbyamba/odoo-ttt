@@ -106,6 +106,7 @@ class LogFileImportWizard(models.TransientModel):
             if end < dt1:
                 [att_id, status] = self._check_status_holiday(setting_obj, get_user_id, dt)
                 return [att_id, status]
+
         attendance_req = self._is_overtime(get_user_id, dt, dt1)
         if attendance_req:
             [ds1, ds2, de1, de2, dt1, s_type] = self._calculate_dates(setting_obj, general_shift, attendance_req)
@@ -252,13 +253,12 @@ class LogFileImportWizard(models.TransientModel):
         work_start = datetime.strptime(work_start, '%Y-%m-%d %H:%M:%S')
         work_start = work_start - timedelta(hours=8) + timedelta(seconds=setting_obj.start_work_date_from * 3600)
         att = self.env['hr.attendance'].search(
-                [('employee_id', '=', get_user_id.id), ('check_in', '>=', work_start), ('check_in', '<', dt)])
+                [('employee_id', '=', get_user_id.id), ('check_in', '>=', work_start), ('check_in', '<', dt)], limit=1, order='create_date desc')
         if att:
             if att.check_out:
                 return [att.id, "update_check_out"]
             else:
                 return [att.id, "check_out"]
-            return [0, "check_in"]
         else:
             return [0, "check_in"]
 
