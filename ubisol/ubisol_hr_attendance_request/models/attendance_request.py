@@ -413,10 +413,8 @@ class AttendanceRequest(models.Model):
 
         hr_attendance_check_in = self.env['hr.attendance'].search(
             [('employee_id', '=', self.employee_id.id), ('check_in', '>=', sdate), ('check_in', '<=', edate)])
-        print(hr_attendance_check_in)
         hr_attendance_check_out = self.env['hr.attendance'].search(
             [('employee_id', '=', self.employee_id.id), ('check_out', '>=', sdate), ('check_out', '<=', edate)])   
-        print(hr_attendance_check_out)
         if(len(hr_attendance_check_in) == 0 or len(hr_attendance_check_out) == 0): 
             if hr_attendance_check_in:
                 self.update_attendance(hr_attendance_check_in, request_datetime)
