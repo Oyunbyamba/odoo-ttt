@@ -1,6 +1,37 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <odoo>
 
+    <record id="view_employee_filter" model="ir.ui.view">
+        <field name="name">hr.attendance.request.search</field>
+        <field name="model">hr.attendance.request</field>
+        <field name="arch" type="xml">
+            <search string="Employees">
+                <field name="employee_id" string="Ажилтан" filter_domain="[('employee_id.name', 'ilike', self)]"/>
+                <field name="department_id" string="Хэлтэс" operator="child_of" filter_domain="[('department_id.name', 'ilike', self)]"/>
+                <field name="name" string="Нэр" filter_domain="[('name', 'ilike', self)]"/>
+                <filter domain="[('state','in',('confirm','validate1'))]" string="Батлах ёстой" name="approve"/>
+                <filter domain="[('state', '=', 'validate1')]" string="2 дахь зөвшөөрөл хэрэгтэй" name="second_approval"/>
+                <filter string="Баталсан" domain="[('state', '=', 'validate')]" name="validated"/>
+                <separator/>
+                <filter string="Манай хэлтэсийн хүсэлт" name="department" domain="['|', ('department_id.member_ids.user_id', '=', uid), ('employee_id.user_id', '=', uid)]"/>
+                <filter string="Миний удирддаг хүмүүс" name="managed_people" domain="[('employee_id.parent_id', '=', uid)]"/>
+                <filter string="Миний хүсэлтүүд" name="my_requests" domain="[('employee_id.user_id', '=', uid)]"/>
+                <separator/>
+                <filter string="Илүү цаг" name="overtime_request" domain="[('request_status_type', '=', 'overtime')]"/>
+                <filter string="Ирцийн хүсэлт" name="attendance_request" domain="[('request_status_type', '=', 'attendance')]"/>
+                <filter string="Гадуур ажил" name="out_of_office" domain="[('request_status_type', '=', 'outside_work')]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="department" string="Хэлтэс" domain="[]" context="{'group_by': 'department_id'}"/>
+                    <filter name="request_status_type" string="Хүсэлтийн төрөл" domain="[]" context="{'group_by': 'request_status_type'}"/>
+                    <filter name="request_type" string="Хүсэлтийн горим" domain="[]" context="{'group_by': 'request_type'}"/>
+                    <separator/>
+                    <filter name="group_date_from" string="Эхлэх огноо" context="{'group_by':'start_datetime'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
     <record id="hr_attendance_request_view_form" model="ir.ui.view">
         <field name="name">hr.attendance.request.view.form</field>
         <field name="model">hr.attendance.request</field>

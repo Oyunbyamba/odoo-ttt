@@ -272,11 +272,11 @@ class AttendanceRequest(models.Model):
 
         return attendance
 
-    def create_overtime(self, attendance, s_date, start_time, end_time, employee_id, req_type):
+    def create_overtime(self, attendance, s_date, start_time, end_time, employee, req_type):
         attendance_values = []
         attendance_values.append({
             'name': attendance.name,
-            'employee_id': employee_id,
+            'employee_id': employee.id,
             'notes': attendance.notes,
             'description': attendance.description,
             'start_datetime': str(s_date) + ' ' + str(start_time),
@@ -285,13 +285,20 @@ class AttendanceRequest(models.Model):
             'request_status_type': attendance.request_status_type,
             'validation_type': attendance.validation_type,
             'request_type': attendance.request_type,
-            'department_id': attendance.department_id.id
+            'department_id': employee.department_id.id
         }) 
         hr_att_req = attendance.env['hr.attendance.request'].create(attendance_values)
         if(req_type == 'dep'):
             hr_att_req.write({'request_type': 'employee'})  
 
         return True
+
+    def _get_department_child(self, department, res):
+        if(department.child_ids):
+            for child in department.child_ids:
+                res.append(child.id)
+                self._get_department_child(child, res)
+        return res            
 
     def multiple_overtime(self, attendance):
         request_type = attendance.request_type
@@ -306,8 +313,8 @@ class AttendanceRequest(models.Model):
         while count <= delta.days:
             s_date =  start_date + timedelta(days=+count)
             if(request_type == 'department'):
-                department_employees = attendance.env['hr.employee'].search([ ('department_id', '=', attendance.department_id.id) ])
-
+                department_ids = self._get_department_child(attendance.department_id, [attendance.department_id.id])
+                department_employees = attendance.env['hr.employee'].search([('department_id', 'in', department_ids)])
                 if len(department_employees) > 0:
                     for department_employee in department_employees:
                         if(first_att == 1 and department_employees[0].id == department_employee.id):
@@ -317,14 +324,14 @@ class AttendanceRequest(models.Model):
                             attendance.end_datetime = str(s_date) + ' ' + str(end_time)
                             first_att = 2
                         else:
-                            self.create_overtime(attendance, s_date, start_time, end_time, department_employee.id, 'dep')
+                            self.create_overtime(attendance, s_date, start_time, end_time, department_employee, 'dep')
             elif(request_type == 'employee'):
                 if(first_att == 1):
                     attendance.start_datetime = str(s_date) + ' ' + str(start_time)
                     attendance.end_datetime = str(s_date) + ' ' + str(end_time)
                     first_att = 2
                 else:
-                    self.create_overtime(attendance, s_date, start_time, end_time, attendance.employee_id.id, 'emp')
+                    self.create_overtime(attendance, s_date, start_time, end_time, attendance.employee_id, 'emp')
 
             count = count+1     
 
