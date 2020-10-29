@@ -57,6 +57,54 @@ class HrAttendanceReport(models.Model):
     leave_id = fields.Many2one('hr.leave')
     leave_hours = fields.Float(compute="_compute_leave", store=True, compute_sudo=True)
 
+    check_in_time = fields.Char(compute="_compute_check_in_time", compute_sudo=True)
+    check_out_time = fields.Char(compute="_compute_check_out_time", compute_sudo=True)
+    start_work_time = fields.Float(compute="_compute_start_work_time", compute_sudo=True)
+    end_work_time = fields.Float(compute="_compute_end_work_time", compute_sudo=True)
+
+    @api.depends("start_work")
+    def _compute_start_work_time(self):
+        for record in self:
+            if record.start_work:
+                user_tz = self.env.user.tz or pytz.utc
+                local = pytz.timezone(user_tz)
+                date_result = pytz.utc.localize(record.start_work).astimezone(local)
+                hour = date_result.hour
+                minute = date_result.minute
+                record.start_work_time = hour + minute/60
+
+    @api.depends("end_work")
+    def _compute_end_work_time(self):
+        for record in self:
+            if record.end_work:
+                user_tz = self.env.user.tz or pytz.utc
+                local = pytz.timezone(user_tz)
+                date_result = pytz.utc.localize(record.end_work).astimezone(local)
+                hour = date_result.hour
+                minute = date_result.minute
+                record.end_work_time = hour + minute/60
+
+    @api.depends("check_in")
+    def _compute_check_in_time(self):
+        for record in self:
+            if record.check_in:
+                user_tz = self.env.user.tz or pytz.utc
+                local = pytz.timezone(user_tz)
+                date_result = pytz.utc.localize(record.check_in).astimezone(local)
+                record.check_in_time = "    " + datetime.strftime(date_result, "%H:%M")
+            else:
+                record.check_in_time = ''
+    @api.depends("check_out")
+    def _compute_check_out_time(self):
+        for record in self:
+            if record.check_out:
+                user_tz = self.env.user.tz or pytz.utc
+                local = pytz.timezone(user_tz)
+                date_result = pytz.utc.localize(record.check_out).astimezone(local)
+                record.check_out_time = "    " + datetime.strftime(date_result, "%H:%M")
+            else:
+                record.check_out_time = ''
+
     @api.depends("leave_id")
     def _compute_leave(self):
         for record in self:
