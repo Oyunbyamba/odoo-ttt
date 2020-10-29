@@ -27,49 +27,14 @@
       </field>
     </record>
 
-    <!-- <record id="hr_leave_action_approve_department2" model="ir.actions.act_window">
-        <field name="name">Time Off</field>
-        <field name="res_model">hr.leave</field>
-        <field name="view_mode">tree,kanban,form,calendar,activity</field>
-        <field name="context">{
-            'search_default_my_team_leaves':1,
-            'search_default_approve':1}
-        </field>
-        <field name="domain">['|', ('state', '=', "validate1"), ('employee_id.leave_manager_id', '=', uid)]</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Create a new time off request
-            </p>
-        </field>
-    </record> -->
-
-    <!-- <record id="hr_leave_action_approve_department2" model="ir.actions.server">
+    <record id="hr_leave_action_approve_department2" model="ir.actions.server">
         <field name="name">Time Off</field>
         <field name="model_id" ref="hr_holidays.model_hr_leave"/>
         <field name="state">code</field>
         <field name="code"> 
-            action=self.get_filtered_record(cr, uid, context.get('active_ids', []), context=context)
+            action=model.get_filtered_record()
         </field>
     </record>
-
-    <record id="action_view_tree_manager_approve" model="ir.actions.act_window.view">
-        <field name="sequence" eval="1"/>
-        <field name="view_mode">tree</field>
-        <field name="view_id" ref="hr_holidays.hr_leave_view_tree"/>
-        <field name="act_window_id" ref="hr_leave_action_approve_department2"/>
-    </record>
-    <record id="action_view_kanban_manager_approve" model="ir.actions.act_window.view">
-        <field name="sequence" eval="2"/>
-        <field name="view_mode">kanban</field>
-        <field name="view_id" ref="hr_holidays.hr_leave_view_kanban"/>
-        <field name="act_window_id" ref="hr_leave_action_approve_department2"/>
-    </record>
-    <record id="action_view_form_manager_approve" model="ir.actions.act_window.view">
-        <field name="sequence" eval="3"/>
-        <field name="view_mode">form</field>
-        <field name="view_id" ref="hr_holidays.hr_leave_view_form_manager_approve"/>
-        <field name="act_window_id" ref="hr_leave_action_approve_department2"/>
-    </record> -->
 
     <record id="hr_leave_view_tree_my_inherit" model="ir.ui.view">
         <field name="name">hr.holidays.view.tree.inherit</field>
@@ -109,7 +74,7 @@
         parent="hr.menu_hr_root"
         groups="base.group_user"/>
 
-    <menuitem name="Leaves"
+    <menuitem name="Чөлөө"
         id="hr_holidays.menu_hr_holidays_root"
         web_icon="hr_holidays,static/description/icon.png"
         parent="menu_hr_requests_root"
@@ -124,20 +89,12 @@
         sequence="1"/>
 
     <menuitem
-        id="hr_holidays.menu_open_department_leave_approve1"
-        name="Батлах ёстой чөлөө"
-        parent="hr_holidays.menu_hr_holidays_approvals"
-        groups="hr_holidays.group_hr_holidays_responsible"
-        action="hr_holidays.hr_leave_action_action_approve_department"
-        sequence="1"/>
-
-    <!-- <menuitem
         id="hr_holidays.menu_open_department_leave_approve2"
         name="Батлах ёстой чөлөө"
         parent="hr_holidays.menu_hr_holidays_approvals"
-        groups="hr_holidays.group_hr_holidays_manager,hr_holidays.group_hr_holidays_user"
+        groups="hr_holidays.group_hr_holidays_manager,hr_holidays.group_hr_holidays_user,hr_holidays.group_hr_holidays_responsible"
         action="hr_leave_action_approve_department2"
-        sequence="2"/>     -->
+        sequence="2"/>    
     
     <menuitem
         id="hr_holidays.menu_open_employee_leave1"
