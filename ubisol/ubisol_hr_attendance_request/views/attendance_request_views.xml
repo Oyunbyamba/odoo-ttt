@@ -58,24 +58,46 @@
                 <group>
                     <group>
                         <label for="start_datetime" string="Хаанаас" attrs="{'invisible': [('request_status_type', 'in', 'attendance')]}"/>
-                        <div class="o_row o_row_readonly" attrs="{'invisible': [('request_status_type', 'in', 'attendance')]}">
-                            <field name="start_datetime" attrs="{'invisible': [('request_status_type', 'in', 'attendance')]}"/>
-                            <span class="oe_inline"> хүртэл </span>
-                            <field name="end_datetime" attrs="{'invisible': [('request_status_type', 'in', 'attendance')]}"/>
+                        <div class="o_row o_row_readonly">
+                            <field name="start_datetime" attrs="{
+                                'readonly': [('state', 'not in', ('draft', 'confirm'))],
+                                'required': [('request_status_type', '!=', 'attendance')],
+                                'invisible': [('request_status_type', 'in', 'attendance')]
+                                }"/>
+                            <span class="oe_inline" attrs="{'invisible': [('request_status_type', 'in', 'attendance')]}"> хүртэл </span>
+                            <field name="end_datetime" attrs="{
+                                'readonly': [('state', 'not in', ('draft', 'confirm'))],
+                                'required': [('request_status_type', '!=', 'attendance')],
+                                'invisible': [('request_status_type', 'in', 'attendance')]
+                                }"/>
                         </div> 
 
                         <label for="start_datetime" string="Хэзээ" attrs="{'invisible': [('request_status_type', 'not in', 'attendance')]}"/>
-                        <div class="o_row o_row_readonly" attrs="{'invisible': [('request_status_type', 'not in', 'attendance')]}">
-                            <field name="attendance_date" attrs="{'invisible': [('request_status_type', 'not in', 'attendance')]}"/>
+                        <div class="o_row o_row_readonly">
+                            <field name="attendance_date" attrs="{
+                                'readonly': [('state', 'not in', ('draft', 'confirm'))],
+                                'required': [('request_status_type', '=', 'attendance')],
+                                'invisible': [('request_status_type', 'not in', 'attendance')]
+                                }"/>
                         </div>
-                        <label for="attendance_in_out" string="Ирсэн/явсан" attrs="{'invisible': [('request_status_type', 'not in', 'attendance')]}"/>
-                        <div class="o_row o_row_readonly" attrs="{'invisible': [('request_status_type', 'not in', 'attendance')]}">
-                            <field name="attendance_in_out" attrs="{'invisible': [('request_status_type', 'not in', 'attendance')]}"/>
+                        <label for="attendance_in_out" string="Ирсэн/явсан" attrs="{
+                            'invisible': [('request_status_type', 'not in', 'attendance')]
+                            }"/>
+                        <div class="o_row o_row_readonly">
+                            <field name="attendance_in_out" attrs="{
+                                'readonly': [('state', 'not in', ('draft', 'confirm'))],
+                                'invisible': [('request_status_type', 'not in', 'attendance')]
+                                }"/>
                         </div>
 
-                        <label for="is_frequency_request" string="Өдрөөр үүсгэх эсэх" attrs="{'invisible': [('request_status_type', 'not in', 'overtime')]}"/>
-                        <div class="o_row o_row_readonly" attrs="{'invisible': [('request_status_type', 'not in', 'overtime')]}">
-                            <field name="is_frequency_request"/>
+                        <label for="is_frequency_request" string="Өдрөөр үүсгэх эсэх" attrs="{
+                            'invisible': [('request_status_type', 'not in', 'overtime')]
+                            }"/>
+                        <div class="o_row o_row_readonly">
+                            <field name="is_frequency_request" attrs="{
+                                'readonly': [('state', 'not in', ('draft', 'confirm'))],
+                                'invisible': [('request_status_type', 'not in', 'overtime')]
+                                }"/>
                         </div>    
                         <label for="description" string="Тайлбар"/>
                         <div>
@@ -84,13 +106,19 @@
                     </group>
                     <group>
                         <field name="validation_type" string="Шатлал" attrs="{'invisible': True}"/>
-                        <field name="request_status_type" string="Хүсэлтийн төрөл"/>
-                        <field name="request_type" string="Горим" groups="hr_holidays.group_hr_holidays_user"/>
+                        <field name="request_status_type" string="Хүсэлтийн төрөл" attrs="{
+                            'readonly': [('state', 'not in', ('draft', 'confirm'))]
+                            }"/>
+                        <field name="request_type" string="Горим" groups="hr_holidays.group_hr_holidays_user" attrs="{
+                            'readonly': [('state', 'not in', ('draft', 'confirm'))]
+                            }"/>
                         <field name="employee_id" string="Ажилтан" attrs="{
+                            'readonly': [('state', 'not in', ('draft', 'confirm'))],
                             'required': [('request_type', '=', 'employee')],
                             'invisible': [('request_type', '!=', 'employee')]
                             }"/>
                         <field name="department_id" string="Хэлтэс" groups="hr_holidays.group_hr_holidays_user" attrs="{
+                            'readonly': [('state', 'not in', ('draft', 'confirm'))],
                             'required': [('request_type', '=', 'department')],
                             'invisible': [('request_type', 'not in', ('department'))]
                             }"/>
