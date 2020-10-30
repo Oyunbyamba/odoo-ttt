@@ -67,17 +67,23 @@ class LogFileImportWizard(models.TransientModel):
             setting_obj = self.env['res.config.settings'].search([], limit=1, order='id desc')
             general_shift = self.env['hr.employee.schedule'].search(
                 [('hr_employee', '=', int(get_user_id.id))], limit=1, order='id asc')
-            [att_id, status] = self.check_in_out(att_obj, get_user_id, atten_time, setting_obj, general_shift)
+            shift_obj = self.env['hr.employee.shift']
+            shift_type = self.env['resource.calendar'].search([('shift_type', '=', 'days')], limit=1, order='id asc')
+
+            [att_id, status] = self.check_in_out(att_obj, get_user_id, atten_time, setting_obj, general_shift, shift_obj, shift_type)
             # print(atten_time, status)
             if(status == 'check_out'):
-                att_var1 = att_obj.search(
-                    [('employee_id', '=', get_user_id.id)],order="id desc")
-                if att_var1:
-                    att_var1[0].write({'check_out': atten_time})
+                if att_id != 0:
+                    att_var = att_obj.browse(att_id)
+                    att_var.write({'check_out': atten_time})
+                else:
+                    att_var1 = att_obj.search(
+                        [('employee_id', '=', get_user_id.id)],order="id desc")
+                    if att_var1:
+                        att_var1[0].write({'check_out': atten_time})
             elif (status == "update_check_out"):
-                att_var = att_obj.search(
-                    [('employee_id', '=', get_user_id.id)],order="id desc")
-                att_var[0].write({'check_out': atten_time})
+                att_var = att_obj.browse(att_id)
+                att_var.write({'check_out': atten_time})
             elif (status == "update_check_in"):
                 # att_var = att_obj.search(
                 #     [('employee_id', '=', get_user_id.id)],order="id desc")
@@ -94,19 +100,18 @@ class LogFileImportWizard(models.TransientModel):
 
         return {}
 
-    def check_in_out(self, att_obj, get_user_id, dt, setting_obj, general_shift):
+    def check_in_out(self, att_obj, get_user_id, dt, setting_obj, general_shift, shift_obj, shift_type):
         [ds1, ds2, de1, de2, dt1, s_type] = self._calculate_dates(setting_obj, general_shift, dt)
 
-        # week_index = self._find_week_day_index(dt1.strftime("%A"))
-        # calendar_leaves = self.env['resource.calendar.leaves'].search(
-        #     [('date_from', '<=', dt), ('date_to', '>=', dt)])
-        # if (week_index >= 5 and general_shift.shift_type == 'days') or (calendar_leaves and general_shift.shift_type == 'days'):
-        #     print('in holiday')
-        #     end = datetime.strptime(datetime.strftime(dt1, "%Y-%m-%d 00:00:00"), "%Y-%m-%d %H:%M:%S")
-        #     end = end + timedelta(seconds=setting_obj.start_work_date_from * 3600)
-        #     if end < dt1:
-        #         [att_id, status] = self._check_status_holiday(setting_obj, get_user_id, dt)
-        #         return [att_id, status]
+        week_index = self._find_week_day_index(dt1.strftime("%A"))
+        calendar_leaves = self.env['resource.calendar.leaves'].search(
+            [('date_from', '<=', dt), ('date_to', '>=', dt)])
+        if (week_index >= 5 and general_shift.shift_type == 'days') or (calendar_leaves and general_shift.shift_type == 'days'):
+            end = datetime.strptime(datetime.strftime(dt1, "%Y-%m-%d 00:00:00"), "%Y-%m-%d %H:%M:%S")
+            end = end + timedelta(seconds=setting_obj.start_work_date_from * 3600)
+            if end < dt1:
+                [att_id, status] = self._check_status_holiday(setting_obj, get_user_id, dt)
+                return [att_id, status]
 
         attendance_req = self._is_overtime(get_user_id, dt, dt1)
         if attendance_req:
@@ -124,15 +129,13 @@ class LogFileImportWizard(models.TransientModel):
         if(shift_end & shift_start):
             check_out = abs(dt - shift_end.end_work).total_seconds()
             check_in = abs(dt - shift_start.start_work).total_seconds()
-            [att_id, status] = self._check_status(get_user_id, dt, shift_start.start_work, check_out, check_in, de1, de2)
+            [att_id, status] = self._check_status(get_user_id, dt, shift_start.start_work, check_out, check_in, ds1, ds2, de1, de2)
             return [att_id, status]
         elif(shift_end):
             return [0, "check_out"]
         elif(shift_start):
             return [0, "check_in"]
         else:
-            shift_obj = self.env['hr.employee.shift']
-            shift_type = self.env['resource.calendar'].search([('shift_type', '=', 'days')], limit=1, order='id asc')
             [start_work, end_work] = self._create_schedule(get_user_id, dt1, shift_obj, shift_type)
             work_start = datetime.strptime(datetime.strftime(dt1, "%Y-%m-%d  00:00:00"), "%Y-%m-%d %H:%M:%S")
             work_end = datetime.strptime(datetime.strftime(dt1, "%Y-%m-%d 00:00:00"), "%Y-%m-%d %H:%M:%S")
@@ -141,7 +144,7 @@ class LogFileImportWizard(models.TransientModel):
 
             check_out = abs(dt - work_end).total_seconds()
             check_in = abs(dt - work_start).total_seconds()
-            [att_id, status] = self._check_status(get_user_id, dt, work_start, check_out, check_in, de1, de2)
+            [att_id, status] = self._check_status(get_user_id, dt, work_start, check_out, check_in, ds1, ds2, de1, de2)
             return [att_id, status]
 
     def _find_week_day_index(self, week_day):
@@ -198,17 +201,17 @@ class LogFileImportWizard(models.TransientModel):
             de2 = datetime.strptime(de2, "%Y-%m-%d %H:%M:%S") - timedelta(hours=8) + timedelta(days=1) + timedelta(seconds=setting_obj.end_work_date_to * 3600 + 59)
         else:
             ds1 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
-            ds2 = datetime.strftime(dt1, "%Y-%m-%d 23:59:59")
+            ds2 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
             de1 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
-            de2 = datetime.strftime(dt1, "%Y-%m-%d 23:59:59")
+            de2 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
 
-            ds1 = datetime.strptime(ds1, '%Y-%m-%d %H:%M:%S') - timedelta(hours=8)
-            ds2 = datetime.strptime(ds2, '%Y-%m-%d %H:%M:%S') - timedelta(hours=8)
-            de1 = datetime.strptime(de1, "%Y-%m-%d %H:%M:%S") - timedelta(hours=8)
-            de2 = datetime.strptime(de2, "%Y-%m-%d %H:%M:%S") - timedelta(hours=8)
+            ds1 = datetime.strptime(ds1, '%Y-%m-%d %H:%M:%S') - timedelta(hours=14) + timedelta(seconds=general_shift.start_work * 3600)
+            ds2 = datetime.strptime(ds2, '%Y-%m-%d %H:%M:%S') - timedelta(hours=2) + timedelta(seconds=general_shift.start_work * 3600 + 59)
+            de1 = datetime.strptime(de1, "%Y-%m-%d %H:%M:%S") - timedelta(hours=14) + timedelta(seconds=general_shift.end_work * 3600)
+            de2 = datetime.strptime(de2, "%Y-%m-%d %H:%M:%S") - timedelta(hours=2) + timedelta(seconds=general_shift.end_work * 3600 + 59)
         return [ds1, ds2, de1, de2, dt1, s_type]
 
-    def _check_status(self, get_user_id, dt, work_start, check_out, check_in, de1, de2):
+    def _check_status(self, get_user_id, dt, work_start, check_out, check_in, ds1, ds2, de1, de2):
         if(check_out < check_in):
             days = 0
             self._cr.execute('select id from hr_attendance where employee_id = '+str(get_user_id.id)+' order by id desc limit 1')
@@ -233,20 +236,30 @@ class LogFileImportWizard(models.TransientModel):
                 elif days >= 1:
                     return [new_check_out.id, "new_check_out"]
                 else:
-                    return [0, "check_out"]
+                    check_out = self._get_attendance(get_user_id, check_in, False, ds1, ds2)
+                    return [check_out.id, "check_out"]
             elif not last_id:
                 return [0, "new_check_out"]
-            return [0, "check_out"]
+            check_out = self._get_attendance(get_user_id, check_in, False, ds1, ds2)
+            return [check_out.id, "check_out"]
         else:
             update_check_in = self.env['hr.attendance'].search(
                 [('employee_id', '=', get_user_id.id), ('check_in', '>=', work_start - timedelta(hours=3)), ('check_in', '<', dt)])
-            new_check_in = self.env['hr.attendance'].search(
-                [('employee_id', '=', get_user_id.id), ('check_out', '>=', de1), ('check_out', '<', de2)])
+            new_check_in = self._get_attendance(get_user_id, False, check_out, de1, de2)
             if update_check_in:
-                return [update_check_in, "update_check_in"]
+                return [update_check_in.id, "update_check_in"]
             elif new_check_in:
                 return [new_check_in.id, "new_check_in"]
             return [0, "check_in"]
+
+    def _get_attendance(self, get_user_id, check_in, check_out, date1, date2):
+        if not check_in:
+            att = self.env['hr.attendance'].search(
+                [('employee_id', '=', get_user_id.id), ('check_out', '>=', date1), ('check_out', '<', date1)])
+        else:
+            att = self.env['hr.attendance'].search(
+                [('employee_id', '=', get_user_id.id), ('check_in', '>=', date1), ('check_in', '<', date1)])
+        return att
 
     def _check_status_holiday(self, setting_obj, get_user_id, dt):
         dt1 = dt + timedelta(hours=8)
@@ -265,7 +278,7 @@ class LogFileImportWizard(models.TransientModel):
 
     def _create_schedule(self, emp_id, date, shift_obj, shift_type):
         d = datetime.strftime(date, "%Y-%m-%d")
-        shift = self.env['hr.employee.shift'].search([('resource_calendar_ids', '=', shift_type.id)], limit=1, order='id desc')
+        # shift = self.env['hr.employee.shift'].search([('resource_calendar_ids', '=', shift_type.id)], limit=1, order='id desc')
 
         values = {}
         values['type'] = 'employee'
@@ -279,7 +292,7 @@ class LogFileImportWizard(models.TransientModel):
         values['date_from'] = str(d)
         values['date_to'] = str(d)
         
-        shift_obj._create_schedules(values, shift)
+        # shift_obj._create_schedules(values, shift)
 
         res = self.env['resource.calendar.shift'].search([('shift_id', '=', shift_type.id)], limit=1, order='id desc')
         return [res.start_work, res.end_work]

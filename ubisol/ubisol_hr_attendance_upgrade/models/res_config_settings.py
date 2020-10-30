@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
@@ -15,6 +15,7 @@ class ResConfigSettings(models.TransientModel):
     end_work_date_from = fields.Float(string='Date from of End Date', default='14.01666666666')
     end_work_date_to = fields.Float(string='Date to of End Date', default='4.98333333333')
 
+    @api.model
     def set_values(self):
         super(ResConfigSettings, self).set_values()
         hr_attendance = self.env.ref('res.groups', False)

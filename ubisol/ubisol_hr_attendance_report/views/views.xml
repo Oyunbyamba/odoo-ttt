@@ -29,8 +29,8 @@
           <field name="work_day" string="Өдөр"/>
           <field name="start_work_time" string="Ажил эхлэх" widget="float_time"/>
           <field name="end_work_time" string="Ажил дуусах" widget="float_time"/>
-          <field name="check_in_time" string="Орсон"/>
-          <field name="check_out_time" string="Гарсан"/>
+          <field name="check_in_time" string="Орсон цаг"/>
+          <field name="check_out_time" string="Гарсан цаг"/>
           <field name="work_hours" string="Ажиллавал зохих цаг" widget="float_time"/>
           <field name="worked_hours" string="Ажилласан цаг" widget="float_time"/>
           <field name="difference_check_in" string="Хоцролт" widget="float_time"/>
