@@ -1441,7 +1441,7 @@ msgstr "Чөлөөний бүлэг"
 #. module: hr_holidays
 #: model:ir.actions.server,name:hr_holidays.action_hr_approval
 msgid "HR Approval"
-msgstr ""
+msgstr "ХН менежерийн зөвшөөрөл"
 
 #. module: hr_holidays
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_leave__report_note
@@ -3010,7 +3010,7 @@ msgstr ""
 #, python-format
 msgid "You can not have 2 leaves that overlaps on the same day."
 msgstr ""
-"Та хоёр чөлөөний хүсэлт хугацаагаар давхардуулж (огтолцож)"
+"Та хоёр чөлөөний хүсэлт хугацаагаар давхцуулж "
 "болохгүй."
 
 #. module: hr_holidays
@@ -3019,7 +3019,7 @@ msgstr ""
 msgid ""
 "You can not set 2 times off that overlaps on the same day for the same "
 "employee."
-msgstr "Нэг ажилтанд ижилхэн өдөр 2 чөлөө давхцуулж болохгүй"
+msgstr "Ажилтанд нэг өдөр 2 чөлөө давхцуулж болохгүй"
 
 #. module: hr_holidays
 #: code:addons/hr_holidays/models/hr_leave.py:0
