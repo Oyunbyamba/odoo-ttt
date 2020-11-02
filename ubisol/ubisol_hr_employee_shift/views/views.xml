@@ -1,6 +1,12 @@
 <odoo>
   <data>
 
+    <template id="assets_backend_employee_shift" name="Hr Employee Shift" inherit_id="web.assets_backend">
+      <xpath expr="." position="inside">
+        <script type="text/javascript" src="/ubisol_hr_employee_shift/static/src/js/action_datetime_filter.js"/>
+      </xpath>
+    </template>
+
     <!-- explicit list view definition -->
     <record id="hr_employee_shift_form" model="ir.ui.view">
       <field name="name">hr.employee.shift</field>
@@ -77,6 +83,32 @@
       </field>
     </record>
 
+    <record id="hr_employee_schedule_form" model="ir.ui.view">
+      <field name="name">hr.employee.schedule</field>
+      <field name="model">hr.employee.schedule</field>
+      <field name="arch" type="xml">
+        <form string="Schedules">
+          <sheet>
+            <group>
+              <group>
+                <field name="hr_department"/>
+                <field name="hr_employee"/>
+              </group>
+              <group>
+                <field name="shift_type"/>
+                <field name="week_day" attrs="{'invisible':[('shift_type', '!=', 'days')]}"/>
+                <field name="day_period" attrs="{'invisible':[('shift_type', '!=', 'shift')]}"/>
+              </group>
+              <group>
+                <field name="start_work"/>
+                <field name="end_work"/>
+              </group>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
     <record id="shift_template_kanban_view" model="ir.ui.view">
       <field name="name">employee.shift.kanban</field>
       <field name="model">resource.calendar</field>
@@ -91,8 +123,8 @@
                       <span class="fa fa-bars fa-lg"/>
                     </a>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                      <t t-if="widget.editable"><li><a type="edit">Edit</a></li></t>
-                      <t t-if="widget.deletable"><li><a type="delete">Delete</a></li></t>
+                      <t t-if="widget.editable"><li><a type="edit">Засах</a></li></t>
+                      <t t-if="widget.deletable"><li><a type="delete">Устгах</a></li></t>
                       <li><ul class="oe_kanban_colorpicker" data-field="color"/></li>
                     </ul>
                 </div>
@@ -117,15 +149,18 @@
       </field>
     </record>
 
-    <record id="hr_employee_schedule_pivot" model="ir.ui.view">
-        <field name="name">hr.employee.schedule</field>
-        <field name="model">hr.employee.schedule</field>
-        <field name="arch" type="xml">
-            <pivot string="Employee Schedule">
-                <field name="hr_department" type="row"/>
-                <field name="start_work" type="col" interval="day"/>
-            </pivot>
-        </field>
+    <record id="hr_employee_schedule_view_tree" model="ir.ui.view">
+      <field name="name">hr.employee.schedule.tree</field>
+      <field name="model">hr.employee.schedule</field>
+      <field name="arch" type="xml">
+        <tree string="Ажиллах график" create="true" edit="true">
+          <field name="hr_department" string="Хэлтэс"/>
+          <field name="hr_employee" string="Ажилтан"/>
+          <field name="start_work" string="Ажил эхлэх"/>
+          <field name="end_work" string="Ажил дуусах"/>
+          <field name="hr_employee_shift"/>
+        </tree>
+      </field>
     </record>
 
     <record id="hr_employee_schedule_calendar" model="ir.ui.view">
@@ -187,22 +222,12 @@
               <separator/>
               <filter string="Амралтын өдөр харуулахгүй" name="is_rest" domain="[('day_period_int', '!=', 3)]"/>
               <separator/>
-              <filter string="Сүүлийн 1 сар болон ирэх 1 сарын хооронд" name="two_months" 
-                domain="['&amp;', ('work_day','&gt;=', ((context_today()-datetime.timedelta(days=30)).strftime('%Y-%m-%d'))), 
-                  ('work_day','&lt;=', ((context_today()+datetime.timedelta(days=30)).strftime('%Y-%m-%d')))]"
-              />
-              <filter string="Сүүлийн 2 сар болон ирэх 2 сарын хооронд" name="four_months" 
-                domain="['&amp;', ('work_day','&gt;=', ((context_today()-datetime.timedelta(days=60)).strftime('%Y-%m-%d'))), 
-                  ('work_day','&lt;=', ((context_today()+datetime.timedelta(days=60)).strftime('%Y-%m-%d')))]"
-              />
-              <filter string="Сүүлийн 3 сар болон ирэх 3 сарын хооронд" name="six_months" 
-                domain="['&amp;', ('work_day','&gt;=', ((context_today()-datetime.timedelta(days=90)).strftime('%Y-%m-%d'))), 
-                  ('work_day','&lt;=', ((context_today()+datetime.timedelta(days=90)).strftime('%Y-%m-%d')))]"
-              />
-              <filter string="Сүүлийн 6 сар болон ирэх 6 сарын хооронд" name="six_months" 
-                domain="['&amp;', ('work_day','&gt;=', ((context_today()-datetime.timedelta(days=180)).strftime('%Y-%m-%d'))), 
-                  ('work_day','&lt;=', ((context_today()+datetime.timedelta(days=180)).strftime('%Y-%m-%d')))]"
-              />
+              <group expand="0" string="Group By">
+                <filter string="Хэлтэлсээр бүлэглэх" name="department" context="{'group_by': 'hr_department'}"/>
+                <filter string="Ажилтнаар бүлэглэх" name="employee" context="{'group_by': 'hr_employee'}"/>
+                <separator/>
+                <filter string="Ажиллах хуваариар бүлэглэх" name="groupby_name" context="{'group_by': 'hr_employee_shift'}"/>
+              </group>
             </search>
         </field>
     </record>
@@ -235,8 +260,8 @@
     <record model="ir.actions.act_window" id="ubisol_hr_employee_shift.action_window_schedule">
       <field name="name">Employee Shift Schedules</field>
       <field name="res_model">hr.employee.schedule</field>
-      <field name="view_mode">timeline,calendar,pivot</field>
-      <field name="context">{"search_default_is_main":1, "search_default_is_rest":1, "search_default_two_months":1}</field>
+      <field name="view_mode">tree,timeline,calendar</field>
+      <field name="context">{"search_default_department":1, "search_default_employee":1, "search_default_is_rest":1}</field>
       <field name="help" type="html">
         <p class="oe_view_nocontent_create">
           Ээлжийн хуваарь
