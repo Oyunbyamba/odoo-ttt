@@ -3010,8 +3010,8 @@ msgstr ""
 #, python-format
 msgid "You can not have 2 leaves that overlaps on the same day."
 msgstr ""
-"Та хугацаагаар давхардаж (огтолцож) буй хоёр чөлөөний хүсэлттэй байх "
-"боломжтой."
+"Та хоёр чөлөөний хүсэлт хугацаагаар давхардуулж (огтолцож)"
+"болохгүй."
 
 #. module: hr_holidays
 #: code:addons/hr_holidays/models/hr_leave.py:0

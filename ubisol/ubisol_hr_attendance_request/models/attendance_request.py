@@ -187,7 +187,7 @@ class AttendanceRequest(models.Model):
             expression.OR(domains)
         ])
         if self.search_count(domain):
-            raise ValidationError(_('1 ажилтанд ижил хугацааны завсар давхар илүү цагийн хүсэлт бүртгэх боломжгүй.'))    
+            raise ValidationError(_('Ажилтанд ижил хугацааны завсар хүсэлт давхардуулан бүртгэх боломжгүй.'))    
 
     def _check_approval_update(self, state):
         if self.env.is_superuser():
@@ -405,6 +405,19 @@ class AttendanceRequest(models.Model):
         self.write({'state': 'validate'})
         self.filtered(lambda attendance: attendance.validation_type == 'both').write({'second_approver_id': current_employee.id})
         self.filtered(lambda attendance: attendance.validation_type != 'both').write({'first_approver_id': current_employee.id})
+
+        if self.request_type == 'department':
+            employees = self.department_id.member_ids
+
+            conflicting_requests = self.env['hr.attendance.request'].search([
+                ('start_datetime', '<=', self.start_datetime),
+                ('end_datetime', '>', self.end_datetime),
+                ('state', 'not in', ['cancel', 'refuse']),
+                ('request_type', '=', 'employee'),
+                ('employee_id', 'in', employees.ids)])
+
+            if conflicting_requests:
+                raise ValidationError(_('You can not have 2 leaves that overlaps on the same day.'))    
 
         if(self.request_status_type == 'attendance'):
             self.calc_attendance()
