@@ -132,9 +132,16 @@
         <field name="name">hr.employee.schedule</field>
         <field name="model">hr.employee.schedule</field>
         <field name="arch" type="xml">
-            <calendar string="Employee Schedule Calendar" date_start="start_work" date_stop="end_work" color="day_period" mode="month" quick_add="False">
-                <field name="hr_department"/>
-                <field name="day_period"/>
+            <calendar 
+              string="Employee Schedule Calendar" 
+              date_start="start_work" 
+              event_open_popup="true" 
+              date_stop="end_work" 
+              color="hr_department" 
+              mode="month" 
+              quick_add="True"
+            >
+              <field name="hr_department"/>
             </calendar>
         </field>
     </record>
@@ -151,17 +158,15 @@
           event_open_popup="true"
           zoomKey="ctrlKey"
           colors="#f2d096: day_period_int==1; #49beb7: day_period_int==2; #ed8975: day_period_int==3; #2F4858: day_period_int==4; #57423F: day_period_int==5;"
-          creatable="false"
-          updatable="false"
-          draggable="false"
-          removable="false"
+          creatable="true"
+          updatable="true"
+          draggable="true"
+          removable="true"
         >
           <field name="day_period" />
           <templates>
             <t t-name="timeline-item">
               <div class="o_project_timeline_item">
-                <!-- <t t-esc="record.hr_department[1]" />
-                <br/> -->
                 <span name="display_name">
                   <t t-esc="record.day_period[1]" />
                 </span>
