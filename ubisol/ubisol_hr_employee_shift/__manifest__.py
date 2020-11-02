@@ -30,6 +30,10 @@
         'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
+        'wizards/create_datetime_filter.xml',
+    ],
+    'qweb': [
+        "static/src/xml/datetime_filter.xml",
     ],
     # only loaded in demonstration mode
     'demo': [
