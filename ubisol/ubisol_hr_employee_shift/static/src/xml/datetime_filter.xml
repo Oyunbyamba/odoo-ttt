@@ -1,23 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
   <template xml:space="preserve">
-    <t t-extend="ListView.buttons">
+    <!-- <t t-extend="ListView.buttons">
         <t t-jquery="button.o_list_export_xlsx" t-operation="after">
         <div style="margin-top: 5px;">
-            <div class="o_datepicker o_field_date o_field_widget" aria-atomic="true" id="date1" data-target-input="nearest" name="date1">
-                <input type="date" id="date1" name="date1" autocomplete="off" placeholder="" class="o_datepicker_input o_input datetimepicker-input"/>
-            </div>
-            <div class="o_datepicker o_field_date o_field_widget" aria-atomic="true" id="date2" data-target-input="nearest" name="date2">
-                <input type="date" id="date2" name="date2" autocomplete="off" placeholder="" class="o_datepicker_input o_input datetimepicker-input"/>
-            </div>
+            <input type="date" id="date1" name="date1" data-date="" data-date-format="yyyy-MM-DD"/>
+            <input type="date" id="date2" name="date2" data-date="" data-date-format="yyyy-MM-DD"/>
             <div class="o_datepicker o_field_date o_field_widget" aria-atomic="true" id="date2" data-target-input="nearest" name="date2">
                 <select id="departments" name="departments" class="o_input o_field_widget">
+                    <option value="false"></option>
                 </select>
             </div>
             <div class="o_datepicker o_field_date o_field_widget" aria-atomic="true" id="date2" data-target-input="nearest" name="date2">
                 <button t-if='widget' type="button" class="btn btn-primary o_button_calculate_date">Тооцоолох</button>
             </div>
-            <!-- <button t-if='widget' type="button" class="btn btn-primary o_button_to_call_wizard">Хугацааны интервал</button> -->
         </div>
         </t>
-    </t>
+    </t> -->
   </template>
