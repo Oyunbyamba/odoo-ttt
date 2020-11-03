@@ -19,6 +19,7 @@ This application controls the overtime schedule of your company. It allows emplo
 
         'views/attendance_request_views.xml',
         'views/hr_views.xml',
+        'data/mail_data.xml',
     ],
     'qweb': [
         'static/src/xml/*.xml',
