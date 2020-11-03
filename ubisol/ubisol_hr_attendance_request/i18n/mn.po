@@ -1,13 +1,13 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* ubisol_hr_holidays
+# 	* ubisol_hr_attendance_request
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-30 02:22+0000\n"
-"PO-Revision-Date: 2020-10-30 02:22+0000\n"
+"POT-Creation-Date: 2020-11-03 07:51+0000\n"
+"PO-Revision-Date: 2020-11-03 07:51+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -15,232 +15,760 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid "\"Таван толгой түлш\" ХХК-ийн"
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields.selection,name:ubisol_hr_attendance_request.selection__hr_attendance_request__state__validate1
+msgid "2 дахь Зөвшөөрөл"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model:ir.actions.report,print_report_name:ubisol_hr_holidays.leave_definition_report_pdf
-msgid "'Leave definition'"
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__second_approver_id
+msgid "2 дахь зөвшөөрөл"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid "-ны өдрөөс"
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.view_employee_filter
+msgid "2 дахь зөвшөөрөл хэрэгтэй"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid "-ны өдөр хүртэл"
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields.selection,name:ubisol_hr_attendance_request.selection__hr_attendance_request__validation_type__both
+msgid "2 шатлалт"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid "/үдээс хойш/"
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_kanban
+msgid "<br/><span class=\"text-muted\">хүртэл </span>"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid "/үдээс өмнө/"
-msgstr ""
-
-#. module: ubisol_hr_holidays
-#: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave_type__one_step_days
-msgid "1 шатлалт чөлөөнд тооцох хоног"
-msgstr ""
-
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_form
 msgid ""
-"<br/>\n"
-"                            нь\n"
-"                            <br/>"
+"<span class=\"oe_inline\" attrs=\"{'invisible': [('request_status_type', "
+"'in', 'attendance')]}\"> хүртэл </span>"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid ""
-"<br/>\n"
-"                            шалтгааны улмаас"
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_kanban
+msgid "<span class=\"text-muted\">хэзээ </span>"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid "<span>АЛБА ХЭЛТСИЙН ДАРГА НАР</span>"
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__message_needaction
+msgid "Action Needed"
+msgstr "Үйлдэл хэрэгтэй"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__activity_ids
+msgid "Activities"
+msgstr "Ажилбарууд"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Ажилбарын тайлбар"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__activity_state
+msgid "Activity State"
+msgstr "Ажилбарын төлөв"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__message_attachment_count
+msgid "Attachment Count"
+msgstr "Хавсралтын тоо"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model,name:ubisol_hr_attendance_request.model_hr_attendance
+msgid "Attendance"
+msgstr "Ирц"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__can_approve
+msgid "Can Approve"
+msgstr "Зөвшөөрч чадна"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__can_reset
+msgid "Can reset"
+msgstr "Сэргээх"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__create_uid
+msgid "Created by"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model:ir.model.fields,field_description:ubisol_hr_holidays.field_report_ubisol_hr_holidays_leave_report__display_name
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__display_name
 msgid "Display Name"
 msgstr "Дэлгэрэнгүй нэр"
 
-#. module: ubisol_hr_holidays
-#: model:ir.model,name:ubisol_hr_holidays.model_report_ubisol_hr_holidays_leave_report
-msgid "Employee Anket Report"
-msgstr "Ажилтаны анкет"
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_kanban
+msgid "Dropdown menu"
+msgstr "Эвхэгддэг цэс"
 
-#. module: ubisol_hr_holidays
-#: model:res.groups,name:ubisol_hr_holidays.hide
-msgid "Hide"
-msgstr ""
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__number_of_days
+msgid "Duration (Days)"
+msgstr "Хугацаа (хоногоор)"
 
-#. module: ubisol_hr_holidays
-#: model:res.groups,comment:ubisol_hr_holidays.hide
-msgid "Hide."
-msgstr ""
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__number_of_hours_display
+msgid "Duration in hours"
+msgstr "Хугацаа (хоногоор)"
 
-#. module: ubisol_hr_holidays
-#: model:ir.model.fields,field_description:ubisol_hr_holidays.field_report_ubisol_hr_holidays_leave_report__id
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.view_employee_filter
+msgid "Employees"
+msgstr "Ажилчид"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__message_follower_ids
+msgid "Followers"
+msgstr "Дагагчид"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__message_channel_ids
+msgid "Followers (Channels)"
+msgstr "Дагагчид (Сувагууд)"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Дагагчид (Харилцагчид)"
+
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.view_employee_filter
+msgid "Group By"
+msgstr "Бүлэглэлт"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__id
 msgid "ID"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model:ir.model.fields,field_description:ubisol_hr_holidays.field_report_ubisol_hr_holidays_leave_report____last_update
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__activity_exception_icon
+msgid "Icon"
+msgstr "Дүрс"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,help:ubisol_hr_attendance_request.field_hr_attendance_request__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Ажилбар дээр сануулга гарсныг илэрхийлэх зураг."
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,help:ubisol_hr_attendance_request.field_hr_attendance_request__message_needaction
+#: model:ir.model.fields,help:ubisol_hr_attendance_request.field_hr_attendance_request__message_unread
+msgid "If checked, new messages require your attention."
+msgstr "Хэрэв сонгогдсон бол, шинэ зурвасууд таны анхаарлыг шаардана."
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,help:ubisol_hr_attendance_request.field_hr_attendance_request__message_has_error
+#: model:ir.model.fields,help:ubisol_hr_attendance_request.field_hr_attendance_request__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Үүнийг сонговол алдаа үүсэх үед зурвасууд ирнэ."
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__message_is_follower
+msgid "Is Follower"
+msgstr "Дагагч эсэх"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__is_frequency_request
+msgid "Is frequency request"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request____last_update
 msgid "Last Modified on"
-msgstr "Сүүлд зассан огноо"
+msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model:ir.actions.report,name:ubisol_hr_holidays.leave_definition_report_pdf
-msgid "Leave Definition"
-msgstr "Чөлөөний тодорхойлолт"
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__write_uid
+msgid "Last Updated by"
+msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model:ir.model,name:ubisol_hr_holidays.model_hr_leave_type
-msgid "Leave type"
-msgstr "Чөлөөний төрөл"
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__write_date
+msgid "Last Updated on"
+msgstr ""
 
-#. module: ubisol_hr_holidays
-#: code:addons/ubisol_hr_holidays/models/hr_leave_request.py:0
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "Үндсэн хавсралт"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__message_has_error
+msgid "Message Delivery error"
+msgstr "Алдаа үүссэн талаарх зурвас"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__message_ids
+msgid "Messages"
+msgstr "Зурвасууд"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__name
+msgid "Name"
+msgstr "Нэр"
+
+#. module: ubisol_hr_attendance_request
+#: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
 #, python-format
-msgid "Leaves"
-msgstr "Чөлөө"
+msgid "New %s Request created by %s from %s"
+msgstr "Шинэ %s хүсэлт %s-р %s үүсгэгдсэн"
 
-#. module: ubisol_hr_holidays
-#: model:ir.actions.server,name:ubisol_hr_holidays.hr_leave_action_approve_department2
-#: model:ir.model,name:ubisol_hr_holidays.model_hr_leave
-msgid "Time Off"
-msgstr "Чөлөө"
+#. module: ubisol_hr_attendance_request
+#: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
+#, python-format
+msgid "New %s Request created by %s from %s to %s"
+msgstr "Шинэ %s хүсэлт %s-с %s хооронд %s-р үүсгэгдсэн"
 
-#. module: ubisol_hr_holidays
-#: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave__employee_holiday
-msgid "Ажилласан жил"
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Дараагийн ажилбарын эцсийн огноо"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__activity_summary
+msgid "Next Activity Summary"
+msgstr "Дараагийн ажилбарын гарчиг"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__activity_type_id
+msgid "Next Activity Type"
+msgstr "Дараагийн ажилбарын төрөл"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Үйлдлийн тоо"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__message_has_error_counter
+msgid "Number of errors"
+msgstr "Алдааны тоо"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,help:ubisol_hr_attendance_request.field_hr_attendance_request__number_of_hours_display
+msgid ""
+"Number of hours of the time off request according to your working schedule. "
+"Used for interface."
+msgstr "Таны ажлын цагийн хуваарийн дагуу тооцсон хүсэлтийн хоногийн тоо"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,help:ubisol_hr_attendance_request.field_hr_attendance_request__message_needaction_counter
+msgid "Number of messages which requires an action"
+msgstr "Үйлдэл шаардсан зурвасын тоо"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,help:ubisol_hr_attendance_request.field_hr_attendance_request__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Алдааны мэдэгдэл бүхий зурвасын тоо"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,help:ubisol_hr_attendance_request.field_hr_attendance_request__message_unread_counter
+msgid "Number of unread messages"
+msgstr "Уншаагүй зурвасын тоо"
+
+#. module: ubisol_hr_attendance_request
+#: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
+#, python-format
+msgid "Only a Overtime Manager can approve/refuse its own requests."
+msgstr ""
+"Зөвхөн хүсэлтийн менежер өөрийн хүсэлтээ 'Батлах'/'Татгазах' боломжтой"
+
+#. module: ubisol_hr_attendance_request
+#: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
+#, python-format
+msgid "Only a Overtime Manager can reset a refused overtime."
+msgstr "Зөвхөн хүсэлтийн менежер татгалзсан хүсэлтийг дахин тохируулж чадна"
+
+#. module: ubisol_hr_attendance_request
+#: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
+#, python-format
+msgid "Only a Overtime Manager can reset a started overtime."
+msgstr "Зөвхөн хүсэлтийн менежер эхэлсэн хүсэлтийг дахин тохируулж чадна"
+
+#. module: ubisol_hr_attendance_request
+#: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
+#, python-format
+msgid "Only a Overtime Manager can reset other people overtimes."
+msgstr ""
+"Зөвхөн хүсэлтийн менежер эрхтэй хэрэглэгч л бусад хүмүүсийн хүсэлтийг "
+"сэргээх боломжтой."
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model,name:ubisol_hr_attendance_request.model_hr_attendance_request
+msgid "Overtime request"
+msgstr "Илүү цагийн хүсэлт"
+
+#. module: ubisol_hr_attendance_request
+#: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
+#, python-format
+msgid ""
+"Overtime request must be confirmed (\"To Approve\") in order to approve it."
+msgstr "Хүсэлтийг зөвшөөрөхийн тулд батлагдсан (\"Батлах\") байх ёстой."
+
+#. module: ubisol_hr_attendance_request
+#: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
+#, python-format
+msgid "Overtime request must be confirmed in order to approve it."
+msgstr "Хүсэлтийг батлахын тулд зөвшөөрсөн байх ёстой."
+
+#. module: ubisol_hr_attendance_request
+#: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
+#, python-format
+msgid "Overtime request must be confirmed or validated in order to refuse it."
+msgstr "Хүсэлтээс татгазахын тулд зөвшөөрсөн эсвэл баталсан байх ёстой."
+
+#. module: ubisol_hr_attendance_request
+#: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
+#, python-format
+msgid ""
+"Overtime request must be in Draft state (\"To Submit\") in order to confirm "
+"it."
+msgstr "Хүсэлтийг батлахын (\"Менежерт илгээх\") тулд ноорог төлөвтэй байх ёстой."
+
+#. module: ubisol_hr_attendance_request
+#: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
+#, python-format
+msgid ""
+"Overtime request state must be \"Refused\" or \"To Approve\" in order to be "
+"reset to draft."
+msgstr ""
+"Хүсэлтийг буцаан сэргээхийн тулд \"Татгалзсан\" эсвэл \"Зөвшөөрөл хүлээж "
+"буй\" төлөвтэй байх ёстой."
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__activity_user_id
+msgid "Responsible User"
+msgstr "Хариуцсан менежер"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Алдаа үүссэн талаарх мессеж"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,help:ubisol_hr_attendance_request.field_hr_attendance_request__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Ажилбаруудын төлөв байдал\n"
+"Хоцорсон: Гүйцэтгэх огноо нь аль хэдий нь өнгөрсөн\n"
+"Өнөөдөр: Өнөөдөр гүйцэтгэх ёстой\n"
+"Төлөвлөгдсөн: Ирээдүйд гүйцэтгэх ажилбарууд"
+
+#. module: ubisol_hr_attendance_request
+#: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
+#, python-format
+msgid "Such grouping is not allowed."
+msgstr "Ийм бүлэглэлийг зѳвшѳѳрѳхгүй."
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,help:ubisol_hr_attendance_request.field_hr_attendance_request__state
+msgid ""
+"The status is set to 'To Submit', when a time off request is created.\n"
+"The status is 'To Approve', when time off request is confirmed by user.\n"
+"The status is 'Refused', when time off request is refused by manager.\n"
+"The status is 'Approved', when time off request is approved by manager."
+msgstr ""
+"Хүсэлтийг үүсгэх үед 'Илгээх' төлөвтэй болно.\n"
+"Хүсэлтийг хэрэглэгч батлахад 'Зөвшөөрөл хүлээж буй' төлөвт шилжинэ.\n"
+"Хүсэлтийг удирдлага зөвшөөрөхөөс татгалзахад 'Түтгэлзүүлсэн' төлөвт шилжинэ.\n"
+"Хүсэлтийг удирдлага зөвшөөрөхөд 'Зөвшөөрсөн' төлөвт шилжинэ."
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,help:ubisol_hr_attendance_request.field_hr_attendance_request__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Бичлэг дээрх асуудал бүхий ажилбарын төрөл"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__message_unread
+msgid "Unread Messages"
+msgstr "Уншаагүй зурвас"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__message_unread_counter
+msgid "Unread Messages Counter"
+msgstr "Уншаагүй зурвасын тоолуур"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__user_id
+msgid "User"
+msgstr "Хэрэглэгч"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__website_message_ids
+msgid "Website Messages"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid "Албаны дарга:"
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,help:ubisol_hr_attendance_request.field_hr_attendance_request__website_message_ids
+msgid "Website communication history"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave__years_of_worked_company
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.hr_leave_inherit_form_view
-msgid "Байгууллагад ажилласан жил"
+#. module: ubisol_hr_attendance_request
+#: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
+#, python-format
+msgid "You can not have 2 leaves that overlaps on the same day."
+msgstr "Та хоёр чөлөөний хүсэлт хугацаагаар давхардуулж (огтолцож)болохгүй."
+
+#. module: ubisol_hr_attendance_request
+#: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
+#, python-format
+msgid "You cannot delete a request which is in %s state"
+msgstr "%s төлөвтэй чөлөөг устгах боломжгүй."
+
+#. module: ubisol_hr_attendance_request
+#: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
+#, python-format
+msgid ""
+"You must be either %s's manager or attendance manager to approve this leave"
+msgstr ""
+"Та энэ хүсэлтийг зөвшөөрөхийн тулд %s-ын менежер эсвэл хүсэлтийн менежер "
+"эрхтэй байх ёстой"
+
+#. module: ubisol_hr_attendance_request
+#: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
+#, python-format
+msgid "Your %s planned on %s has been accepted"
+msgstr "Таны товлосон %s %s зөвшөөрөгдлөө"
+
+#. module: ubisol_hr_attendance_request
+#: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
+#, python-format
+msgid "Your %s planned on %s has been refused"
+msgstr "Таны товлосон %s %s татгалзагдлаа"
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__employee_id
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_form
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.view_employee_filter
+msgid "Ажилтан"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid "Гүйцэтгэх захирал:"
+#. module: ubisol_hr_attendance_request
+#: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
+#, python-format
+msgid "Ажилтанд ижил хугацааны завсар хүсэлт давхардуулан бүртгэх боломжгүй."
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave__company_holiday_days
-msgid "Суурь амралтын хоног"
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__category_id
+msgid "Ажилтаны пайз"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave__years_of_worked_state
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.hr_leave_inherit_form_view
-msgid "Улсад ажилласан жил"
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields.selection,name:ubisol_hr_attendance_request.selection__hr_attendance_request__request_type__employee
+msgid "Ажилтнаар"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model:ir.ui.menu,name:ubisol_hr_holidays.menu_hr_requests_root
-msgid "Хүсэлтүүд"
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields.selection,name:ubisol_hr_attendance_request.selection__hr_attendance_request__validation_type__manager
+msgid "Ахлах"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.hr_leave_type_inherit_form_view
-msgid "Цалингүй"
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.view_employee_filter
+msgid "Баталсан"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid "Чөлөөний хуудас"
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_form
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_kanban
+msgid "Батлах"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid "Чөлөөний хуудас нь холбогдох баримтын хамт хүчин төгөлдөр болно."
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields.selection,name:ubisol_hr_attendance_request.selection__hr_attendance_request__state__confirm
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_form
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.view_employee_filter
+msgid "Батлах ёстой"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave_type__vacation
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.hr_leave_type_inherit_form_view
-msgid "Ээлжийн амралт"
+#. module: ubisol_hr_attendance_request
+#: model:ir.ui.menu,name:ubisol_hr_attendance_request.menu_hr_attendance_request_to_approve
+msgid "Батлах ёстой илүү цаг"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave__warning_of_vacation
-msgid "Ээлжийн амралт боломжтой эсэх"
+#. module: ubisol_hr_attendance_request
+#: model:ir.ui.menu,name:ubisol_hr_attendance_request.menu_hr_attendance_request_all
+msgid "Бүх илүү цаг"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave__vacation_type
-msgid "Ээлжийн амралт эсэх"
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields.selection,name:ubisol_hr_attendance_request.selection__hr_attendance_request__request_status_type__outside_work
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.view_employee_filter
+msgid "Гадуур ажил"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.hr_leave_inherit_form_view
-msgid "Ээлжийн амралтын хоног"
+#. module: ubisol_hr_attendance_request
+#: model:mail.message.subtype,description:ubisol_hr_attendance_request.mt_attendance_outside_work
+#: model:mail.message.subtype,name:ubisol_hr_attendance_request.mt_attendance_outside_work
+msgid "Гадуур ажлын хүсэлт"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid "алба, хэлтэс"
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_form
+msgid "Гарчиг"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid "албан тушаалтай"
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_form
+msgid "Горим"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid "дугаар сарын"
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__end_datetime
+msgid "Дуусах хугацаа"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid "овогтой"
+#. module: ubisol_hr_attendance_request
+#: code:addons/ubisol_hr_attendance_request/models/attendance_request.py:0
+#, python-format
+msgid "Дуусах хугацаа эхлэх хугацаанаас бага байж болохгүй."
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid "оны"
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__validation_type
+msgid "Зөвшөөрлийн төрөл"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid "хагас өдрийн"
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields.selection,name:ubisol_hr_attendance_request.selection__hr_attendance_request__state__validate
+msgid "Зөвшөөрсөн"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid "цагийн"
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_form
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_kanban
+msgid "Зөвшөөрөх"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid "цалингүй олгов."
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields.selection,name:ubisol_hr_attendance_request.selection__hr_attendance_request__state__draft
+msgid "Илгээх"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid "цалинтай олгов."
+#. module: ubisol_hr_attendance_request
+#: model:ir.actions.act_window,name:ubisol_hr_attendance_request.hr_attendance_request_action_all
+#: model:ir.actions.act_window,name:ubisol_hr_attendance_request.hr_attendance_request_action_approve
+#: model:ir.actions.act_window,name:ubisol_hr_attendance_request.hr_attendance_request_action_my
+#: model:ir.model.fields.selection,name:ubisol_hr_attendance_request.selection__hr_attendance_request__request_status_type__overtime
+#: model:ir.ui.menu,name:ubisol_hr_attendance_request.menu_hr_attendance_request_root
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_form
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_tree
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.view_employee_filter
+msgid "Илүү цаг"
 msgstr ""
 
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid "өдрийн"
+#. module: ubisol_hr_attendance_request
+#: model:mail.message.subtype,description:ubisol_hr_attendance_request.mt_attendance_overtime
+#: model:mail.message.subtype,name:ubisol_hr_attendance_request.mt_attendance_overtime
+msgid "Илүү цагийн хүсэлт"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields.selection,name:ubisol_hr_attendance_request.selection__hr_attendance_request__attendance_in_out__check_in
+msgid "Ирсэн"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__attendance_in_out
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_form
+msgid "Ирсэн/явсан"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields.selection,name:ubisol_hr_attendance_request.selection__hr_attendance_request__request_status_type__attendance
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.view_employee_filter
+#: model:mail.message.subtype,description:ubisol_hr_attendance_request.mt_attendance_request
+#: model:mail.message.subtype,name:ubisol_hr_attendance_request.mt_attendance_request
+msgid "Ирцийн хүсэлт"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.actions.act_window,help:ubisol_hr_attendance_request.hr_attendance_request_action_all
+#: model_terms:ir.actions.act_window,help:ubisol_hr_attendance_request.hr_attendance_request_action_approve
+#: model_terms:ir.actions.act_window,help:ubisol_hr_attendance_request.hr_attendance_request_action_my
+msgid "Ирцийн хүсэлт шинээр үүсгэх"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__mode_company_id
+msgid "Компани"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.view_employee_filter
+msgid "Манай хэлтэсийн хүсэлт"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.ui.menu,name:ubisol_hr_attendance_request.menu_hr_attendance_request_approvals
+msgid "Менежерүүд"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.ui.menu,name:ubisol_hr_attendance_request.menu_hr_attendance_request_my
+msgid "Миний илүү цагийн хүсэлт"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.view_employee_filter
+msgid "Миний удирддаг хүмүүс"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.view_employee_filter
+msgid "Миний хүсэлтүүд"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_form
+msgid "Ноорог болгох"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_tree
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.view_employee_filter
+msgid "Нэр"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__attendance_date
+msgid "Нөхөх цаг"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_form
+msgid "Тайлбар"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_form
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_kanban
+msgid "Татгалзах"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields.selection,name:ubisol_hr_attendance_request.selection__hr_attendance_request__state__refuse
+msgid "Татгалзсан"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__description
+msgid "Тодорхойлолт"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__state
+msgid "Төлөв"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_kanban
+msgid "Устгах"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_form
+msgid "Хаанаас"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_form
+msgid "Хэзээ"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__department_id
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_form
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.view_employee_filter
+msgid "Хэлтэс"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields.selection,name:ubisol_hr_attendance_request.selection__hr_attendance_request__request_type__department
+msgid "Хэлтэсээр"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_kanban
+msgid "Хүсэлт засах"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__request_type
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.view_employee_filter
+msgid "Хүсэлтийн горим"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:mail.activity.type,name:ubisol_hr_attendance_request.mail_act_attendance_approval
+msgid "Хүсэлтийн зөвшөөрөл"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__request_status_type
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_form
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.view_employee_filter
+msgid "Хүсэлтийн төрөл"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:mail.activity.type,name:ubisol_hr_attendance_request.mail_act_attendance_second_approval
+msgid "Хүсэлтийн хоёрдох зөвшөөрөл"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields.selection,name:ubisol_hr_attendance_request.selection__hr_attendance_request__state__cancel
+msgid "Цуцлагдсан"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__notes
+msgid "Шалтгаан"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_form
+msgid "Шатлал"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.view_employee_filter
+msgid "Эхлэх огноо"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__start_datetime
+msgid "Эхлэх хугацаа"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields,field_description:ubisol_hr_attendance_request.field_hr_attendance_request__first_approver_id
+msgid "Эхний зөвшөөрөл"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model:ir.model.fields.selection,name:ubisol_hr_attendance_request.selection__hr_attendance_request__attendance_in_out__check_out
+msgid "Явсан"
+msgstr ""
+
+#. module: ubisol_hr_attendance_request
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_attendance_request.hr_attendance_request_view_form
+msgid "Өдрөөр үүсгэх эсэх"
 msgstr ""

@@ -248,7 +248,7 @@ class AttendanceRequest(models.Model):
                 if state == 'draft':
                     if attendance.state == 'refuse':
                         raise UserError(_('Only a Overtime Manager can reset a refused overtime.'))
-                    if attendance.start_datetime and attendance.end_datetime.date() <= fields.Date.today():
+                    if attendance.request_status_type != 'attendance' and attendance.start_datetime and attendance.end_datetime.date() <= fields.Date.today():
                         raise UserError(_('Only a Overtime Manager can reset a started overtime.'))
                     if attendance.employee_id.id != current_employee:
                         raise UserError(_('Only a Overtime Manager can reset other people overtimes.'))
@@ -261,6 +261,20 @@ class AttendanceRequest(models.Model):
                     if (state == 'validate1' and val_type == 'both') or (state == 'validate' and val_type == 'manager') and attendance.request_type == 'employee':
                         if not is_officer and current_employee != attendance.employee_id.parent_id.id:
                             raise UserError(_('You must be either %s\'s manager or attendance manager to approve this leave') % (attendance.employee_id.name))         
+
+    def _check_double_validation_rules(self, employees, state):
+        if self.user_has_groups('hr_holidays.group_hr_holidays_manager'):
+            return
+
+        is_leave_user = self.user_has_groups('hr_holidays.group_hr_holidays_user')
+        if state == 'validate1':
+            employees = employees.filtered(lambda employee: employee.parent_id.user_id != self.env.user)
+            if employees and not is_leave_user:
+                raise AccessError(_('You cannot first approve a leave for %s, because you are not his leave manager' % (employees[0].name,)))
+        elif state == 'validate' and not is_leave_user:
+            # Is probably handled via ir.rule
+            raise AccessError(_('You don\'t have the rights to apply second approval on a leave request'))                        
+
 
     def add_follower(self, employee_id):
         employee = self.env['hr.employee'].browse(employee_id)
@@ -277,12 +291,51 @@ class AttendanceRequest(models.Model):
 
         attendance_sudo = attendance.sudo()
         attendance_sudo.add_follower(attendance.employee_id.id)
-        # if attendance.validation_type == 'manager':
         attendance_sudo.message_subscribe(partner_ids=attendance.employee_id.parent_id.user_id.partner_id.ids)
-        # elif not self._context.get('import_file'):
         attendance_sudo.activity_update()      
 
         return attendance
+
+    def write(self, values):
+        is_officer = self.env.user.has_group('hr_holidays.group_hr_holidays_user')
+
+        if not is_officer:
+            if any(att.start_datetime.date() < fields.Date.today() for att in self):
+                raise UserError(_('You must have manager rights to modify/validate a time off that already begun'))
+
+        employee_id = values.get('employee_id', False)
+        print("write values get employee_id")
+        # if not self.env.context.get('leave_fast_create'):
+        if values.get('state'):
+            self._check_approval_update(values['state'])
+            if any(attendance.validation_type == 'both' for attendance in self):
+                if values.get('employee_id'):
+                    employees = self.env['hr.employee'].browse(values.get('employee_id'))
+                else:
+                    employees = self.mapped('employee_id')
+                self._check_double_validation_rules(employees, values['state'])
+        
+        result = super(AttendanceRequest, self).write(values)
+        # if not self.env.context.get('leave_fast_create'):
+        for attendance in self:
+            if employee_id:
+                attendance.add_follower(employee_id)
+            
+        return result
+    
+
+    def unlink(self):
+        for attendance in self:
+            error_message = _('You cannot delete a request which is in %s state')
+            state_description_values = {elem[0]: elem[1] for elem in attendance._fields['state']._description_selection(attendance.env)}
+
+            if not attendance.user_has_groups('hr_holidays.group_hr_holidays_user'):
+                if any(attendance.state != 'draft'):
+                    raise UserError(error_message % state_description_values.get(attendance[:1].state))
+            else:
+                for att in attendance.filtered(lambda att: att.state not in ['draft', 'cancel', 'confirm']):
+                    raise UserError(error_message % (state_description_values.get(att.state),))
+        return super(AttendanceRequest, attendance).unlink()
 
     def create_overtime(self, attendance, s_date, start_time, end_time, employee, req_type):
         attendance_values = []
@@ -347,32 +400,6 @@ class AttendanceRequest(models.Model):
 
             count = count+1     
 
-    # def write(self, vals):
-    #     attendance = super(AttendanceRequest, self).write(vals)
-    #     attendance_values = []
-    #     for attendance_req in self:
-    #         if(attendance_req.request_type == 'department'):
-    #             department_employees = attendance_req.env['hr.employee'].search([
-    #                 ('department_id', '=', attendance_req.department_id.id)
-    #             ])
-    #             if len(department_employees) > 0:
-    #                 for department_employee in department_employees:
-    #                     attendance_values.append({
-    #                         'name': attendance_req.name,
-    #                         'employee_id': department_employee.id,
-    #                         'notes': attendance_req.notes,
-    #                         'description': attendance_req.description,
-    #                         'start_datetime': attendance_req.start_datetime,
-    #                         'end_datetime': attendance_req.end_datetime,
-    #                         'department_id': attendance_req.department_id.id,
-    #                         'state': attendance_req.state,
-    #                         'request_status_type': attendance_req.request_status_type,
-    #                         'validation_type': attendance_req.validation_type
-    #                     })
-    #                     hr_att_req = department_employees.env['hr.attendance.request'].create(attendance_values)
-    #                     hr_att_req.write({'request_type': 'employee'})
-    #     return attendance
-
     def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
         if not self.user_has_groups('hr_holidays.group_hr_holidays_user') and 'name' in groupby:
             raise UserError(_('Such grouping is not allowed.'))
@@ -387,6 +414,12 @@ class AttendanceRequest(models.Model):
             'second_approver_id': False,
         })
 
+        linked_requests = self.mapped('linked_request_ids')
+        if linked_requests:
+            linked_requests.action_draft()
+            linked_requests.unlink()
+        self.activity_update()
+
         return True
 
     def action_confirm(self):
@@ -394,44 +427,56 @@ class AttendanceRequest(models.Model):
             raise UserError(_('Overtime request must be in Draft state ("To Submit") in order to confirm it.'))
         self.write({'state': 'confirm'})
 
+        self.activity_update()
         return True
 
     def action_approve(self):
-        if any(attendance.state != 'confirm' for attendance in self):
-            raise UserError(_('Overtime request must be confirmed ("To Approve") in order to approve it.'))
+        for attendance in self:
+            if(attendance.state != 'confirm'):
+                raise UserError(_('Overtime request must be confirmed ("To Approve") in order to approve it.'))
+            
+            if(attendance.request_status_type == 'overtime'):  
+                if attendance.department_id.id:
+                    conflicting_requests = attendance.env['hr.attendance.request'].search([
+                        ('start_datetime', '<=', attendance.end_datetime),
+                        ('end_datetime', '>', attendance.start_datetime),
+                        ('state', 'not in', ['cancel', 'refuse']),
+                        ('request_status_type', '=', 'overtime'),
+                        ('employee_id', '=', attendance.employee_id.id),
+                        ('id', '!=', attendance.id)
+                        ])
+                    if conflicting_requests:
+                        raise ValidationError(_('You can not have 2 leaves that overlaps on the same day.'))
 
-        for attendance in self.filtered(lambda attendance: attendance.request_status_type == 'overtime'):  
-            if attendance.department_id.id:
-                conflicting_requests = attendance.env['hr.attendance.request'].search([
-                    ('start_datetime', '<=', attendance.end_datetime),
-                    ('end_datetime', '>', attendance.start_datetime),
-                    ('state', 'not in', ['cancel', 'refuse']),
-                    ('request_status_type', '=', 'overtime'),
-                    ('employee_id', '=', attendance.employee_id.id),
-                    ('id', '!=', attendance.id)
-                    ])
-                if conflicting_requests:
-                    raise ValidationError(_('You can not have 2 leaves that overlaps on the same day.'))
+            current_employee = attendance.env.user.employee_id
+            attendance.filtered(lambda att: att.validation_type == 'both').write({'state': 'validate1', 'first_approver_id': current_employee.id})        
+  
+            if(attendance.employee_id.user_id):
+                attendance.message_post(
+                    body=_('Your %s planned on %s has been accepted' % (attendance.name, attendance.start_datetime)),
+                    partner_ids=attendance.employee_id.user_id.partner_id.ids)
 
-        current_employee = self.env.user.employee_id
-        self.filtered(lambda att: att.validation_type == 'both').write({'state': 'validate1', 'first_approver_id': current_employee.id})
-        self.filtered(lambda att: not att.validation_type == 'both').action_validate() 
+                attendance.filtered(lambda att: not att.validation_type == 'both').action_validate() 
+                attendance.activity_update()
 
-        if(self.request_status_type == 'attendance'):
-            self.calc_attendance()
+                if(attendance.request_status_type == 'attendance'):
+                    attendance.calc_attendance()
 
         return True    
 
     def action_validate(self):
-        current_employee = self.env.user.employee_id
-        if any(attendance.state not in ['confirm', 'validate1'] for attendance in self):
-            raise UserError(_('Overtime request must be confirmed in order to approve it.'))
+        for attendance in self:
+            current_employee = attendance.env.user.employee_id
+            if (attendance.state not in ['confirm', 'validate1']):
+                raise UserError(_('Overtime request must be confirmed in order to approve it.'))
 
-        self.write({'state': 'validate'})
-        self.filtered(lambda attendance: attendance.validation_type == 'both').write({'second_approver_id': current_employee.id})
-        self.filtered(lambda attendance: attendance.validation_type != 'both').write({'first_approver_id': current_employee.id})   
-        if(self.request_status_type == 'attendance'):
-            self.calc_attendance()
+            attendance.write({'state': 'validate'})
+            attendance.filtered(lambda att: att.validation_type == 'both').write({'second_approver_id': current_employee.id})
+            attendance.filtered(lambda att: att.validation_type != 'both').write({'first_approver_id': current_employee.id})  
+            attendance.activity_update()
+
+            if(attendance.request_status_type == 'attendance'):
+                attendance.calc_attendance()
 
         return True   
 
@@ -480,6 +525,21 @@ class AttendanceRequest(models.Model):
         validated_attendances.write({'state': 'refuse', 'first_approver_id': current_employee.id})
         (self - validated_attendances).write({'state': 'refuse', 'second_approver_id': current_employee.id})
 
+        # Delete the meeting
+        self.mapped('meeting_id').unlink()
+        # If a category that created several holidays, cancel all related
+        linked_requests = self.mapped('linked_request_ids')
+        if linked_requests:
+            linked_requests.action_refuse()
+
+        # Post a second message, more verbose than the tracking message
+        for attendance in self:
+            if attendance.employee_id.user_id:
+                attendance.message_post(
+                    body=_('Your %s planned on %s has been refused') % (attendance.name, attendance.start_datetime),
+                    partner_ids=attendance.employee_id.user_id.partner_id.ids)
+
+        self.activity_update()
         return True    
 
     # ------------------------------------------------------------
@@ -490,35 +550,29 @@ class AttendanceRequest(models.Model):
         self.ensure_one()
         responsible = self.env['res.users'].browse(SUPERUSER_ID)
 
-        # if self.validation_type == 'manager' or (self.validation_type == 'both' and self.state == 'confirm'):
-        #     if self.employee_id.leave_manager_id:
-        #         responsible = self.employee_id.leave_manager_id
-        #     elif self.employee_id.parent_id.user_id:
-        #         responsible = self.employee_id.parent_id.user_id
-        # elif self.validation_type == 'hr' or (self.validation_type == 'both' and self.state == 'validate1'):
-        #     if self.holiday_status_id.responsible_id:
-        #         responsible = self.holiday_status_id.responsible_id
-
         if self.employee_id.parent_id.user_id:
             responsible = self.employee_id.parent_id.user_id
 
         return responsible
 
     def activity_update(self):
-        to_clean, to_do = self.env['hr.leave'], self.env['hr.leave']
+        to_clean, to_do = self.env['hr.attendance.request'], self.env['hr.attendance.request']
         for attendance in self:
-            note = _('New %s Request created by %s from %s to %s') % (attendance.name, attendance.create_uid.name, fields.Datetime.to_string(attendance.start_datetime), fields.Datetime.to_string(attendance.end_datetime))
+            if(attendance.request_status_type != 'attendance'):
+                note = _('New %s Request created by %s from %s to %s') % (attendance.name, attendance.create_uid.name, fields.Datetime.to_string(attendance.start_datetime), fields.Datetime.to_string(attendance.end_datetime))
+            else:
+                note = _('New %s Request created by %s from %s') % (attendance.name, attendance.create_uid.name, fields.Datetime.to_string(attendance.start_datetime))
             if attendance.state == 'draft':
                 to_clean |= attendance
             elif attendance.state == 'confirm':
                 attendance.activity_schedule(
-                    'hr_holidays.mail_act_leave_approval',
+                    'ubisol_hr_attendance_request.mail_act_attendance_approval',
                     note=note,
                     user_id=attendance.sudo()._get_responsible_for_approval().id or self.env.user.id)
             elif attendance.state == 'validate1':
-                attendance.activity_feedback(['hr_holidays.mail_act_leave_approval'])
+                attendance.activity_feedback(['ubisol_hr_attendance_request.mail_act_attendance_approval'])
                 attendance.activity_schedule(
-                    'hr_holidays.mail_act_leave_second_approval',
+                    'ubisol_hr_attendance_request.mail_act_attendance_second_approval',
                     note=note,
                     user_id=attendance.sudo()._get_responsible_for_approval().id or self.env.user.id)
             elif attendance.state == 'validate':
@@ -526,20 +580,21 @@ class AttendanceRequest(models.Model):
             elif attendance.state == 'refuse':
                 to_clean |= attendance
         if to_clean:
-            to_clean.activity_unlink(['hr_holidays.mail_act_leave_approval', 'hr_holidays.mail_act_leave_second_approval'])
+            to_clean.activity_unlink(['ubisol_hr_attendance_request.mail_act_attendance_approval', 'ubisol_hr_attendance_request.mail_act_attendance_second_approval'])
         if to_do:
-            to_do.activity_feedback(['hr_holidays.mail_act_leave_approval', 'hr_holidays.mail_act_leave_second_approval'])
+            to_do.activity_feedback(['ubisol_hr_attendance_request.mail_act_attendance_approval', 'ubisol_hr_attendance_request.mail_act_attendance_second_approval'])
 
 
     ####################################################
     # Messaging methods
     #################################################### 
 
-    # def _track_subtype(self, init_values):
-    #     if 'state' in init_values and self.state == 'validate':
-    #         leave_notif_subtype = self.holiday_status_id.leave_notif_subtype_id
-    #         return leave_notif_subtype or self.env.ref('hr_holidays.mt_leave')
-    #     return super(HolidaysRequest, self)._track_subtype(init_values)           
+    def _track_subtype(self, init_values):
+        if 'state' in init_values and self.state == 'validate':
+            # leave_notif_subtype = self.holiday_status_id.leave_notif_subtype_id
+            # return leave_notif_subtype or self.env.ref('ubisol_hr_attendance_request.mt_leave')
+            self.env.ref('ubisol_hr_attendance_request.mt_attendance_overtime')
+        return super(AttendanceRequest, self)._track_subtype(init_values)           
 
     def message_subscribe(self, partner_ids=None, channel_ids=None, subtype_ids=None):
         # due to record rule can not allow to add follower and mention on validated leave so subscribe through sudo

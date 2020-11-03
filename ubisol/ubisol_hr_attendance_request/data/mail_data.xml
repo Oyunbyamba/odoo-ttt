@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Leave specific activities -->
+        <record id="mail_act_attendance_approval" model="mail.activity.type">
+            <field name="name">Хүсэлтийн зөвшөөрөл</field>
+            <field name="icon">fa-sun-o</field>
+            <field name="res_model_id" ref="ubisol_hr_attendance_request.model_hr_attendance_request"/>
+        </record>
+        <record id="mail_act_attendance_second_approval" model="mail.activity.type">
+            <field name="name">Хүсэлтийн хоёрдох зөвшөөрөл</field>
+            <field name="icon">fa-sun-o</field>
+            <field name="res_model_id" ref="ubisol_hr_attendance_request.model_hr_attendance_request"/>
+        </record>
+
+        <!-- Holidays-related subtypes for messaging / Chatter -->
+        <record id="mt_attendance_overtime" model="mail.message.subtype">
+            <field name="name">Илүү цагийн хүсэлт</field>
+            <field name="res_model">hr.attendance.request</field>
+            <field name="description">Илүү цагийн хүсэлт</field>
+        </record>
+        <record id="mt_attendance_request" model="mail.message.subtype">
+            <field name="name">Ирцийн хүсэлт</field>
+            <field name="res_model">hr.attendance.request</field>
+            <field name="description">Ирцийн хүсэлт</field>
+        </record>
+        <record id="mt_attendance_outside_work" model="mail.message.subtype">
+            <field name="name">Гадуур ажлын хүсэлт</field>
+            <field name="res_model">hr.attendance.request</field>
+            <field name="description">Гадуур ажлын хүсэлт</field>
+        </record>
+
+    </data>
+</odoo>

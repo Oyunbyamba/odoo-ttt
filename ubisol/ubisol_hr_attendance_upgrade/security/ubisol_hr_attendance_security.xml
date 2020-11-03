@@ -1,5 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <record model="ir.module.category" id="base.module_category_human_resources_attendances">
+        <field name="description">Helps you manage the attendances.</field>
+        <field name="sequence">14</field>
+    </record>
+
+    <record id="group_hr_attendance_responsible" model="res.groups">
+        <field name="name">Responsible</field>
+        <field name="category_id" ref="base.module_category_human_resources_attendances"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="hr_attendance.group_hr_attendance_user" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('hr_attendance.group_hr_attendance'))]"/>
+    </record>
+
+    <record id="hr_attendance_rule_employee" model="ir.rule">
+        <field name="name">Time Off base.group_user read</field>
+        <field name="model_id" ref="model_hr_attendance"/>
+        <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="groups" eval="[(4,ref('base.group_user'))]"/>
+    </record>
+
+    <record id="hr_attendance_rule_employee_update" model="ir.rule">
+        <field name="name">Time Off base.group_user create/write</field>
+        <field name="model_id" ref="model_hr_attendance"/>
+        <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="groups" eval="[(4,ref('base.group_user'))]"/>
+    </record>
+
+    <record id="hr_attendance_rule_employee_unlink" model="ir.rule">
+        <field name="name">Time Off base.group_user unlink</field>
+        <field name="model_id" ref="model_hr_attendance"/>
+        <field name="domain_force">[('employee_id.user_id', '=', user.id), ('state', '=', 'draft')]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="hr_attendance_rule_responsible_read" model="ir.rule">
+        <field name="name">Attendance Responsible read</field>
+        <field name="model_id" ref="model_hr_attendance"/>
+        <field name="domain_force">[
+                ('employee_id.parent_id.user_id', '=', user.id),
+        ]</field>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="groups" eval="[(4, ref('ubisol_hr_attendance_upgrade.group_hr_attendance_responsible'))]"/>
+    </record>
+
+    <record id="hr_attendance_rule_responsible_update" model="ir.rule">
+        <field name="name">Attendance Responsible create/write</field>
+        <field name="model_id" ref="model_hr_attendance"/>
+        <field name="domain_force">[
+                ('employee_id.parent_id.user_id', '=', user.id),
+        ]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="groups" eval="[(4, ref('ubisol_hr_attendance_upgrade.group_hr_attendance_responsible'))]"/>
+    </record>
 
     <record id="hide" model="res.groups">
         <field name="name">Hide</field>
