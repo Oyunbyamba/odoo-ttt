@@ -15,8 +15,8 @@ class CreateDatetimeFilter(models.TransientModel):
         ('department', 'Хэлтэс'),
         ('employee', 'Ажилтан')
     ], default="department", tracking=True)
-    department_id = fields.Many2one('hr.department', string="Хэлтэс", help="Хэлтэс")
-    employee_id = fields.Many2one('hr.employee', string="Ажилтан", help="Ажилтан")
+    department_id = fields.Many2many('hr.department', string="Хэлтэс", help="Хэлтэс")
+    employee_id = fields.Many2many('hr.employee', string="Ажилтан", help="Ажилтан")
 
     def create_datetime_filter(self):
       if self.search_type == 'department':

@@ -498,10 +498,10 @@ odoo.define("web_timeline.TimelineRenderer", function(require) {
 
             let content1 = '<div>';
             let style = '';
-            if(evt.check_in) {
+            if(!evt.check_in) {
                 content1 += '<div style="width: 0; height: 0; border-top: 10px solid red; border-right: 10px solid transparent; ' + 
                     'position: absolute; margin-left: -6.5px; margin-top: -3px;"></div>';
-            } else if(evt.check_out) {
+            } else if(!evt.check_out) {
                 content1 = '<div style="float:right;">';
                 content1 += '<div style="width: 0; height: 0; border-top: 10px solid red; border-left: 10px solid transparent; ' + 
                     'float: right; margin-right: -6px; margin-top: -3px;"></div>';

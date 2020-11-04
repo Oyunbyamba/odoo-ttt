@@ -144,8 +144,6 @@
 
 .vis-panel > .vis-content {
   position: relative;
-  top: 0px !important;
-  transform: translateY(0px) !important;
 }
 
 .vis-panel .vis-shadow {
@@ -717,6 +715,7 @@
   border-width: 4px;
   border-style: solid;
   border-radius: 4px;
+  visibility: hidden;
 }
 
 .vis-item.vis-range {
