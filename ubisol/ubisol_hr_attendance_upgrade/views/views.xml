@@ -55,6 +55,22 @@
       </field>
     </record>
 
+    <record id="view_attendance_calendar" model="ir.ui.view">
+      <field name="name">hr.attendance.calendar</field>
+      <field name="model">hr.attendance</field>
+      <field name="arch" type="xml">
+        <calendar 
+          string="Employee Attendance Calendar" 
+          date_start="check_in"
+          date_stop="check_out" 
+          color="employee_id" 
+          mode="month"
+        >
+          <field name="employee_id"/>
+        </calendar>
+      </field>
+    </record>
+
     <record id="hr_attendance_view_inherit_filter" model="ir.ui.view">
       <field name="name">hr_attendance_view_filter</field>
       <field name="model">hr.attendance</field>
@@ -87,7 +103,7 @@
     <record id="hr_attendance.hr_attendance_action" model="ir.actions.act_window">
         <field name="name">Attendances</field>
         <field name="res_model">hr.attendance</field>
-        <field name="view_mode">tree,kanban,timeline,form</field>
+        <field name="view_mode">tree,kanban,timeline,calendar,form</field>
         <field name="context">{"search_default_today":1, "search_default_employee": 1, "search_default_department": 1}</field>
         <field name="search_view_id" ref="hr_attendance.hr_attendance_view_filter" />
         <field name="help" type="html">

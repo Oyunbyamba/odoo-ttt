@@ -159,6 +159,16 @@
           </group>
         </xpath>
 
+        <xpath expr="//page[@name='hr_settings']" position="before">
+          <page name="hr_attendance" string="Ирц">
+            <group>
+              <group string="Ирцийн мэдээлэл">
+                <field name="attendance_ids"/>
+              </group>
+            </group>
+          </page>
+        </xpath>
+
       </field>
     </record>
 

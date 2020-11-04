@@ -217,6 +217,9 @@ odoo.define("web_timeline.TimelineRenderer", function(require) {
                 // Delete an item by tapping the delete button top right
                 remove: this.modelClass.data.rights.unlink,
             };
+            this.options.tooltip = {
+                followMouse: true,
+            };
             $.extend(this.options, {
                 onAdd: this.on_add,
                 onMove: this.on_move,
@@ -496,15 +499,17 @@ odoo.define("web_timeline.TimelineRenderer", function(require) {
                 this.color = "#004A98";
             }
 
-            let content1 = '<div>';
+            let content1 = '<div id="tooltips-follow">';
             let style = '';
-            if(!evt.check_in) {
-                content1 += '<div style="width: 0; height: 0; border-top: 10px solid red; border-right: 10px solid transparent; ' + 
-                    'position: absolute; margin-left: -6.5px; margin-top: -3px;"></div>';
-            } else if(!evt.check_out) {
-                content1 = '<div style="float:right;">';
-                content1 += '<div style="width: 0; height: 0; border-top: 10px solid red; border-left: 10px solid transparent; ' + 
-                    'float: right; margin-right: -6px; margin-top: -3px;"></div>';
+            if (typeof evt.check_in !== 'undefined') {
+                if(!evt.check_in) {
+                    content1 += '<div style="width: 0; height: 0; border-top: 10px solid red; border-right: 10px solid transparent; ' + 
+                        'position: absolute; margin-left: -6.5px; margin-top: -3px;"></div>';
+                } else if(!evt.check_out) {
+                    content1 = '<div style="float:right;">';
+                    content1 += '<div style="width: 0; height: 0; border-top: 10px solid red; border-left: 10px solid transparent; ' + 
+                        'float: right; margin-right: -6px; margin-top: -3px;"></div>';
+                }
             }
 
             content1 += content + "</div>";

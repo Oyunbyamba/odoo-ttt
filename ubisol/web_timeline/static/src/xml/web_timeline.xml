@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <template>
+
+    <t t-name="TimelineView.buttons">
+        <div class="o_timeline_buttons" role="toolbar" aria-label="Main actions">
+            <button type="button" class="btn btn-primary o_timeline_button_save" accesskey="s">
+                Save
+            </button>
+            <button type="button" class="btn btn-secondary o_timeline_button_discard" accesskey="j">
+                Discard
+            </button>
+            <t t-if="widget.is_action_enabled('create')">
+                <button type="button" class="btn btn-primary o_timeline_button_add" accesskey="c">
+                    Create
+                </button>
+            </t>
+            <t t-if="widget.is_action_enabled('export_xlsx')">
+                <button type="button" class="btn btn-secondary fa fa-download o_timeline_export_xlsx" title="Export All"/>
+            </t>
+        </div>
+    </t>
+
     <t t-name="TimelineView">
         <div class="oe_timeline_view">
             <div class="oe_timeline_buttons">

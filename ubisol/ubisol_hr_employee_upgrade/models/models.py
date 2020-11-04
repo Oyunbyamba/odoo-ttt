@@ -81,6 +81,7 @@ class HrEmployee(models.Model):
     is_in_group = fields.Boolean('Группд байдаг эсэх', default=False, groups="hr.group_hr_user")
     employee_code = fields.Char('Ажилтаны код', groups="hr.group_hr_user")
     rfid_code = fields.Char('Картын дугаар', groups="hr.group_hr_user")
+    attendance_ids = fields.One2many('hr.attendance', 'employee_id', string='Employee attendance')
 
     @api.onchange('spouse_complete_name', 'spouse_birthdate')
     def onchange_spouse(self):
