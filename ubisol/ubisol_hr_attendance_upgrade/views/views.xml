@@ -86,7 +86,7 @@
             <filter string="Гарахдаа дараагүй" name="nocheckout" domain="[('check_out', '=', False)]" />
             <filter string="Орохдоо дараагүй" name="nocheckin" domain="[('check_in', '=', False)]" />
             <group expand="0" string="Group By">
-              <filter string="Хэлтэлсээр бүлэглэх" name="department" context="{'group_by': 'department_id'}"/>
+              <filter string="Хэлтэсээр бүлэглэх" name="department" context="{'group_by': 'department_id'}"/>
               <separator/>
               <filter string="Ажилтнаар бүлэглэх" name="employee" context="{'group_by': 'employee_id'}"/>
               <separator/>
@@ -115,17 +115,30 @@
         </field>
     </record>
 
+    <menuitem 
+        id="menu_hr_attendance_manage_attendances" 
+        name="Менежер" 
+        parent="hr_attendance.menu_hr_attendance_root" 
+        sequence="20" 
+        groups="ubisol_hr_attendance_upgrade.group_hr_attendance_responsible"/>
+
+    <menuitem 
+        id="menu_hr_attendance_view_attendances" 
+        name="Ирц" 
+        parent="menu_hr_attendance_manage_attendances" 
+        sequence="10" 
+        groups="ubisol_hr_attendance_upgrade.group_hr_attendance_responsible" 
+        action="hr_attendance.hr_attendance_action"/>
+
     <menuitem id="hr_attendance.menu_hr_attendance_my_attendances" 
         name="Check In / Check Out" 
         groups="ubisol_hr_attendance_upgrade.hide"/>
 
-    <menuitem id="hr_attendance.menu_hr_attendance_kiosk_mode" 
+    <menuitem 
+        id="hr_attendance.menu_hr_attendance_kiosk_mode" 
         name="Kiosk Mode" 
         groups="ubisol_hr_attendance_upgrade.hide"/>    
 
-    <menuitem id="hr_attendance.menu_hr_attendance_kiosk_mode" 
-        name="Kiosk Mode" 
-        groups="ubisol_hr_attendance_upgrade.hide"/>    
 <!--
     <record model="ir.actions.act_window" id="ubisol_hr_attendance_upgrade.action_window">
       <field name="name">ubisol_hr_attendance_upgrade window</field>
