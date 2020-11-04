@@ -1,5 +1,12 @@
 <odoo>
   <data>
+
+    <template id="assets_backend_hr_attendace_inherit" name="Hr Attendance inherit" inherit_id="web.assets_backend">
+      <xpath expr="." position="inside">
+        <script type="text/javascript" src="/ubisol_hr_attendance_upgrade/static/src/js/action_attendance_filter.js"/>
+      </xpath>
+    </template>
+
     <!-- explicit list view definition -->
 
     <record id="hr_attendance_timeline" model="ir.ui.view">

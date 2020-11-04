@@ -31,6 +31,10 @@
         'views/views.xml',
         'views/templates.xml',
         'views/res_config_settings_views.xml',
+        'wizards/create_attendance_filter.xml',
+    ],
+    'qweb': [
+        "static/src/xml/call_wizard.xml",
     ],
     # only loaded in demonstration mode
     'demo': [

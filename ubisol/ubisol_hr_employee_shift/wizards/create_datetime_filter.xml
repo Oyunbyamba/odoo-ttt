@@ -11,7 +11,7 @@
                     <field name="end_date"/>
                 </group>
                 <group>
-                    <field name="search_type"/>
+                    <field name="search_type" string="Төрөл"/>
                     <field name="department_id" attrs="{'invisible':[('search_type', '!=', 'department')]}"/>
                     <field name="employee_id" attrs="{'invisible':[('search_type', '!=', 'employee')]}"/>
                 </group>
@@ -24,7 +24,7 @@
      </record>
 
     <record id="create_datetime_filter_wizard" model="ir.actions.act_window">
-        <field name="name">Create Appointment</field>
+        <field name="name">Create Filter</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">create.datetime.filter</field>
         <field name="view_mode">form</field>
