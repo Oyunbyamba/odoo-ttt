@@ -144,6 +144,8 @@
 
 .vis-panel > .vis-content {
   position: relative;
+  top: 0px !important;
+  transform: translateY(0px) !important;
 }
 
 .vis-panel .vis-shadow {
@@ -680,7 +682,7 @@
   background-color: #239F85;
   display: inline-block;
   z-index: 1;
-  /*overflow: hidden;*/
+  overflow: hidden;
 }
 
 .vis-item.vis-selected {
@@ -737,7 +739,7 @@
   height: 100%;
   padding: 0;
   margin: 0;
-  overflow: hidden;
+  overflow: visible !important;
 }
 
 .vis-item-visible-frame {
@@ -760,6 +762,7 @@
   width: 0;
   border-left-width: 1px;
   border-left-style: solid;
+  visibility: hidden;
 }
 
 .vis-item .vis-item-content {

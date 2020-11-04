@@ -153,11 +153,12 @@
       <field name="name">hr.employee.schedule.tree</field>
       <field name="model">hr.employee.schedule</field>
       <field name="arch" type="xml">
-        <tree string="Ажиллах график" create="true" edit="true">
-          <field name="hr_department" string="Хэлтэс"/>
+        <tree string="Ажиллах график" expand="false">
           <field name="hr_employee" string="Ажилтан"/>
-          <field name="start_work" string="Ажил эхлэх"/>
-          <field name="end_work" string="Ажил дуусах"/>
+          <field name="start_work_date" string="Эхлэх өдөр"/>
+          <field name="start_work_time" string="Эхлэх цаг" widget="float_time"/>
+          <field name="end_work_date" string="Дуусах өдөр"/>
+          <field name="end_work_time" string="Дуусах цаг" widget="float_time"/>
           <field name="hr_employee_shift"/>
         </tree>
       </field>

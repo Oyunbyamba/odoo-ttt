@@ -34,6 +34,7 @@
     ],
     'qweb': [
         "static/src/xml/datetime_filter.xml",
+        "static/src/xml/call_wizard.xml",
     ],
     # only loaded in demonstration mode
     'demo': [
