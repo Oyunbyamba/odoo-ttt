@@ -112,7 +112,7 @@
                                 }"/>
                         </div>
 
-                        <label for="is_frequency_request" string="Өдөр болгоноор үүсгэх" attrs="{
+                        <label for="is_frequency_request" string="Давтамжтай үүсгэх" attrs="{
                             'invisible': [('request_status_type', 'not in', 'overtime')]
                             }"/>
                         <div class="o_row o_row_readonly">

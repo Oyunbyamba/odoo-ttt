@@ -120,14 +120,14 @@
         name="Менежер" 
         parent="hr_attendance.menu_hr_attendance_root" 
         sequence="20" 
-        groups="ubisol_hr_attendance_upgrade.group_hr_attendance_responsible"/>
+        groups="ubisol_hr_attendance_upgrade.group_hr_attendance_responsible,hr_attendance.group_hr_attendance_user,hr_attendance.group_hr_attendance_manager"/>
 
     <menuitem 
         id="menu_hr_attendance_view_attendances" 
         name="Ирц" 
         parent="menu_hr_attendance_manage_attendances" 
         sequence="10" 
-        groups="ubisol_hr_attendance_upgrade.group_hr_attendance_responsible" 
+        groups="ubisol_hr_attendance_upgrade.group_hr_attendance_responsible,hr_attendance.group_hr_attendance_user,hr_attendance.group_hr_attendance_manager" 
         action="hr_attendance.hr_attendance_action"/>
 
     <menuitem id="hr_attendance.menu_hr_attendance_my_attendances" 
