@@ -13,7 +13,7 @@ Manage overtime requests and out of office
 This application controls the overtime schedule of your company. It allows employees to request overtime. Then, managers can review requests for overtime and approve or reject them. This way you can control the overall overtime planning for the company or department.
 
 """,
-    'depends': ['hr', 'calendar', 'resource', 'ubisol_hr_employee_upgrade'],
+    'depends': ['hr', 'calendar', 'resource', 'ubisol_hr_employee_upgrade', 'hr_attendance'],
     'data': [
         'security/ir.model.access.csv',
 

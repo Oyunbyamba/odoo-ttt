@@ -3,26 +3,37 @@
     <record id="group_hr_attendance_responsible" model="res.groups">
         <field name="name">Хариуцагч</field>
         <field name="category_id" ref="base.module_category_human_resources_attendances"/>
-        <field name="implied_ids" eval="[(4, ref('hr_attendance.group_hr_attendance'))]"/>
     </record>
 
-    <record id="hr_attendance_rule_responsible" model="ir.rule">
-        <field name="name">Ирцийн хариуцагч</field>
-        <field name="model_id" ref="model_hr_attendance"/>
-        <field name="domain_force">[
-                ('employee_id.parent_id.user_id', '=', user.id),
-        ]</field>
-        <field name="perm_read" eval="1"/>
-        <field name="perm_write" eval="1"/>
-        <field name="perm_create" eval="1"/>
-        <field name="perm_unlink" eval="1"/>
-        <field name="groups" eval="[(4, ref('ubisol_hr_attendance_upgrade.group_hr_attendance_responsible'))]"/>
+    <record id="hr_attendance.group_hr_attendance_user" model="res.groups">
+        <field name="name">Officer</field>
+        <field name="category_id" ref="base.module_category_human_resources_attendances"/>
+        <field name="implied_ids" eval="[(4, ref('ubisol_hr_attendance_upgrade.group_hr_attendance_responsible'))]"/>
     </record>
 
     <record id="hide" model="res.groups">
         <field name="name">Hide</field>
         <field name="comment">Hide.</field>
     </record>
+
+    <record id="ubisol_hr_attendance_upgrade.group_hr_attendance_responsible" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('hr_attendance.group_hr_attendance'))]"/>
+    </record>
+
+    <data noupdate="1">
+        <record id="hr_attendance_rule_responsible" model="ir.rule">
+            <field name="name">Ирцийн хариуцагч</field>
+            <field name="model_id" ref="model_hr_attendance"/>
+            <field name="domain_force">[
+                    ('employee_id.parent_id.user_id', '=', user.id),
+            ]</field>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="groups" eval="[(4,ref('ubisol_hr_attendance_upgrade.group_hr_attendance_responsible'))]"/>
+        </record>
+    </data>
 
     <record model="ir.ui.menu" id="hr_attendance.menu_hr_attendance_my_attendances">
         <field name="groups_id" eval="[(5,ref('hide'))]"/>

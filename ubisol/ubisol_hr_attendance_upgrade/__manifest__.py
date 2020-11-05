@@ -36,8 +36,7 @@
     'qweb': [
         "static/src/xml/call_wizard.xml",
     ],
-    # only loaded in demonstration mode
-    'demo': [
-
-    ],
+    'installable': True,
+    'application': True,
+    'auto_install': False,
 }
