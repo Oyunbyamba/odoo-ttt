@@ -16,19 +16,6 @@
         <field name="implied_ids" eval="[(4, ref('ubisol_hr_attendance_upgrade.group_hr_attendance_responsible'))]"/>
     </record>
 
-    <record id="hr_schedule_rule_responsible" model="ir.rule">
-        <field name="name">Ирцийн хариуцагч</field>
-        <field name="model_id" ref="ubisol_hr_employee_shift.model_hr_employee_schedule"/>
-        <field name="domain_force">[
-                ('hr_employee.parent_id.user_id', '=', user.id),
-        ]</field>
-        <field name="perm_read" eval="1"/>
-        <field name="perm_write" eval="1"/>
-        <field name="perm_create" eval="1"/>
-        <field name="perm_unlink" eval="1"/>
-        <field name="groups" eval="[(4, ref('ubisol_hr_attendance_upgrade.group_hr_attendance_responsible'))]"/>
-    </record>
-
     <record id="hide" model="res.groups">
         <field name="name">Hide</field>
         <field name="comment">Hide.</field>

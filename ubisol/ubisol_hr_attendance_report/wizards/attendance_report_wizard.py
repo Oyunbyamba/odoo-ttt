@@ -27,8 +27,8 @@ class AttendanceReport(models.TransientModel):
     department_id = fields.Many2many('hr.department', string="Department", help="Department")
 
     def action_compute(self):
-        # reports = self.env["hr.attendance.report"].search([])
-        # reports.calculate_report(self.start_date, self.end_date, self.calculate_type, self.department_id, self.employee_id)
+        reports = self.env["hr.attendance.report"].search([])
+        [header, data] = reports.calculate_report(self.start_date, self.end_date, self.calculate_type, self.department_id, self.employee_id)
         
         # action = {
         #   "name": "Ирцийн график",
@@ -39,8 +39,8 @@ class AttendanceReport(models.TransientModel):
         # return action
 
         data = {
-            'start_date': self.start_date,
-            'end_date': self.end_date,
+            'data': data,
+            'header': header,
         }
 
         return {
@@ -56,15 +56,26 @@ class AttendanceReport(models.TransientModel):
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         sheet = workbook.add_worksheet()
-        
-        cell_format = workbook.add_format({'font_size': '12px'})
-        head = workbook.add_format({'align': 'center', 'bold': True,'font_size':'20px'})
-        txt = workbook.add_format({'font_size': '10px'})
-        sheet.merge_range('B2:I3', 'EXCEL REPORT', head)
-        sheet.write('B6', 'From:', cell_format)
-        sheet.merge_range('C6:D6', data['start_date'],txt)
-        sheet.write('F6', 'To:', cell_format)
-        sheet.merge_range('G6:H6', data['end_date'],txt)
+
+        headers = data['header']
+        lines = data['data']
+
+        row = 1
+
+        # write data (for column title)
+        for i, h in enumerate(headers):
+            sheet.write(row, i + 1, h)
+        row += 1
+
+        # Set data
+        for l in lines:
+            for i, h in enumerate(headers):
+                try:
+                    if l[h]:
+                         sheet.write(row, i + 1, l[h])
+                except KeyError:
+                    sheet.write(row, i + 1, '')
+            row += 1
         
         workbook.close()
         output.seek(0)

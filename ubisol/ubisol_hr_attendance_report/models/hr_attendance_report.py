@@ -272,8 +272,7 @@ class HrAttendanceReport(models.Model):
                     for t in self._cr.dictfetchall():
                         employees.append(t['hr_employee'])
         data = []
-        row = []
-        for index, employee_id in enumerate(employees):
+        for i, employee_id in enumerate(employees):
             dates_btwn = start_date
             while dates_btwn <= end_date:
                 schedules = self.env['hr.employee.schedule'].search([
@@ -281,7 +280,6 @@ class HrAttendanceReport(models.Model):
                     ('hr_employee', '=', employee_id),
                 ])
                 emp = self.env['hr.employee'].browse(employee_id)
-                row[index] = emp.name
                 for schedule in schedules:
                     if schedule:
                         values = {}
@@ -383,7 +381,7 @@ class HrAttendanceReport(models.Model):
                     for leave in leaves:
                         if leave:
                             values['leave_id'] = leave.id
-                    data[index] = values
+                    data.append(values)
                     # super(HrAttendanceReport, self).create(values)
                 dates_btwn = dates_btwn + relativedelta(days=1)
         header = [
@@ -414,32 +412,4 @@ class HrAttendanceReport(models.Model):
             'outside_work_req_id',
             'leave_id'
         ]
-
-    def _generate_excel_report(self):
-        output = io.BytesIO()
-        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
-        worksheet = workbook.add_worksheet()
-        row = 1
-        col = 0
-
-        row += 1
-
-        # write data (for column title)
-        worksheet.write(row, col + 1, "Name")
-        worksheet.write(row, col + 2, "Email")
-        worksheet.write(row, col + 3, "Phone")
-
-        row += 1
-        col = 0
-
-        # Set data
-        worksheet.write(row, col + 1, "A")
-        worksheet.write(row, col + 2, "B")
-        worksheet.write(row, col + 3, "C")
-
-        print("excel report")
-
-        workbook.close()
-        output.seek(0)
-        # response.stream.write(output.read())
-        output.close()
+        return [header, data]
