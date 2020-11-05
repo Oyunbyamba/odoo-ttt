@@ -44,8 +44,6 @@ odoo.define('action_datetime_filter.JsCalculateDate',function (require) {
             var departments = $( "#departments" ).val();
             date2 = $("#date2").datepicker({dateFormat: 'dd-mm-yyyy'});
 
-            alert(departments, date1, date2);
-
             self.do_action({
                 name: "Ажиллах график",
                 type: "ir.ui.view",

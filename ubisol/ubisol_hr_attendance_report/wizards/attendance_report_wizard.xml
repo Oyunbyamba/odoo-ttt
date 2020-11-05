@@ -38,6 +38,7 @@
             </form>
         </field>
     </record>
+
     <menuitem
         action="act_wizard_compute_attendance_report"
         id="menu_compute_attendance_report"

@@ -13,7 +13,7 @@
                             <hr style="border-top: 1px solid white;"/>
                         
                         <div>
-                            &#160; &#160; &#160; &#160; &#160; "Таван толгой түлш" ХХК-ийн <t t-esc="doc.employee_id.department_id.name"/> алба, хэлтэс 
+                            &#160; &#160; &#160; &#160; &#160; "Company 1" ХХК-ийн <t t-esc="doc.employee_id.department_id.name"/> алба, хэлтэс 
                             <t t-esc="doc.employee_id.job_id.name" /> албан тушаалтай <t t-esc="doc.employee_id.surname"/> овогтой <t t-esc="doc.employee_id.name"/> 
                             <br/>
                             нь

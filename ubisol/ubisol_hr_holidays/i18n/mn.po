@@ -18,7 +18,7 @@ msgstr ""
 #. module: ubisol_hr_holidays
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.custom_layout
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid "\"Таван толгой түлш\" ХХК-ийн"
+msgid "\"Company 1\" ХХК-ийн"
 msgstr ""
 
 #. module: ubisol_hr_holidays
