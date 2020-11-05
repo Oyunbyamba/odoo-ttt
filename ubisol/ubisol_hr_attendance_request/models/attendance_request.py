@@ -470,9 +470,9 @@ class AttendanceRequest(models.Model):
             if (attendance.state not in ['confirm', 'validate1']):
                 raise UserError(_('Overtime request must be confirmed in order to approve it.'))
 
-            attendance.write({'state': 'validate'})
-            attendance.filtered(lambda att: att.validation_type == 'both').write({'second_approver_id': current_employee.id})
-            attendance.filtered(lambda att: att.validation_type != 'both').write({'first_approver_id': current_employee.id})  
+            # attendance.write({'state': 'validate'})
+            attendance.filtered(lambda att: att.validation_type == 'both').write({'second_approver_id': current_employee.id, 'state': 'validate'})
+            attendance.filtered(lambda att: att.validation_type != 'both').write({'first_approver_id': current_employee.id, 'state': 'validate'})  
             attendance.activity_update()
 
             if(attendance.request_status_type == 'attendance'):
