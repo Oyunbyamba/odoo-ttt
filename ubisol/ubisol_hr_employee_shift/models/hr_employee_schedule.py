@@ -3,9 +3,7 @@
 import pytz
 from lxml import etree
 from odoo import models, fields, api
-from dateutil.relativedelta import relativedelta
 from datetime import datetime, timedelta, time
-from odoo.tools.safe_eval import safe_eval
 
 class HrEmployeeSchedule(models.Model):
     """Хуваарилсан ээлж"""

@@ -1,5 +1,10 @@
 <odoo>
   <data>
+    <template id="assets_backend" name="xls_assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+          <script type="text/javascript" src="/ubisol_hr_attendance_report/static/src/js/action_manager.js"/>
+        </xpath>
+    </template>
     <!-- explicit list view definition -->
     <record id="hr_attendance_report_view_pivot" model="ir.ui.view">
       <field name="model">hr.attendance.report</field>

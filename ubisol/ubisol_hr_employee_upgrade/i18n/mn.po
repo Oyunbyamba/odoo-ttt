@@ -159,7 +159,7 @@ msgstr ""
 
 #. module: ubisol_hr_employee_upgrade
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_upgrade.employee_detail_pdf
-msgid "<span>\"ТАВАН ТОЛГОЙ ТҮЛШ\" ХХК</span>"
+msgid "<span>\"Company 1\" ХХК</span>"
 msgstr ""
 
 #. module: ubisol_hr_employee_upgrade

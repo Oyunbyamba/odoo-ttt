@@ -4,6 +4,9 @@ import pytz
 from odoo import models, fields, api
 from dateutil.relativedelta import relativedelta
 from datetime import datetime, timedelta, time
+import xlsxwriter
+import io
+import xlwt,  base64
 
 class HrAttendanceReport(models.Model):
     """Ирцийн тайлан гаргахад шаардлагатай өгөгдөл хадгалах хүснэгт"""
@@ -61,6 +64,8 @@ class HrAttendanceReport(models.Model):
     check_out_time = fields.Char(compute="_compute_check_out_time", compute_sudo=True)
     start_work_time = fields.Float(compute="_compute_start_work_time", compute_sudo=True)
     end_work_time = fields.Float(compute="_compute_end_work_time", compute_sudo=True)
+
+    file = fields.Binary('XLS File', readonly=True)
 
     @api.depends("start_work")
     def _compute_start_work_time(self):
@@ -266,7 +271,8 @@ class HrAttendanceReport(models.Model):
                     self._cr.execute('SELECT DISTINCT id AS hr_employee FROM hr_employee WHERE department_id = ' + str(dep_id.id))
                     for t in self._cr.dictfetchall():
                         employees.append(t['hr_employee'])
-        for employee_id in employees:
+        data = []
+        for i, employee_id in enumerate(employees):
             dates_btwn = start_date
             while dates_btwn <= end_date:
                 schedules = self.env['hr.employee.schedule'].search([
@@ -375,6 +381,35 @@ class HrAttendanceReport(models.Model):
                     for leave in leaves:
                         if leave:
                             values['leave_id'] = leave.id
-
-                    super(HrAttendanceReport, self).create(values)
+                    data.append(values)
+                    # super(HrAttendanceReport, self).create(values)
                 dates_btwn = dates_btwn + relativedelta(days=1)
+        header = [
+            'hr_department', 
+            'hr_employee', 
+            'hr_employee_shift', 
+            'hr_employee_schedule', 
+            'hr_employee_shift_template', 
+            'hr_employee_shift_dayplan', 
+            'date_from', 
+            'date_to', 
+            'work_day', 
+            'shift_type', 
+            'week_day', 
+            'day_period', 
+            'day_period_int', 
+            'lunch_time_from', 
+            'lunch_time_to', 
+            'start_work', 
+            'end_work', 
+            'lunch_time_from', 
+            'lunch_time_from', 
+            'hr_attendance',
+            'check_in',
+            'check_out',
+            'worked_hours',
+            'overtime_req_id',
+            'outside_work_req_id',
+            'leave_id'
+        ]
+        return [header, data]

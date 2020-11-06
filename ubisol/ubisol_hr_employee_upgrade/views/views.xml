@@ -1,5 +1,12 @@
 <odoo>
   <data>
+
+    <template id="assets_backend_employee_upgrade" name="Hr Employee Upgrade" inherit_id="web.assets_backend">
+      <xpath expr="." position="inside">
+        <script type="text/javascript" src="/ubisol_hr_employee_upgrade/static/src/js/render_table.js"></script>
+      </xpath>
+    </template>
+  
     <record model="ir.ui.view" id="hr_employee_inherit_form_view">
       <field name="name">hr.employee.form.view</field>
       <field name="model">hr.employee</field>
@@ -163,7 +170,17 @@
           <page name="hr_attendance" string="Ирц">
             <group>
               <group string="Ирцийн мэдээлэл">
-                <field name="attendance_ids"/>
+                <field name="attendance_ids">
+                  <calendar 
+                    string="Employee Attendance Calendar" 
+                    date_start="check_in"
+                    date_stop="check_out" 
+                    color="employee_id" 
+                    mode="month"
+                  >
+                    <field name="employee_id"/>
+                  </calendar>
+                </field>
               </group>
             </group>
           </page>

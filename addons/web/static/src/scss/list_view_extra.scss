@@ -5,10 +5,12 @@
     }
 
     tbody > tr.o_group_header {
-        background-image: linear-gradient(to bottom, #fcfcfc, #dedede);
+        // background-image: linear-gradient(to bottom, #fcfcfc, #dedede);
+        background-color: white;
 
         &:focus-within {
-           background-image: linear-gradient(to bottom, #fcfcfc, $o-form-lightsecondary);
+        //    background-image: linear-gradient(to bottom, #fcfcfc, $o-form-lightsecondary);
+            background-color: white;
         }
     }
 

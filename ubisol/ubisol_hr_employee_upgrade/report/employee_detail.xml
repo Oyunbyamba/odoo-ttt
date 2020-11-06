@@ -12,7 +12,7 @@
                                     <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 40px;" alt="Logo"/>
                                 </div>
                                 <div class="col-10" style="text-align: center;">
-                                    <span>"ТАВАН ТОЛГОЙ ТҮЛШ" ХХК</span>
+                                    <span>"Company 1" ХХК</span>
                                 </div>
                                 <div class="col-1">
                                 </div>

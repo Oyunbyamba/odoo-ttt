@@ -11,6 +11,16 @@ class CreateAttendanceFilter(models.TransientModel):
   start_date = fields.Date(string="Эхлэх хугацаа", required=True, default=(datetime.today()-relativedelta(months=+1)).strftime('%Y-%m-20'))
   end_date = fields.Date(string="Дуусах хугацаа", required=True, default=datetime.now().strftime('%Y-%m-%d'))
 
+  def _default_employee(self):
+        return self.env.user.employee_id
+
+  def _employee_id_domain(self):
+      if self.user_has_groups('hr_attendance.group_hr_attendance_user') or self.user_has_groups('hr_attendance.group_hr_attendance_manager'):
+          return []
+      if self.user_has_groups('ubisol_hr_attendance_upgrade.group_hr_attendance_responsible'):
+          return ['|', ('parent_id', '=', self.env.user.employee_id.id), ('user_id', '=', self.env.user.id)]
+      return [('user_id', '=', self.env.user.id)]
+
   search_type = fields.Selection([
       ('department', 'Хэлтэс'),
       ('employee', 'Ажилтан')

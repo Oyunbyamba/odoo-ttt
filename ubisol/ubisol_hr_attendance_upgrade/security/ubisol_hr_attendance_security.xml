@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="group_hr_attendance_responsible" model="res.groups">
+
+    <!-- group_hr_attendance_user => Мэргэжилтэн -->
+    <!-- group_hr_attendance_manager => Админ -->
+    <!-- group_hr_attendance => Гар ирц -->
+    <!-- Хариуцагч -->
+    <record id="group_hr_attendance_responsible" model="res.groups"> 
         <field name="name">Хариуцагч</field>
         <field name="category_id" ref="base.module_category_human_resources_attendances"/>
     </record>
