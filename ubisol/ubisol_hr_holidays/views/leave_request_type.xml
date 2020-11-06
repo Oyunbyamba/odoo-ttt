@@ -6,15 +6,20 @@
       <field name="inherit_id" ref="hr_holidays.edit_holiday_status_form"/>
       <field name="arch" type="xml">
 
+        <xpath expr="//group/group[5]/group/field[@name='allocation_notif_subtype_id']" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </xpath>
+
+        <xpath expr="//group//group[@name='visibility']" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </xpath>
+
         <xpath expr="//group[@name='notification']" position="before">
-          <group name="unpaid" string="Цалингүй">
-              <field name="unpaid"/>
-          </group>
-          <group name="vacation" string="Ээлжийн амралт">
-              <field name="vacation"/>
+          <group name="request_status_type" string="Хүсэлтийн төрөл">
+              <field name="request_status_type"/>
           </group>
         </xpath>
-        
+
         <xpath expr="//field[@name='request_unit']" position="after">
           <field name="one_step_days"/>
         </xpath>

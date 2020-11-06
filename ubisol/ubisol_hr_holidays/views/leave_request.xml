@@ -5,23 +5,86 @@
       <field name="model">hr.leave</field>
       <field name="inherit_id" ref="hr_holidays.hr_leave_view_form"/>
       <field name="arch" type="xml">
+        
+        <xpath expr="//group/group[1]" position="replace">
+            <group>
+                <label for="request_date_from" string="From"/>
+                <div>
+                    <field name="date_from" invisible="1"/>
+                    <field name="date_to" invisible="1"/>
+                    <div class="o_row o_row_readonly o_hr_holidays_dates">
+                        <field name="request_date_from" class="oe_inline"
+                            attrs="{'readonly': [('state', 'not in', ('draft', 'confirm'))]}"/>
+                        <span class="oe_inline"
+                            attrs="{'invisible': [('request_status_type', '=', 'attendance')]}">
+                            To
+                        </span>
+                        <field name="request_date_to" class="oe_inline"
+                            attrs="{
+                                'readonly': [('state', 'not in', ('draft', 'confirm'))],
+                                'invisible': [('request_status_type', '=', 'attendance')]
+                            }"/>
+                    </div>
+                    <div class="o_row o_row_readonly oe_edit_only">
+                        <field name="request_unit_hours" invisible="1"/>
+                        <field name="request_unit_custom" invisible="1" attrs="{
+                            'readonly': [('state', 'not in', ('draft', 'confirm'))],
+                        }"/>
+                    </div>
+                    <div class="o_row o_row_readonly">
+                        <field name="request_hour_from"
+                            attrs="{
+                                'readonly': [('state', '=', 'validate')],
+                                'required': [('leave_type_request_unit', '=', 'hour')],
+                                'invisible': [('leave_type_request_unit', '!=', 'hour')]}"/>
+                        <label for="request_hour_to" string="To"
+                            attrs="{'invisible': ['|', ('leave_type_request_unit', '!=', 'hour'), ('request_status_type', '=', 'attendance')]}"/>
+                        <field name="request_hour_to"
+                            attrs="{
+                                'readonly': [('state', '=', 'validate')],
+                                'required': [('leave_type_request_unit', '=', 'hour'), ('request_status_type', '!=', 'attendance')],
+                                'invisible': ['|', ('leave_type_request_unit', '!=', 'hour'), ('request_status_type', '=', 'attendance')]}"/>
+                    </div>
+                </div>
+
+                <!-- When the user is leave manager, he should always see `number_of_days` to allow
+                him to edit the value. `number_of_hours_display` is only an informative field -->
+                <label for="number_of_days" string="Duration" attrs="{'invisible': [('request_status_type', '=', 'attendance')]}"/>
+                <div attrs="{'invisible': [('request_status_type', '=', 'attendance')]}">
+                    <div groups="!hr_holidays.group_hr_holidays_manager" attrs="{'invisible': [('leave_type_request_unit', '=', 'hour')]}">
+                        <field name="number_of_days_display" nolabel="1" readonly="1" class="oe_inline"/>
+                        <span class="ml8">Days</span>
+                    </div>
+                    <div groups="hr_holidays.group_hr_holidays_manager">
+                        <field name="number_of_days" nolabel="1" class="oe_inline"/>
+                        <span class="ml8">Days</span>
+                    </div>
+                    <div attrs="{'invisible': [('leave_type_request_unit', '!=', 'hour')]}">
+                        <field name="number_of_hours_display" nolabel="1" class="oe_inline"/>
+                        <span class="ml8">Hours</span>
+                    </div>
+                </div>
+
+                <field name="user_id" invisible="1"/>
+            </group>
+        </xpath>
 
         <xpath expr="//group/group[1]/field[@name='user_id']" position="after">
-          <field name="vacation_type" invisible="1"/>
-          <label for="years_of_worked_state" string="Улсад ажилласан жил" asttrs="{'invisible':[('vacation_type', '!=', True)]}"/>
-          <div>
-              <field name="years_of_worked_state" class="oe_inline" attrs="{'readonly': 1, 'invisible':[('vacation_type', '!=', True)]}"/>          
-          </div>
-          <label for="years_of_worked_company" string="Байгууллагад ажилласан жил" attrs="{'invisible':[('vacation_type', '!=', True)]}"/>
-          <div>
-              <field name="years_of_worked_company" class="oe_inline" attrs="{'readonly': 1, 'invisible':[('vacation_type', '!=', True)]}"/> 
-              <br/>
-              <field name="warning_of_vacation" class="oe_inline" attrs="{'readonly': 1, 'invisible':[('vacation_type', '!=', True)] }" style="font-size: 10px; color:red;" />  
-          </div>
-          <label for="employee_holiday" string="Ээлжийн амралтын хоног" attrs="{'invisible':[('vacation_type', '!=', True)]}"/>
-          <div>
-              <field name="employee_holiday" class="oe_inline" attrs="{'readonly': 1, 'invisible':[('vacation_type', '!=', True)] }"/>  
-          </div>
+            <field name="request_status_type" invisible="1"/>
+            <label for="years_of_worked_state" string="Улсад ажилласан жил" attrs="{'invisible':[('request_status_type', '!=', 'vacation')]}"/>
+            <div>
+                <field name="years_of_worked_state" class="oe_inline" attrs="{'readonly': 1, 'invisible':[('request_status_type', '!=', 'vacation')]}"/>          
+            </div>
+            <label for="years_of_worked_company" string="Байгууллагад ажилласан жил" attrs="{'invisible':[('request_status_type', '!=', 'vacation')]}"/>
+            <div>
+                <field name="years_of_worked_company" class="oe_inline" attrs="{'readonly': 1, 'invisible':[('request_status_type', '!=', 'vacation')]}"/> 
+                <br/>
+                <field name="warning_of_vacation" class="oe_inline" attrs="{'readonly': 1, 'invisible':[('request_status_type', '!=', 'vacation')] }" style="font-size: 10px; color:red;" />  
+            </div>
+            <label for="employee_holiday" string="Ээлжийн амралтын хоног" attrs="{'invisible':[('request_status_type', '!=', 'vacation')]}"/>
+            <div>
+                <field name="employee_holiday" class="oe_inline" attrs="{'readonly': 1, 'invisible':[('request_status_type', '!=', 'vacation')] }"/>  
+            </div>
         </xpath>
         
       </field>
