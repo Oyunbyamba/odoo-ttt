@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ubisol_hr_attendance_upgrade.view_my_attendance_form" model="ir.ui.view">
+      <field name="name">my.attendance.form</field>
+      <field name="model">my.attendance</field>
+      <field name="arch" type="xml">
+        <form string="Миний ирц" edit="0" js_class="hr_attendance_form">
+          <sheet>
+            <group>
+              <field name="employee_id"/>
+              <field name="start_date"/>
+              <field name="end_date"/>
+            </group>
+            <group>
+              <div class="attendance_ids"></div>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="my_attendance_form" model="ir.ui.view">
+        <field name="name">my.attendance.wizard</field>
+        <field name="model">my.attendance</field>
+        <field name="arch" type="xml">
+            <form string="Хугацааны интервал">
+                <group>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                </group>
+                <footer>
+                    <button name="my_attendance" string="Тооцоолох" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="my_attendance_wizard" model="ir.actions.act_window">
+        <field name="name">My Attendance</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">my.attendance</field>
+        <field name="view_mode">form,tree</field>
+        <field name="view_id" ref="my_attendance_form"/>
+        <field name="target">new</field>
+    </record>
+
+    <!-- <menuitem 
+        id="ubisol_hr_attendance_upgrade.menu_my_attendance" 
+        name="Миний ирц" 
+        parent="hr_attendance.menu_hr_attendance_root" 
+        sequence="0" 
+        action="ubisol_hr_attendance_upgrade.my_attendance_wizard"/> -->
+
+</odoo>

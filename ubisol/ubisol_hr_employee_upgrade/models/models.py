@@ -169,6 +169,11 @@ class HrEmployee(models.Model):
                         prev_hr_contract.trial_date_end = trial_date
         return employee    
 
+    @api.model
+    def get_my_attendances(self, employee_id):
+        employee = self.env['hr.employee'].browse(employee_id)
+        print(employee.attendance_ids.read(['fullname', 'check_in', 'check_out']))
+        return employee.attendance_ids
    
     # @api.model
     # def _getBase64Image(self):

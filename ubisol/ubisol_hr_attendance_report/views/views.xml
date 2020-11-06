@@ -3,47 +3,24 @@
     <template id="assets_backend" name="xls_assets" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
           <script type="text/javascript" src="/ubisol_hr_attendance_report/static/src/js/action_manager.js"/>
+          <script type="text/javascript" src="/ubisol_hr_attendance_report/static/src/js/attendance_report_table.js"/>
         </xpath>
     </template>
     <!-- explicit list view definition -->
-    <record id="hr_attendance_report_view_pivot" model="ir.ui.view">
-      <field name="model">hr.attendance.report</field>
-      <field name="arch" type="xml">
-        <pivot disable_linking="1">
-          <field name="hr_department" type="row"/>
-          <field name="hr_employee" type="row"/>
-          <field name="work_day" type="col" interval="month"/>
-          <field name="work_day" type="col" interval="day"/>
-          <field name="work_hours" string="Ажиллавал зохих цаг" type="measure" widget="float_time"/>
-          <field name="worked_hours" string="Ажилласан цаг" type="measure" widget="float_time"/>
-          <field name="difference_check_in" string="Хоцролт" type="measure" widget="float_time"/>
-          <field name="difference_check_out" string="Таслалт" type="measure" widget="float_time"/>
-          <field name="overtime" string="Баталсан илүү цаг" type="measure" widget="float_time"/>
-          <field name="informal_overtime" string="Илүү цаг" type="measure" widget="float_time"/>
-          <field name="outside_work" string="Гадуур ажил" type="measure" widget="float_time"/>
-        </pivot>
-      </field>
-    </record>
 
-    <record id="hr_attendance_report_view_tree" model="ir.ui.view">
-      <field name="name">hr.attendance.report.tree</field>
+    <record id="hr_attendance_report_form" model="ir.ui.view">
+      <field name="name">hr.attendance.report</field>
       <field name="model">hr.attendance.report</field>
       <field name="arch" type="xml">
-        <tree create="false" delete="false" string="Ирцийн график">
-          <field name="hr_employee" string="Ажилтан"/>
-          <field name="work_day" string="Өдөр"/>
-          <field name="start_work_time" string="Ажил эхлэх" widget="float_time"/>
-          <field name="end_work_time" string="Ажил дуусах" widget="float_time"/>
-          <field name="check_in_time" string="Орсон цаг"/>
-          <field name="check_out_time" string="Гарсан цаг"/>
-          <field name="work_hours" string="Ажиллавал зохих цаг" widget="float_time"/>
-          <field name="worked_hours" string="Ажилласан цаг" widget="float_time"/>
-          <field name="difference_check_in" string="Хоцролт" widget="float_time"/>
-          <field name="difference_check_out" string="Таслалт" widget="float_time"/>
-          <field name="overtime" string="Баталсан илүү цаг" widget="float_time"/>
-          <field name="informal_overtime" string="Илүү цаг" widget="float_time"/>
-          <field name="outside_work" string="Гадуур ажил" widget="float_time"/>
-        </tree>
+        <form string="Ирцийн график" js_class="hr_attendance_report_form">
+          <sheet>
+            <group>
+              <group>
+                <div class="attendance_report"></div>
+              </group>
+            </group>
+          </sheet>
+        </form>
       </field>
     </record>
 
@@ -80,7 +57,7 @@
       <field name="context" >
         {'search_default_current_month': 1, 'search_default_is_rest': 1, 'search_default_my': 1, "search_default_employee": 1, "search_default_department": 1}
       </field>
-      <field name="view_mode">tree,pivot</field>
+      <field name="view_mode">form</field>
     </record>
 
     <record model="ir.actions.server" id="action_update_attendance_report">

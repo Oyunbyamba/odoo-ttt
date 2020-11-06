@@ -165,27 +165,6 @@
             </field>
           </group>
         </xpath>
-
-        <xpath expr="//page[@name='hr_settings']" position="before">
-          <page name="hr_attendance" string="Ирц">
-            <group>
-              <group string="Ирцийн мэдээлэл">
-                <field name="attendance_ids">
-                  <calendar 
-                    string="Employee Attendance Calendar" 
-                    date_start="check_in"
-                    date_stop="check_out" 
-                    color="employee_id" 
-                    mode="month"
-                  >
-                    <field name="employee_id"/>
-                  </calendar>
-                </field>
-              </group>
-            </group>
-          </page>
-        </xpath>
-
       </field>
     </record>
 

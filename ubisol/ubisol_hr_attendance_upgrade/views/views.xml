@@ -4,6 +4,7 @@
     <template id="assets_backend_hr_attendace_inherit" name="Hr Attendance inherit" inherit_id="web.assets_backend">
       <xpath expr="." position="inside">
         <script type="text/javascript" src="/ubisol_hr_attendance_upgrade/static/src/js/action_attendance_filter.js"/>
+        <script type="text/javascript" src="/ubisol_hr_attendance_upgrade/static/src/js/attendance_table.js"/>
       </xpath>
     </template>
 
@@ -44,7 +45,7 @@
       <field name="inherit_id" ref="hr_attendance.view_attendance_tree"/>
       <field name="arch" type="xml">
         <xpath expr="//tree" position="replace">
-          <tree string="Employee attendances" default_order='id asc' edit="0">
+          <tree string="Employee attendances" default_order='id asc'>
             <field name="fullname" string="Нэр"/>
             <field name="pin"/>
             <field name="check_in"/>
@@ -68,6 +69,28 @@
         >
           <field name="employee_id"/>
         </calendar>
+      </field>
+    </record>
+
+    <record id="view_attendance_inherit_form" model="ir.ui.view">
+      <field name="name">hr.attendance.form</field>
+      <field name="model">hr.attendance</field>
+      <field name="inherit_id" ref="hr_attendance.hr_attendance_view_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//form" position="replace">
+          <form string="Employee attendances" js_class="hr_attendance_form">
+            <sheet>
+              <group>
+                <div class="start_date"></div>
+                <div class="end_date"></div>
+                <div class="employee_id"></div>
+              </group>
+              <group>
+                <div class="attendance_ids"></div>
+              </group>
+            </sheet>
+          </form>
+        </xpath>
       </field>
     </record>
 
@@ -103,9 +126,22 @@
     <record id="hr_attendance.hr_attendance_action" model="ir.actions.act_window">
         <field name="name">Attendances</field>
         <field name="res_model">hr.attendance</field>
-        <field name="view_mode">tree,kanban,timeline,calendar,form</field>
+        <field name="view_mode">tree,kanban,timeline,calendar</field>
         <field name="context">{"search_default_today":1, "search_default_employee": 1, "search_default_department": 1}</field>
         <field name="search_view_id" ref="hr_attendance.hr_attendance_view_filter" />
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">
+                No attendance records found
+            </p><p>
+                The attendance records of your employees will be displayed here.
+            </p>
+        </field>
+    </record>
+
+    <record id="my_attendance_action" model="ir.actions.act_window">
+        <field name="name">Attendances</field>
+        <field name="res_model">hr.attendance</field>
+        <field name="view_mode">form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_empty_folder">
                 No attendance records found
@@ -121,6 +157,13 @@
         parent="hr_attendance.menu_hr_attendance_root" 
         sequence="20" 
         groups="ubisol_hr_attendance_upgrade.group_hr_attendance_responsible,hr_attendance.group_hr_attendance_user,hr_attendance.group_hr_attendance_manager"/>
+
+    <menuitem 
+        id="ubisol_hr_attendance_upgrade.menu_my_attendance" 
+        name="Миний ирц" 
+        parent="hr_attendance.menu_hr_attendance_root" 
+        sequence="0" 
+        action="ubisol_hr_attendance_upgrade.my_attendance_action"/>
 
     <menuitem 
         id="hr_attendance.menu_hr_attendance_view_attendances" 
@@ -139,45 +182,5 @@
         name="Kiosk Mode" 
         groups="ubisol_hr_attendance_upgrade.hide"/>    
 
-<!--
-    <record model="ir.actions.act_window" id="ubisol_hr_attendance_upgrade.action_window">
-      <field name="name">ubisol_hr_attendance_upgrade window</field>
-      <field name="res_model">ubisol_hr_attendance_upgrade.ubisol_hr_attendance_upgrade</field>
-      <field name="view_mode">tree,form</field>
-    </record>
--->
-
-    <!-- server action to the one above -->
-<!--
-    <record model="ir.actions.server" id="ubisol_hr_attendance_upgrade.action_server">
-      <field name="name">ubisol_hr_attendance_upgrade server</field>
-      <field name="model_id" ref="model_ubisol_hr_attendance_upgrade_ubisol_hr_attendance_upgrade"/>
-      <field name="state">code</field>
-      <field name="code">
-        action = {
-          "type": "ir.actions.act_window",
-          "view_mode": "tree,form",
-          "res_model": model._name,
-        }
-      </field>
-    </record>
--->
-
-    <!-- Top menu item -->
-<!--
-    <menuitem name="ubisol_hr_attendance_upgrade" id="ubisol_hr_attendance_upgrade.menu_root"/>
--->
-    <!-- menu categories -->
-<!--
-    <menuitem name="Menu 1" id="ubisol_hr_attendance_upgrade.menu_1" parent="ubisol_hr_attendance_upgrade.menu_root"/>
-    <menuitem name="Menu 2" id="ubisol_hr_attendance_upgrade.menu_2" parent="ubisol_hr_attendance_upgrade.menu_root"/>
--->
-    <!-- actions -->
-<!--
-    <menuitem name="List" id="ubisol_hr_attendance_upgrade.menu_1_list" parent="ubisol_hr_attendance_upgrade.menu_1"
-              action="ubisol_hr_attendance_upgrade.action_window"/>
-    <menuitem name="Server to list" id="ubisol_hr_attendance_upgrade" parent="ubisol_hr_attendance_upgrade.menu_2"
-              action="ubisol_hr_attendance_upgrade.action_server"/>
--->
   </data>
 </odoo>

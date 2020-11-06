@@ -382,7 +382,7 @@ class HrAttendanceReport(models.Model):
                         if leave:
                             values['leave_id'] = leave.id
                     data.append(values)
-                    # super(HrAttendanceReport, self).create(values)
+                    super(HrAttendanceReport, self).create(values)
                 dates_btwn = dates_btwn + relativedelta(days=1)
         header = [
             'hr_department', 
@@ -402,8 +402,6 @@ class HrAttendanceReport(models.Model):
             'lunch_time_to', 
             'start_work', 
             'end_work', 
-            'lunch_time_from', 
-            'lunch_time_from', 
             'hr_attendance',
             'check_in',
             'check_out',
@@ -413,3 +411,33 @@ class HrAttendanceReport(models.Model):
             'leave_id'
         ]
         return [header, data]
+
+
+    @api.model
+    def get_attendances_report(self, filters):
+        resource = self.env['resource.resource'].search([('user_id','=',self.env.user.id)])
+        employee = self.env['hr.employee'].search([('resource_id','=',resource.id)])
+        attendances = self.env['hr.attendance.report'].search([('hr_employee', '=', employee.id)])
+        raw_data = attendances.read()
+
+        header = [
+            'Нэр', 
+            'Ажиллах хуваарь', 
+            'Ажиллавал зохих өдөр', 
+            'Ажиллавал зохих цаг', 
+            'Ажилласан өдөр', 
+            'Ажилласан цаг', 
+            'Баталсан илүү цаг', 
+            'Илүү цаг', 
+            'Өвчтэй өдөр', 
+            'Цалинтай чөлөө', 
+            'Цалингүй чөлөө', 
+            'Таслалт', 
+            'Хоцролт'
+        ]
+
+        data = {
+            'data': raw_data,
+            'header': header
+        }
+        return data

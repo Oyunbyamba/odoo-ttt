@@ -30,13 +30,13 @@ class AttendanceReport(models.TransientModel):
         reports = self.env["hr.attendance.report"].search([])
         [header, data] = reports.calculate_report(self.start_date, self.end_date, self.calculate_type, self.department_id, self.employee_id)
         
-        # action = {
-        #   "name": "Ирцийн график",
-        #   "type": "ir.actions.act_window",
-        #   "res_model": "hr.attendance.report",
-        #   "view_mode": "pivot",
-        # }
-        # return action
+        action = {
+          "name": "Ирцийн график",
+          "type": "ir.actions.act_window",
+          "res_model": "hr.attendance.report",
+          "view_mode": "pivot",
+        }
+        return action
 
         data = {
             'data': data,

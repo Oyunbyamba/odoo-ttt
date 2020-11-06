@@ -1,4 +1,5 @@
 from odoo import fields, models, api
+import json
 
 class HrAttendance(models.Model):
     _inherit = "hr.attendance"
@@ -29,3 +30,11 @@ class HrAttendance(models.Model):
             else:
                 fullname = employee.name
             record.fullname = fullname
+
+    @api.model
+    def get_my_attendances(self):
+        resource = self.env['resource.resource'].search([('user_id','=',self.env.user.id)])
+        employee = self.env['hr.employee'].search([('resource_id','=',resource.id)])
+        attendances = self.env['hr.attendance.report'].search([('hr_employee', '=', employee.id)])
+        raw_data = attendances.read()
+        return raw_data
