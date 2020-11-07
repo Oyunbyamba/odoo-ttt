@@ -7,6 +7,8 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
     var viewRegistry = require('web.view_registry');
     var rpc = require('web.rpc');
 
+    // <span class="o_field_char o_field_widget" name="work_location">Building 1, Second Floor</span>
+
     var EmployeeFormRenderer = FormRenderer.extend({
 
         /**
@@ -16,27 +18,13 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
             var self = this;
             return this._super.apply(this, arguments).then(function () {
                 var filters = {};
-                var today = new moment().format('YYYY-MM-DD');
-                if(moment().date() > 20) {
-                    var prevMonth = new moment().set("date", 20).format('YYYY-MM-DD');
-                } else {
-                    var prevMonth = new moment().subtract(1, 'months').set("date", 20).format('YYYY-MM-DD');
-                }
-                if(typeof self.state.data.employee_id === 'undefined') {
-                    console.log('employee_id not have');
-                } else {
-                    console.log('employee_id have');
-                }
-                if (typeof self.state.data.start_date === 'undefined') {
-                    filters['start_date'] = today;
-                } else {
-                    filters.push();
-                }
-                if (typeof self.state.data.end_date === 'undefined') {
-                    filters['end_date'] = prevMonth;
-                } else {
-                    filters.push();
-                }
+                filters['calculate_type'] = self.state.data.calculate_type;
+                filters['employee_id'] = self.state.data.employee_id;
+                filters['department_id'] = self.state.data.department_id;
+                filters['start_date'] = self.state.data.start_date;
+                filters['end_date'] = self.state.data.end_date;
+
+                console.log(filters);
                 
                 var res = rpc.query({
                     model: 'hr.attendance.report',
@@ -48,8 +36,16 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
             });
         },
 
+        autofocus: function () {
+            var self = this;
+            var node = window.$('div.o_form_buttons_edit');
+            node.hide();
+            // Ирцийн график
+            return this._super();
+        },
+
         destroy: function () {
-            console.log('destroyed');
+            this._super();
         },
 
         _renderTable: function(ev, data) {
@@ -63,8 +59,10 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
             console.log('rows: ', rows);
 
             var $tr = $('<tr/>', { class: 'o_data_row' });
+            $tr.css({"background-color": "#eee"})
             headers.forEach(h => {
                 var $cell = $('<th>');
+                $cell.css({"background-color": "#eee", "position": "sticky", "top": "0"})
                 $cell.html(h);
                 $tr.append($cell);
             });

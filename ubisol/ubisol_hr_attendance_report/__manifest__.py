@@ -31,6 +31,9 @@
         'views/templates.xml',
         'wizards/attendance_report_wizard.xml',
     ],
+    'qweb': [
+        "static/src/xml/attendance_report_table.xml",
+    ],
     # only loaded in demonstration mode
     'demo': [
         'demo/demo.xml',
