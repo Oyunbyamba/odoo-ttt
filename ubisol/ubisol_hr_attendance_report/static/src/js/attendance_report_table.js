@@ -7,8 +7,6 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
     var viewRegistry = require('web.view_registry');
     var rpc = require('web.rpc');
 
-    // <span class="o_field_char o_field_widget" name="work_location">Building 1, Second Floor</span>
-
     var EmployeeFormRenderer = FormRenderer.extend({
 
         /**
@@ -19,8 +17,13 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
             return this._super.apply(this, arguments).then(function () {
                 var filters = {};
                 filters['calculate_type'] = self.state.data.calculate_type;
-                filters['employee_id'] = self.state.data.employee_id;
-                filters['department_id'] = self.state.data.department_id;
+                if (self.state.data.calculate_type) {
+                    if (self.state.data.calculate_type == 'employee') {
+                        filters['employee_id'] = self.state.data.employee_id.data.id;
+                    } else {
+                        filters['department_id'] = self.state.data.department_id.data.id;
+                    }
+                }
                 filters['start_date'] = self.state.data.start_date;
                 filters['end_date'] = self.state.data.end_date;
 
