@@ -68,12 +68,12 @@ msgstr ""
 #. module: ubisol_hr_holidays
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.hr_leave_inherit_form_view
 msgid "<span class=\"ml8\">Days</span>"
-msgstr ""
+msgstr "Өдөр"
 
 #. module: ubisol_hr_holidays
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.hr_leave_inherit_form_view
 msgid "<span class=\"ml8\">Hours</span>"
-msgstr ""
+msgstr "Цаг"
 
 #. module: ubisol_hr_holidays
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.hr_leave_inherit_form_view
@@ -81,7 +81,7 @@ msgid ""
 "<span class=\"oe_inline\" attrs=\"{'invisible': [('request_status_type', '=', 'attendance')]}\">\n"
 "                            To\n"
 "                        </span>"
-msgstr ""
+msgstr "Хүртэл"
 
 #. module: ubisol_hr_holidays
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report

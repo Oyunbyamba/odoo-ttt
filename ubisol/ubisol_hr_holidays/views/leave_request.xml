@@ -1,5 +1,52 @@
 <odoo> 
   <data>
+    <record id="hr_holidays.view_hr_holidays_filter" model="ir.ui.view">
+        <field name="name">hr.holidays.filter</field>
+        <field name="model">hr.leave</field>
+        <field name="arch" type="xml">
+            <search string="Search Time Off">
+                <field name="employee_id"/>
+                <field name="department_id" operator="child_of"/>
+                <field name="holiday_status_id"/>
+                <field name="name"/>
+                <filter domain="[('state','in',('confirm','validate1'))]" string="To Approve" name="approve"/>
+                <filter domain="[('state', '=', 'validate1')]" string="Need Second Approval" name="second_approval"/>
+                <filter string="Approved Time Off" domain="[('state', '=', 'validate')]" name="validated"/>
+                <separator/>
+                <filter string="My Department Time Off" name="department" domain="['|', ('department_id.member_ids.user_id', '=', uid), ('employee_id.user_id', '=', uid)]" help="My Department Time Off"/>
+                <filter string="People I Manage" name="managed_people" domain="[('employee_id.leave_manager_id', '=', uid)]" help="Time off of people you are manager of"/>
+                <filter string="My Time Off" name="my_leaves" domain="[('employee_id.user_id', '=', uid)]"/>
+                <separator/>
+                <filter string="Цалинтай" name="paid" domain="[('request_status_type', '=', 'paid')]"/>
+                <filter string="Цалингүй" name="unpaid" domain="[('request_status_type', '=', 'unpaid')]"/>
+                <filter string="Ээлжийн амралт" name="vacation" domain="[('request_status_type', '=', 'vacation')]"/>
+                <filter string="Илүү цаг" name="overtime" domain="[('request_status_type', '=', 'overtime')]"/>
+                <filter string="Ирц нөхөлт" name="attendance" domain="[('request_status_type', '=', 'attendance')]"/>
+                <filter string="Гадуур ажил" name="outside_work" domain="[('request_status_type', '=', 'outside_work')]"/>
+                <separator/>
+                <filter name="year" string="Active Time Off"
+                    domain="[('holiday_status_id.active', '=', True)]" help="Active Time Off"/>
+                <filter invisible="1" string="Late Activities" name="activities_overdue"
+                    domain="[('activity_ids.date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"
+                    help="Show all records which has next action date is before today"/>
+                <filter invisible="1" string="Today Activities" name="activities_today"
+                    domain="[('activity_ids.date_deadline', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter invisible="1" string="Future Activities" name="activities_upcoming_all"
+                        domain="[('activity_ids.date_deadline', '&gt;', context_today().strftime('%Y-%m-%d'))
+                        ]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_name" string="Description" context="{'group_by':'name'}"/>
+                    <filter name="group_employee" string="Employee" context="{'group_by':'employee_id'}"/>
+                    <filter name="group_category" string="Category" context="{'group_by':'category_id'}"/>
+                    <filter name="group_second_approver_id" string="Validator" context="{'group_by':'second_approver_id'}"/>
+                    <filter name="group_type" string="Type" context="{'group_by':'holiday_status_id'}"/>
+                    <separator/>
+                    <filter name="group_date_from" string="Start Date" context="{'group_by':'date_from'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
     <record model="ir.ui.view" id="hr_leave_inherit_form_view">
       <field name="name">hr.leave.view.form</field>
       <field name="model">hr.leave</field>
@@ -15,10 +62,9 @@
                     <div class="o_row o_row_readonly o_hr_holidays_dates">
                         <field name="request_date_from" class="oe_inline"
                             attrs="{'readonly': [('state', 'not in', ('draft', 'confirm'))]}"/>
-                        <span class="oe_inline"
-                            attrs="{'invisible': [('request_status_type', '=', 'attendance')]}">
-                            To
-                        </span>
+                        <label for="request_date_to" string="To"
+                            attrs="{'invisible': [('request_status_type', '=', 'attendance')]}"/>
+                        
                         <field name="request_date_to" class="oe_inline"
                             attrs="{
                                 'readonly': [('state', 'not in', ('draft', 'confirm'))],
@@ -47,9 +93,9 @@
                     </div>
                 </div>
 
-                <label for="frequency_request" string="Давтамжтай үүсгэх" attrs="{'invisible': [('request_status_type', '!=', 'overtime')]}"/>
+                <label for="frequency_request" string="Давтамжтай үүсгэх" groups="hr_holidays.group_hr_holidays_user" attrs="{'invisible': [('request_status_type', '!=', 'overtime')]}"/>
                 <div>
-                    <field name="frequency_request" attrs="{
+                    <field name="frequency_request" groups="hr_holidays.group_hr_holidays_user" attrs="{
                         'readonly': [('state', 'not in', ('draft', 'confirm'))],
                         'invisible': [('request_status_type', '!=', 'overtime')]
                         }"/>

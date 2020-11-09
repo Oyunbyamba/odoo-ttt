@@ -168,7 +168,8 @@ class HolidaysRequest(models.Model):
         ('employee', 'By Employee'),
         ('company', 'By Company'),
         ('department', 'By Department'),
-        ('category', 'By Employee Tag')],
+        ('category', 'By Employee Tag')
+        ],
         string='Allocation Mode', readonly=True, required=True, default='employee',
         states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]},
         help='By Employee: Allocation/Request for individual Employee, By Employee Tag: Allocation/Request for group of employees in category')

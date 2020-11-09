@@ -26,7 +26,8 @@ class UbisolHolidaysRequest(models.Model):
 
     holiday_type = fields.Selection([
         ('employee', 'By Employee'),
-        ('department', 'By Department')],
+        ('department', 'By Department'),
+        ],
         string='Allocation Mode', readonly=True, required=True, default='employee',
         states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]},
         help='By Employee: Allocation/Request for individual Employee, By Employee Tag: Allocation/Request for group of employees in category')
@@ -43,6 +44,16 @@ class UbisolHolidaysRequest(models.Model):
         ('check_in', 'Ирсэн'),
         ('check_out', 'Явсан')
         ], string='Ирсэн/явсан')
+
+    _sql_constraints = [
+        ('type_value',
+         "CHECK((holiday_type='employee' AND employee_id IS NOT NULL) or "
+         "(holiday_type='department' AND department_id IS NOT NULL) )",
+         "The employee or department of this request is missing. Please make sure that your user login is linked to an employee."),
+        ('date_check2', "CHECK ((date_from <= date_to))", "The start date must be anterior to the end date."),
+        ('duration_check', "CHECK ( number_of_days >= 0 )", "If you want to change the number of days you should use the 'period' mode"),
+    ]
+
 
     def get_filtered_record(self):
         record_ids = []
