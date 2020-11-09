@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="attendance_settings_form" model="ir.ui.view">
+        <field name="name">hr.attendance.settings.form</field>
+        <field name="model">hr.attendance.settings</field>
+        <field name="arch" type="xml">
+            <form string="Ирцийн тохиргоо">
+                <h2>Орох/Гарах цагийн тохиргоо</h2>
+                <div class="row mt16 o_settings_container">
+                    <div class="col-12 col-lg-6 o_setting_box" title="Орох/Гарах цагийн тохиргоо">
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">Орох цагийн тохиргоо</span>
+                            <div class="content-group">
+                                <div class="mt16 row">
+                                    <label for="start_work_date_from" string="Эхлэх хугацаа" class="col-4 col-lg-4 o_light_label"/>
+                                    <field name="start_work_date_from" widget="float_time"/>
+                                </div>
+                            </div>
+                            
+                            <div class="content-group">
+                                <div class="mt16 row">
+                                    <label for="start_work_date_to" string="Дуусах хугацаа" class="col-4 col-lg-4 o_light_label"/>
+                                    <field name="start_work_date_to" widget="float_time"/>
+                                </div>
+                            </div>
+                            <div class="text-muted">
+                                Орох цагийг тооцох хугацааны завсар
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box" title="Орох/Гарах цагийн тохиргоо">
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">Гарах цагийн тохиргоо</span>
+                            <div class="content-group">
+                                <div class="mt16 row">
+                                    <label for="end_work_date_from" string="Эхлэх хугацаа" class="col-4 col-lg-4 o_light_label"/>
+                                    <field name="end_work_date_from" widget="float_time"/>
+                                </div>
+                            </div>
+                            
+                            <div class="content-group">
+                                <div class="mt16 row">
+                                    <label for="end_work_date_to" string="Дуусах хугацаа" class="col-4 col-lg-4 o_light_label"/>
+                                    <field name="end_work_date_to" widget="float_time"/>
+                                </div>
+                            </div>
+                            <div class="text-muted">
+                                Гарах цагийг тооцох хугацааны завсар
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h2>Хоцролт бодох хугацаа</h2>
+                <div class="row mt16 o_settings_container">
+                    <div class="col-12 col-lg-6 o_setting_box" title="Хоцролт бодох хугацааг оруулна.">
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">Хугацаа /цаг, минутаар/</span>
+                            <div class="content-group">
+                                <div class="mt16 row">
+                                    <label for="late_min" string="Хугацаа" class="col-4 col-lg-4 o_light_label"/>
+                                    <field name="late_min" widget="float_time"/>
+                                </div>
+                            </div>
+                            <div class="text-muted">
+                                Ажлын цагаас тухайн хугацаанд хоцорвол хоцроогүй гэж тооцно.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box" title="Хоцролт бодох хугацааг оруулна.">
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">Хасагдах хугацаа /цаг, минутаар/</span>
+                            <div class="content-group">
+                                <div class="mt16 row">
+                                    <label for="late_subtrack" string="Хасагдах хугацаа" class="col-4 col-lg-4 o_light_label"/>
+                                    <field name="late_subtrack" widget="float_time"/>
+                                </div>
+                            </div>
+                            <div class="text-muted">
+                                Ирц бүртгүүлээгүй үед хасагдах хугацаа
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="hr_attendance_settings_action" model="ir.actions.act_window">
+        <field name="name">Ирцийн тохиргоо</field>
+        <field name="res_model">hr.attendance.settings</field>
+        <field name="view_mode">form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">
+                No attendance records found
+            </p><p>
+                The attendance records of your employees will be displayed here.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_attendance_settings"
+        name="Ирц"
+        parent="hr.menu_human_resources_configuration"
+        sequence="10"
+        action="hr_attendance_settings_action"
+    />
+</odoo>

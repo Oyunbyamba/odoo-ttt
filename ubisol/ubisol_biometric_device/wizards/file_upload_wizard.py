@@ -64,7 +64,7 @@ class LogFileImportWizard(models.TransientModel):
 
         # Herev hereglegch oldson bol
         if get_user_id:
-            setting_obj = self.env['res.config.settings'].search([], limit=1, order='id desc')
+            setting_obj = self.env['hr.attendance.settings'].search([], limit=1, order='id desc')
             general_shift = self.env['hr.employee.schedule'].search(
                 [('hr_employee', '=', int(get_user_id.id))], limit=1, order='id asc')
             shift_obj = self.env['hr.employee.shift']

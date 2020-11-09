@@ -278,7 +278,7 @@ class BiometricMachine(models.Model):
         return {}
 
     def check_in_out(self, att_obj, get_user_id, dt):
-        setting_obj = self.env['res.config.settings'].search(
+        setting_obj = self.env['hr.attendance.settings'].search(
             [], limit=1, order='id desc')
         general_shift = self.env['hr.employee.schedule'].search(
             [('hr_employee', '=', int(get_user_id.id))], limit=1, order='id desc')

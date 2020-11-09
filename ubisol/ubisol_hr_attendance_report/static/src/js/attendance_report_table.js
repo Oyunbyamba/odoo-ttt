@@ -7,6 +7,29 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
     var viewRegistry = require('web.view_registry');
     var rpc = require('web.rpc');
 
+    function convertNumToTime(number) {
+        // Check sign of given number
+        var sign = (number >= 0) ? 1 : -1;
+        // Set positive value of number of sign negative
+        number = number * sign;
+        // Separate the int from the decimal part
+        var hour = Math.floor(number);
+        var decpart = number - hour;
+        var min = 1 / 60;
+        // Round to nearest minute
+        decpart = min * Math.round(decpart / min);
+        var minute = Math.floor(decpart * 60) + '';
+        // Add padding if need
+        if (minute.length < 2) {
+            minute = '0' + minute; 
+        }
+        // Add Sign in final result
+        sign = sign == 1 ? '' : '-';
+        // Concate hours and minutes
+        var time = sign + hour + ':' + minute;
+        return time;
+    }
+
     var EmployeeFormRenderer = FormRenderer.extend({
 
         /**
@@ -52,7 +75,7 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
         },
 
         _renderTable: function(ev, data) {
-            var $table = $('<table>').addClass('custom_attendance_table table table-sm table-hover table-striped');
+            var $table = $('<table>').addClass('custom_attendance_table table table-hover table-striped');
             var $thead = $('<thead>');
             var $tbody = $('<tbody>');
             var headers = data.header;
@@ -66,7 +89,7 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
             headers.forEach(h => {
                 var $cell = $('<th>');
                 $cell.css({"background-color": "#eee", "position": "sticky", "top": "0"})
-                $cell.html(h);
+                $cell.html(h[1]);
                 $tr.append($cell);
             });
             $thead.append($tr);
@@ -75,10 +98,37 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
             rows.forEach(att => {
                 var $tr = $('<tr/>', { class: 'o_data_row' });
                 var i = 0;
-                for (var key of Object.keys(att)) {
-                    var $cell = $('<td>');
-                    $cell.html(att[key]);
-                    $tr.append($cell);
+                for (var header of headers) {
+                    var key = header[0];
+                    switch (key) {
+                        case 'id':
+                        case '__count':
+                            break;
+                        case 'take_off_day':
+                        case 'work_days':
+                        case 'worked_days':
+                            var $cell = $('<td>');
+                            $cell.html(att[key]);
+                            $tr.append($cell);
+                            break;
+                        case 'hr_employee_shift':
+                            var $cell = $('<td>');
+                            $cell.html(att[key][1]);
+                            $tr.append($cell);
+                            break;
+                        case 'hr_employee':
+                            var $cell = $('<th>');
+                            $cell.css({"background-color": "#f2f2f2"})
+                            $cell.html(att[key][1]);
+                            $tr.append($cell);
+                            break;
+                        default:
+                            var hours = convertNumToTime(att[key]);
+                            var $cell = $('<td>');
+                            $cell.html(hours);
+                            $tr.append($cell);
+                            break;
+                    }
                 }
                 $tbody.append($tr);
             });
