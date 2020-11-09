@@ -4,18 +4,17 @@ from odoo import models, fields, _, api
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
-class AttendanceReport(models.TransientModel):
-    _name = 'attendance.report.interval'
-    _description = 'Attendance Report Interval'
+class HrAttendanceInterval(models.TransientModel):
+    _name = 'hr.attendance.interval'
+    _description = 'Hr Attendance Interval'
 
-    calculate_type = fields.Selection([
-        ('department', 'Хэлтэс'),
-        ('employee', 'Ажилтан')
-    ], string="Төрөл")
     start_date = fields.Date(string="Эхлэх хугацаа", required=True, default=(datetime.today()-relativedelta(months=+1)).strftime('%Y-%m-20'))
     end_date = fields.Date(string="Дуусах хугацаа", required=True, default=datetime.now().strftime('%Y-%m-%d'))
-    employee_id = fields.Many2one('hr.employee', string="Employee", help="Employee")
-    department_id = fields.Many2one('hr.department', string="Department", help="Department")
+
+    def _default_employee(self):
+        return self.env.user.employee_id
+
+    employee_id = fields.Many2one('hr.employee', string="Ажилтан", default=_default_employee, help="Employee")
 
     @api.model
     def attendance_report_interval(self, val):

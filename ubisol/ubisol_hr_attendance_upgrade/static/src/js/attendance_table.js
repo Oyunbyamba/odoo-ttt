@@ -15,24 +15,59 @@ odoo.define('attendance_table.RenderTable',function (require) {
         _render: function () {
             var self = this;
             return this._super.apply(this, arguments).then(function () {
+                var filters = {};
+                filters['calculate_type'] = 'employee';
+                filters['employee_id'] = self.state.data.employee_id.data.id;
+                filters['start_date'] = self.state.data.start_date;
+                filters['end_date'] = self.state.data.end_date;
+
+                console.log(filters);
+                
                 var res = rpc.query({
-                    model: 'hr.attendance',
-                    method: 'get_my_attendances',
+                    model: 'hr.attendance.report',
+                    method: 'get_attendances_report',
+                    args: [filters],
                 }).then(function (data) {
                     self._renderTable(self, data)
                 });
             });
         },
 
-        destroy: function () {
-            console.log('destroyed');
+        autofocus: function () {
+            var self = this;
+            var node = window.$('div.o_form_buttons_edit');
+            node.hide();
+            return this._super();
         },
 
-        _renderTable: function(ev, attendances) {
+        destroy: function () {
+            this._super();
+        },
+
+        _renderTable: function(ev, data) {
             var $table = $('<table>').addClass('custom_attendance_table table table-sm table-hover table-striped');
+            var $thead = $('<thead>');
             var $tbody = $('<tbody>');
-            attendances.forEach(att => {
+            var headers = data.header;
+            var rows = data.data;
+
+            console.log('headers: ', headers);
+            console.log('rows: ', rows);
+
+            var $tr = $('<tr/>', { class: 'o_data_row' });
+            $tr.css({"background-color": "#eee"})
+            headers.forEach(h => {
+                var $cell = $('<th>');
+                $cell.css({"background-color": "#eee", "position": "sticky", "top": "0"})
+                $cell.html(h);
+                $tr.append($cell);
+            });
+            $thead.append($tr);
+            $table.append($thead);
+
+            rows.forEach(att => {
                 var $tr = $('<tr/>', { class: 'o_data_row' });
+                var i = 0;
                 for (var key of Object.keys(att)) {
                     var $cell = $('<td>');
                     $cell.html(att[key]);
@@ -41,8 +76,11 @@ odoo.define('attendance_table.RenderTable',function (require) {
                 $tbody.append($tr);
             });
             $table.append($tbody);
-            var $att_div = this.$el.find('.attendance_ids');
+
+            var $att_div = this.$el.find('.attendance_report');
+            $att_div.css({"max-height": "600px", "overflow-y": "scroll"})
             $att_div.append($table);
+
             return true;
         },
 
@@ -63,13 +101,14 @@ odoo.define('attendance_table.RenderTable',function (require) {
         }),
 
         _renderTable: function(ev) {
-            var self = this;
-            var res = rpc.query({
-                model: 'hr.attendance',
-                method: 'get_my_attendances',
-            }).then(function (data) {
-                return data;
-            });
+            // var self = this;
+            // var res = rpc.query({
+            //     model: 'hr.attendance',
+            //     method: 'get_my_attendances',
+            //     args: [ev.data.employee_id],
+            // }).then(function (data) {
+            //     return data;
+            // });
         },
     });
 

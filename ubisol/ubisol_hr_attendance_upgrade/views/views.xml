@@ -72,25 +72,29 @@
       </field>
     </record>
 
-    <record id="view_attendance_inherit_form" model="ir.ui.view">
-      <field name="name">hr.attendance.form</field>
-      <field name="model">hr.attendance</field>
-      <field name="inherit_id" ref="hr_attendance.hr_attendance_view_form"/>
+    <record id="hr_attendance_report_form" model="ir.ui.view">
+      <field name="name">hr.attendance.interval</field>
+      <field name="model">hr.attendance.interval</field>
       <field name="arch" type="xml">
-        <xpath expr="//form" position="replace">
-          <form string="Employee attendances" js_class="hr_attendance_form">
-            <sheet>
+        <form string="Ирцийн график" create="false" edit="false" js_class="hr_attendance_form">
+          <sheet>
+            <group>
               <group>
-                <div class="start_date"></div>
-                <div class="end_date"></div>
-                <div class="employee_id"></div>
+                <field name="start_date"/>
+                <field name="end_date"/>
               </group>
               <group>
-                <div class="attendance_ids"></div>
+                <field name="employee_id" attrs="{'readonly': [True]}"/>
               </group>
-            </sheet>
-          </form>
-        </xpath>
+            </group>
+            <group>
+              <button id="attendance_report_interval"  name="attendance_report_interval" string="Тооцоолох" type="object" class="oe_highlight"/>
+            </group>
+            <group>
+              <div class="attendance_report"></div>
+            </group>
+          </sheet>
+        </form>
       </field>
     </record>
 
@@ -140,7 +144,7 @@
 
     <record id="my_attendance_action" model="ir.actions.act_window">
         <field name="name">Attendances</field>
-        <field name="res_model">hr.attendance</field>
+        <field name="res_model">hr.attendance.interval</field>
         <field name="view_mode">form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_empty_folder">

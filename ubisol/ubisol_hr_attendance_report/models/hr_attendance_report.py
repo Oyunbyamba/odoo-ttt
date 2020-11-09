@@ -415,9 +415,20 @@ class HrAttendanceReport(models.Model):
 
     @api.model
     def get_attendances_report(self, filters):
-        resource = self.env['resource.resource'].search([('user_id','=',self.env.user.id)])
-        employee = self.env['hr.employee'].search([('resource_id','=',resource.id)])
-        attendances = self.env['hr.attendance.report'].search([('hr_employee', '=', employee.id)])
+        start_date = filters['start_date']
+        end_date = filters['end_date']
+
+        print(filters)
+        
+        if filters['calculate_type']:
+            if filters['calculate_type'] == 'employee':
+                employee_id = filters['employee_id']
+                attendances = self.env['hr.attendance.report'].search([('hr_employee', '=', employee_id), ('work_day', '>=', start_date), ('work_day', '<=', end_date)])
+            else:
+                department_id = filters['department_id']
+                attendances = self.env['hr.attendance.report'].search([('hr_department', '=', department_id), ('work_day', '>=', start_date), ('work_day', '<=', end_date)])
+        else:
+            attendances = self.env['hr.attendance.report'].search([('work_day', '>=', start_date), ('work_day', '<=', end_date)])
         raw_data = attendances.read()
 
         header = [

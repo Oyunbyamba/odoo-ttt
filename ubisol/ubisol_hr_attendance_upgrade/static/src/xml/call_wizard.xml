@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
   <template xml:space="preserve">
-    <t t-extend="ListView.buttons">
-        <t t-jquery="button.o_list_export_xlsx" t-operation="after">
-            <button t-if='widget.modelName == "hr.attendance"' type="button" class="btn btn-primary o_button_to_call_attendance_wizard">Хугацааны интервал</button>
-        </t>
+    <t t-if='widget.modelName == "hr.attendance"'>
+      <t t-extend="ListView.buttons">
+          <t t-jquery="button.o_list_export_xlsx" t-operation="after">
+              <button type="button" class="btn btn-primary o_button_to_call_attendance_wizard">Хугацааны интервал</button>
+          </t>
+      </t>
     </t>
   </template>
