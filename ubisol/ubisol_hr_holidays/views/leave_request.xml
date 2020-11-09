@@ -47,6 +47,23 @@
                     </div>
                 </div>
 
+                <label for="frequency_request" string="Давтамжтай үүсгэх" attrs="{'invisible': [('request_status_type', '!=', 'overtime')]}"/>
+                <div>
+                    <field name="frequency_request" attrs="{
+                        'readonly': [('state', 'not in', ('draft', 'confirm'))],
+                        'invisible': [('request_status_type', '!=', 'overtime')]
+                        }"/>
+                </div>
+
+                <label for="attendance_in_out" string="Ирсэн/явсан" attrs="{'invisible': [('request_status_type', '!=', 'attendance')]}"/>
+                <div>
+                    <field name="attendance_in_out" attrs="{
+                        'readonly': [('state', 'not in', ('draft', 'confirm'))],
+                        'required': [('request_status_type', '=', 'attendance')],
+                        'invisible': [('request_status_type', '!=', 'attendance')]
+                        }"/>
+                </div>
+
                 <!-- When the user is leave manager, he should always see `number_of_days` to allow
                 him to edit the value. `number_of_hours_display` is only an informative field -->
                 <label for="number_of_days" string="Duration" attrs="{'invisible': [('request_status_type', '=', 'attendance')]}"/>

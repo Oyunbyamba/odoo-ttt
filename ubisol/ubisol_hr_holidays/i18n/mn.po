@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-22 12:36+0000\n"
-"PO-Revision-Date: 2020-10-22 12:36+0000\n"
+"POT-Creation-Date: 2020-11-09 01:55+0000\n"
+"PO-Revision-Date: 2020-11-09 01:55+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,6 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.custom_layout
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
 msgid "\"Company 1\" ХХК-ийн"
 msgstr ""
@@ -24,11 +23,6 @@ msgstr ""
 #. module: ubisol_hr_holidays
 #: model:ir.actions.report,print_report_name:ubisol_hr_holidays.leave_definition_report_pdf
 msgid "'Leave definition'"
-msgstr ""
-
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.custom_layout
-msgid "-ны өдрийн .... дугаар"
 msgstr ""
 
 #. module: ubisol_hr_holidays
@@ -60,28 +54,73 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
 msgid ""
 "<br/>\n"
-"                                нь\n"
-"                                <br/>"
+"                            нь\n"
+"                            <br/>"
 msgstr ""
 
 #. module: ubisol_hr_holidays
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
 msgid ""
 "<br/>\n"
-"                                шалтгааны улмаас"
+"                            шалтгааны улмаас"
 msgstr ""
 
 #. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.custom_layout
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.hr_leave_inherit_form_view
+msgid "<span class=\"ml8\">Days</span>"
+msgstr ""
+
+#. module: ubisol_hr_holidays
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.hr_leave_inherit_form_view
+msgid "<span class=\"ml8\">Hours</span>"
+msgstr ""
+
+#. module: ubisol_hr_holidays
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.hr_leave_inherit_form_view
 msgid ""
-"<br/>\n"
-"                    <span>тушаалын 2 дугаар хавсралт</span>"
+"<span class=\"oe_inline\" attrs=\"{'invisible': [('request_status_type', '=', 'attendance')]}\">\n"
+"                            To\n"
+"                        </span>"
 msgstr ""
 
 #. module: ubisol_hr_holidays
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid "<span>ЧӨЛӨӨНИЙ ХУУДАС</span>"
+msgid "<span>АЛБА ХЭЛТСИЙН ДАРГА НАР</span>"
 msgstr ""
+
+#. module: ubisol_hr_holidays
+#: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave__holiday_type
+msgid "Allocation Mode"
+msgstr "Хуваарилах Горим"
+
+#. module: ubisol_hr_holidays
+#: model:ir.model.fields.selection,name:ubisol_hr_holidays.selection__hr_leave__holiday_type__department
+msgid "By Department"
+msgstr "Хэлтэс"
+
+#. module: ubisol_hr_holidays
+#: model:ir.model.fields.selection,name:ubisol_hr_holidays.selection__hr_leave__holiday_type__employee
+msgid "By Employee"
+msgstr "Ажилтнаар"
+
+#. module: ubisol_hr_holidays
+#: model:ir.model.fields,help:ubisol_hr_holidays.field_hr_leave__holiday_type
+msgid ""
+"By Employee: Allocation/Request for individual Employee, By Employee Tag: "
+"Allocation/Request for group of employees in category"
+msgstr ""
+"Ажичлнаар: Хуваарилалт/Хүсэлт ажилчин бүрт, Ажилчдын Пайзаар: "
+"Хуваарилалт/Хүсэлт ажилчдын ангилал дэх бүлгүүдэд"
+
+#. module: ubisol_hr_holidays
+#: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave__request_unit_hours
+msgid "Custom Hours"
+msgstr "Цагийн заалт"
+
+#. module: ubisol_hr_holidays
+#: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave__request_unit_custom
+msgid "Days-long custom hours"
+msgstr "Хоног доторх цагийн заалт"
 
 #. module: ubisol_hr_holidays
 #: model:ir.model.fields,field_description:ubisol_hr_holidays.field_report_ubisol_hr_holidays_leave_report__display_name
@@ -89,9 +128,19 @@ msgid "Display Name"
 msgstr "Дэлгэрэнгүй нэр"
 
 #. module: ubisol_hr_holidays
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.hr_leave_inherit_form_view
+msgid "Duration"
+msgstr "Үргэлжлэх хугацаа"
+
+#. module: ubisol_hr_holidays
 #: model:ir.model,name:ubisol_hr_holidays.model_report_ubisol_hr_holidays_leave_report
 msgid "Employee Anket Report"
 msgstr "Ажилтаны анкет"
+
+#. module: ubisol_hr_holidays
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.hr_leave_inherit_form_view
+msgid "From"
+msgstr "Хаанаас"
 
 #. module: ubisol_hr_holidays
 #: model:res.groups,name:ubisol_hr_holidays.hide
@@ -124,14 +173,21 @@ msgid "Leave type"
 msgstr "Чөлөөний төрөл"
 
 #. module: ubisol_hr_holidays
+#: code:addons/ubisol_hr_holidays/models/hr_leave_request.py:0
+#, python-format
+msgid "Leaves"
+msgstr "Чөлөө"
+
+#. module: ubisol_hr_holidays
+#: model:ir.actions.server,name:ubisol_hr_holidays.hr_leave_action_approve_department2
 #: model:ir.model,name:ubisol_hr_holidays.model_hr_leave
 msgid "Time Off"
 msgstr "Чөлөө"
 
 #. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid "АЛБА ХЭЛТСИЙН ДАРГА НАР"
-msgstr ""
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.hr_leave_inherit_form_view
+msgid "To"
+msgstr "Хүртэл"
 
 #. module: ubisol_hr_holidays
 #: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave__employee_holiday
@@ -150,18 +206,28 @@ msgid "Байгууллагад ажилласан жил"
 msgstr ""
 
 #. module: ubisol_hr_holidays
+#: model:ir.model.fields.selection,name:ubisol_hr_holidays.selection__hr_leave_type__request_status_type__outside_work
+msgid "Гадуур ажил"
+msgstr ""
+
+#. module: ubisol_hr_holidays
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
 msgid "Гүйцэтгэх захирал:"
 msgstr ""
 
 #. module: ubisol_hr_holidays
-#: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave__company_holiday_days
-msgid "Суурь амралтын хоног"
+#: model:ir.model.fields.selection,name:ubisol_hr_holidays.selection__hr_leave_type__request_status_type__overtime
+msgid "Илүү цаг"
 msgstr ""
 
 #. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid "Улаанбаатар хот"
+#: model:ir.model.fields.selection,name:ubisol_hr_holidays.selection__hr_leave_type__request_status_type__attendance
+msgid "Ирц нөхөлт"
+msgstr ""
+
+#. module: ubisol_hr_holidays
+#: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave__base_vacation_days
+msgid "Суурь амралтын хоног"
 msgstr ""
 
 #. module: ubisol_hr_holidays
@@ -171,13 +237,34 @@ msgid "Улсад ажилласан жил"
 msgstr ""
 
 #. module: ubisol_hr_holidays
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.hr_leave_type_inherit_form_view
+msgid "Хүсэлтийн төрөл"
+msgstr ""
+
+#. module: ubisol_hr_holidays
 #: model:ir.ui.menu,name:ubisol_hr_holidays.menu_hr_requests_root
 msgid "Хүсэлтүүд"
 msgstr ""
 
 #. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.hr_leave_type_inherit_form_view
+#: model:ir.model.fields.selection,name:ubisol_hr_holidays.selection__hr_leave_type__request_status_type__unpaid
 msgid "Цалингүй"
+msgstr ""
+
+#. module: ubisol_hr_holidays
+#: model:ir.model.fields.selection,name:ubisol_hr_holidays.selection__hr_leave_type__request_status_type__paid
+msgid "Цалинтай"
+msgstr ""
+
+#. module: ubisol_hr_holidays
+#: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave__request_status_type
+#: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave_type__request_status_type
+msgid "Чөлөөний төрөл"
+msgstr ""
+
+#. module: ubisol_hr_holidays
+#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
+msgid "Чөлөөний хуудас"
 msgstr ""
 
 #. module: ubisol_hr_holidays
@@ -186,19 +273,13 @@ msgid "Чөлөөний хуудас нь холбогдох баримтын х
 msgstr ""
 
 #. module: ubisol_hr_holidays
-#: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave_type__vacation
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.hr_leave_type_inherit_form_view
+#: model:ir.model.fields.selection,name:ubisol_hr_holidays.selection__hr_leave_type__request_status_type__vacation
 msgid "Ээлжийн амралт"
 msgstr ""
 
 #. module: ubisol_hr_holidays
 #: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave__warning_of_vacation
 msgid "Ээлжийн амралт боломжтой эсэх"
-msgstr ""
-
-#. module: ubisol_hr_holidays
-#: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave__vacation_type
-msgid "Ээлжийн амралт эсэх"
 msgstr ""
 
 #. module: ubisol_hr_holidays
@@ -227,19 +308,8 @@ msgid "овогтой"
 msgstr ""
 
 #. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.custom_layout
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
 msgid "оны"
-msgstr ""
-
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid "сар"
-msgstr ""
-
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.custom_layout
-msgid "сарын"
 msgstr ""
 
 #. module: ubisol_hr_holidays
@@ -265,9 +335,4 @@ msgstr ""
 #. module: ubisol_hr_holidays
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
 msgid "өдрийн"
-msgstr ""
-
-#. module: ubisol_hr_holidays
-#: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
-msgid "өдөр"
 msgstr ""

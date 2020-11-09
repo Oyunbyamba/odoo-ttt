@@ -38,6 +38,11 @@ class UbisolHolidaysRequest(models.Model):
     request_status_type = fields.Selection(related='holiday_status_id.request_status_type', readonly=True)
     request_unit_hours = fields.Boolean('Custom Hours')
     request_unit_custom = fields.Boolean('Days-long custom hours')
+    frequency_request = fields.Boolean('Давтамжтай үүсгэх эсэх')
+    attendance_in_out = fields.Selection([
+        ('check_in', 'Ирсэн'),
+        ('check_out', 'Явсан')
+        ], string='Ирсэн/явсан')
 
     def get_filtered_record(self):
         record_ids = []
@@ -56,7 +61,62 @@ class UbisolHolidaysRequest(models.Model):
             'view_id': False,
             'view_mode': 'tree,form',
             'type': 'ir.actions.act_window'
-        }          
+        }         
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """ Override to avoid automatic logging of creation """
+        if not self._context.get('leave_fast_create'):
+            leave_types = self.env['hr.leave.type'].browse([values.get('holiday_status_id') for values in vals_list if values.get('holiday_status_id')])
+            mapped_validation_type = {leave_type.id: leave_type.validation_type for leave_type in leave_types}
+
+            for values in vals_list:
+                employee_id = values.get('employee_id', False)
+                leave_type_id = values.get('holiday_status_id')
+                # Handle automatic department_id
+                if not values.get('department_id'):
+                    values.update({'department_id': self.env['hr.employee'].browse(employee_id).department_id.id})
+
+                # Handle no_validation
+                if mapped_validation_type[leave_type_id] == 'no_validation':
+                    values.update({'state': 'confirm'})
+
+                # Handle double validation
+                if mapped_validation_type[leave_type_id] == 'both':
+                    self._check_double_validation_rules(employee_id, values.get('state', False))
+
+        holidays = super(models.Model, self.with_context(mail_create_nosubscribe=True)).create(vals_list)
+
+        for holiday in holidays:
+            if self._context.get('import_file'):
+                holiday._onchange_leave_dates()
+            if not self._context.get('leave_fast_create'):
+                # FIXME remove these, as they should not be needed
+                if employee_id:
+                    holiday.with_user(SUPERUSER_ID)._sync_employee_details()
+                if 'number_of_days' not in values and ('date_from' in values or 'date_to' in values):
+                    holiday.with_user(SUPERUSER_ID)._onchange_leave_dates()
+
+                # Everything that is done here must be done using sudo because we might
+                # have different create and write rights
+                # eg : holidays_user can create a leave request with validation_type = 'manager' for someone else
+                # but they can only write on it if they are leave_manager_id
+                holiday_sudo = holiday.sudo()
+                holiday_sudo.add_follower(employee_id)
+                if holiday.validation_type == 'manager':
+                    holiday_sudo.message_subscribe(partner_ids=holiday.employee_id.leave_manager_id.partner_id.ids)
+                if holiday.holiday_status_id.validation_type == 'no_validation':
+                    # Automatic validation should be done in sudo, because user might not have the rights to do it by himself
+                    holiday_sudo.action_validate()
+                    holiday_sudo.message_subscribe(partner_ids=[holiday_sudo._get_responsible_for_approval().partner_id.id])
+                    holiday_sudo.message_post(body=_("The time off has been automatically approved"), subtype="mt_comment") # Message from OdooBot (sudo)
+                elif not self._context.get('import_file'):
+                    holiday_sudo.activity_update()
+
+                if(holiday.request_status_type == 'overtime' and holiday.frequency_request == True):
+                    self.multiple_overtime(holiday)
+
+        return holidays     
 
     @api.onchange('holiday_status_id')
     def _onchange_holiday_status_id(self):
@@ -214,5 +274,76 @@ class UbisolHolidaysRequest(models.Model):
                 elif(holiday.employee_id.years_of_civil_service >= 32):
                     holiday.employee_holiday = holiday.base_vacation_days+14    
             else:
-                holiday.employee_holiday = 0        
-    
+                holiday.employee_holiday = 0              
+
+    def _get_department_child(self, department, res):
+        if(department.child_ids):
+            for child in department.child_ids:
+                res.append(child.id)
+                self._get_department_child(child, res)
+        return res      
+
+    def create_overtime(self, holiday, s_date, start_time, end_time, employee):
+        holiday_values = []
+        holiday_values.append({
+            'name': holiday.name,
+            'state': holiday.state,
+            'report_note': holiday.report_note,
+            'user_id': holiday.user_id.id,
+            'manager_id': holiday.manager_id.id,
+            'holiday_status_id': holiday.holiday_status_id.id,
+            'employee_id': employee.id,
+            'department_id': employee.department_id.id,
+            'notes': holiday.notes,
+            'date_from': str(s_date) + ' ' + str(start_time),
+            'date_to': str(s_date) + ' ' + str(end_time),
+            'number_of_days': holiday.number_of_days,
+            'holiday_type': 'employee',
+            'request_date_from': s_date,
+            'request_date_to': s_date,
+            'request_hour_from': holiday.request_hour_from,
+            'request_hour_to': holiday.request_hour_to,
+            'request_date_from_period': holiday.request_date_from_period
+        }) 
+        hr_att_req = self.env['hr.leave'].create(holiday_values)
+
+        return True    
+
+    def multiple_overtime(self, holiday):
+        request_type = holiday.holiday_type
+        start_date = holiday.request_date_from
+        end_date = holiday.request_date_to
+        start_time =  holiday.date_from.time()
+        end_time =  holiday.date_to.time()
+        first_att = 1
+        delta = end_date-start_date
+        count = 0
+
+        while count <= delta.days:
+            s_date =  start_date + timedelta(days=+count)
+            if(request_type == 'department'):
+                department_ids = self._get_department_child(holiday.department_id, [holiday.department_id.id])
+                department_employees = self.env['hr.employee'].search([('department_id', 'in', department_ids)])
+                if len(department_employees) > 0:
+                    for department_employee in department_employees:
+                        if(first_att == 1 and department_employees[0].id == department_employee.id):
+                            holiday.holiday_type = 'employee'
+                            holiday.employee_id = department_employee.id
+                            holiday.date_from = str(s_date) + ' ' + str(start_time)
+                            holiday.date_to = str(s_date) + ' ' + str(end_time)
+                            holiday.request_date_from = s_date
+                            holiday.request_date_to = s_date
+                            first_att = 2
+                        else:
+                            self.create_overtime(holiday, s_date, start_time, end_time, department_employee)
+            elif(request_type == 'employee'):
+                if(first_att == 1):
+                    holiday.date_from = str(s_date) + ' ' + str(start_time)
+                    holiday.date_to = str(s_date) + ' ' + str(end_time)
+                    holiday.request_date_from = s_date
+                    holiday.request_date_to = s_date
+                    first_att = 2
+                else:
+                    self.create_overtime(holiday, s_date, start_time, end_time, holiday.employee_id)
+
+            count = count+1       
