@@ -30,6 +30,31 @@ odoo.define('attendance_table.RenderTable',function (require) {
         return time;
     }
 
+    function romanize (num) {
+        if (isNaN(num))
+            return NaN;
+        var digits = String(+num).split(""),
+            key = ["","C","CC","CCC","CD","D","DC","DCC","DCCC","CM",
+                   "","X","XX","XXX","XL","L","LX","LXX","LXXX","XC",
+                   "","I","II","III","IV","V","VI","VII","VIII","IX"],
+            roman = "",
+            i = 3;
+        while (i--)
+            roman = (key[+digits.pop() + (i * 10)] || "") + roman;
+        return Array(+digits.join("") + 1).join("M") + roman;
+    }
+
+    function changeDateFormat(val) {
+        var d = moment(val, "YYYY-MM-DD", true);
+        if(d.isValid()) {
+            var month = d.format('M');
+            var day   = d.format('D');
+            return romanize(month) + '/' + day;
+        } else {
+            return val;
+        }
+    }
+
     var EmployeeFormRenderer = FormRenderer.extend({
 
         /**
@@ -72,6 +97,7 @@ odoo.define('attendance_table.RenderTable',function (require) {
             var $thead = $('<thead>');
             var $tbody = $('<tbody>');
             var headers = data.header;
+            var fields = data.fields;
             var rows = data.data;
 
             console.log('headers: ', headers);
@@ -82,34 +108,33 @@ odoo.define('attendance_table.RenderTable',function (require) {
             headers.forEach(h => {
                 var $cell = $('<th>');
                 $cell.css({"background-color": "#eee", "position": "sticky", "top": "0"})
-                $cell.html(h);
+                $cell.html(changeDateFormat(h));
                 $tr.append($cell);
             });
             $thead.append($tr);
             $table.append($thead);
 
-            rows.forEach(att => {
+            rows.forEach((att, i) => {
                 var $tr = $('<tr/>', { class: 'o_data_row' });
-                var i = 0;
                 for (var header of headers) {
                     var key = header;
                     switch (key) {
                         case 'id':
                         case '__count':
                             break;
-                        case 'shift_type':
+                        case 'field_name':
+                            var cell = att[key];
                             var $cell = $('<td>');
-                            $cell.html(att[key]);
-                            $tr.append($cell);
-                            break;
-                        case 'hr_employee':
-                            var $cell = $('<th>');
-                            $cell.css({"background-color": "#f2f2f2"})
-                            $cell.html(att[key][1]);
+                            $cell.html(cell);
                             $tr.append($cell);
                             break;
                         default:
-                            var hours = convertNumToTime(att[key]);
+                            if (!att[key]) {
+                                console.log(key, att);
+                                break;
+                            }
+                            var cell = att[key][0];
+                            var hours = convertNumToTime(cell[fields[i]]);
                             var $cell = $('<td>');
                             $cell.html(hours);
                             $tr.append($cell);
@@ -121,7 +146,7 @@ odoo.define('attendance_table.RenderTable',function (require) {
             $table.append($tbody);
 
             var $att_div = this.$el.find('.attendance_report');
-            $att_div.css({"max-height": "600px", "overflow-y": "scroll"})
+            $att_div.css({"max-height": "600px", "width": "100%", "overflow-x": "scroll"})
             $att_div.append($table);
 
             return true;

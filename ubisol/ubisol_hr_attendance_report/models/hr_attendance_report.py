@@ -609,7 +609,7 @@ class HrAttendanceReport(models.Model):
     def get_my_attendances_report(self, filters):
         att_report_obj = self.env['hr.attendance.report']
         row = []
-        header = []
+        header = ['field_name']
         employee_id = filters['employee_id']
         
         DATE_FORMAT = '%Y-%m-%d'
@@ -621,35 +621,34 @@ class HrAttendanceReport(models.Model):
             dates_btwn = dates_btwn + relativedelta(days=1)
 
         fields = [
-            'hr_employee',
+            # 'hr_employee',
             # 'shift_type',
             'work_hours', 
             'worked_hours', 
             'overtime', 
-            'informal_overtime', 
-            # 'leave_hours', 
-            # 'leave_hours', 
-            # 'leave_hours', 
+            'informal_overtime',
             'difference_check_out', 
             'difference_check_in'
         ]
 
         for f in fields:
             arr = {}
+            arr['field_name'] = f
             dates_btwn = start_date
             while dates_btwn <= end_date:
                 raw_data = att_report_obj.read_group(
                     domain=[('hr_employee', '=', employee_id), ('work_day', '=', dates_btwn)],
                     fields=[f],
-                    groupby=['hr_employee'], 
+                    groupby=[], 
                     lazy=False
                 )
-                dates_btwn = dates_btwn + relativedelta(days=1)
                 arr[str(dates_btwn)] = raw_data
+                dates_btwn = dates_btwn + relativedelta(days=1)
             row.append(arr)
 
         data = {
             'data': row,
-            'header': header
+            'header': header,
+            'fields': fields
         }
         return data
