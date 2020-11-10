@@ -609,7 +609,7 @@ class HrAttendanceReport(models.Model):
     def get_my_attendances_report(self, filters):
         att_report_obj = self.env['hr.attendance.report']
         row = []
-        header = ['field_name']
+        header = [['field_name', 0]]
         employee_id = filters['employee_id']
         
         DATE_FORMAT = '%Y-%m-%d'
@@ -617,28 +617,31 @@ class HrAttendanceReport(models.Model):
         end_date = datetime.strptime(filters['end_date'], DATE_FORMAT).date()
         dates_btwn = start_date
         while dates_btwn <= end_date:
-            header.append(dates_btwn)
+            if dates_btwn.weekday() < 5:
+                header.append([dates_btwn, 0])
+            else:
+                header.append([dates_btwn, 1])
             dates_btwn = dates_btwn + relativedelta(days=1)
 
         fields = [
-            # 'hr_employee',
-            # 'shift_type',
-            'work_hours', 
-            'worked_hours', 
-            'overtime', 
-            'informal_overtime',
-            'difference_check_out', 
-            'difference_check_in'
+            ['work_hours', 'Ажиллавал зохих цаг'], 
+            ['worked_hours', 'Ажилласан цаг'], 
+            ['overtime', 'Баталсан илүү цаг'], 
+            ['informal_overtime', 'Нийт илүү цаг'],
+            ['paid_req_time', 'Цалинтай чөлөө'], 
+            ['unpaid_req_time', 'Цалингүй чөлөө'], 
+            ['difference_check_out', 'Таслалт'], 
+            ['difference_check_in', 'Хоцролт']
         ]
 
         for f in fields:
             arr = {}
-            arr['field_name'] = f
+            arr['field_name'] = f[1]
             dates_btwn = start_date
             while dates_btwn <= end_date:
                 raw_data = att_report_obj.read_group(
                     domain=[('hr_employee', '=', employee_id), ('work_day', '=', dates_btwn)],
-                    fields=[f],
+                    fields=[f[0]],
                     groupby=[], 
                     lazy=False
                 )

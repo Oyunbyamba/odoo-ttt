@@ -39,8 +39,8 @@ class LogFileImportWizard(models.TransientModel):
         atten_time = datetime.strptime(utc_dt, "%Y-%m-%d %H:%M:%S")
         att_obj = self.env['hr.attendance']
 
-        # if str(row[0]).strip() != '6001':
-        #     return {}
+        if str(row[0]).strip() != '10007':
+            return {}
 
         get_user_id = self.env['hr.employee'].search(
             [('pin', '=', str(row[0]).strip())])
@@ -71,7 +71,7 @@ class LogFileImportWizard(models.TransientModel):
             shift_type = self.env['resource.calendar'].search([('shift_type', '=', 'days')], limit=1, order='id asc')
 
             [att_id, status] = self.check_in_out(att_obj, get_user_id, atten_time, setting_obj, general_shift, shift_obj, shift_type)
-            # print(atten_time, status)
+            print(atten_time, status)
             if(status == 'check_out'):
                 if att_id != 0:
                     att_var = att_obj.browse(att_id)
@@ -85,15 +85,17 @@ class LogFileImportWizard(models.TransientModel):
                 att_var = att_obj.browse(att_id)
                 att_var.write({'check_out': atten_time})
             elif (status == "update_check_in"):
-                # att_var = att_obj.search(
-                #     [('employee_id', '=', get_user_id.id)],order="id desc")
-                # att_var[0].write({'check_in': atten_time})
+                att_var = att_obj.search(
+                    [('employee_id', '=', get_user_id.id)],order="id desc")
+                att_var[0].write({'check_in': atten_time})
                 pass
             elif status == "new_check_in":
                 att_var = att_obj.browse(att_id)
                 att_var.write({'check_in': atten_time})
             elif status == "new_check_out":
                 att_obj.create({'employee_id': get_user_id.id, 'check_out': atten_time})
+            elif status == "pass":
+                pass
             else:
                 att_obj.create(
                     {'employee_id': get_user_id.id, 'check_in': atten_time})
@@ -243,11 +245,14 @@ class LogFileImportWizard(models.TransientModel):
             check_out = self._get_attendance(get_user_id, check_in, False, ds1, ds2)
             return [check_out.id, "check_out"]
         else:
-            update_check_in = self.env['hr.attendance'].search(
-                [('employee_id', '=', get_user_id.id), ('check_in', '>=', work_start - timedelta(hours=3)), ('check_in', '<', dt)])
+            update_check_in =  self.env['hr.attendance'].search(
+                [('employee_id', '=', get_user_id.id), ('check_in', '>=', ds1), ('check_in', '<=', de2)])
             new_check_in = self._get_attendance(get_user_id, False, check_out, de1, de2)
             if update_check_in:
-                return [update_check_in.id, "update_check_in"]
+                if update_check_in.check_in > dt:
+                    return [update_check_in.id, "update_check_in"]
+                else:
+                    return [0, "pass"]
             elif new_check_in:
                 return [new_check_in.id, "new_check_in"]
             return [0, "check_in"]
