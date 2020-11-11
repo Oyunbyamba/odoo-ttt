@@ -187,9 +187,10 @@ class UbisolHolidaysRequest(models.Model):
         else:
             # find first attendance coming after first_day
             attendance_from = next((att for att in attendances if int(att.dayofweek) >= self.request_date_from.weekday()), attendances[0] if attendances else default_value)
+            
             # find last attendance coming before last_day
             attendance_to = next((att for att in reversed(attendances) if int(att.dayofweek) <= self.request_date_to.weekday()), attendances[-1] if attendances else default_value)
-
+        
         compensated_request_date_from = self.request_date_from
         compensated_request_date_to = self.request_date_to
 

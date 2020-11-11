@@ -1,5 +1,7 @@
 <odoo> 
   <data>
+    <delete model="ir.actions.server" id="hr_holidays.action_report_to_payslip"/>  
+
     <record id="hr_holidays.view_hr_holidays_filter" model="ir.ui.view">
         <field name="name">hr.holidays.filter</field>
         <field name="model">hr.leave</field>
@@ -23,6 +25,7 @@
                 <filter string="Илүү цаг" name="overtime" domain="[('request_status_type', '=', 'overtime')]"/>
                 <filter string="Ирц нөхөлт" name="attendance" domain="[('request_status_type', '=', 'attendance')]"/>
                 <filter string="Гадуур ажил" name="outside_work" domain="[('request_status_type', '=', 'outside_work')]"/>
+                <filter string="Уртын чөлөө" name="long_leave" domain="[('request_status_type', '=', 'long_leave')]"/>
                 <separator/>
                 <filter name="year" string="Active Time Off"
                     domain="[('holiday_status_id.active', '=', True)]" help="Active Time Off"/>

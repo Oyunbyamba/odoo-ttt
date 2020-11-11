@@ -15,7 +15,8 @@ class UbisolHolidaysType(models.Model):
         ('vacation', 'Ээлжийн амралт'),
         ('overtime', 'Илүү цаг'),
         ('attendance', 'Ирц нөхөлт'),
-        ('outside_work', 'Гадуур ажил')
+        ('outside_work', 'Гадуур ажил'),
+        ('long_leave', 'Уртын чөлөө'),
         ], string='Чөлөөний төрөл', required=True)
     one_step_days = fields.Integer('1 шатлалт чөлөөнд тооцох хоног', default=3)
 
