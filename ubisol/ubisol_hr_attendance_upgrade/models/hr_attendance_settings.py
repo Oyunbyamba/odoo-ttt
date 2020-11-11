@@ -3,7 +3,7 @@
 
 from odoo import api, fields, models
 
-class HrAttendanceSettings(models.TransientModel):
+class HrAttendanceSettings(models.Model):
     _name = 'hr.attendance.settings'
 
     late_subtrack = fields.Float(string='Be late from work', default='2')
