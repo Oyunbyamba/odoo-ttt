@@ -127,8 +127,8 @@ class LogFileImportWizard(models.TransientModel):
             [('hr_employee', '=', int(get_user_id.id)), ('day_period', '!=', 3), ('end_work', '>=', de1), ('end_work', '<=', de2)])
         # if attendance_req:
         #     return [0, "check_out"]
-        if s_type == 'shift' and not shift_end:
-            shift_end = shift_start
+        # if s_type == 'shift' and not shift_end:
+        #     shift_end = shift_start
 
         if(shift_end & shift_start):
             check_out = abs(dt - shift_end.end_work).total_seconds()
