@@ -27,7 +27,7 @@
         'data/data.xml',
         'security/ir.model.access.csv',
         'views/views.xml',
-        'views/templates.xml',
+        'views/hr_department.xml',
         'report/report.xml',
         'report/employee_detail.xml',
         'report/bank_definition.xml',

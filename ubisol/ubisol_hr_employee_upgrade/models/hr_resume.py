@@ -43,4 +43,9 @@ class EducationDegree(models.Model):
 
     name = fields.Char(string='HR Education degree')
 
+class Department(models.Model):
+    _inherit = 'hr.department'
+
+    latitude = fields.Char('Өргөрөг', groups="hr.group_hr_user")
+    longitude = fields.Char('Уртраг', groups="hr.group_hr_user")
      
