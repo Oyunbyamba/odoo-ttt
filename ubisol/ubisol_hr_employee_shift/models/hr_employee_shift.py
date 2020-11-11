@@ -20,8 +20,8 @@ class HrEmployeeShift(models.Model):
         ('employee', 'Employee')
     ], default="department", tracking=True)
     color = fields.Integer(string='Color Index', help="Color")
-    hr_department = fields.Many2one('hr.department', string="Department", help="Department")
-    hr_employee = fields.Many2one('hr.employee', string="Employee", help="Employee")
+    hr_department = fields.Many2many('hr.department', string="Department", help="Department")
+    hr_employee = fields.Many2many('hr.employee', string="Employee", help="Employee")
     date_from = fields.Date(string='Starting Date')
     date_to = fields.Date(string='End Date')
     resource_calendar_ids = fields.Many2one('resource.calendar', 'Working Hours')
@@ -63,6 +63,9 @@ class HrEmployeeShift(models.Model):
             'Sunday': 6
         }
         return week.get(week_day, -1) 
+
+    def _create_schedule(self, vals, hr_employee, hr_department):
+        pass
     
     def _create_schedules(self, vals, shift):
         shift_template = self.env['resource.calendar'].browse(vals.get('resource_calendar_ids'))
@@ -73,6 +76,9 @@ class HrEmployeeShift(models.Model):
             day_ids = shift_template.factory_day_ids
             total_len = len(day_ids) - 1
             counter = 0
+
+        print(vals.get('hr_department'))
+        print(vals.get('hr_employee'))
 
         if vals.get('type') == 'employee':
             employees = self.env['hr.employee'].search([('id', '=', vals.get('hr_employee'))])

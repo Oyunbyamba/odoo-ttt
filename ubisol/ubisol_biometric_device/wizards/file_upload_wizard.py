@@ -117,16 +117,16 @@ class LogFileImportWizard(models.TransientModel):
                 [att_id, status] = self._check_status_holiday(setting_obj, get_user_id, dt)
                 return [att_id, status]
 
-        attendance_req = self._is_overtime(get_user_id, dt, dt1)
-        if attendance_req:
-            [ds1, ds2, de1, de2, dt1, s_type] = self._calculate_dates(setting_obj, general_shift, attendance_req)
+        # attendance_req = self._is_overtime(get_user_id, dt, dt1)
+        # if attendance_req:
+        #     [ds1, ds2, de1, de2, dt1, s_type] = self._calculate_dates(setting_obj, general_shift, attendance_req)
 
         shift_start = self.env['hr.employee.schedule'].search(
             [('hr_employee', '=', int(get_user_id.id)), ('day_period', '!=', 3), ('start_work', '>=', ds1), ('start_work', '<=', ds2)])
         shift_end = self.env['hr.employee.schedule'].search(
             [('hr_employee', '=', int(get_user_id.id)), ('day_period', '!=', 3), ('end_work', '>=', de1), ('end_work', '<=', de2)])
-        if attendance_req:
-            return [0, "check_out"]
+        # if attendance_req:
+        #     return [0, "check_out"]
         if s_type == 'shift' and not shift_end:
             shift_end = shift_start
 
