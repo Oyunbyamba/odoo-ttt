@@ -39,8 +39,8 @@ class LogFileImportWizard(models.TransientModel):
         atten_time = datetime.strptime(utc_dt, "%Y-%m-%d %H:%M:%S")
         att_obj = self.env['hr.attendance']
 
-        if str(row[0]).strip() != '10007':
-            return {}
+        # if str(row[0]).strip() != '6001':
+        #     return {}
 
         get_user_id = self.env['hr.employee'].search(
             [('pin', '=', str(row[0]).strip())])
@@ -71,7 +71,7 @@ class LogFileImportWizard(models.TransientModel):
             shift_type = self.env['resource.calendar'].search([('shift_type', '=', 'days')], limit=1, order='id asc')
 
             [att_id, status] = self.check_in_out(att_obj, get_user_id, atten_time, setting_obj, general_shift, shift_obj, shift_type)
-            print(atten_time, status)
+            print(atten_time, status, att_id)
             if(status == 'check_out'):
                 if att_id != 0:
                     att_var = att_obj.browse(att_id)
@@ -227,27 +227,34 @@ class LogFileImportWizard(models.TransientModel):
             else:
                 new_check_out = None
 
-            update_check_out = self.env['hr.attendance'].search(
-                [('employee_id', '=', get_user_id.id), ('check_out', '>=', work_start), ('check_out', '<', dt)])
+            # update_check_out = self.env['hr.attendance'].search(
+            #     [('employee_id', '=', get_user_id.id), ('check_out', '>=', work_start), ('check_out', '<', dt)])
+            update_check_out =  self.env['hr.attendance'].search(
+                [('employee_id', '=', get_user_id.id), ('check_out', '>=', de1), ('check_out', '<=', de2)])
+            
+            check_out = self.env['hr.attendance'].search(
+                [('employee_id', '=', get_user_id.id), ('check_in', '>=', ds1), ('check_in', '<=', ds2)])
 
-            if(update_check_out):
-                return [update_check_out.id, "update_check_out"]
+            if update_check_out:
+                if update_check_out.check_out < dt:
+                    return [update_check_out.id, "update_check_out"]
+                else:
+                    return [0, "pass"]
+            elif check_out:
+                return [check_out.id, "check_out"]
             elif new_check_out:
                 if not new_check_out.check_in:
                     return [new_check_out.id, "new_check_out"]
                 elif days >= 1:
                     return [new_check_out.id, "new_check_out"]
                 else:
-                    check_out = self._get_attendance(get_user_id, check_in, False, ds1, ds2)
                     return [check_out.id, "check_out"]
-            elif not last_id:
-                return [0, "new_check_out"]
-            check_out = self._get_attendance(get_user_id, check_in, False, ds1, ds2)
-            return [check_out.id, "check_out"]
+            return [0, "new_check_out"]
         else:
             update_check_in =  self.env['hr.attendance'].search(
-                [('employee_id', '=', get_user_id.id), ('check_in', '>=', ds1), ('check_in', '<=', de2)])
-            new_check_in = self._get_attendance(get_user_id, False, check_out, de1, de2)
+                [('employee_id', '=', get_user_id.id), ('check_in', '>=', ds1), ('check_in', '<=', ds2)])
+            new_check_in = self.env['hr.attendance'].search(
+                [('employee_id', '=', get_user_id.id), ('check_out', '>=', de1), ('check_out', '<=', de2)])
             if update_check_in:
                 if update_check_in.check_in > dt:
                     return [update_check_in.id, "update_check_in"]
