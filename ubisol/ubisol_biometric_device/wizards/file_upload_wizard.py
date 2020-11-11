@@ -45,9 +45,11 @@ class LogFileImportWizard(models.TransientModel):
         get_user_id = self.env['hr.employee'].search(
             [('pin', '=', str(row[0]).strip())])
 
+        # ene code iig tur comment hiiv.
         if not get_user_id:
-            record = self.env['hr.employee'].create({'name': str(row[0]).strip(), 'pin': str(row[0]).strip()})
-            get_user_id = record
+            # record = self.env['hr.employee'].create({'name': str(row[0]).strip(), 'pin': str(row[0]).strip()})
+            # get_user_id = record
+            pass
 
         duplicate_atten_ids = self.env['biometric.attendance'].search(
             [('pin_code', '=', str(row[0]).strip()),  ('punch_date_time', '=', atten_time)])
