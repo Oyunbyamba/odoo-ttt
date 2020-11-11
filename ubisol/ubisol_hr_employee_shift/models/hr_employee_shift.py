@@ -20,7 +20,7 @@ class HrEmployeeShift(models.Model):
         ('employee', 'Employee')
     ], default="department", tracking=True)
     color = fields.Integer(string='Color Index', help="Color")
-    hr_department = fields.Many2many('hr.department', string="Department", help="Department")
+    hr_department = fields.Many2one('hr.department', string="Department", help="Department")
     hr_employee = fields.Many2many('hr.employee', string="Employee", help="Employee")
     date_from = fields.Date(string='Starting Date')
     date_to = fields.Date(string='End Date')
@@ -63,9 +63,6 @@ class HrEmployeeShift(models.Model):
             'Sunday': 6
         }
         return week.get(week_day, -1) 
-
-    def _create_schedule(self, vals, hr_employee, hr_department):
-        pass
     
     def _create_schedules(self, vals, shift):
         shift_template = self.env['resource.calendar'].browse(vals.get('resource_calendar_ids'))
@@ -77,13 +74,9 @@ class HrEmployeeShift(models.Model):
             total_len = len(day_ids) - 1
             counter = 0
 
-        print(vals.get('hr_department'))
-        print(vals.get('hr_employee'))
-
-        if vals.get('type') == 'employee':
-            employees = self.env['hr.employee'].search([('id', '=', vals.get('hr_employee'))])
-        elif vals.get('hr_department') == False:
-            employees = self.env['hr.employee'].search([('id', '=', vals.get('hr_employee'))])
+        if vals.get('assign_type') == 'employee':
+            employee_ids = vals.get('hr_employee')[0][2]
+            employees = self.env['hr.employee'].search([('id', 'in', employee_ids)])
         else:
             employees = self.env['hr.employee'].search([('department_id', '=', vals.get('hr_department'))])
 
@@ -219,7 +212,7 @@ class HrEmployeeShift(models.Model):
         if "hr_employee" in vals:
             values['hr_employee'] = vals.get('hr_employee')
         else:
-            values['hr_employee'] = self.hr_employee.id
+            values['hr_employee'] = self.hr_employee
         if "resource_calendar_ids" in vals:
             values['resource_calendar_ids'] = vals.get('resource_calendar_ids')
         else:
@@ -233,7 +226,7 @@ class HrEmployeeShift(models.Model):
         else:
             values['date_to'] = str(self.date_to)
 
-        # print(values)
+        print(values)
         self._create_schedules(values, self)
 
         return shift
