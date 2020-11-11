@@ -30,7 +30,7 @@
         'views/hr_attendance_view.xml',
         'views/views.xml',
         'views/templates.xml',
-        'views/res_config_settings_views.xml',
+        'views/hr_attendance_settings_views.xml',
         'wizards/my_attendance.xml',
         'wizards/create_attendance_filter.xml',
     ],
