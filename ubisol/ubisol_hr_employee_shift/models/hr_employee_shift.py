@@ -212,7 +212,7 @@ class HrEmployeeShift(models.Model):
         if "hr_employee" in vals:
             values['hr_employee'] = vals.get('hr_employee')
         else:
-            values['hr_employee'] = self.hr_employee
+            values['hr_employee'] = self.hr_employee.read(['id'])
         if "resource_calendar_ids" in vals:
             values['resource_calendar_ids'] = vals.get('resource_calendar_ids')
         else:

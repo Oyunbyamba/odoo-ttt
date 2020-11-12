@@ -583,7 +583,7 @@ class HrAttendanceReport(models.Model):
         )
 
         header = [
-            ['hr_employee', 'Нэр'], 
+            ['hr_employee', 'Овог нэр'], 
             ['hr_employee_shift', 'Ажиллах хуваарь'], 
             ['work_days', 'Ажиллавал зохих өдөр'], 
             ['work_hours', 'Ажиллавал зохих цаг'], 
