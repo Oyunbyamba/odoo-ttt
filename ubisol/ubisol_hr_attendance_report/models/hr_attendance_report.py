@@ -168,13 +168,13 @@ class HrAttendanceReport(models.Model):
             if not record.check_out:
                 informal_overtime = 0.0
                 if record.attendance_req_id and (record.overtime_req_id.state == 'validate' or record.overtime_req_id.state == 'validate1'):
-                attendance_in_out = record.overtime_req_id.attendance_in_out
-                if attendance_in_out == 'check_out':
-                    check_out = record.attendance_req_id.date_to
-                    delta = record.check_out - record.end_work
-                    informal_overtime = delta.total_seconds() / 3600.0
-                else:
-                    pass
+                    attendance_in_out = record.overtime_req_id.attendance_in_out
+                    if attendance_in_out == 'check_out':
+                        check_out = record.attendance_req_id.date_to
+                        delta = record.check_out - record.end_work
+                        informal_overtime = delta.total_seconds() / 3600.0
+                    else:
+                        informal_overtime = 0.0
             elif record.check_out < record.end_work:
                 informal_overtime = 0.0
             else:
