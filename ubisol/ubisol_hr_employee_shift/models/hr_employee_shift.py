@@ -75,6 +75,7 @@ class HrEmployeeShift(models.Model):
             counter = 0
 
         if vals.get('assign_type') == 'employee':
+            # print('employee_ids: ', vals.get('hr_employee'))
             employee_ids = vals.get('hr_employee')[0][2]
             employees = self.env['hr.employee'].search([('id', 'in', employee_ids)])
         else:
@@ -84,6 +85,9 @@ class HrEmployeeShift(models.Model):
         date_from = datetime.strptime(vals.get('date_from'), DATE_FORMAT)
         date_to = datetime.strptime(vals.get('date_to'), DATE_FORMAT)
         dates_btwn = date_from
+
+        # print(vals)
+        # print(employees)
 
         while dates_btwn <= date_to:
             week_index = self._find_week_day_index(dates_btwn.strftime("%A"))
@@ -212,7 +216,12 @@ class HrEmployeeShift(models.Model):
         if "hr_employee" in vals:
             values['hr_employee'] = vals.get('hr_employee')
         else:
-            values['hr_employee'] = self.hr_employee.read(['id'])
+            ids = self.hr_employee.read(['id'])
+            employees = []
+            for emp_id in ids:
+                employees.append(emp_id['id'])
+            employees = [[False, 0, employees]]
+            values['hr_employee'] = employees
         if "resource_calendar_ids" in vals:
             values['resource_calendar_ids'] = vals.get('resource_calendar_ids')
         else:
@@ -225,8 +234,12 @@ class HrEmployeeShift(models.Model):
             values['date_to'] = vals.get('date_to')
         else:
             values['date_to'] = str(self.date_to)
+        
+        if values['hr_department'] == False:
+            values['assign_type'] = 'employee'
+        else:
+            values['assign_type'] = 'department'
 
-        print(values)
         self._create_schedules(values, self)
 
         return shift

@@ -135,7 +135,7 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
             $table.append($tbody);
 
             var $att_div = this.$el.find('.attendance_report');
-            $att_div.css({"max-height": "600px", "overflow-y": "scroll", "overflow-x": "scroll"})
+            $att_div.css({"max-height": "600px", "overflow-y": "scroll", "overflow-x": "scroll", "max-width": "95%"})
             $att_div.append($table);
 
             return true;

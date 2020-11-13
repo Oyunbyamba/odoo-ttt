@@ -59,6 +59,7 @@ class HrAttendanceReport(models.Model):
     vacation_req_id = fields.Many2one('hr.leave')
     overtime_req_id = fields.Many2one('hr.leave')
     outside_work_req_id = fields.Many2one('hr.leave')
+    attendance_req_id = fields.Many2one('hr.leave')
 
     paid_req_time = fields.Float(compute="_compute_paid_req_time", store=True, compute_sudo=True)
     unpaid_req_time = fields.Float(compute="_compute_unpaid_req_time", store=True, compute_sudo=True)
@@ -66,6 +67,7 @@ class HrAttendanceReport(models.Model):
     overtime = fields.Float(compute="_compute_overtime", store=True, compute_sudo=True)
     informal_overtime = fields.Float(compute="_compute_informal_overtime", store=True, compute_sudo=True)
     outside_work = fields.Float(compute="_compute_outside_work", store=True, compute_sudo=True)
+    attendance_req_time = fields.Float(compute="_compute_attendance_req", store=True, compute_sudo=True)
 
     check_in_time = fields.Char(compute="_compute_check_in_time", compute_sudo=True)
     check_out_time = fields.Char(compute="_compute_check_out_time", compute_sudo=True)
@@ -181,7 +183,23 @@ class HrAttendanceReport(models.Model):
                 else:
                     informal_overtime += self._diff_by_hours(date_from, date_to)
             record.informal_overtime = informal_overtime
-    
+
+    @api.depends("attendance_req_id")
+    def _compute_attendance_req(self):
+        for record in self:
+            if record.attendance_req_id and (record.overtime_req_id.state == 'validate' or record.overtime_req_id.state == 'validate1'):
+                attendance_in_out = record.overtime_req_id.attendance_in_out
+                if attendance_in_out == 'check_out':
+                    check_in = record.check_in
+                    date_to = record.attendance_req_id.date_to
+                    record.attendance_req_time = self._diff_by_hours(check_in, date_to)
+                elif attendance_in_out == 'check_in':
+                    check_out = record.check_out
+                    date_from = record.attendance_req_id.date_from
+                    record.attendance_req_time = self._diff_by_hours(date_from, check_out)
+                else:
+                    pass
+
     @api.depends("outside_work_req_id")
     def _compute_outside_work(self):
         for record in self:
@@ -258,7 +276,7 @@ class HrAttendanceReport(models.Model):
                 if record.work_hours < 0.0:
                     record.work_hours = 0.0
 
-    @api.depends('check_in', "start_work", 'check_out', "end_work", "day_period")
+    @api.depends('check_in', "start_work", 'check_out', "end_work", "day_period", "attendance_req_id")
     def _compute_worked_days(self):
         setting_obj = self.env['hr.attendance.settings'].search([], limit=1, order='id desc')
         for record in self:
@@ -273,32 +291,25 @@ class HrAttendanceReport(models.Model):
             if is_rest:
                 record.worked_days = 0.0
             else:
-                check_in = record.start_work
-                check_out = record.end_work
                 if record.check_out and record.check_in:
-                    if record.start_work < record.check_in:
-                        if (setting_obj.late_min * 3600) < (record.check_in - record.start_work).total_seconds():
-                            check_in = record.check_in
-                    if record.check_out < record.end_work:
-                        check_out = record.check_out
                     record.worked_days = 1.0
                 elif record.check_out:
-                    if record.check_out < record.end_work:
-                        check_out = record.check_out
                     record.worked_days = 1.0
                 elif record.check_in:
-                    if record.start_work < record.check_in:
-                        if (setting_obj.late_min * 3600) < (record.check_in - record.start_work).total_seconds():
-                            check_in = record.check_in
                     record.worked_days = 1.0
                 else:
-                    record.worked_days = 0.0
+                    if record.attendance_req_id and (record.overtime_req_id.state == 'validate' or record.overtime_req_id.state == 'validate1'):
+                        record.worked_days = 1.0
+                    else:
+                        record.worked_days = 0.0
 
-    @api.depends('check_in', "start_work", 'check_out', "end_work", "day_period")
+    @api.depends('check_in', "start_work", 'check_out', "end_work", "day_period", "attendance_req_id")
     def _compute_worked_hours(self):
         setting_obj = self.env['hr.attendance.settings'].search([], limit=1, order='id desc')
         for record in self:
             is_rest = True
+            worked_hours = 0.0
+            attendance_req_time = 0.0
             is_rest = record.day_period.is_rest
             if record.shift_type == 'shift':
                 is_rest = record.day_period.is_rest
@@ -307,7 +318,7 @@ class HrAttendanceReport(models.Model):
             diff = record.lunch_time_to - record.lunch_time_from
             diff = diff.total_seconds() / 3600.0
             if is_rest:
-                record.worked_hours = 0.0
+                worked_hours = 0.0
             else:
                 check_in = record.start_work
                 check_out = record.end_work
@@ -318,22 +329,37 @@ class HrAttendanceReport(models.Model):
                     if record.check_out < record.end_work:
                         check_out = record.check_out
                     delta = check_out - check_in
-                    record.worked_hours = delta.total_seconds() / 3600.0 - diff
+                    worked_hours = delta.total_seconds() / 3600.0 - diff
                 elif record.check_out:
                     if record.check_out < record.end_work:
                         check_out = record.check_out
                     delta = check_out - check_in
-                    record.worked_hours = delta.total_seconds() / 3600.0 - setting_obj.late_subtrack - diff
+                    worked_hours = delta.total_seconds() / 3600.0 - setting_obj.late_subtrack - diff
                 elif record.check_in:
                     if record.start_work < record.check_in:
                         if (setting_obj.late_min * 3600) < (record.check_in - record.start_work).total_seconds():
                             check_in = record.check_in
                     delta = check_out - check_in
-                    record.worked_hours = delta.total_seconds() / 3600.0 - setting_obj.late_subtrack - diff
+                    worked_hours = delta.total_seconds() / 3600.0 - setting_obj.late_subtrack - diff
                 else:
-                    record.worked_hours = 0.0
-            if record.worked_hours < 0.0:
-                record.worked_hours = 0.0
+                    worked_hours = 0.0
+            if worked_hours < 0.0:
+                worked_hours = 0.0
+
+            if record.attendance_req_id and (record.overtime_req_id.state == 'validate' or record.overtime_req_id.state == 'validate1'):
+                attendance_in_out = record.overtime_req_id.attendance_in_out
+                if attendance_in_out == 'check_out':
+                    check_in = record.check_in
+                    date_to = record.attendance_req_id.date_to
+                    attendance_req_time = self._diff_by_hours(check_in, date_to)
+                elif attendance_in_out == 'check_in':
+                    check_out = record.check_out
+                    date_from = record.attendance_req_id.date_from
+                    attendance_req_time = self._diff_by_hours(date_from, check_out)
+                else:
+                    pass
+
+            record.worked_hours = worked_hours + attendance_req_time
 
     def _diff_by_hours(self, date1, date2):
         date = (
@@ -502,6 +528,8 @@ class HrAttendanceReport(models.Model):
                             values['unpaid_req_id'] = attendance_req.id
                         elif req_type == 'vacation':
                             values['vacation_req_id'] = attendance_req.id
+                        elif req_type == 'attendance':
+                            values['attendance_req_id'] = attendance_req.id
 
                     data.append(values)
                     super(HrAttendanceReport, self).create(values)
