@@ -48,6 +48,7 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
                     method: 'get_attendances_report',
                     args: [filters],
                 }).then(function (data) {
+                    self._renderTitle()
                     self._renderTable(self, data)
                 });
             });
@@ -62,17 +63,18 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
             var node = window.$('div.o_form_buttons_edit');
             node.hide();
 
-            window.$(".breadcrumb li").remove();
-
-            var new_li = $('<li></li>').addClass('breadcrumb-item active');
-            new_li.text('Ирцийн график');
-            new_li.appendTo('ol.breadcrumb');
-
             return this._super();
         },
 
         destroy: function () {
             this._super();
+        },
+
+        _renderTitle: function() {
+            window.$(".breadcrumb li").remove();
+            var new_li = $('<li></li>').addClass('breadcrumb-item active');
+            new_li.text('Ирцийн график');
+            new_li.appendTo('ol.breadcrumb');
         },
 
         _renderTable: function(ev, data) {
@@ -86,7 +88,7 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
             $tr.css({"background-color": "#d9d9d9"})
             headers.forEach(h => {
                 var $cell = $('<th>');
-                $cell.css({"position": "sticky", "top": "0"})
+                $cell.css({"background-color": "#eee", "position": "sticky", "top": "-1px"})
                 $cell.html(h[1]);
                 $tr.append($cell);
             });

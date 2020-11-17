@@ -17,7 +17,9 @@ except ImportError:
 class AttendanceReport(models.TransientModel):
     _name = 'attendance.report.interval'
     _description = 'Attendance Report Interval'
+    _rec_name = 'complete_name'
 
+    complete_name = fields.Char('Complete Name', compute='_compute_complete_name', store=True)
     calculate_type = fields.Selection([
         ('department', 'Хэлтэс'),
         ('employee', 'Ажилтан')
@@ -27,13 +29,17 @@ class AttendanceReport(models.TransientModel):
     employee_id = fields.Many2one('hr.employee', string="Employee", help="Employee")
     department_id = fields.Many2one('hr.department', string="Department", help="Department")
 
+    @api.depends('start_date', 'end_date')
+    def _compute_complete_name(self):
+        for record in self:
+            record.complete_name = 'Ирцийн график'
+
     @api.model
     def attendance_report_interval(self, val):
         pass
 
     @api.model
     def attendance_report_download(self, val):
-        print('=====================  HERE  =========================')
         reports = self.env["hr.attendance.report"].search([])
         values = self.env["attendance.report.interval"].browse(val)
         filters = {}
@@ -60,7 +66,8 @@ class AttendanceReport(models.TransientModel):
 
         sheet.set_row(0, 50)
         sheet.set_row(1, 30)
-        sheet.set_column(0, 13, 12)
+        sheet.set_column(0, 0, 20)
+        sheet.set_column(1, 13, 12)
 
         header_format = workbook.add_format({
             'bold': 1,
@@ -87,7 +94,7 @@ class AttendanceReport(models.TransientModel):
 
         title = filters['start_date'] + '-аас ' + filters['end_date'] + '-ны хоорондох ирцийн мэдээлэл'
 
-        sheet.merge_range('A1:N1', title, merge_format)
+        sheet.merge_range('A1:P1', title, merge_format)
 
         row = 1
 
@@ -106,7 +113,7 @@ class AttendanceReport(models.TransientModel):
                 emp_first_row_i = row + 1
             employee_id = l['hr_employee'][0]
             if emp_first_row != employee_id:
-                sheet.merge_range('A'+str(emp_first_row_i)+':A'+str(row), l['full_name'], merge_format)
+                sheet.merge_range('A'+str(emp_first_row_i)+':A'+str(row - 1), l['full_name'], merge_format)
                 emp_first_row = l['hr_employee'][0]
                 emp_first_row_i = row
             for i, h in enumerate(headers):
@@ -123,7 +130,7 @@ class AttendanceReport(models.TransientModel):
                             sheet.write(row, i, self._set_hour_format(l[index]), border_format)
                     else:
                         if index == 'worked_days' or index == 'take_off_day':
-                            sheet.write(row, i, '0', border_format)
+                            sheet.write(row, i, 0, border_format)
                         else:
                             sheet.write(row, i, '00:00', border_format)
                 except KeyError:

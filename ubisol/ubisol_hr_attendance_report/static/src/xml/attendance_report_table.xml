@@ -1,3 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
   <template xml:space="preserve">
+    <!-- <t t-if='widget.modelName == "attendance.report.interval"'> -->
+      <!-- <t t-extend="FormView.o_control_panel">
+          <t t-jquery="ol.breadcrumb" t-operation="replace">
+            <ol class="breadcrumb" role="navigation">
+              <li class="breadcrumb-item active">Our References</li>
+            </ol>
+          </t>
+      </t> -->
+    <!-- </t> -->
   </template>
