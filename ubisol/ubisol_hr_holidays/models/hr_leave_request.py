@@ -86,7 +86,6 @@ class UbisolHolidaysRequest(models.Model):
                   'employee_id')
     def _onchange_request_parameters(self):
         if not self.request_date_from:
-            print('req_date_from empty')
             self.date_from = False
             return
 
@@ -95,13 +94,9 @@ class UbisolHolidaysRequest(models.Model):
             self.request_hour_to = self.request_hour_from
 
         if not self.request_date_to:
-            print('req_date_from empty')
             self.date_to = False
             return
-        print('req_date_from')
-        print(self.request_date_from)    
-        print(self.request_date_to)    
-
+       
         resource_calendar_id = self.employee_id.resource_calendar_id or self.env.company.resource_calendar_id
         domain = [('calendar_id', '=', resource_calendar_id.id), ('display_type', '=', False)]
         attendances = self.env['resource.calendar.attendance'].read_group(domain, ['ids:array_agg(id)', 'hour_from:min(hour_from)', 'hour_to:max(hour_to)', 'week_type', 'dayofweek', 'day_period'], ['week_type', 'dayofweek', 'day_period'], lazy=False)
@@ -171,9 +166,7 @@ class UbisolHolidaysRequest(models.Model):
 
         date_from = timezone(tz).localize(datetime.combine(compensated_request_date_from, hour_from)).astimezone(UTC).replace(tzinfo=None)
         date_to = timezone(tz).localize(datetime.combine(compensated_request_date_to, hour_to)).astimezone(UTC).replace(tzinfo=None)
-        print("date_from")
-        print(date_from)
-        print(date_to)
+
         self.update({'date_from': date_from, 'date_to': date_to})
         self._onchange_leave_dates()    
 
