@@ -85,6 +85,13 @@ odoo.define('attendance_table.RenderTable',function (require) {
             var self = this;
             var node = window.$('div.o_form_buttons_edit');
             node.hide();
+
+            window.$(".breadcrumb li").remove();
+
+            var new_li = $('<li></li>').addClass('breadcrumb-item active');
+            new_li.text('Миний ирц');
+            new_li.appendTo('ol.breadcrumb');
+
             return this._super();
         },
 

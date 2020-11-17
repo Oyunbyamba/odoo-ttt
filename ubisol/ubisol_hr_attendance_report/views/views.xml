@@ -26,7 +26,12 @@
               </group>
             </group>
             <group>
-              <button id="attendance_report_interval"  name="attendance_report_interval" string="Хайх" type="object" class="oe_highlight"/>
+              <group>
+                <div>
+                  <button id="attendance_report_interval"  name="attendance_report_interval" string="Хайх" type="object" class="oe_highlight"/>
+                  <button id="attendance_report_download"  name="attendance_report_download" string="Татах" type="object" class="oe_highlight"/>
+                </div>
+              </group>
             </group>
             <group>
               <div class="attendance_report"></div>
