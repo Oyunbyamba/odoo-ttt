@@ -74,6 +74,18 @@ class HrAttendanceReport(models.Model):
     start_work_time = fields.Float(compute="_compute_start_work_time", compute_sudo=True)
     end_work_time = fields.Float(compute="_compute_end_work_time", compute_sudo=True)
 
+    full_name = fields.Char(compute="_compute_full_name", store=True, compute_sudo=True)
+
+    @api.depends("hr_employee")
+    def _compute_full_name(self):
+        for record in self:
+            employee = record.hr_employee
+            if employee.surname:
+                full_name = employee.name + ' ' + employee.surname + ' /' + employee.pin + '/'
+            else:
+                full_name = employee.name + ' /' + employee.pin + '/'
+            record.full_name = full_name
+
     @api.depends("start_work")
     def _compute_start_work_time(self):
         for record in self:
@@ -167,19 +179,27 @@ class HrAttendanceReport(models.Model):
             informal_overtime = 0.0
             if not record.check_out:
                 informal_overtime = 0.0
-                if record.attendance_req_id and (record.overtime_req_id.state == 'validate' or record.overtime_req_id.state == 'validate1'):
-                    attendance_in_out = record.overtime_req_id.attendance_in_out
-                    if attendance_in_out == 'check_out':
-                        check_out = record.attendance_req_id.date_to
-                        delta = record.check_out - record.end_work
-                        informal_overtime = delta.total_seconds() / 3600.0
-                    else:
-                        informal_overtime = 0.0
             elif record.check_out < record.end_work:
                 informal_overtime = 0.0
             else:
                 delta = record.check_out - record.end_work
                 informal_overtime = delta.total_seconds() / 3600.0
+
+            if record.attendance_req_id and (record.attendance_req_id.state == 'validate' or record.attendance_req_id.state == 'validate1'):
+                attendance_in_out = record.attendance_req_id.attendance_in_out
+                print("attendance_in_out: ", record.attendance_req_id.attendance_in_out)
+                if attendance_in_out == 'check_out':
+                    date_to = record.attendance_req_id.date_to
+                    print(date_to, record.end_work)
+                    if date_to > record.end_work:
+                        delta = date_to - record.end_work
+                        informal_overtime = delta.total_seconds() / 3600.0
+                        print("informal_overtime: ", informal_overtime)
+                    else:
+                        pass
+                else:
+                    pass
+
             if record.overtime_req_id and (record.overtime_req_id.state == 'validate' or record.overtime_req_id.state == 'validate1'):
                 check_out = record.check_out
                 date_from = record.overtime_req_id.date_from
@@ -195,8 +215,8 @@ class HrAttendanceReport(models.Model):
     @api.depends("attendance_req_id")
     def _compute_attendance_req(self):
         for record in self:
-            if record.attendance_req_id and (record.overtime_req_id.state == 'validate' or record.overtime_req_id.state == 'validate1'):
-                attendance_in_out = record.overtime_req_id.attendance_in_out
+            if record.attendance_req_id and (record.attendance_req_id.state == 'validate' or record.attendance_req_id.state == 'validate1'):
+                attendance_in_out = record.attendance_req_id.attendance_in_out
                 if attendance_in_out == 'check_out':
                     check_in = record.check_in
                     date_to = record.attendance_req_id.date_to
@@ -306,7 +326,7 @@ class HrAttendanceReport(models.Model):
                 elif record.check_in:
                     record.worked_days = 1.0
                 else:
-                    if record.attendance_req_id and (record.overtime_req_id.state == 'validate' or record.overtime_req_id.state == 'validate1'):
+                    if record.attendance_req_id and (record.attendance_req_id.state == 'validate' or record.attendance_req_id.state == 'validate1'):
                         record.worked_days = 1.0
                     else:
                         record.worked_days = 0.0
@@ -354,20 +374,25 @@ class HrAttendanceReport(models.Model):
             if worked_hours < 0.0:
                 worked_hours = 0.0
 
-            if record.attendance_req_id and (record.overtime_req_id.state == 'validate' or record.overtime_req_id.state == 'validate1'):
-                attendance_in_out = record.overtime_req_id.attendance_in_out
+            record.worked_hours = worked_hours
+
+            if record.attendance_req_id and (record.attendance_req_id.state == 'validate' or record.attendance_req_id.state == 'validate1'):
+                attendance_in_out = record.attendance_req_id.attendance_in_out
+                check_out = record.end_work
                 if attendance_in_out == 'check_out':
                     check_in = record.check_in
                     date_to = record.attendance_req_id.date_to
-                    attendance_req_time = self._diff_by_hours(check_in, date_to)
+                    if date_to < record.end_work:
+                        check_out = date_to
+                    attendance_req_time = self._diff_by_hours(check_in, check_out) - diff
                 elif attendance_in_out == 'check_in':
-                    check_out = record.check_out
+                    if record.check_out < record.end_work:
+                        check_out = record.check_out
                     date_from = record.attendance_req_id.date_from
-                    attendance_req_time = self._diff_by_hours(date_from, check_out)
+                    attendance_req_time = self._diff_by_hours(date_from, check_out) - diff
                 else:
                     pass
-
-            record.worked_hours = worked_hours + attendance_req_time
+                record.worked_hours = attendance_req_time
 
     def _diff_by_hours(self, date1, date2):
         date = (
@@ -447,7 +472,7 @@ class HrAttendanceReport(models.Model):
             ])
             all_attendance_reqs = self.env['hr.leave'].search([
                 ('date_from', '>=', start_date),
-                ('date_to', '<=', end_date),
+                ('date_from', '<=', end_date),
                 ('employee_id', '=', employee_id),
             ])
 
@@ -519,7 +544,7 @@ class HrAttendanceReport(models.Model):
 
                     attendance_reqs = all_attendance_reqs.search([
                         ('date_from', '>=', self._convert_datetime_field(date_from)),
-                        ('date_to', '<=', self._convert_datetime_field(date_to)),
+                        ('date_from', '<=', self._convert_datetime_field(date_to)),
                         ('employee_id', '=', employee_id),
                         # ('holiday_type', '=', 'employee'),
                     ])
@@ -599,7 +624,6 @@ class HrAttendanceReport(models.Model):
         raw_data = att_report_onj.read_group(
             domain=domain,
             fields=[
-                'hr_employee',
                 'hr_employee_shift',
                 'work_days', 
                 'work_hours', 
@@ -614,12 +638,12 @@ class HrAttendanceReport(models.Model):
                 'difference_check_out', 
                 'difference_check_in'
             ],
-            groupby=['hr_department', 'hr_employee', 'hr_employee_shift'], 
+            groupby=['full_name', 'hr_department', 'hr_employee', 'hr_employee_shift'], 
             lazy=False
         )
 
         header = [
-            ['hr_employee', 'Овог нэр'], 
+            ['full_name', 'Нэр овог'], 
             ['hr_employee_shift', 'Ажиллах хуваарь'], 
             ['work_days', 'Ажиллавал зохих өдөр'], 
             ['work_hours', 'Ажиллавал зохих цаг'], 
@@ -638,6 +662,78 @@ class HrAttendanceReport(models.Model):
         data = {
             'data': raw_data,
             'header': header
+        }
+        return data
+
+    @api.model
+    def get_attendances_report_detail(self, filters):
+        start_date = filters['start_date']
+        end_date = filters['end_date']
+        
+        if filters['calculate_type']:
+            if filters['calculate_type'] == 'employee':
+                employee_id = filters['employee_id']
+                domain = [('hr_employee', '=', employee_id.id), ('work_day', '>=', start_date), ('work_day', '<=', end_date)]
+            else:
+                department_id = filters['department_id']
+                # get all child departments
+                dep = self.env['hr.department'].browse(department_id)
+                departments = self._get_departments(dep, [])
+                # get parent departments
+                parents = dep.ids[:]
+                # combine departments
+                departments = departments + parents
+                # remove duplicates
+                departments = list(dict.fromkeys(departments))
+                domain = [('hr_department', '=', departments), ('work_day', '>=', start_date), ('work_day', '<=', end_date)]
+        else:
+            domain = [('work_day', '>=', start_date), ('work_day', '<=', end_date)]
+
+        att_report_obj = self.env['hr.attendance.report'].search(domain)
+        raw_data = att_report_obj.read([
+            'full_name',
+            'work_day',
+            'hr_employee',
+            'hr_department',
+            'hr_employee_shift',
+            'work_days', 
+            'work_hours', 
+            'worked_days', 
+            'worked_hours', 
+            'overtime', 
+            'informal_overtime',
+            'paid_req_time', 
+            'unpaid_req_time', 
+            'take_off_day', 
+            'difference_check_out', 
+            'difference_check_in',
+            'check_in',
+            'check_out'
+        ])
+
+        header = [
+            ['full_name', 'Нэр овог'], 
+            ['work_day', 'Огноо'], 
+            ['hr_employee_shift', 'Ажиллах хуваарь'], 
+            ['work_days', 'Ажиллавал зохих өдөр'], 
+            ['work_hours', 'Ажиллавал зохих цаг'], 
+            ['check_in', 'Орсон'], 
+            ['check_out', 'Гарсан'], 
+            ['worked_days', 'Ажилласан өдөр'], 
+            ['worked_hours', 'Ажилласан цаг'], 
+            ['overtime', 'Баталсан илүү цаг'], 
+            ['informal_overtime', 'Нийт илүү цаг'],
+            ['paid_req_time', 'Цалинтай чөлөө'], 
+            ['unpaid_req_time', 'Цалингүй чөлөө'], 
+            ['take_off_day', 'Тасалсан өдөр'],
+            ['difference_check_out', 'Таслалт'], 
+            ['difference_check_in', 'Хоцролт']
+        ]
+
+        data = {
+            'data': raw_data,
+            'header': header,
+            'filters': filters
         }
         return data
 

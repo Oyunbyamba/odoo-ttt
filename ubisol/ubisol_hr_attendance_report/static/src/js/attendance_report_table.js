@@ -8,24 +8,17 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
     var rpc = require('web.rpc');
 
     function convertNumToTime(number) {
-        // Check sign of given number
         var sign = (number >= 0) ? 1 : -1;
-        // Set positive value of number of sign negative
         number = number * sign;
-        // Separate the int from the decimal part
         var hour = Math.floor(number);
         var decpart = number - hour;
         var min = 1 / 60;
-        // Round to nearest minute
         decpart = min * Math.round(decpart / min);
         var minute = Math.floor(decpart * 60) + '';
-        // Add padding if need
         if (minute.length < 2) {
             minute = '0' + minute; 
         }
-        // Add Sign in final result
         sign = sign == 1 ? '' : '-';
-        // Concate hours and minutes
         var time = sign + hour + ':' + minute;
         return time;
     }
@@ -49,14 +42,13 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
                 }
                 filters['start_date'] = self.state.data.start_date;
                 filters['end_date'] = self.state.data.end_date;
-
-                console.log(filters);
                 
                 var res = rpc.query({
                     model: 'hr.attendance.report',
                     method: 'get_attendances_report',
                     args: [filters],
                 }).then(function (data) {
+                    self._renderTitle()
                     self._renderTable(self, data)
                 });
             });
@@ -64,9 +56,13 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
 
         autofocus: function () {
             var self = this;
+
+            var button = window.$('#attendance_report_download');
+            button.css({"margin-left": "8px"})
+
             var node = window.$('div.o_form_buttons_edit');
             node.hide();
-            // Ирцийн график
+
             return this._super();
         },
 
@@ -74,21 +70,25 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
             this._super();
         },
 
+        _renderTitle: function() {
+            window.$(".breadcrumb li").remove();
+            var new_li = $('<li></li>').addClass('breadcrumb-item active');
+            new_li.text('Ирцийн график');
+            new_li.appendTo('ol.breadcrumb');
+        },
+
         _renderTable: function(ev, data) {
-            var $table = $('<table>').addClass('custom_attendance_table table table-hover table-striped');
+            var $table = $('<table>').addClass('table table-sm table-hover table-bordered table-striped');
             var $thead = $('<thead>');
             var $tbody = $('<tbody>');
             var headers = data.header;
             var rows = data.data;
 
-            console.log('headers: ', headers);
-            console.log('rows: ', rows);
-
             var $tr = $('<tr/>', { class: 'o_data_row' });
-            $tr.css({"background-color": "#eee"})
+            $tr.css({"background-color": "#d9d9d9"})
             headers.forEach(h => {
                 var $cell = $('<th>');
-                $cell.css({"background-color": "#eee", "position": "sticky", "top": "0"})
+                $cell.css({"background-color": "#eee", "position": "sticky", "top": "-1px"})
                 $cell.html(h[1]);
                 $tr.append($cell);
             });
@@ -116,10 +116,10 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
                             $cell.html(att[key][1]);
                             $tr.append($cell);
                             break;
-                        case 'hr_employee':
+                        case 'full_name':
                             var $cell = $('<th>');
                             $cell.css({"background-color": "#f2f2f2"})
-                            $cell.html(att[key][1]);
+                            $cell.html(att[key]);
                             $tr.append($cell);
                             break;
                         default:
