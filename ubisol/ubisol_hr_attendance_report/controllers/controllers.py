@@ -17,7 +17,11 @@ class XLSXReportController(http.Controller):
                     None,
                     headers=[('Content-Type', 'application/vnd.ms-excel'), ('Content-Disposition', content_disposition(report_name + '.xlsx'))]
                 )
-                report_obj.get_xlsx_report(options, response)
+                print('options["type"]: ', options['type'])
+                if options['type'] == 0:
+                    report_obj.get_xlsx_total_report(options, response)
+                else:
+                    report_obj.get_xlsx_report(options, response)
             response.set_cookie('fileToken', token)
             
             return response
