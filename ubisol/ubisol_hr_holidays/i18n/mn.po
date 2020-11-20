@@ -47,7 +47,7 @@ msgstr ""
 
 #. module: ubisol_hr_holidays
 #: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave_type__one_step_days
-msgid "1 шатлалт чөлөөнд тооцох хоног"
+msgid "1 шатлалт хүсэлтэнд тооцох хоног"
 msgstr ""
 
 #. module: ubisol_hr_holidays
@@ -302,17 +302,17 @@ msgstr ""
 #: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave__request_status_type
 #: model:ir.model.fields,field_description:ubisol_hr_holidays.field_hr_leave_type__request_status_type
 msgid "Чөлөөний төрөл"
-msgstr ""
+msgstr "Хүсэлтийн төрөл"
 
 #. module: ubisol_hr_holidays
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
 msgid "Чөлөөний хуудас"
-msgstr ""
+msgstr "Хүсэлтийн хуудас"
 
 #. module: ubisol_hr_holidays
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_holidays.leave_report
 msgid "Чөлөөний хуудас нь холбогдох баримтын хамт хүчин төгөлдөр болно."
-msgstr ""
+msgstr "Хүсэлтийн хуудас нь холбогдох баримтын хамт хүчин төгөлдөр болно."
 
 #. module: ubisol_hr_holidays
 #: model:ir.model.fields.selection,name:ubisol_hr_holidays.selection__hr_leave_type__request_status_type__vacation

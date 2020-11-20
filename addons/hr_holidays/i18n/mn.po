@@ -1092,7 +1092,7 @@ msgstr "Чөлөө хуваарилах хүсэлт шинээр үүсгэх"
 #: model_terms:ir.actions.act_window,help:hr_holidays.hr_leave_action_new_request
 #: model_terms:ir.actions.act_window,help:hr_holidays.hr_leave_action_payroll
 msgid "Create a new time off request"
-msgstr "Чөлөөний хүсэлт шинээр үүсгэх"
+msgstr "Хүсэлт шинээр үүсгэх"
 
 #. module: hr_holidays
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_holidays_summary_employee__create_uid
@@ -1222,7 +1222,7 @@ msgstr "Дэлгэрэнгүй нэр"
 #. module: hr_holidays
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_leave_type__create_calendar_meeting
 msgid "Display Time Off in Calendar"
-msgstr "Чөлөөний цагалбар нээх"
+msgstr "Хүсэлтийн цагалбар нээх"
 
 #. module: hr_holidays
 #: model_terms:ir.ui.view,arch_db:hr_holidays.hr_leave_allocation_view_kanban
@@ -1274,7 +1274,7 @@ msgstr "Хуваарилалт засварлах"
 #. module: hr_holidays
 #: model_terms:ir.ui.view,arch_db:hr_holidays.hr_leave_view_kanban
 msgid "Edit Time Off"
-msgstr "Чөлөө засах"
+msgstr "Хүсэлт засах"
 
 #. module: hr_holidays
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_leave__employee_id
@@ -1423,7 +1423,7 @@ msgid ""
 "Green this button when the time off has been taken into account in the "
 "payslip."
 msgstr ""
-"Чөлөөний хүсэлт нь цалингийн хуудсанданд тусгагдсан үед энэхүү товч ногоон "
+"Чөлөөний хүсэлт нь цалингийн хуудсанд тусгагдсан үед энэхүү товч ногоон "
 "өнгөтэй болно."
 
 #. module: hr_holidays
@@ -1456,7 +1456,7 @@ msgstr "Хэлтэс"
 #. module: hr_holidays
 #: model:ir.model,name:hr_holidays.model_hr_holidays_summary_employee
 msgid "HR Time Off Summary Report By Employee"
-msgstr "Чөлөөний тайланг ажилтнаар"
+msgstr "Хүсэлтийн тайланг ажилтнаар"
 
 #. module: hr_holidays
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_leave__request_unit_half
@@ -1743,12 +1743,12 @@ msgstr "Чөлөөний дээд хэмжээ"
 #. module: hr_holidays
 #: model_terms:ir.ui.view,arch_db:hr_holidays.hr_holiday_status_view_kanban
 msgid "Max Time Off:"
-msgstr "Чөлөөний дээд хэмжээ"
+msgstr "Хүсэлтийн дээд хэмжээ"
 
 #. module: hr_holidays
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_leave_type__max_leaves
 msgid "Maximum Allowed"
-msgstr "Амралт, Чөлөөний Дээд хэмжээ"
+msgstr "Амралт, Хүсэлтийн Дээд хэмжээ"
 
 #. module: hr_holidays
 #: model:ir.model.fields,help:hr_holidays.field_hr_leave_type__remaining_leaves
@@ -1824,7 +1824,7 @@ msgstr "Миний хуваарилалт"
 #: model_terms:ir.ui.view,arch_db:hr_holidays.view_hr_holidays_filter
 #: model_terms:ir.ui.view,arch_db:hr_holidays.view_hr_holidays_filter_report
 msgid "My Department Time Off"
-msgstr "Манай хэлтсийн чөлөө"
+msgstr "Манай хэлтсийн хүсэлт"
 
 #. module: hr_holidays
 #: model_terms:ir.ui.view,arch_db:hr_holidays.view_hr_holidays_filter_report
@@ -1835,7 +1835,7 @@ msgstr "Миний Хүсэлтүүд"
 #: model_terms:ir.ui.view,arch_db:hr_holidays.view_hr_holidays_filter_report
 #: model_terms:ir.ui.view,arch_db:hr_holidays.view_hr_leave_allocation_filter
 msgid "My Team Time Off"
-msgstr "Манай багийн чөлөө"
+msgstr "Манай багийн хүсэлт"
 
 #. module: hr_holidays
 #: model:ir.ui.menu,name:hr_holidays.menu_hr_holidays_my_leaves
@@ -1880,7 +1880,7 @@ msgstr "Шинэ хуваарилалтын хүсэлт гаргасан %s: %s
 #: code:addons/hr_holidays/static/src/js/time_off_calendar.js:0
 #, python-format
 msgid "New Time Off Request"
-msgstr "Чөлөөний Шинэ Хүсэлтүүд"
+msgstr "Шинэ Хүсэлтүүд"
 
 #. module: hr_holidays
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_leave__activity_date_deadline
@@ -1941,7 +1941,7 @@ msgstr "Хоногийн тоо"
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_employee_base__leaves_count
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_employee_public__leaves_count
 msgid "Number of Time Off"
-msgstr "Чөлөөний дугаар"
+msgstr "Хүсэлтийн дугаар"
 
 #. module: hr_holidays
 #: model:ir.model.fields,help:hr_holidays.field_hr_leave__number_of_days_display
@@ -2142,7 +2142,7 @@ msgstr "Хэвлэх"
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_leave__notes
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_leave_allocation__notes
 msgid "Reasons"
-msgstr "Амралт, чөлөөний шалтгаан"
+msgstr "Амралт, хүсэлтийн шалтгаан"
 
 #. module: hr_holidays
 #: model:ir.model.fields.selection,name:hr_holidays.selection__hr_leave_type__color_name__red
@@ -2239,7 +2239,7 @@ msgstr "Хүсэлтийн эхлэх огноо"
 #. module: hr_holidays
 #: model_terms:ir.ui.view,arch_db:hr_holidays.res_users_view_form
 msgid "Request Time off"
-msgstr "Чөлөөний хүсэлт"
+msgstr "Хүсэлт"
 
 #. module: hr_holidays
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_leave_report__leave_type
@@ -2260,7 +2260,7 @@ msgstr "Ноорог болгох"
 #. module: hr_holidays
 #: model:ir.model,name:hr_holidays.model_resource_calendar_leaves
 msgid "Resource Time Off Detail"
-msgstr "Чөлөөний нөөц дэлгэрэнгүй"
+msgstr "Хүсэлтийн нөөц дэлгэрэнгүй"
 
 #. module: hr_holidays
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_leave_type__responsible_id
@@ -2294,12 +2294,12 @@ msgstr "SMS илгээлтийн алдаа"
 #: model_terms:ir.ui.view,arch_db:hr_holidays.view_hr_holidays_filter
 #: model_terms:ir.ui.view,arch_db:hr_holidays.view_hr_holidays_filter_report
 msgid "Search Time Off"
-msgstr "Чөлөө хайх"
+msgstr "Хүсэлт хайх"
 
 #. module: hr_holidays
 #: model_terms:ir.ui.view,arch_db:hr_holidays.view_holidays_status_filter
 msgid "Search Time Off Type"
-msgstr "Чөлөө хайх төрлөөр"
+msgstr "Хүсэлт төрлөөр хайх"
 
 #. module: hr_holidays
 #: model_terms:ir.ui.view,arch_db:hr_holidays.view_hr_leave_allocation_filter
@@ -2318,7 +2318,7 @@ msgstr "2 дахь Зөвшөөрөл"
 #. module: hr_holidays
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_holidays_summary_employee__holiday_type
 msgid "Select Time Off Type"
-msgstr "Чөлөө сонгох төрлөөр"
+msgstr "Хүсэлт сонгох төрлөөр"
 
 #. module: hr_holidays
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_leave_type__sequence
@@ -2387,7 +2387,7 @@ msgstr "Нийлбэр"
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_leave_allocation__type_request_unit
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_leave_type__request_unit
 msgid "Take Time Off in"
-msgstr "Олгосон чөлөө"
+msgstr "Олгосон хүсэлт"
 
 #. module: hr_holidays
 #: model:ir.model.fields.selection,name:hr_holidays.selection__hr_leave_type__validation_type__manager
@@ -2466,7 +2466,7 @@ msgstr ""
 #: code:addons/hr_holidays/models/hr_leave.py:0
 #, python-format
 msgid "The time off has been automatically approved"
-msgstr "Чөлөө автоматаар зөвшөөрөгдсөн"
+msgstr "Хүсэлт автоматаар зөвшөөрөгдсөн"
 
 #. module: hr_holidays
 #: model:ir.model.fields,help:hr_holidays.field_hr_leave_type__sequence
@@ -2557,7 +2557,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:hr_holidays.hr_department_view_kanban
 #: model:mail.message.subtype,name:hr_holidays.mt_leave
 msgid "Time Off"
-msgstr "Чөлөө"
+msgstr "Хүсэлтүүд"
 
 #. module: hr_holidays
 #: model:ir.model,name:hr_holidays.model_hr_leave_allocation
@@ -2570,22 +2570,22 @@ msgstr "Чөлөөний хувиарлалт"
 #: model:ir.actions.act_window,name:hr_holidays.hr_leave_action_action_department
 #, python-format
 msgid "Time Off Analysis"
-msgstr "Чөлөөний шинжилгээ"
+msgstr "Хүсэлтийн шинжилгээ"
 
 #. module: hr_holidays
 #: model:mail.activity.type,name:hr_holidays.mail_act_leave_approval
 msgid "Time Off Approval"
-msgstr "Чөлөөний зөвшөөрөл"
+msgstr "Хүсэлтийн зөвшөөрөл"
 
 #. module: hr_holidays
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_leave_type__leave_notif_subtype_id
 msgid "Time Off Notification Subtype"
-msgstr "Чөлөөний мэдэгдэл дэд төрөл"
+msgstr "Хүсэлтийн мэдэгдэл дэд төрөл"
 
 #. module: hr_holidays
 #: model:ir.model.fields.selection,name:hr_holidays.selection__hr_leave_type__validation_type__hr
 msgid "Time Off Officer"
-msgstr "Чөлөө батлах эрхтэй ажилтан"
+msgstr "Хүсэлт батлах эрхтэй ажилтан"
 
 #. module: hr_holidays
 #: model_terms:ir.actions.act_window,help:hr_holidays.hr_leave_allocation_action_all
@@ -2604,7 +2604,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:hr_holidays.hr_leave_view_form
 #: model:mail.message.subtype,description:hr_holidays.mt_leave
 msgid "Time Off Request"
-msgstr "Чөлөөний хүсэлт"
+msgstr "Хүсэлт"
 
 #. module: hr_holidays
 #: model:ir.actions.act_window,name:hr_holidays.hr_leave_action_my
@@ -2614,12 +2614,12 @@ msgstr "Чөлөөний хүсэлт"
 #: model_terms:ir.ui.view,arch_db:hr_holidays.hr_department_view_kanban
 #: model_terms:ir.ui.view,arch_db:hr_holidays.hr_leave_view_tree
 msgid "Time Off Requests"
-msgstr "Чөлөөний хүсэлтүүд"
+msgstr "Хүсэлтүүд"
 
 #. module: hr_holidays
 #: model:mail.activity.type,name:hr_holidays.mail_act_leave_second_approval
 msgid "Time Off Second Approve"
-msgstr "Чөлөөний хоёрдох зөвшөөрөл"
+msgstr "Хүсэлтийн хоёрдох зөвшөөрөл"
 
 #. module: hr_holidays
 #: model:ir.actions.act_window,name:hr_holidays.action_hr_holidays_summary_employee
@@ -2630,17 +2630,17 @@ msgstr "Чөлөөний хоёрдох зөвшөөрөл"
 #: model_terms:ir.ui.view,arch_db:hr_holidays.view_holiday_pivot
 #: model_terms:ir.ui.view,arch_db:hr_holidays.view_hr_holidays_summary_employee
 msgid "Time Off Summary"
-msgstr "Хураангуй чөлөө"
+msgstr "Хураангуй хүсэлт"
 
 #. module: hr_holidays
 #: model:ir.model,name:hr_holidays.model_hr_leave_report
 msgid "Time Off Summary / Report"
-msgstr "Чөлөө Хураангуйлсан/Тайлан"
+msgstr "Хүсэлт Хураангуйлсан/Тайлан"
 
 #. module: hr_holidays
 #: model_terms:ir.ui.view,arch_db:hr_holidays.hr_holiday_status_view_kanban
 msgid "Time Off Taken:"
-msgstr "Чөлөө авсан"
+msgstr "Хүсэлт авсан"
 
 #. module: hr_holidays
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_leave__holiday_status_id
@@ -2650,14 +2650,14 @@ msgstr "Чөлөө авсан"
 #: model_terms:ir.ui.view,arch_db:hr_holidays.report_holidayssummary
 #: model_terms:ir.ui.view,arch_db:hr_holidays.view_holiday_status_normal_tree
 msgid "Time Off Type"
-msgstr "Чөлөөний төрөл"
+msgstr "Хүсэлтийн төрөл"
 
 #. module: hr_holidays
 #: model:ir.actions.act_window,name:hr_holidays.open_view_holiday_status
 #: model:ir.ui.menu,name:hr_holidays.hr_holidays_status_menu_configuration
 #: model_terms:ir.ui.view,arch_db:hr_holidays.view_holidays_status_filter
 msgid "Time Off Types"
-msgstr "Чөлөөний төрөлүүд"
+msgstr "Хүсэлтийн төрөлүүд"
 
 #. module: hr_holidays
 #: model_terms:ir.ui.view,arch_db:hr_holidays.view_hr_holidays_filter_report
@@ -2668,7 +2668,7 @@ msgstr "Өөрийн багийн гишүүдийн чөлөө"
 #. module: hr_holidays
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_department__leave_to_approve_count
 msgid "Time Off to Approve"
-msgstr "Чөлөөг батлах"
+msgstr "Хүсэлт батлах"
 
 #. module: hr_holidays
 #: model:ir.ui.menu,name:hr_holidays.hr_holidays_menu_manager_payroll_to_report
@@ -2678,7 +2678,7 @@ msgstr "Чөлөөг тайлагнах"
 #. module: hr_holidays
 #: model_terms:ir.ui.view,arch_db:hr_holidays.report_holidayssummary
 msgid "Time Off."
-msgstr "Чөлөө."
+msgstr "Хүсэлт."
 
 #. module: hr_holidays
 #: model:ir.model.fields,field_description:hr_holidays.field_hr_leave_type__leaves_taken
@@ -3011,7 +3011,7 @@ msgstr ""
 #, python-format
 msgid "You can not have 2 leaves that overlaps on the same day."
 msgstr ""
-"Та хоёр чөлөөний хүсэлт хугацаагаар давхцуулж "
+"Та хоёр хүсэлт хугацаагаар давхцуулж "
 "болохгүй."
 
 #. module: hr_holidays
@@ -3020,7 +3020,7 @@ msgstr ""
 msgid ""
 "You can not set 2 times off that overlaps on the same day for the same "
 "employee."
-msgstr "Ажилтанд нэг өдөр 2 чөлөө давхцуулж болохгүй"
+msgstr "Ажилтанд нэг өдөр 2 хүсэлт давхцуулж болохгүй"
 
 #. module: hr_holidays
 #: code:addons/hr_holidays/models/hr_leave.py:0
