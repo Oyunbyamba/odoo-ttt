@@ -306,7 +306,6 @@ class HrAttendanceReport(models.Model):
 
     @api.depends('check_in', "start_work", 'check_out', "end_work", "day_period", "attendance_req_id")
     def _compute_worked_days(self):
-        setting_obj = self.env['hr.attendance.settings'].search([], limit=1, order='id desc')
         for record in self:
             is_rest = True
             is_rest = record.day_period.is_rest
@@ -428,21 +427,6 @@ class HrAttendanceReport(models.Model):
             parents = department_id.ids[:]
             departments = departments + parents
             departments = list(dict.fromkeys(departments))
-
-            # if departments:
-            #     for dep_id in departments:
-            #         self._cr.execute(
-            #             "SELECT DISTINCT id AS hr_employee FROM hr_employee WHERE active = true AND department_id = "
-            #             +str(dep_id))
-            #         for t in self._cr.dictfetchall():
-            #             employees.append(t['hr_employee'])
-            # else:
-            #     for dep_id in department_id:
-            #         self._cr.execute(
-            #             "SELECT DISTINCT id AS hr_employee FROM hr_employee WHERE active = true AND department_id = "
-            #             +str(dep_id.id))
-            #         for t in self._cr.dictfetchall():
-            #             employees.append(t['hr_employee'])
 
             if departments:
                 for dep_id in departments:
@@ -607,14 +591,10 @@ class HrAttendanceReport(models.Model):
                 domain = [('hr_employee', '=', employee_id), ('work_day', '>=', start_date), ('work_day', '<=', end_date)]
             else:
                 department_id = filters['department_id']
-                # get all child departments
                 dep = self.env['hr.department'].browse(department_id)
                 departments = self._get_departments(dep, [])
-                # get parent departments
                 parents = dep.ids[:]
-                # combine departments
                 departments = departments + parents
-                # remove duplicates
                 departments = list(dict.fromkeys(departments))
                 domain = [('hr_department', '=', departments), ('work_day', '>=', start_date), ('work_day', '<=', end_date)]
         else:
@@ -631,7 +611,6 @@ class HrAttendanceReport(models.Model):
                 'worked_hours', 
                 'overtime', 
                 'informal_overtime', 
-                # 'leave_hours', 
                 'paid_req_time', 
                 'unpaid_req_time', 
                 'take_off_day', 
@@ -651,7 +630,6 @@ class HrAttendanceReport(models.Model):
             ['worked_hours', 'Ажилласан цаг'], 
             ['overtime', 'Баталсан илүү цаг'], 
             ['informal_overtime', 'Нийт илүү цаг'], 
-            # 'Өвчтэй өдөр', 
             ['paid_req_time', 'Цалинтай чөлөө'], 
             ['unpaid_req_time', 'Цалингүй чөлөө'], 
             ['take_off_day', 'Тасалсан өдөр'],
@@ -666,6 +644,71 @@ class HrAttendanceReport(models.Model):
         return data
 
     @api.model
+    def get_attendances_report_total(self, filters):
+        start_date = filters['start_date']
+        end_date = filters['end_date']
+        
+        if filters['calculate_type']:
+            if filters['calculate_type'] == 'employee':
+                employee_id = filters['employee_id']
+                domain = [('hr_employee', '=', employee_id.id), ('work_day', '>=', start_date), ('work_day', '<=', end_date)]
+            else:
+                department_id = filters['department_id']
+                dep = self.env['hr.department'].browse(department_id)
+                departments = self._get_departments(dep, [])
+                parents = dep.ids[:]
+                departments = departments + parents
+                departments = list(dict.fromkeys(departments))
+                domain = [('hr_department', '=', departments), ('work_day', '>=', start_date), ('work_day', '<=', end_date)]
+        else:
+            domain = [('work_day', '>=', start_date), ('work_day', '<=', end_date)]
+
+        att_report_onj = self.env['hr.attendance.report']
+        raw_data = att_report_onj.read_group(
+            domain=domain,
+            fields=[
+                'hr_employee_shift',
+                'work_days', 
+                'work_hours', 
+                'worked_days', 
+                'worked_hours', 
+                'overtime', 
+                'informal_overtime', 
+                'paid_req_time', 
+                'unpaid_req_time', 
+                'take_off_day', 
+                'difference_check_out', 
+                'difference_check_in'
+            ],
+            groupby=['full_name', 'hr_department', 'hr_employee', 'hr_employee_shift'], 
+            lazy=False
+        )
+
+        header = [
+            ['full_name', 'Нэр овог'], 
+            ['hr_employee_shift', 'Ажиллах хуваарь'], 
+            ['work_days', 'Ажиллавал зохих өдөр'], 
+            ['work_hours', 'Ажиллавал зохих цаг'], 
+            ['worked_days', 'Ажилласан өдөр'], 
+            ['worked_hours', 'Ажилласан цаг'], 
+            ['overtime', 'Баталсан илүү цаг'], 
+            ['informal_overtime', 'Нийт илүү цаг'], 
+            ['paid_req_time', 'Цалинтай чөлөө'], 
+            ['unpaid_req_time', 'Цалингүй чөлөө'], 
+            ['take_off_day', 'Тасалсан өдөр'],
+            ['difference_check_out', 'Таслалт'], 
+            ['difference_check_in', 'Хоцролт']
+        ]
+
+        data = {
+            'data': raw_data,
+            'header': header,
+            'filters': filters,
+            'type': 0
+        }
+        return data
+
+    @api.model
     def get_attendances_report_detail(self, filters):
         start_date = filters['start_date']
         end_date = filters['end_date']
@@ -676,14 +719,10 @@ class HrAttendanceReport(models.Model):
                 domain = [('hr_employee', '=', employee_id.id), ('work_day', '>=', start_date), ('work_day', '<=', end_date)]
             else:
                 department_id = filters['department_id']
-                # get all child departments
                 dep = self.env['hr.department'].browse(department_id)
                 departments = self._get_departments(dep, [])
-                # get parent departments
                 parents = dep.ids[:]
-                # combine departments
                 departments = departments + parents
-                # remove duplicates
                 departments = list(dict.fromkeys(departments))
                 domain = [('hr_department', '=', departments), ('work_day', '>=', start_date), ('work_day', '<=', end_date)]
         else:
@@ -695,7 +734,7 @@ class HrAttendanceReport(models.Model):
             'work_day',
             'hr_employee',
             'hr_department',
-            'hr_employee_shift',
+            # 'hr_employee_shift',
             'work_days', 
             'work_hours', 
             'worked_days', 
@@ -714,7 +753,7 @@ class HrAttendanceReport(models.Model):
         header = [
             ['full_name', 'Нэр овог'], 
             ['work_day', 'Огноо'], 
-            ['hr_employee_shift', 'Ажиллах хуваарь'], 
+            # ['hr_employee_shift', 'Ажиллах хуваарь'], 
             ['work_days', 'Ажиллавал зохих өдөр'], 
             ['work_hours', 'Ажиллавал зохих цаг'], 
             ['check_in', 'Орсон'], 
@@ -733,7 +772,8 @@ class HrAttendanceReport(models.Model):
         data = {
             'data': raw_data,
             'header': header,
-            'filters': filters
+            'filters': filters,
+            'type': 1
         }
         return data
 

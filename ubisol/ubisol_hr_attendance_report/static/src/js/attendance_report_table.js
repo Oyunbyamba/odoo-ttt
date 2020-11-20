@@ -60,6 +60,9 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
             var button = window.$('#attendance_report_download');
             button.css({"margin-left": "8px"})
 
+            var button = window.$('#total_attendance_report_download');
+            button.css({"margin-left": "8px"})
+
             var node = window.$('div.o_form_buttons_edit');
             node.hide();
 
@@ -135,7 +138,7 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
             $table.append($tbody);
 
             var $att_div = this.$el.find('.attendance_report');
-            $att_div.css({"max-height": "600px", "overflow-y": "scroll", "overflow-x": "scroll", "max-width": "95%"})
+            $att_div.css({"max-height": "600px", "overflow-y": "scroll", "overflow-x": "scroll", "width": "100%"})
             $att_div.append($table);
 
             return true;

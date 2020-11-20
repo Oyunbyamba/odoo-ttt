@@ -2,6 +2,7 @@
   <data>
     <template id="assets_backend" name="xls_assets" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
+          <link rel="stylesheet" href="/web_sheet_full_width/static/src/scss/web_sheet_full_width.scss"/>
           <script type="text/javascript" src="/ubisol_hr_attendance_report/static/src/js/action_manager.js"/>
           <script type="text/javascript" src="/ubisol_hr_attendance_report/static/src/js/attendance_report_table.js"/>
         </xpath>
@@ -29,7 +30,8 @@
               <group>
                 <div>
                   <button id="attendance_report_interval"  name="attendance_report_interval" string="Хайх" type="object" class="oe_highlight"/>
-                  <button id="attendance_report_download"  name="attendance_report_download" string="Татах" type="object" class="oe_highlight"/>
+                  <button id="attendance_report_download"  name="attendance_report_download" string="Дэлгэрэнгүй тайлан" type="object" class="oe_highlight"/>
+                  <button id="total_attendance_report_download"  name="total_attendance_report_download" string="Нэгдсэн тайлан" type="object" class="oe_highlight"/>
                 </div>
               </group>
             </group>
