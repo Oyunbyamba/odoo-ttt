@@ -12,6 +12,7 @@ class UbisolHolidaysType(models.Model):
     request_status_type = fields.Selection([
         ('paid', 'Цалинтай'),
         ('unpaid', 'Цалингүй'),
+        ('sick', 'Өвчтэй'),
         ('vacation', 'Ээлжийн амралт'),
         ('overtime', 'Илүү цаг'),
         ('attendance', 'Ирц нөхөлт'),

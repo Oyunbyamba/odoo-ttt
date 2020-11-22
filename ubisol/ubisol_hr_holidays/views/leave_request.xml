@@ -21,6 +21,7 @@
                 <separator/>
                 <filter string="Цалинтай" name="paid" domain="[('request_status_type', '=', 'paid')]"/>
                 <filter string="Цалингүй" name="unpaid" domain="[('request_status_type', '=', 'unpaid')]"/>
+                <filter string="Өвчтэй" name="sick" domain="[('request_status_type', '=', 'sick')]"/>
                 <filter string="Ээлжийн амралт" name="vacation" domain="[('request_status_type', '=', 'vacation')]"/>
                 <filter string="Илүү цаг" name="overtime" domain="[('request_status_type', '=', 'overtime')]"/>
                 <filter string="Ирц нөхөлт" name="attendance" domain="[('request_status_type', '=', 'attendance')]"/>
