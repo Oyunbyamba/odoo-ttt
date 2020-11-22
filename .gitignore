@@ -3,6 +3,9 @@ _build/
 
 # dotfiles
 .*
+#.gitignore
+vendor/
+node_modules/
 !.gitignore
 !.mailmap
 # compiled python files
