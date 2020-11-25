@@ -194,17 +194,20 @@ class AttendanceReport(models.TransientModel):
             sheet.write(row, i, h[1], header_format)
         row += 1
 
+        full_name = ''
         emp_first_row = 0
         emp_first_row_i = 0
 
         # Set data
         for l in lines:
             if emp_first_row == 0:
+                full_name = l['full_name']
                 emp_first_row = l['hr_employee'][0]
-                emp_first_row_i = row + 1
+                emp_first_row_i = row
             employee_id = l['hr_employee'][0]
             if emp_first_row != employee_id:
-                sheet.merge_range('A'+str(emp_first_row_i)+':A'+str(row - 1), l['full_name'], merge_format)
+                sheet.merge_range('A'+str(emp_first_row_i + 1)+':A'+str(row), full_name, merge_format)
+                full_name = l['full_name']
                 emp_first_row = l['hr_employee'][0]
                 emp_first_row_i = row
             for i, h in enumerate(headers):
@@ -220,14 +223,14 @@ class AttendanceReport(models.TransientModel):
                         else:
                             sheet.write(row, i, self._set_hour_format(l[index]), border_format)
                     else:
-                        if index == 'worked_days' or index == 'take_off_day':
+                        if index == 'worked_days' or index == 'take_off_day' or index == 'work_days':
                             sheet.write(row, i, 0, border_format)
                         else:
                             sheet.write(row, i, '00:00', border_format)
                 except KeyError:
                     sheet.write(row, i, '', border_format)
             row += 1
-        sheet.merge_range('A'+str(emp_first_row_i)+':A'+str(row), l['full_name'], merge_format)
+        sheet.merge_range('A'+str(emp_first_row_i + 1)+':A'+str(row), full_name, merge_format)
         
         workbook.close()
         output.seek(0)

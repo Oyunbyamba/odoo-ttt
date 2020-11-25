@@ -281,7 +281,7 @@ class BiometricMachine(models.Model):
         setting_obj = self.env['hr.attendance.settings'].search(
             [], limit=1, order='id desc')
         general_shift = self.env['hr.employee.schedule'].search(
-            [('hr_employee', '=', int(get_user_id.id))], limit=1, order='id desc')
+            [('hr_employee', '=', int(get_user_id.id))], limit=1, order='id asc')
 
         [ds1, ds2, de1, de2, dt1, s_type] = self._calculate_dates(
             setting_obj, general_shift, dt)
@@ -313,7 +313,7 @@ class BiometricMachine(models.Model):
         else:
             shift_obj = self.env['hr.employee.shift']
             shift_type = self.env['resource.calendar'].search(
-                [('shift_type', '=', 'days')], limit=1, order='id desc')
+                [('shift_type', '=', 'days')], limit=1, order='id asc')
             [start_work, end_work] = self._create_schedule(
                 get_user_id, dt1, shift_obj, shift_type)
             work_start = datetime.strptime(datetime.strftime(
@@ -442,8 +442,8 @@ class BiometricMachine(models.Model):
         values['date_from'] = str(d)
         values['date_to'] = str(d)
 
-        shift_obj._create_schedules(values, shift)
+        # shift_obj._create_schedules(values, shift)
 
         res = self.env['resource.calendar.shift'].search(
-            [('shift_id', '=', shift_type.id)], limit=1, order='id desc')
+            [('shift_id', '=', shift_type.id)], limit=1, order='id asc')
         return [res.start_work, res.end_work]

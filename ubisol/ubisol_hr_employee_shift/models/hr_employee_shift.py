@@ -86,41 +86,66 @@ class HrEmployeeShift(models.Model):
         date_to = datetime.strptime(vals.get('date_to'), DATE_FORMAT)
         dates_btwn = date_from
 
-        # print(vals)
-        # print(employees)
-
         while dates_btwn <= date_to:
             week_index = self._find_week_day_index(dates_btwn.strftime("%A"))
             if shift_template.shift_type == 'days':
-                if week_index < 5:
-                    inside_counter = 0
-                    for day in day_ids:
-                        if inside_counter == week_index:
-                            for index, employee in enumerate(employees):
-                                schedule_dict = {}
-                                schedule_dict['hr_department'] = vals.get('hr_department')
-                                schedule_dict['hr_employee'] = employee.id
-                                schedule_dict['date_from'] = vals.get('date_from')
-                                schedule_dict['date_to'] = vals.get('date_to')
-                                schedule_dict['work_day'] = dates_btwn.date()
-                                schedule_dict['hr_employee_shift'] = shift.id
-                                schedule_dict['hr_employee_shift_template'] = shift_template.id
-                                schedule_dict['hr_employee_shift_dayplan'] = day.id
-                                schedule_dict['shift_type'] = shift_template.shift_type
-                                schedule_dict['week_day'] = day.week_day
-                                schedule_dict['lunch_time_from'], schedule_dict['lunch_time_to'] = self._create_datetime(dates_btwn, day.lunch_time_from, day.lunch_time_to)
-                                schedule_dict['start_work'], schedule_dict['end_work'] = self._create_datetime(dates_btwn, day.start_work, day.end_work)
-                                if index == 0:
-                                    schedule_dict['is_main'] = True
-                                self.env['hr.employee.schedule'].create(schedule_dict)
-                            break
-                        inside_counter = inside_counter + 1
+                # if week_index < 5:
+                inside_counter = 0
+                for day in day_ids:
+                    if inside_counter == week_index:
+                        for index, employee in enumerate(employees):
+                            work_dict = {}
+                            work_dict['employee_id'] = employee.id
+                            if employee.department_id:
+                                work_dict['department_id'] = employee.department_id.id
+                            work_dict['pin'] = employee.pin
+                            work_dict['shift_id'] = shift.id
+                            work_dict['calendar_id'] = shift.resource_calendar_ids.id
+                            workplan = self.env['hr.employee.workplan'].search([('employee_id', '=', employee.id)])
+                            if workplan:
+                                workplan.write(work_dict)
+                            else:
+                                workplan = self.env['hr.employee.workplan'].create(work_dict)
+
+                            schedule_dict = {}
+                            schedule_dict['workplan_id'] = workplan.id
+                            schedule_dict['hr_department'] = vals.get('hr_department')
+                            schedule_dict['hr_employee'] = employee.id
+                            schedule_dict['date_from'] = vals.get('date_from')
+                            schedule_dict['date_to'] = vals.get('date_to')
+                            schedule_dict['work_day'] = dates_btwn.date()
+                            schedule_dict['hr_employee_shift'] = shift.id
+                            schedule_dict['hr_employee_shift_template'] = shift_template.id
+                            schedule_dict['hr_employee_shift_dayplan'] = day.id
+                            schedule_dict['shift_type'] = shift_template.shift_type
+                            schedule_dict['week_day'] = day.week_day
+                            schedule_dict['lunch_time_from'], schedule_dict['lunch_time_to'] = self._create_datetime(dates_btwn, day.lunch_time_from, day.lunch_time_to)
+                            schedule_dict['start_work'], schedule_dict['end_work'] = self._create_datetime(dates_btwn, day.start_work, day.end_work)
+                            if index == 0:
+                                schedule_dict['is_main'] = True
+                            self.env['hr.employee.schedule'].create(schedule_dict)
+                        break
+                    inside_counter = inside_counter + 1
             else:
                 inside_counter = 0
                 for day in day_ids:
                     if inside_counter == counter:
                         for index, employee in enumerate(employees):
+                            work_dict = {}
+                            work_dict['employee_id'] = employee.id
+                            if employee.department_id:
+                                work_dict['department_id'] = employee.department_id.id
+                            work_dict['pin'] = employee.pin
+                            work_dict['shift_id'] = shift.id
+                            work_dict['calendar_id'] = shift.resource_calendar_ids.id
+                            workplan = self.env['hr.employee.workplan'].search([('employee_id', '=', employee.id)])
+                            if workplan:
+                                workplan.write(work_dict)
+                            else:
+                                workplan = self.env['hr.employee.workplan'].create(work_dict)
+
                             schedule_dict = {}
+                            schedule_dict['workplan_id'] = workplan.id
                             schedule_dict['hr_department'] = vals.get('hr_department')
                             schedule_dict['hr_employee'] = employee.id
                             schedule_dict['date_from'] = vals.get('date_from')
@@ -200,11 +225,6 @@ class HrEmployeeShift(models.Model):
         return shift
 
     def write(self, vals):
-        # if vals.get('hr_department') != False:
-        #     new_mains = self.env['hr.employee.schedule'].search([('is_main', '=', False)])
-        #     for new_main in new_mains:
-        #         new_main.is_main = True
-        #     vals['is_main'] = False
         shift = super(HrEmployeeShift, self).write(vals)
         self.env['hr.employee.schedule'].search([('hr_employee_shift', '=', self.id)]).unlink()
 
@@ -243,3 +263,7 @@ class HrEmployeeShift(models.Model):
         self._create_schedules(values, self)
 
         return shift
+
+    def unlink(self):
+        self.env['hr.employee.schedule'].search([('hr_employee_shift', '=', self.id)]).unlink()
+        return super(HrEmployeeShift, self).unlink()

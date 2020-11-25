@@ -38,10 +38,10 @@ class HrAttendanceReport(models.Model):
         ], 'Day of Week', required=True, index=True, default='0')
     day_period = fields.Many2one('resource.calendar.dayperiod', string="Day Period", help="Day Period of Work")
     day_period_int = fields.Integer(string='Day Period Integer', help='Day Period of Work')
-    lunch_time_from = fields.Datetime(string='Lunch time from', required=True)
-    lunch_time_to = fields.Datetime(string='Lunch time to', required=True)
-    start_work = fields.Datetime(string="Start Work", required=True, help="Start Work")
-    end_work = fields.Datetime(string="End Work", required=True, help="End Work")
+    lunch_time_from = fields.Datetime(string='Lunch time from')
+    lunch_time_to = fields.Datetime(string='Lunch time to')
+    start_work = fields.Datetime(string="Start Work")
+    end_work = fields.Datetime(string="End Work")
 
     check_in = fields.Datetime(string="Check In")
     check_out = fields.Datetime(string="Check Out")
@@ -80,10 +80,15 @@ class HrAttendanceReport(models.Model):
     def _compute_full_name(self):
         for record in self:
             employee = record.hr_employee
-            if employee.surname:
-                full_name = employee.name + ' ' + employee.surname + ' /' + employee.pin + '/'
+            if not employee.pin:
+                pin = ''
             else:
-                full_name = employee.name + ' /' + employee.pin + '/'
+                pin = ' /' + employee.pin + '/'
+            if employee.surname:
+                full_name = employee.name + ' ' + employee.surname + pin
+            else:
+                full_name = employee.name + pin
+
             record.full_name = full_name
 
     @api.depends("start_work")
@@ -118,6 +123,7 @@ class HrAttendanceReport(models.Model):
                 record.check_in_time = "    " + datetime.strftime(date_result, "%H:%M")
             else:
                 record.check_in_time = ''
+
     @api.depends("check_out")
     def _compute_check_out_time(self):
         for record in self:
@@ -220,11 +226,13 @@ class HrAttendanceReport(models.Model):
                 if attendance_in_out == 'check_out':
                     check_in = record.check_in
                     date_to = record.attendance_req_id.date_to
-                    record.attendance_req_time = self._diff_by_hours(check_in, date_to)
+                    if check_in:
+                        record.attendance_req_time = self._diff_by_hours(check_in, date_to)
                 elif attendance_in_out == 'check_in':
                     check_out = record.check_out
                     date_from = record.attendance_req_id.date_from
-                    record.attendance_req_time = self._diff_by_hours(date_from, check_out)
+                    if check_out:
+                        record.attendance_req_time = self._diff_by_hours(date_from, check_out)
                 else:
                     pass
 
@@ -241,34 +249,41 @@ class HrAttendanceReport(models.Model):
     @api.depends("check_in", "check_out")
     def _compute_take_off_day(self):
         for record in self:
-            if not record.check_in and not record.check_out:
-                record.take_off_day = 1
-            else:
+            if record.hr_employee_schedule.id == 0:
                 record.take_off_day = 0
+            else:
+                if not record.check_in and not record.check_out:
+                    record.take_off_day = 1
+                else:
+                    record.take_off_day = 0
 
     @api.depends("check_in", "start_work")
     def _compute_difference_check_in(self):
         for record in self:
-            if record.check_in:
-                if record.start_work >= record.check_in:
-                    record.difference_check_in = 0
-                else:
-                    record.difference_check_in = self._diff_by_hours(record.start_work, record.check_in)
-            else:
+            if record.hr_employee_schedule.id == 0:
                 record.difference_check_in = 0
+            else:
+                if record.check_in:
+                    if record.start_work >= record.check_in:
+                        record.difference_check_in = 0
+                    else:
+                        record.difference_check_in = self._diff_by_hours(record.start_work, record.check_in)
+                else:
+                    record.difference_check_in = 0
 
     @api.depends("check_out", "end_work")
     def _compute_difference_check_out(self):
         for record in self:
-            if record.check_out:
-                if record.check_out >= record.end_work:
-                    record.difference_check_out = 0
-                else:
-                    record.difference_check_out = self._diff_by_hours(record.check_out, record.end_work)
-            else:
+            if record.hr_employee_schedule.id == 0:
                 record.difference_check_out = 0
-
-    # _compute_work_days
+            else:
+                if record.check_out:
+                    if record.check_out >= record.end_work:
+                        record.difference_check_out = 0
+                    else:
+                        record.difference_check_out = self._diff_by_hours(record.check_out, record.end_work)
+                else:
+                    record.difference_check_out = 0
 
     @api.depends("start_work", "end_work")
     def _compute_work_days(self):
@@ -278,8 +293,11 @@ class HrAttendanceReport(models.Model):
                 is_rest = record.day_period.is_rest
             elif int(record.week_day) < 5:
                 is_rest = False
-            diff = record.lunch_time_to - record.lunch_time_from
-            diff = diff.total_seconds() / 3600.0
+            if not record.lunch_time_to or not record.lunch_time_from:
+                diff = 0.0
+            else:
+                diff = record.lunch_time_to - record.lunch_time_from
+                diff = diff.total_seconds() / 3600.0
             if is_rest:
                 record.work_days = 0.0
             else:
@@ -295,8 +313,11 @@ class HrAttendanceReport(models.Model):
                 is_rest = record.day_period.is_rest
             elif int(record.week_day) < 5:
                 is_rest = False
-            diff = record.lunch_time_to - record.lunch_time_from
-            diff = diff.total_seconds() / 3600.0
+            if not record.lunch_time_to or not record.lunch_time_from:
+                diff = 0.0
+            else:
+                diff = record.lunch_time_to - record.lunch_time_from
+                diff = diff.total_seconds() / 3600.0
             if is_rest:
                 record.work_hours = 0.0
             else:
@@ -308,15 +329,19 @@ class HrAttendanceReport(models.Model):
     def _compute_worked_days(self):
         for record in self:
             is_rest = True
-            is_rest = record.day_period.is_rest
             if record.shift_type == 'shift':
                 is_rest = record.day_period.is_rest
             elif int(record.week_day) < 5:
                 is_rest = False
-            diff = record.lunch_time_to - record.lunch_time_from
-            diff = diff.total_seconds() / 3600.0
+            if not record.lunch_time_to or not record.lunch_time_from:
+                diff = 0.0
+            else:
+                diff = record.lunch_time_to - record.lunch_time_from
+                diff = diff.total_seconds() / 3600.0
             if is_rest:
                 record.worked_days = 0.0
+                if record.hr_employee_schedule.id == 0 and (record.check_out or record.check_in):
+                    record.worked_days = 1.0
             else:
                 if record.check_out and record.check_in:
                     record.worked_days = 1.0
@@ -337,15 +362,21 @@ class HrAttendanceReport(models.Model):
             is_rest = True
             worked_hours = 0.0
             attendance_req_time = 0.0
-            is_rest = record.day_period.is_rest
             if record.shift_type == 'shift':
                 is_rest = record.day_period.is_rest
             elif int(record.week_day) < 5:
                 is_rest = False
-            diff = record.lunch_time_to - record.lunch_time_from
-            diff = diff.total_seconds() / 3600.0
+            if not record.lunch_time_to or not record.lunch_time_from:
+                diff = 0.0
+            else:
+                diff = record.lunch_time_to - record.lunch_time_from
+                diff = diff.total_seconds() / 3600.0
             if is_rest:
                 worked_hours = 0.0
+                if record.hr_employee_schedule.id == 0:
+                    if record.check_out and record.check_in:
+                        delta = record.check_out - record.check_in
+                        worked_hours = delta.total_seconds() / 3600.0 - diff
             else:
                 check_in = record.start_work
                 check_out = record.end_work
@@ -379,18 +410,28 @@ class HrAttendanceReport(models.Model):
                 attendance_in_out = record.attendance_req_id.attendance_in_out
                 check_out = record.end_work
                 if attendance_in_out == 'check_out':
-                    check_in = record.check_in
-                    date_to = record.attendance_req_id.date_to
-                    if date_to < record.end_work:
-                        check_out = date_to
-                    attendance_req_time = self._diff_by_hours(check_in, check_out) - diff
+                    if record.hr_employee_schedule:
+                        check_in = record.check_in
+                        date_to = record.attendance_req_id.date_to
+                        if date_to < record.end_work:
+                            check_out = date_to
+                        attendance_req_time = self._diff_by_hours(check_in, check_out) - diff
+                    elif record.check_in:
+                         check_in = record.check_in
+                         attendance_req_time = self._diff_by_hours(check_in, check_out) - diff
                 elif attendance_in_out == 'check_in':
-                    if record.check_out < record.end_work:
-                        check_out = record.check_out
                     date_from = record.attendance_req_id.date_from
-                    attendance_req_time = self._diff_by_hours(date_from, check_out) - diff
+                    if record.hr_employee_schedule:
+                        if record.check_out:
+                            if record.check_out < record.end_work:
+                                check_out = record.check_out
+                            attendance_req_time = self._diff_by_hours(date_from, check_out) - diff
+                    elif record.check_out:
+                        attendance_req_time = self._diff_by_hours(date_from, record.check_out) - diff
                 else:
-                    pass
+                    attendance_req_time = self._diff_by_hours(date_from, record.end_work) - setting_obj.late_subtrack - diff
+                if attendance_req_time < 0.0:
+                    attendance_req_time = 0.0
                 record.worked_hours = attendance_req_time
 
     def _diff_by_hours(self, date1, date2):
@@ -415,6 +456,18 @@ class HrAttendanceReport(models.Model):
                 res.append(child.id)
                 self._get_departments(child, res)
         return res
+
+    def _find_week_day_index(self, week_day):
+        week = { 
+            'Monday': 0,
+            'Tuesday': 1,
+            'Wednesday': 2,
+            'Thursday': 3,
+            'Friday': 4,
+            'Saturday': 5,
+            'Sunday': 6
+        }
+        return week.get(week_day, -1) 
 
     def calculate_report(self, start_date, end_date, calculate_type, department_id, employee_id):
         setting_obj = self.env['hr.attendance.settings'].search([], limit=1, order='id desc')
@@ -466,11 +519,13 @@ class HrAttendanceReport(models.Model):
                     ('work_day', '=', dates_btwn),
                     ('hr_employee', '=', employee_id),
                 ])
-                for schedule in schedules:
-                    values = {}
-                    if schedule:
-                        values['hr_department'] = schedule.hr_department.id
-                        values['hr_employee'] = schedule.hr_employee.id
+                emp = self.env["hr.employee"].browse(employee_id)
+                values = {}
+
+                if len(schedules) > 0:
+                    for schedule in schedules:
+                        values['hr_department'] = emp.department_id.id
+                        values['hr_employee'] = employee_id
                         values['hr_employee_shift'] = schedule.hr_employee_shift.id
                         values['hr_employee_schedule'] = schedule.id
                         values['hr_employee_shift_template'] = schedule.hr_employee_shift_template.id
@@ -486,70 +541,84 @@ class HrAttendanceReport(models.Model):
                         values['lunch_time_to'] = schedule.lunch_time_to
                         values['start_work'] = schedule.start_work
                         values['end_work'] = schedule.end_work
+                else:
+                    s_work = datetime.combine(dates_btwn, time())
+                    e_work = s_work + timedelta(hours=23, minutes=59, seconds=59)
 
-                    if values['shift_type'] == 'shift':
-                        date_from = datetime.combine(dates_btwn, time())
-                        date_to = datetime.combine(dates_btwn, time())
-                        date_to = date_to + timedelta(hours=23, minutes=59, seconds=59)
-                        
-                    else:
-                        date_from = datetime.combine(dates_btwn, time())
-                        date_from = date_from + timedelta(seconds=setting_obj.start_work_date_from * 3600)
-                        date_to = datetime.combine(dates_btwn, time())
-                        date_to = date_to + timedelta(seconds=setting_obj.start_work_date_to * 3600 + 59)
+                    values['hr_department'] = emp.department_id.id
+                    values['hr_employee'] = employee_id
+                    values['hr_employee_schedule'] = 0
+                    values['shift_type'] = 'days'
+                    values['work_day'] = dates_btwn
+                    values['week_day'] = str(dates_btwn.weekday())
+                    values['lunch_time_from'] = None
+                    values['lunch_time_to'] = None
+                    values['start_work'] = s_work
+                    values['end_work'] = e_work
+
+                if values['shift_type'] == 'shift':
+                    date_from = datetime.combine(dates_btwn, time())
+                    date_to = datetime.combine(dates_btwn, time())
+                    date_to = date_to + timedelta(hours=23, minutes=59, seconds=59)
+                else:
+                    date_from = datetime.combine(dates_btwn, time())
+                    date_from = date_from + timedelta(seconds=setting_obj.start_work_date_from * 3600)
+                    date_to = datetime.combine(dates_btwn, time())
+                    date_to = date_to + timedelta(seconds=setting_obj.start_work_date_to * 3600 + 59)
+
+                attendances = self.env['hr.attendance'].search([
+                    ('check_in', '>=', self._convert_datetime_field(date_from)),
+                    ('check_in', '<=', self._convert_datetime_field(date_to)),
+                    ('employee_id', '=', employee_id),
+                ])
+                if not attendances and values['shift_type'] == 'days':
+                    date_from = datetime.combine(dates_btwn, time())
+                    date_from = date_from + timedelta(seconds=setting_obj.end_work_date_from * 3600)
+                    date_to = datetime.combine(dates_btwn, time())
+                    date_to = date_to + timedelta(days=1) + timedelta(seconds=setting_obj.end_work_date_to * 3600 + 59)
 
                     attendances = self.env['hr.attendance'].search([
                         ('check_in', '>=', self._convert_datetime_field(date_from)),
                         ('check_in', '<=', self._convert_datetime_field(date_to)),
                         ('employee_id', '=', employee_id),
                     ])
-                    if not attendances and values['shift_type'] == 'days':
-                        date_from = datetime.combine(dates_btwn, time())
-                        date_from = date_from + timedelta(seconds=setting_obj.end_work_date_from * 3600)
-                        date_to = datetime.combine(dates_btwn, time())
-                        date_to = date_to + timedelta(days=1) + timedelta(seconds=setting_obj.end_work_date_to * 3600 + 59)
 
-                        attendances = self.env['hr.attendance'].search([
-                            ('check_in', '>=', self._convert_datetime_field(date_from)),
-                            ('check_in', '<=', self._convert_datetime_field(date_to)),
-                            ('employee_id', '=', employee_id),
-                        ])
+                for attendance in attendances:
+                    if attendance:
+                        values['hr_attendance'] = attendance.id
+                        values['check_in'] = attendance.check_in
+                        values['check_out'] = attendance.check_out
+                        values['worked_hours'] = attendance.worked_hours
 
-                    for attendance in attendances:
-                        if attendance:
-                            values['hr_attendance'] = attendance.id
-                            values['check_in'] = attendance.check_in
-                            values['check_out'] = attendance.check_out
-                            values['worked_hours'] = attendance.worked_hours
+                date_from = datetime.combine(dates_btwn, time())
+                date_to = datetime.combine(dates_btwn, time())
+                date_to = date_to + timedelta(hours=23, minutes=59, seconds=59)
 
-                    date_from = datetime.combine(dates_btwn, time())
-                    date_to = datetime.combine(dates_btwn, time())
-                    date_to = date_to + timedelta(hours=23, minutes=59, seconds=59)
+                attendance_reqs = all_attendance_reqs.search([
+                    ('date_from', '>=', self._convert_datetime_field(date_from)),
+                    ('date_from', '<=', self._convert_datetime_field(date_to)),
+                    ('employee_id', '=', employee_id),
+                    # ('holiday_type', '=', 'employee'),
+                ])
 
-                    attendance_reqs = all_attendance_reqs.search([
-                        ('date_from', '>=', self._convert_datetime_field(date_from)),
-                        ('date_from', '<=', self._convert_datetime_field(date_to)),
-                        ('employee_id', '=', employee_id),
-                        # ('holiday_type', '=', 'employee'),
-                    ])
-
-                    for attendance_req in attendance_reqs:
-                        req_type = attendance_req.holiday_status_id.request_status_type
-                        if req_type == 'overtime':
-                            values['overtime_req_id'] = attendance_req.id
-                        elif req_type == 'outside_work':
-                            values['outside_work_req_id'] = attendance_req.id
-                        elif req_type == 'paid':
-                            values['paid_req_id'] = attendance_req.id
-                        elif req_type == 'unpaid':
-                            values['unpaid_req_id'] = attendance_req.id
-                        elif req_type == 'vacation':
-                            values['vacation_req_id'] = attendance_req.id
-                        elif req_type == 'attendance':
-                            values['attendance_req_id'] = attendance_req.id
-
-                    data.append(values)
-                    super(HrAttendanceReport, self).create(values)
+                for attendance_req in attendance_reqs:
+                    req_type = attendance_req.holiday_status_id.request_status_type
+                    if req_type == 'overtime':
+                        values['overtime_req_id'] = attendance_req.id
+                    elif req_type == 'outside_work':
+                        values['outside_work_req_id'] = attendance_req.id
+                    elif req_type == 'paid':
+                        values['paid_req_id'] = attendance_req.id
+                    elif req_type == 'unpaid':
+                        values['unpaid_req_id'] = attendance_req.id
+                    elif req_type == 'vacation':
+                        values['vacation_req_id'] = attendance_req.id
+                    elif req_type == 'attendance':
+                        values['attendance_req_id'] = attendance_req.id
+                        
+                data.append(values)
+                super(HrAttendanceReport, self).create(values)
+                
                 dates_btwn = dates_btwn + relativedelta(days=1)
         header = [
             'hr_department', 
@@ -779,7 +848,6 @@ class HrAttendanceReport(models.Model):
 
     @api.model
     def get_my_attendances_report(self, filters):
-        att_report_obj = self.env['hr.attendance.report']
         row = []
         header = [['field_name', 0]]
         employee_id = filters['employee_id']
@@ -796,12 +864,9 @@ class HrAttendanceReport(models.Model):
             dates_btwn = dates_btwn + relativedelta(days=1)
 
         fields = [
-            ['work_hours', 'Ажиллавал зохих цаг'], 
             ['worked_hours', 'Ажилласан цаг'], 
-            ['overtime', 'Баталсан илүү цаг'], 
-            ['informal_overtime', 'Нийт илүү цаг'],
-            ['paid_req_time', 'Цалинтай чөлөө'], 
-            ['unpaid_req_time', 'Цалингүй чөлөө'], 
+            ['check_in', 'Орсон'],
+            ['check_out', 'Гарсан'],
             ['difference_check_out', 'Таслалт'], 
             ['difference_check_in', 'Хоцролт']
         ]
@@ -811,12 +876,8 @@ class HrAttendanceReport(models.Model):
             arr['field_name'] = f[1]
             dates_btwn = start_date
             while dates_btwn <= end_date:
-                raw_data = att_report_obj.read_group(
-                    domain=[('hr_employee', '=', employee_id), ('work_day', '=', dates_btwn)],
-                    fields=[f[0]],
-                    groupby=[], 
-                    lazy=False
-                )
+                att_report_obj = self.env['hr.attendance.report'].search([('hr_employee', '=', employee_id), ('work_day', '=', dates_btwn)])
+                raw_data = att_report_obj.read([f[0]])
                 arr[str(dates_btwn)] = raw_data
                 dates_btwn = dates_btwn + relativedelta(days=1)
             row.append(arr)

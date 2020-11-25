@@ -3,6 +3,7 @@ import json
 
 class HrAttendance(models.Model):
     _inherit = "hr.attendance"
+    _order = "id, check_in, check_out"
 
     def _default_employee(self):
         return self.env.user.employee_id
@@ -35,6 +36,7 @@ class HrAttendance(models.Model):
     def get_my_attendances(self):
         resource = self.env['resource.resource'].search([('user_id','=',self.env.user.id)])
         employee = self.env['hr.employee'].search([('resource_id','=',resource.id)])
+
         attendances = self.env['hr.attendance.report'].search([('hr_employee', '=', employee.id)])
         raw_data = attendances.read()
         return raw_data

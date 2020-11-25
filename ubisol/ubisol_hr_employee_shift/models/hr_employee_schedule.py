@@ -9,8 +9,9 @@ class HrEmployeeSchedule(models.Model):
     """Хуваарилсан ээлж"""
     _name = 'hr.employee.schedule'
     _description = 'Hr Employee Schedule'
-    _rec_name = 'hr_department'
+    _rec_name = 'work_day'
 
+    workplan_id = fields.Many2one('hr.employee.workplan', string="Workplan", help="Workplan")
     hr_department = fields.Many2one('hr.department', string="Department", help="Department")
     hr_employee = fields.Many2one('hr.employee', string="Employee", help="Employee")
     hr_employee_shift = fields.Many2one('hr.employee.shift', string="Employee Shift", help="Employee Shift")
