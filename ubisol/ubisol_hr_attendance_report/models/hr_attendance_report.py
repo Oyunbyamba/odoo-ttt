@@ -49,6 +49,7 @@ class HrAttendanceReport(models.Model):
     work_hours = fields.Float(string='Must Worked Hours', compute="_compute_work_hours", store=True, compute_sudo=True)
     worked_days = fields.Float(string='Worked Days', compute="_compute_worked_days", store=True, compute_sudo=True)
     worked_hours = fields.Float(string='Worked Hours', compute="_compute_worked_hours", store=True, compute_sudo=True)
+    formal_worked_hours = fields.Float(string='Formal Worked Hours', compute="_compute_formal_worked_hours", store=True, compute_sudo=True)
 
     difference_check_in = fields.Float(compute="_compute_difference_check_in", store=True, compute_sudo=True)
     difference_check_out = fields.Float(compute="_compute_difference_check_out", store=True, compute_sudo=True)
@@ -284,11 +285,6 @@ class HrAttendanceReport(models.Model):
                 is_rest = record.day_period.is_rest
             elif int(record.week_day) < 5:
                 is_rest = False
-            if not record.lunch_time_to or not record.lunch_time_from:
-                diff = 0.0
-            else:
-                diff = record.lunch_time_to - record.lunch_time_from
-                diff = diff.total_seconds() / 3600.0
             if is_rest:
                 record.work_days = 0.0
             else:
@@ -324,15 +320,11 @@ class HrAttendanceReport(models.Model):
                 is_rest = record.day_period.is_rest
             elif int(record.week_day) < 5:
                 is_rest = False
-            if not record.lunch_time_to or not record.lunch_time_from:
-                diff = 0.0
-            else:
-                diff = record.lunch_time_to - record.lunch_time_from
-                diff = diff.total_seconds() / 3600.0
             if is_rest:
-                record.worked_days = 0.0
-                if record.hr_employee_schedule.id == 0 and (record.check_out or record.check_in):
-                    record.worked_days = 1.0
+                # record.worked_days = 0.0
+                # if record.hr_employee_schedule.id == 0 and (record.check_out or record.check_in):
+                #     record.worked_days = 1.0
+                pass
             else:
                 if record.check_out and record.check_in:
                     record.worked_days = 1.0
@@ -345,6 +337,74 @@ class HrAttendanceReport(models.Model):
                         record.worked_days = 1.0
                     else:
                         record.worked_days = 0.0
+
+    @api.depends('check_in', "start_work", 'check_out', "end_work", "day_period", "attendance_req_id")
+    def _compute_formal_worked_hours(self):
+        setting_obj = self.env['hr.attendance.settings'].search([], limit=1, order='id desc')
+        for record in self:
+            is_rest = True
+            worked_hours = 0.0
+            attendance_req_time = 0.0
+            if record.shift_type == 'shift':
+                is_rest = record.day_period.is_rest
+            elif int(record.week_day) < 5:
+                is_rest = False
+            if not record.lunch_time_to or not record.lunch_time_from:
+                diff = 0.0
+            else:
+                diff = record.lunch_time_to - record.lunch_time_from
+                diff = diff.total_seconds() / 3600.0
+            if is_rest:
+                worked_hours = 0.0
+            else:
+                check_in = record.start_work
+                check_out = record.end_work
+                if record.check_out and record.check_in:
+                    if record.start_work < record.check_in:
+                        if (setting_obj.late_min * 3600) < (record.check_in - record.start_work).total_seconds():
+                            check_in = record.check_in
+                    if record.check_out < record.end_work:
+                        check_out = record.check_out
+                    delta = check_out - check_in
+                    worked_hours = delta.total_seconds() / 3600.0 - diff
+                elif record.check_out:
+                    if record.check_out < record.end_work:
+                        check_out = record.check_out
+                    delta = check_out - check_in
+                    worked_hours = delta.total_seconds() / 3600.0 - setting_obj.late_subtrack - diff
+                elif record.check_in:
+                    if record.start_work < record.check_in:
+                        if (setting_obj.late_min * 3600) < (record.check_in - record.start_work).total_seconds():
+                            check_in = record.check_in
+                    delta = check_out - check_in
+                    worked_hours = delta.total_seconds() / 3600.0 - setting_obj.late_subtrack - diff
+                else:
+                    worked_hours = 0.0
+            if worked_hours < 0.0:
+                worked_hours = 0.0
+
+            record.formal_worked_hours = worked_hours
+
+            if record.hr_employee_schedule.id != 0 and record.attendance_req_id:
+                check_in = record.check_in
+                check_out = record.check_out
+                subtract = 0.0
+                for req_id in record.attendance_req_id:
+                    attendance_in_out = req_id.attendance_in_out
+                    if attendance_in_out == 'check_out':
+                        check_out = req_id.date_to
+                    elif attendance_in_out == 'check_in':
+                        check_in = req_id.date_from
+                if not check_in and record.hr_employee_schedule.id != 0:
+                    check_in = record.start_work
+                    subtract = setting_obj.late_subtrack
+                if not check_out and record.hr_employee_schedule.id != 0:
+                    check_out = record.end_work
+                    subtract = setting_obj.late_subtrack
+                attendance_req_time = self._diff_by_hours(check_in, check_out) - diff - subtract
+                if attendance_req_time < 0.0:
+                    attendance_req_time = 0.0
+                record.formal_worked_hours = attendance_req_time
 
     @api.depends('check_in', "start_work", 'check_out', "end_work", "day_period", "attendance_req_id")
     def _compute_worked_hours(self):
@@ -673,6 +733,7 @@ class HrAttendanceReport(models.Model):
                 'work_hours', 
                 'worked_days', 
                 'worked_hours', 
+                'formal_worked_hours',
                 'overtime', 
                 'informal_overtime', 
                 'paid_req_time', 
@@ -691,7 +752,8 @@ class HrAttendanceReport(models.Model):
             ['work_days', 'Ажиллавал зохих өдөр'], 
             ['work_hours', 'Ажиллавал зохих цаг'], 
             ['worked_days', 'Ажилласан өдөр'], 
-            ['worked_hours', 'Ажилласан цаг'], 
+            ['formal_worked_hours', 'Хуваарийн ажилласан цаг'], 
+            ['worked_hours', 'Нийт ажилласан цаг'], 
             ['overtime', 'Баталсан илүү цаг'], 
             ['informal_overtime', 'Нийт илүү цаг'], 
             ['paid_req_time', 'Цалинтай чөлөө'], 
@@ -736,6 +798,7 @@ class HrAttendanceReport(models.Model):
                 'work_hours', 
                 'worked_days', 
                 'worked_hours', 
+                'formal_worked_hours',
                 'overtime', 
                 'informal_overtime', 
                 'paid_req_time', 
@@ -754,7 +817,8 @@ class HrAttendanceReport(models.Model):
             ['work_days', 'Ажиллавал зохих өдөр'], 
             ['work_hours', 'Ажиллавал зохих цаг'], 
             ['worked_days', 'Ажилласан өдөр'], 
-            ['worked_hours', 'Ажилласан цаг'], 
+            ['formal_worked_hours', 'Хуваарийн ажилласан цаг'], 
+            ['worked_hours', 'Нийт ажилласан цаг'], 
             ['overtime', 'Баталсан илүү цаг'], 
             ['informal_overtime', 'Нийт илүү цаг'], 
             ['paid_req_time', 'Цалинтай чөлөө'], 
@@ -803,6 +867,7 @@ class HrAttendanceReport(models.Model):
             'work_hours', 
             'worked_days', 
             'worked_hours', 
+            'formal_worked_hours',
             'overtime', 
             'informal_overtime',
             'paid_req_time', 
@@ -823,7 +888,8 @@ class HrAttendanceReport(models.Model):
             ['check_in', 'Орсон'], 
             ['check_out', 'Гарсан'], 
             ['worked_days', 'Ажилласан өдөр'], 
-            ['worked_hours', 'Ажилласан цаг'], 
+            ['formal_worked_hours', 'Хуваарийн ажилласан цаг'], 
+            ['worked_hours', 'Нийт ажилласан цаг'],
             ['overtime', 'Баталсан илүү цаг'], 
             ['informal_overtime', 'Нийт илүү цаг'],
             ['paid_req_time', 'Цалинтай чөлөө'], 
@@ -859,6 +925,7 @@ class HrAttendanceReport(models.Model):
             dates_btwn = dates_btwn + relativedelta(days=1)
 
         fields = [
+            ['formal_worked_hours', 'Хуваарийн ажилласан цаг'], 
             ['worked_hours', 'Ажилласан цаг'], 
             ['check_in', 'Орсон'],
             ['check_out', 'Гарсан'],
