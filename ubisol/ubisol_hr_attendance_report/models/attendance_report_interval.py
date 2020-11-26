@@ -139,6 +139,8 @@ class AttendanceReport(models.TransientModel):
                     else:
                         if index == 'worked_days' or index == 'take_off_day':
                             sheet.write(row, i, 0, border_format)
+                        elif index == 'check_in' or index == 'check_out':
+                            sheet.write(row, i, '-', border_format)
                         else:
                             sheet.write(row, i, '00:00', border_format)
                 except KeyError:
@@ -225,6 +227,8 @@ class AttendanceReport(models.TransientModel):
                     else:
                         if index == 'worked_days' or index == 'take_off_day' or index == 'work_days':
                             sheet.write(row, i, 0, border_format)
+                        elif index == 'check_in' or index == 'check_out':
+                            sheet.write(row, i, '-', border_format)
                         else:
                             sheet.write(row, i, '00:00', border_format)
                 except KeyError:

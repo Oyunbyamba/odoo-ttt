@@ -180,37 +180,72 @@ class HrAttendanceReport(models.Model):
                 else:
                     record.overtime = self._diff_by_hours(date_from, date_to)
 
-    @api.depends('overtime_req_id', 'check_out', "end_work", "attendance_req_id")
+    @api.depends('overtime_req_id', 'check_in', 'check_out', 'start_work', "end_work", "attendance_req_id")
     def _compute_informal_overtime(self):
         for record in self:
             informal_overtime = 0.0
-            if not record.check_out:
+            is_rest = True
+            if record.shift_type == 'shift':
+                is_rest = record.day_period.is_rest
+            elif int(record.week_day) < 5:
+                is_rest = False
+                
+            if is_rest:
                 informal_overtime = 0.0
-            elif record.check_out < record.end_work:
-                informal_overtime = 0.0
+                if record.hr_employee_schedule.id == 0:
+                    if record.check_out and record.check_in:
+                        delta = record.check_out - record.check_in
+                        informal_overtime = delta.total_seconds() / 3600.0
             else:
-                delta = record.check_out - record.end_work
-                informal_overtime = delta.total_seconds() / 3600.0
-
-            if record.attendance_req_id:
-                for req_id in record.attendance_req_id:
-                    attendance_in_out = req_id.attendance_in_out
-                    if attendance_in_out == 'check_out':
-                        date_to = req_id.date_to
-                        if date_to > record.end_work:
-                            delta = date_to - record.end_work
-                            informal_overtime = delta.total_seconds() / 3600.0
-
-            if record.overtime_req_id and (record.overtime_req_id.state == 'validate' or record.overtime_req_id.state == 'validate1'):
-                check_out = record.check_out
-                date_from = record.overtime_req_id.date_from
-                date_to = record.overtime_req_id.date_to
-                if record.check_out:
-                    if date_to < record.check_out:
-                        check_out = date_to
-                    informal_overtime += self._diff_by_hours(date_from, check_out)
+                if not record.check_out:
+                    informal_overtime += 0.0
+                elif record.check_out < record.end_work:
+                    informal_overtime += 0.0
                 else:
-                    informal_overtime += self._diff_by_hours(date_from, date_to)
+                    delta = record.check_out - record.end_work
+                    informal_overtime += delta.total_seconds() / 3600.0
+
+                if not record.check_in:
+                    informal_overtime += 0.0
+                elif record.check_in > record.start_work:
+                    informal_overtime += 0.0
+                else:
+                    delta = record.start_work - record.check_in
+                    informal_overtime += delta.total_seconds() / 3600.0
+
+                if record.attendance_req_id:
+                    for req_id in record.attendance_req_id:
+                        attendance_in_out = req_id.attendance_in_out
+                        if attendance_in_out == 'check_out':
+                            date_to = req_id.date_to
+                            if record.hr_employee_schedule.id != 0:
+                                if date_to > record.end_work:
+                                    delta = date_to - record.end_work
+                                    informal_overtime = delta.total_seconds() / 3600.0
+                            elif record.check_in:
+                                delta = date_to - record.check_in
+                                informal_overtime = delta.total_seconds() / 3600.0
+                        if attendance_in_out == 'check_in':
+                            date_from = req_id.date_from
+                            if record.hr_employee_schedule.id != 0:
+                                if date_from < record.start_work:
+                                    delta = record.start_work - date_from
+                                    informal_overtime = delta.total_seconds() / 3600.0
+                            elif record.check_out:
+                                delta = record.check_out - date_from
+                                informal_overtime = delta.total_seconds() / 3600.0
+
+                if record.overtime_req_id and (record.overtime_req_id.state == 'validate' or record.overtime_req_id.state == 'validate1'):
+                    check_out = record.check_out
+                    date_from = record.overtime_req_id.date_from
+                    date_to = record.overtime_req_id.date_to
+                    if record.check_out:
+                        if date_to < record.check_out:
+                            check_out = date_to
+                        informal_overtime += self._diff_by_hours(date_from, check_out)
+                    else:
+                        informal_overtime += self._diff_by_hours(date_from, date_to)
+
             record.informal_overtime = informal_overtime
 
     @api.depends("attendance_req_id")
@@ -349,14 +384,14 @@ class HrAttendanceReport(models.Model):
                 is_rest = record.day_period.is_rest
             elif int(record.week_day) < 5:
                 is_rest = False
+
             if not record.lunch_time_to or not record.lunch_time_from:
                 diff = 0.0
             else:
                 diff = record.lunch_time_to - record.lunch_time_from
                 diff = diff.total_seconds() / 3600.0
-            if is_rest:
-                worked_hours = 0.0
-            else:
+
+            if not is_rest:
                 check_in = record.start_work
                 check_out = record.end_work
                 if record.check_out and record.check_in:
@@ -378,14 +413,12 @@ class HrAttendanceReport(models.Model):
                             check_in = record.check_in
                     delta = check_out - check_in
                     worked_hours = delta.total_seconds() / 3600.0 - setting_obj.late_subtrack - diff
-                else:
-                    worked_hours = 0.0
             if worked_hours < 0.0:
                 worked_hours = 0.0
 
             record.formal_worked_hours = worked_hours
 
-            if record.hr_employee_schedule.id != 0 and record.attendance_req_id:
+            if not is_rest and record.attendance_req_id:
                 check_in = record.check_in
                 check_out = record.check_out
                 subtract = 0.0
@@ -417,11 +450,13 @@ class HrAttendanceReport(models.Model):
                 is_rest = record.day_period.is_rest
             elif int(record.week_day) < 5:
                 is_rest = False
+
             if not record.lunch_time_to or not record.lunch_time_from:
                 diff = 0.0
             else:
                 diff = record.lunch_time_to - record.lunch_time_from
                 diff = diff.total_seconds() / 3600.0
+
             if is_rest:
                 worked_hours = 0.0
                 if record.hr_employee_schedule.id == 0:
@@ -432,22 +467,16 @@ class HrAttendanceReport(models.Model):
                 check_in = record.start_work
                 check_out = record.end_work
                 if record.check_out and record.check_in:
-                    if record.start_work < record.check_in:
-                        if (setting_obj.late_min * 3600) < (record.check_in - record.start_work).total_seconds():
-                            check_in = record.check_in
-                    if record.check_out < record.end_work:
-                        check_out = record.check_out
+                    check_in = record.check_in
+                    check_out = record.check_out
                     delta = check_out - check_in
                     worked_hours = delta.total_seconds() / 3600.0 - diff
                 elif record.check_out:
-                    if record.check_out < record.end_work:
-                        check_out = record.check_out
+                    record.check_out
                     delta = check_out - check_in
                     worked_hours = delta.total_seconds() / 3600.0 - setting_obj.late_subtrack - diff
                 elif record.check_in:
-                    if record.start_work < record.check_in:
-                        if (setting_obj.late_min * 3600) < (record.check_in - record.start_work).total_seconds():
-                            check_in = record.check_in
+                    check_in = record.check_in
                     delta = check_out - check_in
                     worked_hours = delta.total_seconds() / 3600.0 - setting_obj.late_subtrack - diff
                 else:
