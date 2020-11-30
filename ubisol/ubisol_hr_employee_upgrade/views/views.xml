@@ -194,6 +194,7 @@
       <field name="arch" type="xml">
         <xpath expr="//field[@name='category_ids']" position="after">
           <field name="study_field" string="Study Field"/>
+          <field name="pin" string="Пин код"/>
         </xpath>
 
         <xpath expr="//group[1]" position="inside">
