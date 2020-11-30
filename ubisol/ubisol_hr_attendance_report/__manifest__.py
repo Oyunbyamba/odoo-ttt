@@ -22,7 +22,7 @@
     'application': True,
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'ubisol_hr_employee_upgrade', 'resource', 'ubisol_hr_employee_shift', 'ubisol_hr_attendance_upgrade'],
+    'depends': ['web', 'base', 'ubisol_hr_employee_upgrade', 'resource', 'ubisol_hr_employee_shift', 'ubisol_hr_attendance_upgrade'],
 
     # always loaded
     'data': [

@@ -210,21 +210,24 @@
       </field>
     </record>
 
-    <record id="hr.view_employee_tree" model="ir.ui.view">
-      <field name="name">hr.employee.tree</field>
+    <record id="inherit_view_employee_tree" model="ir.ui.view">
+      <field name="name">hr.employee.tree.inherit</field>
       <field name="model">hr.employee</field>
+      <field name="inherit_id" ref="hr.view_employee_tree"/>
       <field name="arch" type="xml">
-        <tree string="Employees" default_order="id">
-          <field name="surname"/>
-          <field name="name"/>
-          <field name="work_phone" class="o_force_ltr"/>
-          <field name="work_email"/>
-          <field name="company_id" groups="base.group_multi_company"/>
-          <field name="department_id"/>
-          <field name="job_id"/>
-          <field name="parent_id"/>
-          <field name="coach_id" invisible="1"/>
-        </tree>
+        <xpath expr="//tree" position="replace">
+          <tree string="Employees" default_order="id">
+            <field name="surname"/>
+            <field name="name"/>
+            <field name="work_phone" class="o_force_ltr"/>
+            <field name="work_email"/>
+            <field name="company_id" groups="base.group_multi_company"/>
+            <field name="department_id"/>
+            <field name="job_id"/>
+            <field name="parent_id"/>
+            <field name="coach_id" invisible="1"/>
+          </tree>
+        </xpath>
       </field>
     </record>
 

@@ -30,12 +30,14 @@ class CreateDatetimeFilter(models.TransientModel):
         else:
           domain = [('work_day', '>=', self.start_date), ('work_day', '<=', self.end_date)]
 
+      print(domain)
+
       action = {
         "name": "Ажиллах график",
         "type": "ir.actions.act_window",
         "res_model": "hr.employee.schedule",
         'domain': domain,
-        'context': {"search_default_department":1, "search_default_employee":1, "search_default_is_rest":1},
-        "view_mode": "tree,timeline,calendar",
+        'context': {"search_default_is_rest":1},
+        "view_mode": "timeline",
       }
       return action

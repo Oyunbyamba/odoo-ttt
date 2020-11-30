@@ -27,6 +27,12 @@ odoo.define('render_table.RenderTable',function (require) {
             });
         },
 
+        autofocus: function () {
+            var self = this;
+
+            return this._super();
+        },
+
         destroy: function () {
             console.log('destroyed');
         },

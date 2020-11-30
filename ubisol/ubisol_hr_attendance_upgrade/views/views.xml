@@ -45,7 +45,7 @@
       <field name="inherit_id" ref="hr_attendance.view_attendance_tree"/>
       <field name="arch" type="xml">
         <xpath expr="//tree" position="replace">
-          <tree string="Employee attendances" default_order='id asc'>
+          <tree string="Employee attendances" default_order='check_in, check_out'>
             <field name="fullname" string="Нэр"/>
             <field name="pin"/>
             <field name="check_in"/>
@@ -165,6 +165,7 @@
         name="Миний ирц" 
         parent="hr_attendance.menu_hr_attendance_root" 
         sequence="0" 
+        groups="ubisol_hr_attendance_upgrade.group_hr_attendance_responsible,hr_attendance.group_hr_attendance,hr_attendance.group_hr_attendance_user,hr_attendance.group_hr_attendance_manager" 
         action="ubisol_hr_attendance_upgrade.my_attendance_action"/>
 
     <menuitem 

@@ -22,7 +22,7 @@
     'application': True,
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'hr', 'resource'],
+    'depends': ['base', 'ubisol_hr_employee_upgrade', 'resource'],
 
     # always loaded
     'data': [

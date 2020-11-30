@@ -6,6 +6,22 @@ odoo.define('attendance_table.RenderTable',function (require) {
     var FormRenderer = require('web.FormRenderer');
     var viewRegistry = require('web.view_registry');
     var rpc = require('web.rpc');
+    var core = require('web.core');
+    var Dialog = require('web.Dialog');
+    var framework = require('web.framework');
+
+    var _t = core._t;
+
+    function convertDateToTime(datetime) {
+        var d = moment(datetime).add(8, 'hours');
+        if(d.isValid()) {
+            var hour = d.format('H');
+            var minute   = d.format('mm');
+            return hour + ':' + minute;
+        } else {
+            return '-';
+        }
+    }
 
     function convertNumToTime(number) {
         // Check sign of given number
@@ -64,20 +80,27 @@ odoo.define('attendance_table.RenderTable',function (require) {
             var self = this;
             return this._super.apply(this, arguments).then(function () {
                 var filters = {};
-                filters['calculate_type'] = 'employee';
-                filters['employee_id'] = self.state.data.employee_id.data.id;
-                filters['start_date'] = self.state.data.start_date;
-                filters['end_date'] = self.state.data.end_date;
+                if(!self.state.data.employee_id) {
+                    Dialog.alert(self, _t("Энэ хэрэглэгч дээр ажилтан холбоогүй байна!"), {
+                        confirm_callback: function() {
+                            framework.redirect('/');
+                        },
+                        title: _t('Анхааруулга'),
+                    });
+                } else {
+                    filters['calculate_type'] = 'employee';
+                    filters['employee_id'] = self.state.data.employee_id.data.id;
+                    filters['start_date'] = self.state.data.start_date;
+                    filters['end_date'] = self.state.data.end_date;
 
-                console.log(filters);
-                
-                var res = rpc.query({
-                    model: 'hr.attendance.report',
-                    method: 'get_my_attendances_report',
-                    args: [filters],
-                }).then(function (data) {
-                    self._renderTable(self, data)
-                });
+                    var res = rpc.query({
+                        model: 'hr.attendance.report',
+                        method: 'get_my_attendances_report',
+                        args: [filters],
+                    }).then(function (data) {
+                        self._renderTable(self, data)
+                    });
+                }
             });
         },
 
@@ -106,9 +129,6 @@ odoo.define('attendance_table.RenderTable',function (require) {
             var headers = data.header;
             var fields = data.fields;
             var rows = data.data;
-
-            console.log('headers: ', headers);
-            console.log('rows: ', rows);
 
             var $tr = $('<tr/>', { class: 'o_data_row' });
             $tr.css({"background-color": "#eee"})
@@ -148,13 +168,32 @@ odoo.define('attendance_table.RenderTable',function (require) {
                             break;
                         default:
                             var cell = att[key][0];
-                            var hours = convertNumToTime(cell[fields[i][0]]);
-                            var $cell = $('<td>');
-                            $cell.html(hours);
-                            if(header[1] == 1) {
-                                $cell.css({"background-color": "#99d5ff"})
+                            console.log(cell);
+                            if (cell) {
+                                var $cell = $('<td>');
+                                if (fields[i][0] == 'check_in' || fields[i][0] == 'check_out') {
+                                    var hours = convertDateToTime(cell[fields[i][0]]);
+                                    if(hours == '-') {
+                                        $cell.css({"background-color": "#ffb3b4"})
+                                    }
+                                } else {
+                                    var hours = convertNumToTime(cell[fields[i][0]]);
+                                }
+                                $cell.html(hours);
+                                if(header[1] == 1) {
+                                    $cell.css({"background-color": "#99d5ff"})
+                                }
+                                $tr.append($cell);
+                            } else {
+                                var hours = '-';
+                                var $cell = $('<td>');
+                                $cell.html((hours));
+                                if(header[1] == 1) {
+                                    $cell.css({"background-color": "#99d5ff"})
+                                }
+                                $tr.append($cell);
                             }
-                            $tr.append($cell);
+                            
                             break;
                     }
                 }
