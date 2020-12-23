@@ -159,6 +159,7 @@ odoo.define("web_timeline.TimelineView", function(require) {
             this.controllerParams.date_stop = date_stop;
             this.controllerParams.date_delay = date_delay;
             this.controllerParams.actionContext = action.context;
+            this.controllerParams.actionDomain = action.domain;
             this.withSearchPanel = false;
         },
 

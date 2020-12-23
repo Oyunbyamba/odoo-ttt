@@ -28,6 +28,7 @@ odoo.define("web_timeline.TimelineController", function(require) {
             this.date_stop = params.date_stop;
             this.date_delay = params.date_delay;
             this.context = params.actionContext;
+            this.domain = params.actionDomain;
             this.draggable = params.draggable;
             this.updatable = params.updatable;
             this.removable = params.removable;
@@ -252,6 +253,15 @@ odoo.define("web_timeline.TimelineController", function(require) {
                 });
     
                 return def;
+            } else {
+                var def = $.Deferred();
+
+                Dialog.alert(this, _t("Устгах боломжгүй!"), {
+                    title: _t("Warning"),
+                    cancel_callback: def.resolve.bind(def),
+                });
+    
+                return def;
             }
         },
 
@@ -275,16 +285,17 @@ odoo.define("web_timeline.TimelineController", function(require) {
                     default_context["default_".concat(this.date_start)] = moment(item.start)
                         .subtract(8, "hours")
                         .format("YYYY-MM-DD HH:mm:ss");
+                    default_context["default_work_day"] = moment(item.start)
+                    .subtract(8, "hours")
+                    .format("YYYY-MM-DD");
                 }
                 if (this.date_stop && item.end) {
                     default_context["default_".concat(this.date_stop)] = moment(item.end)
                         .add(1, "hours")
-                        // .tz(this.context.tz, true)
                         .format("YYYY-MM-DD HH:mm:ss");
                 } else if (this.date_start && this.date_stop) {
                     default_context["default_".concat(this.date_stop)] = moment(item.start)
                         .add(2, "hours")
-                        // .tz(this.context.tz, true)
                         .format("YYYY-MM-DD HH:mm:ss");
                 }
                 if (item.group > 0) {
@@ -292,7 +303,6 @@ odoo.define("web_timeline.TimelineController", function(require) {
                         item.group;
                 }
                 default_context["default_workplan_id"] = this.context.active_id;
-                console.log(default_context);
                 // Show popup
                 new dialogs.FormViewDialog(this, {
                     res_model: this.model.modelName,
@@ -326,11 +336,19 @@ odoo.define("web_timeline.TimelineController", function(require) {
                 args: [id, this.model.fieldNames],
                 context: this.context,
             }).then(records => {
-                var new_event = this.renderer.event_data_transform(records[0]);
-                var items = this.renderer.timeline.itemsData;
-                items.add(new_event);
-                this.renderer.timeline.setItems(items);
-                this.reload();
+                // var new_event = this.renderer.event_data_transform(records[0]);
+                // var items = this.renderer.timeline.itemsData;
+                // items.add(new_event);
+                // this.renderer.timeline.setItems(items);
+
+                // this.reload();
+
+                this.renderer.modelClass.data.data.push(records[0])
+
+                const group_bys = this.renderer.arch.attrs.default_group_by.split(",");
+                this.renderer.last_group_bys = group_bys;
+                this.renderer.last_domains = this.renderer.modelClass.data.domain;
+                this.renderer.on_data_loaded(this.renderer.modelClass.data.data, group_bys);
             });
         },
 

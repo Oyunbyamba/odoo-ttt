@@ -44,7 +44,7 @@ class HrEmployeeSchedule(models.Model):
     day_period = fields.Many2one(
         'resource.calendar.dayperiod', string="Day Period", help="Day Period of Work")
     day_period_int = fields.Integer(
-        string='Day Period Integer', help='Day Period of Work')
+        string='Day Period Integer', compute="_compute_day_period", help='Day Period of Work')
     lunch_time_from = fields.Datetime(string='Lunch time from')
     lunch_time_to = fields.Datetime(string='Lunch time to')
     start_work = fields.Datetime(
@@ -82,6 +82,14 @@ class HrEmployeeSchedule(models.Model):
     #     if self.user_has_groups('hr_holidays.group_hr_holidays_responsible'):
     #         return ['|', ('parent_id', '=', self.env.user.employee_id.id), ('user_id', '=', self.env.user.id)]
     #     return [('user_id', '=', self.env.user.id)]
+
+    @api.depends("day_period", "shift_type")
+    def _compute_day_period(self):
+        for record in self:
+            if record.shift_type and record.shift_type == "shift" and record.day_period:
+                record.day_period_int = record.day_period.id
+            else:
+                record.day_period_int = None
 
     @api.depends("start_work")
     def _compute_start_work_date(self):

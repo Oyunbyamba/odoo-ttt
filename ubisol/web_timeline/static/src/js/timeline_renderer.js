@@ -217,9 +217,9 @@ odoo.define("web_timeline.TimelineRenderer", function(require) {
                 // Delete an item by tapping the delete button top right
                 remove: this.modelClass.data.rights.unlink,
             };
-            this.options.tooltip = {
-                followMouse: true,
-            };
+            // this.options.tooltip = {
+            //     followMouse: true,
+            // };
             $.extend(this.options, {
                 onAdd: this.on_add,
                 onMove: this.on_move,
@@ -252,6 +252,8 @@ odoo.define("web_timeline.TimelineRenderer", function(require) {
                     this.draw_canvas();
                 }
             });
+
+            console.log(this.timeline);
         },
 
         /**
@@ -609,9 +611,9 @@ odoo.define("web_timeline.TimelineRenderer", function(require) {
          * @private
          */
         on_remove: function(item, callback) {
-            if(this.removable) {
+            // if(this.removable) {
                 this._trigger(item, callback, "onRemove");
-            }
+            // }
         },
 
         /**

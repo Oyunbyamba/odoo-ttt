@@ -103,6 +103,7 @@
                 <field name="workplan_id"/>
               </group>
               <group>
+                <field name="work_day" string="Огноо"/>
                 <field name="start_work"/>
                 <field name="end_work"/>
               </group>
@@ -134,7 +135,7 @@
             </group>
             <group>
               <field name="schedule_ids" string="Ажиллах хуваарь">
-                <tree>
+                <tree default_order="work_day desc" editable="bottom">
                   <field name="work_day" string="Огноо"/>
                   <field name="shift_type"/>
                   <field name="week_day" attrs="{'invisible':[('shift_type', '!=', 'days')]}"/>

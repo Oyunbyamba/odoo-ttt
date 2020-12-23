@@ -26,7 +26,7 @@ class HrEmployeeWorkplan(models.Model):
             "type": "ir.actions.act_window",
             "res_model": "hr.employee.schedule",
             'domain': domain,
-            'context': {"search_default_employee": 1, "search_default_is_rest": 1},
+            # 'context': {"search_default_employee": 1, "search_default_is_rest": 1},
             "view_mode": "timeline",
         }
         return action
