@@ -26,9 +26,13 @@
     'data': [
         'security/ir.model.access.csv',
         'wizards/file_upload_view.xml',
+        'wizards/biometric_attendance_recompute.xml',
         'views/views.xml',
         'views/zk_machine_view.xml',
         'views/templates.xml',
+    ],
+    'qweb': [
+        "static/src/xml/biometric_attendance.xml",
     ],
     # only loaded in demonstration mode
     'demo': [

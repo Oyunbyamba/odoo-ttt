@@ -273,18 +273,26 @@ odoo.define("web_timeline.TimelineController", function(require) {
                 }
                 if (this.date_start) {
                     default_context["default_".concat(this.date_start)] = moment(item.start)
-                        .add(1, "hours")
+                        .subtract(8, "hours")
                         .format("YYYY-MM-DD HH:mm:ss");
                 }
                 if (this.date_stop && item.end) {
                     default_context["default_".concat(this.date_stop)] = moment(item.end)
                         .add(1, "hours")
+                        // .tz(this.context.tz, true)
+                        .format("YYYY-MM-DD HH:mm:ss");
+                } else if (this.date_start && this.date_stop) {
+                    default_context["default_".concat(this.date_stop)] = moment(item.start)
+                        .add(2, "hours")
+                        // .tz(this.context.tz, true)
                         .format("YYYY-MM-DD HH:mm:ss");
                 }
                 if (item.group > 0) {
                     default_context["default_".concat(this.renderer.last_group_bys[0])] =
                         item.group;
                 }
+                default_context["default_workplan_id"] = this.context.active_id;
+                console.log(default_context);
                 // Show popup
                 new dialogs.FormViewDialog(this, {
                     res_model: this.model.modelName,

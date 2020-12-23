@@ -512,10 +512,16 @@ odoo.define("web_timeline.TimelineRenderer", function(require) {
                 }
             }
 
+            let workplan_id = 0;
+            if(typeof evt.workplan_id !== 'undefined') {
+                workplan_id = evt.workplan_id[0];
+            }
+
             content1 += content + "</div>";
 
             const r = {
                 start: date_start,
+                workplan_id: workplan_id,
                 content: content1,
                 id: evt.id,
                 group: group,

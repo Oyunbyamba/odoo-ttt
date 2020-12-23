@@ -100,6 +100,9 @@
                 <field name="day_period" attrs="{'invisible':[('shift_type', '!=', 'shift')]}"/>
               </group>
               <group>
+                <field name="workplan_id"/>
+              </group>
+              <group>
                 <field name="start_work"/>
                 <field name="end_work"/>
               </group>
@@ -229,6 +232,7 @@
           removable="true"
         >
           <field name="day_period" />
+          <field name="workplan_id" />
           <templates>
             <t t-name="timeline-item">
               <div class="o_project_timeline_item">

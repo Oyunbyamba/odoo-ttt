@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<odoo>
+    <record
+        id="act_wizard_compute_attendance_report"
+        model="ir.actions.act_window"
+    >
+        <field name="name">Тооцоолох</field>
+        <field name="res_model">biometric.attendance.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    <record id="biometric_attendance_wizard_form" model="ir.ui.view">
+        <field name="model">biometric.attendance.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="start_date" />
+                    <field name="end_date" />
+                </group>
+                <group>
+                    <field name="employee_id" string="Ажилтан"/>
+                </group>
+                <footer>
+                    <button
+                        name="action_compute"
+                        type="object"
+                        string="Тооцоолох"
+                        class="oe_highlight"
+                    />
+                    <button special="cancel" string="Цуцлах" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

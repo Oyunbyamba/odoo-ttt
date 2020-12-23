@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+    <template id="assets_backend_biometric_attendance" name="Biometric attendance" inherit_id="web.assets_backend">
+      <xpath expr="." position="inside">
+        <script type="text/javascript" src="/ubisol_biometric_device/static/src/js/biometric_attendance.js"/>
+      </xpath>
+    </template>
+
     <record id="view_zk_machine_form" model="ir.ui.view">
         <field name="name">biometric.machine.form</field>
         <field name="model">biometric.machine</field>
@@ -53,6 +60,7 @@
         <field name="model">biometric.attendance</field>
         <field name="arch" type="xml">
             <tree string="Ирц" create="false" delete="0">
+                <field name="fullname"/>
                 <field name="pin_code"/>
                 <field name="device_id"/>
                 <field name="punch_date_time"/>
@@ -87,4 +95,3 @@
     <menuitem id="biometric_machine_sub_menu" parent="biometric_machine_menu" name="Төхөөрөмжүүд" action="biometric_machine_action" sequence="1"/>
     <menuitem id="sub_menu_raw_data" parent="biometric_machine_menu" name="Төхөөрөмжийн ирц" action="raw_data_action" sequence="10"/>
 </odoo>
-

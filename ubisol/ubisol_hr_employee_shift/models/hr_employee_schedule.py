@@ -5,18 +5,25 @@ from lxml import etree
 from odoo import models, fields, api
 from datetime import datetime, timedelta, time
 
+
 class HrEmployeeSchedule(models.Model):
     """Хуваарилсан ээлж"""
     _name = 'hr.employee.schedule'
     _description = 'Hr Employee Schedule'
     _rec_name = 'work_day'
 
-    workplan_id = fields.Many2one('hr.employee.workplan', string="Workplan", help="Workplan")
-    hr_department = fields.Many2one('hr.department', string="Department", help="Department")
-    hr_employee = fields.Many2one('hr.employee', string="Employee", help="Employee")
-    hr_employee_shift = fields.Many2one('hr.employee.shift', string="Employee Shift", help="Employee Shift")
-    hr_employee_shift_template = fields.Many2one('resource.calendar', 'Employee Shift Template')
-    hr_employee_shift_dayplan = fields.Many2one('resource.calendar.shift', 'Employee Shift Plan of Day')
+    workplan_id = fields.Many2one(
+        'hr.employee.workplan', string="Workplan", help="Workplan")
+    hr_department = fields.Many2one(
+        'hr.department', string="Department", help="Department")
+    hr_employee = fields.Many2one(
+        'hr.employee', string="Employee", help="Employee")
+    hr_employee_shift = fields.Many2one(
+        'hr.employee.shift', string="Employee Shift", help="Employee Shift")
+    hr_employee_shift_template = fields.Many2one(
+        'resource.calendar', 'Employee Shift Template')
+    hr_employee_shift_dayplan = fields.Many2one(
+        'resource.calendar.shift', 'Employee Shift Plan of Day')
     date_from = fields.Date(string='Starting Date')
     date_to = fields.Date(string='End Date')
     work_day = fields.Date(string='Work Day')
@@ -33,18 +40,26 @@ class HrEmployeeSchedule(models.Model):
         ('4', 'Friday'),
         ('5', 'Saturday'),
         ('6', 'Sunday')
-        ], 'Day of Week', required=True, index=True, default='0')
-    day_period = fields.Many2one('resource.calendar.dayperiod', string="Day Period", help="Day Period of Work")
-    day_period_int = fields.Integer(string='Day Period Integer', help='Day Period of Work')
-    lunch_time_from = fields.Datetime(string='Lunch time from', required=True)
-    lunch_time_to = fields.Datetime(string='Lunch time to', required=True)
-    start_work = fields.Datetime(string="Start Work", required=True, help="Start Work")
-    end_work = fields.Datetime(string="End Work", required=True, help="End Work")
+    ], 'Day of Week', required=True, index=True, default='0')
+    day_period = fields.Many2one(
+        'resource.calendar.dayperiod', string="Day Period", help="Day Period of Work")
+    day_period_int = fields.Integer(
+        string='Day Period Integer', help='Day Period of Work')
+    lunch_time_from = fields.Datetime(string='Lunch time from')
+    lunch_time_to = fields.Datetime(string='Lunch time to')
+    start_work = fields.Datetime(
+        string="Start Work", required=True, help="Start Work")
+    end_work = fields.Datetime(
+        string="End Work", required=True, help="End Work")
 
-    start_work_date = fields.Date(string="Start Work Date", compute="_compute_start_work_date", required=True, help="Start Work Date")
-    end_work_date = fields.Date(string="End Work Date", compute="_compute_end_work_date", required=True, help="End Work Date")
-    start_work_time = fields.Float(string="Start Work Time", compute="_compute_start_work_time", required=True, help="Start Work Time")
-    end_work_time = fields.Float(string="End Work Time", compute="_compute_end_work_time", required=True, help="End Work Time")
+    start_work_date = fields.Date(
+        string="Start Work Date", compute="_compute_start_work_date", required=True, help="Start Work Date")
+    end_work_date = fields.Date(
+        string="End Work Date", compute="_compute_end_work_date", required=True, help="End Work Date")
+    start_work_time = fields.Float(
+        string="Start Work Time", compute="_compute_start_work_time", required=True, help="Start Work Time")
+    end_work_time = fields.Float(
+        string="End Work Time", compute="_compute_end_work_time", required=True, help="End Work Time")
 
     # @api.model
     # def _fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
@@ -74,7 +89,8 @@ class HrEmployeeSchedule(models.Model):
             if record.start_work:
                 user_tz = self.env.user.tz or pytz.utc
                 local = pytz.timezone(user_tz)
-                date_result = pytz.utc.localize(record.start_work).astimezone(local)
+                date_result = pytz.utc.localize(
+                    record.start_work).astimezone(local)
                 record.start_work_date = date_result
 
     @api.depends("end_work")
@@ -83,7 +99,8 @@ class HrEmployeeSchedule(models.Model):
             if record.end_work:
                 user_tz = self.env.user.tz or pytz.utc
                 local = pytz.timezone(user_tz)
-                date_result = pytz.utc.localize(record.end_work).astimezone(local)
+                date_result = pytz.utc.localize(
+                    record.end_work).astimezone(local)
                 record.end_work_date = date_result
 
     @api.depends("start_work")
@@ -92,7 +109,8 @@ class HrEmployeeSchedule(models.Model):
             if record.start_work:
                 user_tz = self.env.user.tz or pytz.utc
                 local = pytz.timezone(user_tz)
-                date_result = pytz.utc.localize(record.start_work).astimezone(local)
+                date_result = pytz.utc.localize(
+                    record.start_work).astimezone(local)
                 hour = date_result.hour
                 minute = date_result.minute
                 record.start_work_time = hour + minute/60
@@ -103,7 +121,8 @@ class HrEmployeeSchedule(models.Model):
             if record.end_work:
                 user_tz = self.env.user.tz or pytz.utc
                 local = pytz.timezone(user_tz)
-                date_result = pytz.utc.localize(record.end_work).astimezone(local)
+                date_result = pytz.utc.localize(
+                    record.end_work).astimezone(local)
                 hour = date_result.hour
                 minute = date_result.minute
                 record.end_work_time = hour + minute/60
