@@ -27,9 +27,6 @@ class LogFileImportWizard(models.TransientModel):
         return {}
 
     def import_attendance(self, row):
-
-        print(row)
-
         prev_user = self.env['ir.config_parameter'].sudo(
         ).get_param('my.global.prev_user')
         prev_date = self.env['ir.config_parameter'].sudo(
@@ -168,9 +165,10 @@ class LogFileImportWizard(models.TransientModel):
                     setting_obj, get_user_id, dt)
                 return [att_id, status]
 
-        # attendance_req = self._is_overtime(get_user_id, dt, dt1)
-        # if attendance_req:
-        #     [ds1, ds2, de1, de2, dt1, s_type] = self._calculate_dates(get_user_id, setting_obj, general_shift, attendance_req)
+        attendance_req = self._is_overtime(get_user_id, dt, dt1)
+        if attendance_req:
+            [ds1, ds2, de1, de2, dt1, s_type] = self._calculate_dates(
+                get_user_id, setting_obj, general_shift, attendance_req)
 
         shift_start = self.env['hr.employee.schedule'].search(
             [('hr_employee', '=', int(get_user_id.id)), ('day_period', '!=', 3), ('start_work', '>=', ds1), ('start_work', '<=', ds2)], limit=1, order='id desc')
@@ -352,7 +350,7 @@ class LogFileImportWizard(models.TransientModel):
             # update_check_out = self.env['hr.attendance'].search(
             #     [('employee_id', '=', get_user_id.id), ('check_out', '>=', work_start), ('check_out', '<', dt)])
             update_check_out = self.env['hr.attendance'].search(
-                [('employee_id', '=', get_user_id.id), ('check_out', '>=', work_start), ('check_out', '<', ds2)])
+                [('employee_id', '=', get_user_id.id), ('check_out', '>=', work_start), ('check_out', '<', de2)])
 
             check_out = self.env['hr.attendance'].search(
                 [('employee_id', '=', get_user_id.id), ('check_in', '>=', ds1), ('check_in', '<=', ds2)])

@@ -569,14 +569,8 @@ class HrAttendanceReport(models.Model):
                 record.worked_hours = attendance_req_time
 
     def _diff_by_hours(self, date1, date2):
-        date = (
-            ((date2).day*3600*24 + (date2).hour *
-             3600 + (date2).minute*60 + (date2).second)
-            -
-            ((date1).day*3600*24 + (date1).hour *
-             3600 + (date1).minute*60 + (date1).second)
-        ) / 3600
-        return date
+        date = (date2 - date1).total_seconds()
+        return date / 3600
 
     def _convert_datetime_field(self, datetime_field, user=None):
         user_tz = self.env.user.tz or pytz.utc
@@ -587,7 +581,6 @@ class HrAttendanceReport(models.Model):
         return datetime.strftime(date_result, '%Y-%m-%d %H:%M:%S')
 
     def _get_departments(self, department, res):
-        print(res)
         if department.child_ids:
             for child in department.child_ids:
                 res.append(child.id)

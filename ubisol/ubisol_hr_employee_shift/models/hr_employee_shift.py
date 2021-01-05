@@ -246,25 +246,28 @@ class HrEmployeeShift(models.Model):
 
     def _check_duplicated_schedules(self, vals):
         DATE_FORMAT = '%Y-%m-%d'
-        date_from = datetime.strptime(vals.get('date_from'), DATE_FORMAT)
-        date_to = datetime.strptime(vals.get('date_to'), DATE_FORMAT)
-        dates_btwn = date_from
+        if vals.get('date_from') and vals.get('date_to'):
+            date_from = datetime.strptime(vals.get('date_from'), DATE_FORMAT)
+            date_to = datetime.strptime(vals.get('date_to'), DATE_FORMAT)
+            dates_btwn = date_from
 
-        if vals.get('assign_type') == 'employee':
-            employee_ids = vals.get('hr_employee')[0][2]
-            employees = self.env['hr.employee'].search(
-                [('id', 'in', employee_ids)])
+            if vals.get('assign_type') == 'employee':
+                employee_ids = vals.get('hr_employee')[0][2]
+                employees = self.env['hr.employee'].search(
+                    [('id', 'in', employee_ids)])
+            else:
+                employees = self.env['hr.employee'].search(
+                    [('department_id', '=', vals.get('hr_department'))])
+
+            while dates_btwn <= date_to:
+                for employee in employees:
+                    prev = self.env['hr.employee.schedule'].search(
+                        [('hr_employee', '=', employee.id), ('work_day', '=', dates_btwn.date())])
+                    if prev:
+                        return {'message': employee.name + ' ажилтны ' + str(dates_btwn.date()) + '-ны хуваарь давхардаж байна.'}
+                    dates_btwn = dates_btwn + relativedelta(days=1)
+                return None
         else:
-            employees = self.env['hr.employee'].search(
-                [('department_id', '=', vals.get('hr_department'))])
-
-        while dates_btwn <= date_to:
-            for employee in employees:
-                prev = self.env['hr.employee.schedule'].search(
-                    [('hr_employee', '=', employee.id), ('work_day', '=', dates_btwn.date())])
-                if prev:
-                    return {'message': employee.name + ' ажилтны ' + str(dates_btwn.date()) + '-ны хуваарь давхардаж байна.'}
-                dates_btwn = dates_btwn + relativedelta(days=1)
             return None
 
     @api.model
