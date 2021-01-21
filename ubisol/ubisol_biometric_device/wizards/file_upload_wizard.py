@@ -255,7 +255,7 @@ class LogFileImportWizard(models.TransientModel):
             ds2 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
             de1 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
             de2 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
-
+    
             ds1 = datetime.strptime(ds1, '%Y-%m-%d %H:%M:%S') - timedelta(
                 hours=8) + timedelta(seconds=setting_obj.start_work_date_from * 3600)
             ds2 = datetime.strptime(ds2, '%Y-%m-%d %H:%M:%S') - timedelta(
@@ -374,9 +374,11 @@ class LogFileImportWizard(models.TransientModel):
             return [0, "new_check_out"]
         else:
             update_check_in = self.env['hr.attendance'].search(
-                [('employee_id', '=', get_user_id.id), ('check_in', '>=', ds1), ('check_in', '<=', ds2)])
+                [('employee_id', '=', get_user_id.id), ('check_in', '>=', ds1), ('check_in', '<=', ds2)]
+                , limit=1, order='check_in asc')
             new_check_in = self.env['hr.attendance'].search(
-                [('employee_id', '=', get_user_id.id), ('check_out', '>=', de1), ('check_out', '<=', de2)])
+                [('employee_id', '=', get_user_id.id), ('check_out', '>=', de1), ('check_out', '<=', de2)]
+                , limit=1, order='check_out desc')
 
             if update_check_in:
                 if update_check_in.check_in > dt:

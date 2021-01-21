@@ -69,6 +69,7 @@
         <field name="dpi">90</field>
     </record>
 
+    <!--    # Print badge report    -->
     <report
         id="hr_employee_print_badge_inherit"
         string="Print Badge"
@@ -114,6 +115,17 @@
         report_type="qweb-pdf"
         name="ubisol_hr_employee_upgrade.employee_detail_report"
         file="ubisol_hr_employee_upgrade.employee_detail_report"
+        paperformat="ubisol_hr_employee_upgrade.emp_paperformat"
+    />
+
+    <!--    # Employee childs report    -->
+    <report
+        id="employee_childs_report_pdf"
+        model="hr.employee" 
+        string="Employee Childs"
+        report_type="qweb-pdf"
+        name="ubisol_hr_employee_upgrade.employee_child_report"
+        file="ubisol_hr_employee_upgrade.employee_child_report"
         paperformat="ubisol_hr_employee_upgrade.emp_paperformat"
     />
 </odoo>

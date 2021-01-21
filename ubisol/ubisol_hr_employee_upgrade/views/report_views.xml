@@ -1,0 +1,26 @@
+<odoo>
+  <data>
+
+    <record id="hr_employee_report" model="ir.ui.view">
+      <field name="name">hr.employee.report.tree</field>
+      <field name="model">hr.employee</field>
+      <field name="arch" type="xml">
+          <tree string="Employees" default_order="id">
+            <field name="surname"/>
+            <field name="name"/>
+            <field name="work_phone" class="o_force_ltr"/>
+            <field name="work_email"/>
+            <field name="department_id"/>
+            <field name="job_id"/>
+          </tree>
+      </field>
+    </record>
+      
+    <menuitem
+        id="ubisol_hr_employee_upgrade.hr_employee_report"
+        name="Employee report"
+        parent="hr.menu_hr_root"
+        sequence="10"/>
+
+  </data>
+</odoo>

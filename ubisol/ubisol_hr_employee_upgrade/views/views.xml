@@ -209,7 +209,7 @@
         </field>
       </field>
     </record>
-
+  
     <record id="inherit_view_employee_tree" model="ir.ui.view">
       <field name="name">hr.employee.tree.inherit</field>
       <field name="model">hr.employee</field>
@@ -225,6 +225,7 @@
             <field name="department_id"/>
             <field name="job_id"/>
             <field name="parent_id"/>
+            <field name="pin"/>
             <field name="coach_id" invisible="1"/>
           </tree>
         </xpath>
@@ -255,9 +256,6 @@
       parent="hr.menu_hr_root"
       groups="hr_attendance.group_hr_attendance"
       web_icon="hr_attendance,static/description/icon.png"/>
-      
-    <!-- <menuitem id="create_bank_definition" name="Create Bank definition" parent="hr.menu_hr_root" sequence="5"
-        groups="hr.group_hr_manager" action="create_bank_definition_wizard"/> -->
 
   </data>
 </odoo>

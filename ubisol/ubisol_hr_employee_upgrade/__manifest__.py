@@ -36,7 +36,8 @@
         'wizards/create_bank_definition.xml',
         'wizards/print_employee_definition.xml',
         'views/hr_resume_views.xml',
-        'views/hr_departure.xml'
+        'views/hr_departure.xml',
+        'views/report_views.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
