@@ -10,6 +10,7 @@ from odoo import models, fields, api, http, exceptions, _
 from odoo.tools import format_datetime
 from zk import ZK, const
 
+_logger = logging.getLogger(__name__)
 
 class HrAttendance(models.Model):
     _inherit = 'hr.attendance'
@@ -329,6 +330,10 @@ class BiometricMachine(models.Model):
             check_in = abs(dt - work_start).total_seconds()
             status = self._check_status(
                 general_shift, get_user_id, dt, work_start, work_end, check_out, check_in)
+
+            #_logger.log(325, "----check_in_out2----: ")
+            #_logger.info(self._convert_datetime_field(check_out))
+            #_logger.info(status)        
             return status
 
     def _is_overtime(self, get_user_id, dt, dt1):

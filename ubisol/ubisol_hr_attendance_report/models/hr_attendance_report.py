@@ -8,6 +8,9 @@ import xlsxwriter
 import io
 import xlwt
 import base64
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class HrAttendanceReport(models.Model):
@@ -716,8 +719,9 @@ class HrAttendanceReport(models.Model):
                 attendances = self.env['hr.attendance'].search([
                     ('check_in', '>=', self._convert_datetime_field(date_from)),
                     ('check_in', '<=', self._convert_datetime_field(date_to)),
-                    ('employee_id', '=', employee_id),
+                    ('employee_id', '=', employee_id)
                 ])
+
                 if not attendances and values['shift_type'] == 'days':
                     date_from = datetime.combine(dates_btwn, time())
                     date_from = date_from + \
@@ -729,10 +733,11 @@ class HrAttendanceReport(models.Model):
                             days=1) + timedelta(seconds=setting_obj.end_work_date_to * 3600 + 59)
 
                     attendances = self.env['hr.attendance'].search([
-                        ('check_in', '>=', self._convert_datetime_field(date_from)),
-                        ('check_in', '<=', self._convert_datetime_field(date_to)),
-                        ('employee_id', '=', employee_id),
+                        ('check_out', '>=', self._convert_datetime_field(date_from)),
+                        ('check_out', '<=', self._convert_datetime_field(date_to)),
+                        ('employee_id', '=', employee_id)
                     ])
+
 
                 for attendance in attendances:
                     if attendance:

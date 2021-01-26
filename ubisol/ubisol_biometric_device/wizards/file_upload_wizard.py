@@ -27,11 +27,6 @@ class LogFileImportWizard(models.TransientModel):
         return {}
 
     def import_attendance(self, row):
-        prev_user = self.env['ir.config_parameter'].sudo(
-        ).get_param('my.global.prev_user')
-        prev_date = self.env['ir.config_parameter'].sudo(
-        ).get_param('my.global.prev_date')
-
         device_id = self.env.context.get('active_ids')
 
         atten_time = row[1]
@@ -41,7 +36,6 @@ class LogFileImportWizard(models.TransientModel):
         utc_dt = local_dt.astimezone(pytz.utc)
         utc_dt = utc_dt.strftime("%Y-%m-%d %H:%M:%S")
         atten_time = datetime.strptime(utc_dt, "%Y-%m-%d %H:%M:%S")
-        att_obj = self.env['hr.attendance']
 
         if str(row[0]).strip() == '9999':
             return {}
@@ -68,7 +62,20 @@ class LogFileImportWizard(models.TransientModel):
                                                                  'attendance_data2': str(row[4]),
                                                                  'attendance_data3': str(row[5])})
 
-        # Herev hereglegch oldson bol
+        prev_date = self.checking_prev_att_within_thirty_sec(get_user_id, atten_time)
+        if not prev_date:
+            return {}
+
+        status = self.write_to_attendance(get_user_id, atten_time)
+        
+        return {}
+
+    def checking_prev_att_within_thirty_sec(self, get_user_id, atten_time):
+        prev_user = self.env['ir.config_parameter'].sudo(
+        ).get_param('my.global.prev_user')
+        prev_date = self.env['ir.config_parameter'].sudo(
+        ).get_param('my.global.prev_date')
+        
         if get_user_id:
             if not prev_user and not prev_date:
                 prev_user = get_user_id.id
@@ -105,8 +112,16 @@ class LogFileImportWizard(models.TransientModel):
                 self.env['ir.config_parameter'].sudo().set_param(
                     'my.global.prev_user', prev_user)
                 self.env['ir.config_parameter'].sudo().set_param(
-                    'my.global.prev_date', prev_date)
+                    'my.global.prev_date', prev_date)   
+            return prev_date
+        else:
+            return {}                 
 
+    def write_to_attendance(self, get_user_id, atten_time):
+        att_obj = self.env['hr.attendance']
+
+        # Herev hereglegch oldson bol
+        if get_user_id:
             setting_obj = self.env['hr.attendance.settings'].search(
                 [], limit=1, order='id desc')
             general_shift = self.env['hr.employee.schedule'].search(
@@ -145,8 +160,8 @@ class LogFileImportWizard(models.TransientModel):
                 else:
                     att_obj.create(
                         {'employee_id': get_user_id.id, 'check_in': atten_time})
-
-        return {}
+                
+        return {}                 
 
     def check_in_out(self, att_obj, get_user_id, dt, setting_obj, general_shift, shift_obj, shift_type):
         [ds1, ds2, de1, de2, dt1, s_type] = self._calculate_dates(
