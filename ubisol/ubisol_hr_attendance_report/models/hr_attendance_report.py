@@ -726,21 +726,25 @@ class HrAttendanceReport(models.Model):
                     date_from = datetime.combine(dates_btwn, time())
                     date_from = date_from + \
                         timedelta(
-                            seconds=setting_obj.end_work_date_from * 3600)
+                            seconds=setting_obj.start_work_date_from * 3600)
                     date_to = datetime.combine(dates_btwn, time())
                     date_to = date_to + \
                         timedelta(
                             days=1) + timedelta(seconds=setting_obj.end_work_date_to * 3600 + 59)
 
+                    _logger.info('calculate att')
+                    _logger.info(date_from)
+                    _logger.info(date_to)
                     attendances = self.env['hr.attendance'].search([
                         ('check_out', '>=', self._convert_datetime_field(date_from)),
                         ('check_out', '<=', self._convert_datetime_field(date_to)),
                         ('employee_id', '=', employee_id)
                     ])
 
-
                 for attendance in attendances:
                     if attendance:
+                        _logger.info(attendance.id)
+                        _logger.info(attendance.check_out)
                         values['hr_attendance'] = attendance.id
                         values['check_in'] = attendance.check_in
                         values['check_out'] = attendance.check_out

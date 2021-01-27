@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 import logging
 import binascii
 
+_logger = logging.getLogger(__name__)
 
 class LogFileImportWizard(models.TransientModel):
     _name = 'log_file_import_wizard'
@@ -124,16 +125,19 @@ class LogFileImportWizard(models.TransientModel):
         if get_user_id:
             setting_obj = self.env['hr.attendance.settings'].search(
                 [], limit=1, order='id desc')
+            # ajiltan bolgonoor udur buriin ajillah huwaari orson table    
             general_shift = self.env['hr.employee.schedule'].search(
                 [('day_period', '!=', 3), ('hr_employee', '=', int(get_user_id.id))], limit=1, order='id asc')
+            # tuhain ajiltan or helteseer uusgesen shiftuudiin 1 mor table
             shift_obj = self.env['hr.employee.shift']
+            # tuhain ajillah huwaariudiin master table
             shift_type = self.env['resource.calendar'].search(
                 [('shift_type', '=', 'days')], limit=1, order='id asc')
 
             if general_shift:
                 [att_id, status] = self.check_in_out(
                     att_obj, get_user_id, atten_time, setting_obj, general_shift, shift_obj, shift_type)
-                # print(atten_time, status, get_user_id.pin, att_id)
+             
                 if(status == 'check_out'):
                     if att_id != 0:
                         att_var = att_obj.browse(att_id)
@@ -161,7 +165,7 @@ class LogFileImportWizard(models.TransientModel):
                     att_obj.create(
                         {'employee_id': get_user_id.id, 'check_in': atten_time})
                 
-        return {}                 
+        return status                 
 
     def check_in_out(self, att_obj, get_user_id, dt, setting_obj, general_shift, shift_obj, shift_type):
         [ds1, ds2, de1, de2, dt1, s_type] = self._calculate_dates(
@@ -185,18 +189,18 @@ class LogFileImportWizard(models.TransientModel):
             [ds1, ds2, de1, de2, dt1, s_type] = self._calculate_dates(
                 get_user_id, setting_obj, general_shift, attendance_req)
 
+        # ajiltanii ajil ehleh tsag - ajillah huwaarias
         shift_start = self.env['hr.employee.schedule'].search(
             [('hr_employee', '=', int(get_user_id.id)), ('day_period', '!=', 3), ('start_work', '>=', ds1), ('start_work', '<=', ds2)], limit=1, order='id desc')
+        # ajiltanii ajil duusah tsag - ajillah huwaarias
         shift_end = self.env['hr.employee.schedule'].search(
             [('hr_employee', '=', int(get_user_id.id)), ('day_period', '!=', 3), ('end_work', '>=', de1), ('end_work', '<=', de2)], limit=1, order='id desc')
-        # if attendance_req:
-        #     return [0, "check_out"]
-        # if s_type == 'shift' and not shift_end:
-        #     shift_end = shift_start
+       
 
         if(shift_end & shift_start):
             check_out = abs(dt - shift_end.end_work).total_seconds()
             check_in = abs(dt - shift_start.start_work).total_seconds()
+           
             [att_id, status] = self._check_status(
                 get_user_id, dt, shift_start.start_work, check_out, check_in, ds1, ds2, de1, de2)
             return [att_id, status]

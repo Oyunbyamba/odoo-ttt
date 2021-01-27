@@ -30,17 +30,29 @@ class BiometricAttendanceRecompute(models.TransientModel):
             [date_start_from_1, date_start_end_1, date_end_from_1, date_end_to_1, dt1, s_type] = log_obj._calculate_dates(emp, setting_obj, general_shift, start_date)
             [date_start_from_2, date_start_end_2, date_end_from_2, date_end_to_2, dt1, s_type] = log_obj._calculate_dates(emp, setting_obj, general_shift, end_date)
 
-            date_from = date_start_from_1 + timedelta(hours=8)
-            date_to = date_start_end_2 + timedelta(hours=8)
+            date_from = date_start_from_1
+            date_to = date_start_end_2
 
             attendances = self.env['hr.attendance'].search([
                 ('check_in', '>=', date_from),
                 ('check_in', '<=', date_to),
                 ('employee_id', '=', emp.id)
             ]).unlink()
+
+            attendances = self.env['hr.attendance'].search([
+                ('check_out', '>=', date_from),
+                ('check_out', '<=', date_to),
+                ('employee_id', '=', emp.id)
+            ]).unlink()
            
-            date_from = date_end_from_1 + timedelta(hours=8)
-            date_to = date_end_to_2 + timedelta(hours=8)
+            date_from = date_end_from_1
+            date_to = date_end_to_2
+
+            attendances = self.env['hr.attendance'].search([
+                ('check_in', '>=', date_from),
+                ('check_in', '<=', date_to),
+                ('employee_id', '=', emp.id)
+            ]).unlink()
 
             attendances = self.env['hr.attendance'].search([
                 ('check_out', '>=', date_from),
