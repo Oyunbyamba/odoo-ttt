@@ -37,7 +37,6 @@
         'wizards/print_employee_definition.xml',
         'views/hr_resume_views.xml',
         'views/hr_departure.xml',
-        'views/report_views.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
