@@ -9,6 +9,16 @@ class RecruitmentSource(models.Model):
     _inherit = 'hr.recruitment.source'
 
 
+class Applicant(models.Model):
+    _inherit = 'hr.applicant'
+    _order = 'name'
 
-class Attachment(models.Model):
-    _inherit = 'ir.attachment'
+    @api.model
+    def action_get_attachment_tree_view_inherit(self):
+        attachment_action = self.env.ref('base.action_attachment')
+        action = attachment_action.read()[0]
+        action['context'] = {'default_res_model': self._name}
+        action['domain'] = str([('res_model', '=', self._name)])
+        action['search_view_id'] = (self.env.ref('hr_recruitment.ir_attachment_view_search_inherit_hr_recruitment').id, )
+        return action
+

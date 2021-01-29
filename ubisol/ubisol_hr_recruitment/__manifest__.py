@@ -15,7 +15,7 @@
     'data': [
         'security/ir.model.access.csv',
         'security/ubisol_hr_recruitment_security.xml',
-        'views/hr_recruitment_views.xml',
         'views/hr_job_views.xml',
+        'views/hr_recruitment_views.xml',
     ],
 }
