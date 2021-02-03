@@ -98,7 +98,9 @@ odoo.define('attendance_table.RenderTable',function (require) {
                         method: 'get_my_attendances_report',
                         args: [filters],
                     }).then(function (data) {
-                        self._renderTable(self, data)
+                        data.forEach(dat => {
+                            self._renderTable(self, dat)
+                        })
                     });
                 }
             });
@@ -129,6 +131,7 @@ odoo.define('attendance_table.RenderTable',function (require) {
             var headers = data.header;
             var fields = data.fields;
             var rows = data.data;
+            var child_employees = data.child_employees;
 
             var $tr = $('<tr/>', { class: 'o_data_row' });
             $tr.css({"background-color": "#eee"})
@@ -152,53 +155,89 @@ odoo.define('attendance_table.RenderTable',function (require) {
             $thead.append($tr);
             $table.append($thead);
 
-            rows.forEach((att, i) => {
-                var $tr = $('<tr/>', { class: 'o_data_row' });
-                for (var header of headers) {
-                    var key = header[0];
-                    switch (key) {
-                        case 'id':
-                        case '__count':
-                            break;
-                        case 'field_name':
-                            var cell = att[key];
+            //only self attandance calculations
+            if(JSON.stringify(child_employees) === '{}') {
+                rows.forEach((att, i) => {
+                    var $tr = $('<tr/>', { class: 'o_data_row' });
+                    for (var header of headers) {
+                        var key = header[0];
+                        switch (key) {
+                            case 'id':
+                            case '__count':
+                                break;
+                            case 'field_name':
+                                var cell = att[key];
+                                var $cell = $('<td>');
+                                $cell.html(cell);
+                                $tr.append($cell);
+                                break;
+                            default:
+                                var cell = att[key][0];
+                                if (cell) {
+                                    var $cell = $('<td>');
+                                    if (fields[i][0] == 'check_in' || fields[i][0] == 'check_out') {
+                                        var hours = convertDateToTime(cell[fields[i][0]]);
+                                        if(hours == '-') {
+                                            $cell.css({"background-color": "#ffb3b4"})
+                                        }
+                                    } else {
+                                        var hours = convertNumToTime(cell[fields[i][0]]);
+                                    }
+                                    $cell.html(hours);
+                                    if(header[1] == 1) {
+                                        $cell.css({"background-color": "#99d5ff"})
+                                    }
+                                    $tr.append($cell);
+                                } else {
+                                    var hours = '-';
+                                    var $cell = $('<td>');
+                                    $cell.html((hours));
+                                    if(header[1] == 1) {
+                                        $cell.css({"background-color": "#99d5ff"})
+                                    }
+                                    $tr.append($cell);
+                                }
+                                
+                                break;
+                        }
+                    }
+                    $tbody.append($tr);
+                });
+            }
+
+            //if self employee has child employees show their attendances
+            if(JSON.stringify(child_employees) !== '{}') {
+                child_employees.forEach((child_emp, i) => {
+                    var $tr = $('<tr/>', { class: 'o_data_row' });
+                    var key = 0;
+                    for (var header of headers) {
+                        if(header[0] == 'field_name') {
+                            var cell = child_emp['employee_name'];
                             var $cell = $('<td>');
                             $cell.html(cell);
                             $tr.append($cell);
-                            break;
-                        default:
-                            var cell = att[key][0];
-                            console.log(cell);
-                            if (cell) {
-                                var $cell = $('<td>');
-                                if (fields[i][0] == 'check_in' || fields[i][0] == 'check_out') {
-                                    var hours = convertDateToTime(cell[fields[i][0]]);
-                                    if(hours == '-') {
-                                        $cell.css({"background-color": "#ffb3b4"})
-                                    }
-                                } else {
-                                    var hours = convertNumToTime(cell[fields[i][0]]);
-                                }
-                                $cell.html(hours);
-                                if(header[1] == 1) {
-                                    $cell.css({"background-color": "#99d5ff"})
-                                }
-                                $tr.append($cell);
-                            } else {
-                                var hours = '-';
-                                var $cell = $('<td>');
-                                $cell.html((hours));
-                                if(header[1] == 1) {
-                                    $cell.css({"background-color": "#99d5ff"})
-                                }
-                                $tr.append($cell);
-                            }
+                        }
+                        else {
+                            var day_data = child_emp['employee_attendances'][key-1];
+                            var check_in = day_data['check_in'].length > 0 ? day_data['check_in'][0]['check_in'] : '';
+                            var check_out =  day_data['check_out'].length > 0 ? day_data['check_out'][0]['check_out'] : '';
+                            var check_in_hours = convertDateToTime(check_in);
+                            var check_out_hours = convertDateToTime(check_out);
                             
-                            break;
+                            var $cell = $('<td style="padding: 0">');
+                            var txt_check_in = check_in_hours == '-' ? 'style="background-color: #ffb3b4; padding: 0.1rem 0.3rem"' : 'style="padding: 0.1rem 0"';
+                            var txt_check_out = check_out_hours == '-' ? 'style="background-color: #ffb3b4; padding: 0.1rem 0.3rem"' : 'style="padding: 0.1rem 0"';
+                            $cell.html(`<div ${txt_check_in}>${check_in_hours}</div> <div ${txt_check_out}>${check_out_hours}</div>`);
+                            if(header[1] == 1) {
+                                $cell.css({"background-color": "#99d5ff"})
+                            }
+                            $tr.append($cell);
+                        }
+                        key++;
                     }
-                }
-                $tbody.append($tr);
-            });
+                    $tbody.append($tr);
+                })
+            }
             $table.append($tbody);
 
             var $att_div = this.$el.find('.attendance_report');

@@ -732,9 +732,6 @@ class HrAttendanceReport(models.Model):
                         timedelta(
                             days=1) + timedelta(seconds=setting_obj.end_work_date_to * 3600 + 59)
 
-                    _logger.info('calculate att')
-                    _logger.info(date_from)
-                    _logger.info(date_to)
                     attendances = self.env['hr.attendance'].search([
                         ('check_out', '>=', self._convert_datetime_field(date_from)),
                         ('check_out', '<=', self._convert_datetime_field(date_to)),
@@ -743,8 +740,6 @@ class HrAttendanceReport(models.Model):
 
                 for attendance in attendances:
                     if attendance:
-                        _logger.info(attendance.id)
-                        _logger.info(attendance.check_out)
                         values['hr_attendance'] = attendance.id
                         values['check_in'] = attendance.check_in
                         values['check_out'] = attendance.check_out
@@ -1037,6 +1032,7 @@ class HrAttendanceReport(models.Model):
     @api.model
     def get_my_attendances_report(self, filters):
         row = []
+        data = []
         header = [['field_name', 0]]
         employee_id = filters['employee_id']
 
@@ -1072,10 +1068,44 @@ class HrAttendanceReport(models.Model):
                 arr[str(dates_btwn)] = raw_data
                 dates_btwn = dates_btwn + relativedelta(days=1)
             row.append(arr)
-
-        data = {
+            
+        data.append({
             'data': row,
             'header': header,
-            'fields': fields
-        }
+            'fields': fields,
+            'child_employees': {}
+        })
+
+        child_employees = self.env['hr.employee'].search([('parent_id', '=', employee_id)])
+
+        
+        employee_att = []
+        for index, employee in enumerate(child_employees, start=0):
+            if index > 2:
+                break
+            
+            new_row = []
+            dates_btwn = start_date
+            while dates_btwn <= end_date:
+                raw_data = {}
+                att_report_obj = self.env['hr.attendance.report'].search(
+                    [('hr_employee', '=', employee.id), ('work_day', '=', dates_btwn)])
+                for f in fields:
+                    if f[0] == 'difference_check_in' or f[0] == 'difference_check_out':
+                        continue
+                    raw_data[f[0]] = att_report_obj.read([f[0]])  
+                dates_btwn = dates_btwn + relativedelta(days=1)
+                new_row.append(raw_data)
+            employee_att.append({
+                'employee_name': employee.name,
+                'employee_attendances': new_row
+            })
+
+        data.append({
+            'header': header,
+            'data': {},
+            'fields': {},
+            'child_employees': employee_att
+        })
+
         return data
