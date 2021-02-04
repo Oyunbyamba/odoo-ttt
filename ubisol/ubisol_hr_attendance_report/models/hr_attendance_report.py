@@ -1077,28 +1077,43 @@ class HrAttendanceReport(models.Model):
         })
 
         child_employees = self.env['hr.employee'].search([('parent_id', '=', employee_id)])
-
         
         employee_att = []
         for index, employee in enumerate(child_employees, start=0):
-            if index > 2:
-                break
+            # if index > 2:
+            #     break
             
+            total_worked_hours = 0
+            total_schedule_hours = 0
             new_row = []
             dates_btwn = start_date
+
+            att_report_obj = self.env['hr.attendance.report'].search(
+                    [('hr_employee', '=', employee.id), ('work_day','>=', start_date), ('work_day', '<=', end_date)])
+    
             while dates_btwn <= end_date:
                 raw_data = {}
-                att_report_obj = self.env['hr.attendance.report'].search(
-                    [('hr_employee', '=', employee.id), ('work_day', '=', dates_btwn)])
-                for f in fields:
-                    if f[0] == 'difference_check_in' or f[0] == 'difference_check_out':
-                        continue
-                    raw_data[f[0]] = att_report_obj.read([f[0]])  
+                filtered_data = att_report_obj.filtered(lambda r: r.work_day == dates_btwn)
+                raw_data['check_in'] = filtered_data.read(['check_in'])
+                raw_data['check_out'] = filtered_data.read(['check_out'])   
+                worked_hours = filtered_data.read(['worked_hours']) 
+                schedule_hours = filtered_data.read(['formal_worked_hours']) 
+                if len(worked_hours) > 0:
+                    for worked_hour in worked_hours:
+                        total_worked_hours += worked_hour['worked_hours']
+
+                if len(schedule_hours) > 0:
+                    for schedule_hour in schedule_hours:
+                        total_schedule_hours += schedule_hour['formal_worked_hours']        
+
                 dates_btwn = dates_btwn + relativedelta(days=1)
                 new_row.append(raw_data)
+                
             employee_att.append({
                 'employee_name': employee.name,
-                'employee_attendances': new_row
+                'employee_attendances': new_row,
+                'total_worked_hours': total_worked_hours,
+                'total_schedule_hours': total_schedule_hours
             })
 
         data.append({
