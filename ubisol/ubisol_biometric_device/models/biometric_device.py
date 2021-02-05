@@ -254,7 +254,6 @@ class BiometricMachine(models.Model):
         if get_user_id:
 
             status = self.check_in_out(att_obj, get_user_id, atten_time)
-            # print(atten_time, status)
             if(status == 'check_out'):
                 att_var1 = att_obj.search(
                     [('employee_id', '=', get_user_id.id)], order="id desc")
@@ -331,9 +330,6 @@ class BiometricMachine(models.Model):
             status = self._check_status(
                 general_shift, get_user_id, dt, work_start, work_end, check_out, check_in)
 
-            #_logger.log(325, "----check_in_out2----: ")
-            #_logger.info(self._convert_datetime_field(check_out))
-            #_logger.info(status)        
             return status
 
     def _is_overtime(self, get_user_id, dt, dt1):

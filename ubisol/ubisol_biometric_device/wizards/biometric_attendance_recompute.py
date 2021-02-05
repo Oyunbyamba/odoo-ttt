@@ -64,13 +64,13 @@ class BiometricAttendanceRecompute(models.TransientModel):
                 ('punch_date_time', '>=', self.start_date), 
                 ('punch_date_time', '<=', self.end_date),
                 ('pin_code', '=', emp.pin)
-            ])
-            # print(biometrics)
+            ], order='punch_date_time asc')
             for b in biometrics:
                 atten_time = b.punch_date_time
                 prev_date = log_obj.checking_prev_att_within_thirty_sec(emp, atten_time)
+
                 if not prev_date:
-                    return {}
+                    continue
 
                 att = self.env['hr.attendance'].search([('employee_id', '=', emp.id), ('check_in', '=', atten_time)])
                 if not att:
