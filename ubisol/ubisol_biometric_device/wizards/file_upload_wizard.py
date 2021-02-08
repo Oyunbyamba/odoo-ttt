@@ -165,7 +165,7 @@ class LogFileImportWizard(models.TransientModel):
                     att_obj.create(
                         {'employee_id': get_user_id.id, 'check_in': atten_time})
                 
-        return status                 
+        return {}                 
 
     def check_in_out(self, att_obj, get_user_id, dt, setting_obj, general_shift, shift_obj, shift_type):
         [ds1, ds2, de1, de2, dt1, s_type] = self._calculate_dates(

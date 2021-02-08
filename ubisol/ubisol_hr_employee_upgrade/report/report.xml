@@ -69,6 +69,22 @@
         <field name="dpi">90</field>
     </record>
 
+    <record id="general_paperformat" model="report.paperformat">
+        <field name="name">Mongolian A4</field>
+        <field name="default" eval="True"/>
+        <field name="format">custom</field>
+        <field name="page_height">210</field>
+        <field name="page_width">148</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">25</field>
+        <field name="margin_bottom">25</field>
+        <field name="margin_left">19</field>
+        <field name="margin_right">19</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+
     <!--    # Print badge report    -->
     <report
         id="hr_employee_print_badge_inherit"
@@ -120,12 +136,14 @@
 
     <!--    # Employee childs report    -->
     <report
-        id="employee_childs_report_pdf"
+        id="employee_working_report_pdf"
         model="hr.employee" 
-        string="Employee Childs"
+        string="Covid work definition"
         report_type="qweb-pdf"
-        name="ubisol_hr_employee_upgrade.employee_child_report"
-        file="ubisol_hr_employee_upgrade.employee_child_report"
-        paperformat="ubisol_hr_employee_upgrade.emp_paperformat"
+        menu="True"
+        name="ubisol_hr_employee_upgrade.employee_working_report"
+        file="ubisol_hr_employee_upgrade.employee_working_report"
+        print_report_name="'Employee working definition'"
+        paperformat="ubisol_hr_employee_upgrade.general_paperformat"
     />
 </odoo>
