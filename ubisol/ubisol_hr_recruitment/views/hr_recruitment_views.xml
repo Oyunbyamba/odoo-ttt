@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+
+        <!-- hr related job position menu action -->
+        <record id="ir_attachment_job_applicants" model="ir.actions.server">
+            <field name="name">Ажилд горилогчдын хавсралтууд</field>
+            <field name="model_id" ref="hr_recruitment.model_hr_applicant"/>
+            <field name="state">code</field>
+            <field name="code">
+                action=model.action_get_attachment_tree_view_inherit()
+            </field>  
+        </record>
+
+        <record id="base.view_attachment_tree" model="ir.ui.view">
+            <field name="model">ir.attachment</field>
+            <field name="arch" type="xml">
+                <tree string="Attachments">
+                    <field name="name"/>
+                    <field name="res_id"/>
+                    <field name="type"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="create_uid"/>
+                    <field name="create_date"/>
+                </tree>
+            </field>
+        </record>
+ 
+        <menuitem id="hr_applicant_attachments" 
+            name="Хавсралтууд"
+            parent="hr_recruitment.menu_crm_case_categ0_act_job"
+            groups="base.group_user"
+            action="ir_attachment_job_applicants"
+            sequence="3"
+            />
+
+        <menuitem id="hr_recruitment.menu_hr_job_position_config" groups="ubisol_hr_recruitment.hide"/>
+
+    </data>
+</odoo>

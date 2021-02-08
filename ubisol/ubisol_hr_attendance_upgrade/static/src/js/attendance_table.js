@@ -15,7 +15,7 @@ odoo.define('attendance_table.RenderTable',function (require) {
     function convertDateToTime(datetime) {
         var d = moment(datetime).add(8, 'hours');
         if(d.isValid()) {
-            var hour = d.format('H');
+            var hour = d.format('HH');
             var minute   = d.format('mm');
             return hour + ':' + minute;
         } else {
@@ -41,6 +41,8 @@ odoo.define('attendance_table.RenderTable',function (require) {
         }
         // Add Sign in final result
         sign = sign == 1 ? '' : '-';
+        // set HH format in hour
+        hour = hour.toString().length >= 2 ? hour : `0${hour}`;
         // Concate hours and minutes
         var time = sign + hour + ':' + minute;
         return time;
@@ -98,7 +100,11 @@ odoo.define('attendance_table.RenderTable',function (require) {
                         method: 'get_my_attendances_report',
                         args: [filters],
                     }).then(function (data) {
-                        self._renderTable(self, data)
+                        var count_table = 1;
+                        data.forEach(dat => {
+                            self._renderTable(self, dat, count_table)
+                            count_table++;
+                        })
                     });
                 }
             });
@@ -122,13 +128,14 @@ odoo.define('attendance_table.RenderTable',function (require) {
             this._super();
         },
 
-        _renderTable: function(ev, data) {
+        _renderTable: function(ev, data, count_table) {
             var $table = $('<table>').addClass('table table-sm table-hover table-bordered table-striped');
             var $thead = $('<thead>');
             var $tbody = $('<tbody>');
             var headers = data.header;
             var fields = data.fields;
             var rows = data.data;
+            var child_employees = data.child_employees;
 
             var $tr = $('<tr/>', { class: 'o_data_row' });
             $tr.css({"background-color": "#eee"})
@@ -138,6 +145,13 @@ odoo.define('attendance_table.RenderTable',function (require) {
                     $cell.css({"background-color": "#eee", "position": "sticky", "top": "0"})
                     $cell.html('#');
                     $tr.append($cell);
+
+                    if(count_table == 2) {
+                        $cell = $('<th>');
+                        $cell.css({"background-color": "#eee", "position": "sticky", "top": "0"})
+                        $cell.html('Нийт цаг');
+                        $tr.append($cell);
+                    }
                 } else {
                     var $cell = $('<th>');
                     if (h[1] == 1) {
@@ -152,58 +166,109 @@ odoo.define('attendance_table.RenderTable',function (require) {
             $thead.append($tr);
             $table.append($thead);
 
-            rows.forEach((att, i) => {
-                var $tr = $('<tr/>', { class: 'o_data_row' });
-                for (var header of headers) {
-                    var key = header[0];
-                    switch (key) {
-                        case 'id':
-                        case '__count':
-                            break;
-                        case 'field_name':
-                            var cell = att[key];
+            //only self attandance calculations
+            if(count_table == 1) {
+                rows.forEach((att, i) => {
+                    var $tr = $('<tr/>', { class: 'o_data_row' });
+                    for (var header of headers) {
+                        var key = header[0];
+                        switch (key) {
+                            case 'id':
+                            case '__count':
+                                break;
+                            case 'field_name':
+                                var cell = att[key];
+                                var $cell = $('<td>');
+                                $cell.html(cell);
+                                $tr.append($cell);
+                                break;
+                            default:
+                                var cell = att[key][0];
+                                if (cell) {
+                                    var $cell = $('<td>');
+                                    if (fields[i][0] == 'check_in' || fields[i][0] == 'check_out') {
+                                        var hours = convertDateToTime(cell[fields[i][0]]);
+                                        if(hours == '-') {
+                                            $cell.css({"background-color": "#ffb3b4"})
+                                        }
+                                    } else {
+                                        var hours = convertNumToTime(cell[fields[i][0]]);
+                                    }
+                                    $cell.html(hours);
+                                    if(header[1] == 1) {
+                                        $cell.css({"background-color": "#99d5ff"})
+                                    }
+                                    $tr.append($cell);
+                                } else {
+                                    var hours = '-';
+                                    var $cell = $('<td>');
+                                    $cell.html((hours));
+                                    if(header[1] == 1) {
+                                        $cell.css({"background-color": "#99d5ff"})
+                                    }
+                                    $tr.append($cell);
+                                }
+                                
+                                break;
+                        }
+                    }
+                    $tbody.append($tr);
+                });
+            }
+
+            //if self employee has child employees show their attendances
+            if(count_table == 2) {
+                child_employees.forEach((child_emp, i) => {
+                    var $tr = $('<tr/>', { class: 'o_data_row' });
+                    var key = 0;
+                    for (var header of headers) {
+                        if(header[0] == 'field_name') {
+                            var cell = child_emp['employee_name'];
                             var $cell = $('<td>');
                             $cell.html(cell);
                             $tr.append($cell);
-                            break;
-                        default:
-                            var cell = att[key][0];
-                            console.log(cell);
-                            if (cell) {
-                                var $cell = $('<td>');
-                                if (fields[i][0] == 'check_in' || fields[i][0] == 'check_out') {
-                                    var hours = convertDateToTime(cell[fields[i][0]]);
-                                    if(hours == '-') {
-                                        $cell.css({"background-color": "#ffb3b4"})
-                                    }
-                                } else {
-                                    var hours = convertNumToTime(cell[fields[i][0]]);
-                                }
-                                $cell.html(hours);
-                                if(header[1] == 1) {
-                                    $cell.css({"background-color": "#99d5ff"})
-                                }
-                                $tr.append($cell);
-                            } else {
-                                var hours = '-';
-                                var $cell = $('<td>');
-                                $cell.html((hours));
-                                if(header[1] == 1) {
-                                    $cell.css({"background-color": "#99d5ff"})
-                                }
-                                $tr.append($cell);
+
+                            $cell = $('<td>').css({"background-color": "#eee"});
+                            var total_worked_hours = convertNumToTime(child_emp['total_worked_hours']);
+                            var total_schedule_hours = convertNumToTime(child_emp['total_schedule_hours']);
+                            $cell.html(`${total_schedule_hours} <br/> ${total_worked_hours}`);
+                            $tr.append($cell);
+                        }
+                        else {
+                            var day_data = child_emp['employee_attendances'][key-1];
+                            var check_in_dt = day_data['check_in'].length > 0 ? day_data['check_in'][0]['check_in'] : '';
+                            var check_out_dt = day_data['check_out'].length > 0 ? day_data['check_out'][0]['check_out'] : '';
+                            var check_in_hours = convertDateToTime(check_in_dt);
+                            var check_out_hours = convertDateToTime(check_out_dt);
+                            var $cell = $('<td style="padding: 0">');
+                            var $txt_check_in = $('<div>').css({"padding": "0.1rem 0.3rem 0.2rem"});
+                            var $txt_check_out = $('<div>').css({"padding": "0.1rem 0.3rem 0.2rem"});
+                            if(header[1] == 0) {
+                                (day_data['check_in'].length > 0 && check_in_hours == '-') ? $txt_check_in.css({"background-color": "#ffb3b4"}) : '';
+                                (day_data['check_out'].length > 0 && check_out_hours == '-') ? $txt_check_out.css({"background-color": "#ffb3b4"}) : '';
                             }
-                            
-                            break;
+                            $txt_check_in.html(check_in_hours);
+                            $txt_check_out.html(check_out_hours);
+                            $cell.append($txt_check_in);
+                            $cell.append($txt_check_out);
+                            if(header[1] == 1) {
+                                $cell.css({"background-color": "#99d5ff"})
+                            }
+                            $tr.append($cell);
+                        }
+                        key++;
                     }
-                }
-                $tbody.append($tr);
-            });
+                    $tbody.append($tr);
+                })
+            }
             $table.append($tbody);
 
             var $att_div = this.$el.find('.attendance_report');
-            $att_div.css({"max-height": "600px", "width": "100%", "overflow-x": "scroll"})
-            $att_div.append($table);
+            var $div_el = count_table == 1 ? $('<div>').css({"overflow-x": "scroll", "margin-bottom": "15px"}) : $('<div>').css({"overflow-y": "scroll", "max-height": "310px"});
+            $att_div.css({"max-height": "600px", "width": "100%"})
+            $table = $table.css({"margin-bottom": "1px"});
+            $div_el.append($table);
+            $att_div.append($div_el);
 
             return true;
         },

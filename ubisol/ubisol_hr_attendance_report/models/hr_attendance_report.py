@@ -8,6 +8,9 @@ import xlsxwriter
 import io
 import xlwt
 import base64
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class HrAttendanceReport(models.Model):
@@ -569,14 +572,8 @@ class HrAttendanceReport(models.Model):
                 record.worked_hours = attendance_req_time
 
     def _diff_by_hours(self, date1, date2):
-        date = (
-            ((date2).day*3600*24 + (date2).hour *
-             3600 + (date2).minute*60 + (date2).second)
-            -
-            ((date1).day*3600*24 + (date1).hour *
-             3600 + (date1).minute*60 + (date1).second)
-        ) / 3600
-        return date
+        date = (date2 - date1).total_seconds()
+        return date / 3600
 
     def _convert_datetime_field(self, datetime_field, user=None):
         user_tz = self.env.user.tz or pytz.utc
@@ -587,7 +584,6 @@ class HrAttendanceReport(models.Model):
         return datetime.strftime(date_result, '%Y-%m-%d %H:%M:%S')
 
     def _get_departments(self, department, res):
-        print(res)
         if department.child_ids:
             for child in department.child_ids:
                 res.append(child.id)
@@ -723,22 +719,23 @@ class HrAttendanceReport(models.Model):
                 attendances = self.env['hr.attendance'].search([
                     ('check_in', '>=', self._convert_datetime_field(date_from)),
                     ('check_in', '<=', self._convert_datetime_field(date_to)),
-                    ('employee_id', '=', employee_id),
+                    ('employee_id', '=', employee_id)
                 ])
+
                 if not attendances and values['shift_type'] == 'days':
                     date_from = datetime.combine(dates_btwn, time())
                     date_from = date_from + \
                         timedelta(
-                            seconds=setting_obj.end_work_date_from * 3600)
+                            seconds=setting_obj.start_work_date_from * 3600)
                     date_to = datetime.combine(dates_btwn, time())
                     date_to = date_to + \
                         timedelta(
                             days=1) + timedelta(seconds=setting_obj.end_work_date_to * 3600 + 59)
 
                     attendances = self.env['hr.attendance'].search([
-                        ('check_in', '>=', self._convert_datetime_field(date_from)),
-                        ('check_in', '<=', self._convert_datetime_field(date_to)),
-                        ('employee_id', '=', employee_id),
+                        ('check_out', '>=', self._convert_datetime_field(date_from)),
+                        ('check_out', '<=', self._convert_datetime_field(date_to)),
+                        ('employee_id', '=', employee_id)
                     ])
 
                 for attendance in attendances:
@@ -1035,6 +1032,7 @@ class HrAttendanceReport(models.Model):
     @api.model
     def get_my_attendances_report(self, filters):
         row = []
+        data = []
         header = [['field_name', 0]]
         employee_id = filters['employee_id']
 
@@ -1070,10 +1068,59 @@ class HrAttendanceReport(models.Model):
                 arr[str(dates_btwn)] = raw_data
                 dates_btwn = dates_btwn + relativedelta(days=1)
             row.append(arr)
-
-        data = {
+            
+        data.append({
             'data': row,
             'header': header,
-            'fields': fields
-        }
+            'fields': fields,
+            'child_employees': {}
+        })
+
+        child_employees = self.env['hr.employee'].search([('parent_id', '=', employee_id)])
+        
+        employee_att = []
+        for index, employee in enumerate(child_employees, start=0):
+            # if index > 2:
+            #     break
+            
+            total_worked_hours = 0
+            total_schedule_hours = 0
+            new_row = []
+            dates_btwn = start_date
+
+            att_report_obj = self.env['hr.attendance.report'].search(
+                    [('hr_employee', '=', employee.id), ('work_day','>=', start_date), ('work_day', '<=', end_date)])
+    
+            while dates_btwn <= end_date:
+                raw_data = {}
+                filtered_data = att_report_obj.filtered(lambda r: r.work_day == dates_btwn)
+                raw_data['check_in'] = filtered_data.read(['check_in'])
+                raw_data['check_out'] = filtered_data.read(['check_out'])   
+                worked_hours = filtered_data.read(['worked_hours']) 
+                schedule_hours = filtered_data.read(['formal_worked_hours']) 
+                if len(worked_hours) > 0:
+                    for worked_hour in worked_hours:
+                        total_worked_hours += worked_hour['worked_hours']
+
+                if len(schedule_hours) > 0:
+                    for schedule_hour in schedule_hours:
+                        total_schedule_hours += schedule_hour['formal_worked_hours']        
+
+                dates_btwn = dates_btwn + relativedelta(days=1)
+                new_row.append(raw_data)
+                
+            employee_att.append({
+                'employee_name': employee.name,
+                'employee_attendances': new_row,
+                'total_worked_hours': total_worked_hours,
+                'total_schedule_hours': total_schedule_hours
+            })
+
+        data.append({
+            'header': header,
+            'data': {},
+            'fields': {},
+            'child_employees': employee_att
+        })
+
         return data

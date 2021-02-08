@@ -954,7 +954,7 @@ msgstr "Хүний нөөцийн тохиргоо"
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_job__no_of_hired_employee
 msgid "Hired Employees"
-msgstr "Хөлсний ажилчид"
+msgstr "Ажилд авсан"
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__hr_presence_state

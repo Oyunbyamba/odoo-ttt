@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <template id ="employee_detail_pdf">
+    <template id="employee_detail_pdf">
         <t t-call="web.html_container">
         <t t-set="company" t-value="env.company"/>
             <t t-foreach="docs" t-as="doc">

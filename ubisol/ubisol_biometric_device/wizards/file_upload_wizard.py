@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 import logging
 import binascii
 
+_logger = logging.getLogger(__name__)
 
 class LogFileImportWizard(models.TransientModel):
     _name = 'log_file_import_wizard'
@@ -27,14 +28,6 @@ class LogFileImportWizard(models.TransientModel):
         return {}
 
     def import_attendance(self, row):
-
-        print(row)
-
-        prev_user = self.env['ir.config_parameter'].sudo(
-        ).get_param('my.global.prev_user')
-        prev_date = self.env['ir.config_parameter'].sudo(
-        ).get_param('my.global.prev_date')
-
         device_id = self.env.context.get('active_ids')
 
         atten_time = row[1]
@@ -44,7 +37,6 @@ class LogFileImportWizard(models.TransientModel):
         utc_dt = local_dt.astimezone(pytz.utc)
         utc_dt = utc_dt.strftime("%Y-%m-%d %H:%M:%S")
         atten_time = datetime.strptime(utc_dt, "%Y-%m-%d %H:%M:%S")
-        att_obj = self.env['hr.attendance']
 
         if str(row[0]).strip() == '9999':
             return {}
@@ -71,7 +63,20 @@ class LogFileImportWizard(models.TransientModel):
                                                                  'attendance_data2': str(row[4]),
                                                                  'attendance_data3': str(row[5])})
 
-        # Herev hereglegch oldson bol
+        prev_date = self.checking_prev_att_within_thirty_sec(get_user_id, atten_time)
+        if not prev_date:
+            return {}
+
+        status = self.write_to_attendance(get_user_id, atten_time)
+        
+        return {}
+
+    def checking_prev_att_within_thirty_sec(self, get_user_id, atten_time):
+        prev_user = self.env['ir.config_parameter'].sudo(
+        ).get_param('my.global.prev_user')
+        prev_date = self.env['ir.config_parameter'].sudo(
+        ).get_param('my.global.prev_date')
+        
         if get_user_id:
             if not prev_user and not prev_date:
                 prev_user = get_user_id.id
@@ -108,20 +113,31 @@ class LogFileImportWizard(models.TransientModel):
                 self.env['ir.config_parameter'].sudo().set_param(
                     'my.global.prev_user', prev_user)
                 self.env['ir.config_parameter'].sudo().set_param(
-                    'my.global.prev_date', prev_date)
+                    'my.global.prev_date', prev_date)   
+            return prev_date
+        else:
+            return {}                 
 
+    def write_to_attendance(self, get_user_id, atten_time):
+        att_obj = self.env['hr.attendance']
+
+        # Herev hereglegch oldson bol
+        if get_user_id:
             setting_obj = self.env['hr.attendance.settings'].search(
                 [], limit=1, order='id desc')
+            # ajiltan bolgonoor udur buriin ajillah huwaari orson table    
             general_shift = self.env['hr.employee.schedule'].search(
                 [('day_period', '!=', 3), ('hr_employee', '=', int(get_user_id.id))], limit=1, order='id asc')
+            # tuhain ajiltan or helteseer uusgesen shiftuudiin 1 mor table
             shift_obj = self.env['hr.employee.shift']
+            # tuhain ajillah huwaariudiin master table
             shift_type = self.env['resource.calendar'].search(
                 [('shift_type', '=', 'days')], limit=1, order='id asc')
 
             if general_shift:
                 [att_id, status] = self.check_in_out(
                     att_obj, get_user_id, atten_time, setting_obj, general_shift, shift_obj, shift_type)
-                # print(atten_time, status, get_user_id.pin, att_id)
+             
                 if(status == 'check_out'):
                     if att_id != 0:
                         att_var = att_obj.browse(att_id)
@@ -148,8 +164,8 @@ class LogFileImportWizard(models.TransientModel):
                 else:
                     att_obj.create(
                         {'employee_id': get_user_id.id, 'check_in': atten_time})
-
-        return {}
+                
+        return {}                 
 
     def check_in_out(self, att_obj, get_user_id, dt, setting_obj, general_shift, shift_obj, shift_type):
         [ds1, ds2, de1, de2, dt1, s_type] = self._calculate_dates(
@@ -168,22 +184,23 @@ class LogFileImportWizard(models.TransientModel):
                     setting_obj, get_user_id, dt)
                 return [att_id, status]
 
-        # attendance_req = self._is_overtime(get_user_id, dt, dt1)
-        # if attendance_req:
-        #     [ds1, ds2, de1, de2, dt1, s_type] = self._calculate_dates(get_user_id, setting_obj, general_shift, attendance_req)
+        attendance_req = self._is_overtime(get_user_id, dt, dt1)
+        if attendance_req:
+            [ds1, ds2, de1, de2, dt1, s_type] = self._calculate_dates(
+                get_user_id, setting_obj, general_shift, attendance_req)
 
+        # ajiltanii ajil ehleh tsag - ajillah huwaarias
         shift_start = self.env['hr.employee.schedule'].search(
             [('hr_employee', '=', int(get_user_id.id)), ('day_period', '!=', 3), ('start_work', '>=', ds1), ('start_work', '<=', ds2)], limit=1, order='id desc')
+        # ajiltanii ajil duusah tsag - ajillah huwaarias
         shift_end = self.env['hr.employee.schedule'].search(
             [('hr_employee', '=', int(get_user_id.id)), ('day_period', '!=', 3), ('end_work', '>=', de1), ('end_work', '<=', de2)], limit=1, order='id desc')
-        # if attendance_req:
-        #     return [0, "check_out"]
-        # if s_type == 'shift' and not shift_end:
-        #     shift_end = shift_start
+       
 
         if(shift_end & shift_start):
             check_out = abs(dt - shift_end.end_work).total_seconds()
             check_in = abs(dt - shift_start.start_work).total_seconds()
+           
             [att_id, status] = self._check_status(
                 get_user_id, dt, shift_start.start_work, check_out, check_in, ds1, ds2, de1, de2)
             return [att_id, status]
@@ -257,7 +274,7 @@ class LogFileImportWizard(models.TransientModel):
             ds2 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
             de1 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
             de2 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
-
+    
             ds1 = datetime.strptime(ds1, '%Y-%m-%d %H:%M:%S') - timedelta(
                 hours=8) + timedelta(seconds=setting_obj.start_work_date_from * 3600)
             ds2 = datetime.strptime(ds2, '%Y-%m-%d %H:%M:%S') - timedelta(
@@ -352,7 +369,7 @@ class LogFileImportWizard(models.TransientModel):
             # update_check_out = self.env['hr.attendance'].search(
             #     [('employee_id', '=', get_user_id.id), ('check_out', '>=', work_start), ('check_out', '<', dt)])
             update_check_out = self.env['hr.attendance'].search(
-                [('employee_id', '=', get_user_id.id), ('check_out', '>=', work_start), ('check_out', '<', ds2)])
+                [('employee_id', '=', get_user_id.id), ('check_out', '>=', work_start), ('check_out', '<', de2)])
 
             check_out = self.env['hr.attendance'].search(
                 [('employee_id', '=', get_user_id.id), ('check_in', '>=', ds1), ('check_in', '<=', ds2)])
@@ -376,9 +393,11 @@ class LogFileImportWizard(models.TransientModel):
             return [0, "new_check_out"]
         else:
             update_check_in = self.env['hr.attendance'].search(
-                [('employee_id', '=', get_user_id.id), ('check_in', '>=', ds1), ('check_in', '<=', ds2)])
+                [('employee_id', '=', get_user_id.id), ('check_in', '>=', ds1), ('check_in', '<=', ds2)]
+                , limit=1, order='check_in asc')
             new_check_in = self.env['hr.attendance'].search(
-                [('employee_id', '=', get_user_id.id), ('check_out', '>=', de1), ('check_out', '<=', de2)])
+                [('employee_id', '=', get_user_id.id), ('check_out', '>=', de1), ('check_out', '<=', de2)]
+                , limit=1, order='check_out desc')
 
             if update_check_in:
                 if update_check_in.check_in > dt:

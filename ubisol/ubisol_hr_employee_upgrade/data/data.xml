@@ -9,6 +9,18 @@
     <record id="employee_relationship_mother" model="hr.employee.relation">
             <field name="name">Ээж</field>
     </record>
+    <record id="employee_relationship_son" model="hr.employee.relation">
+            <field name="name">Хүү</field>
+    </record>
+    <record id="employee_relationship_daughter" model="hr.employee.relation">
+            <field name="name">Охин</field>
+    </record>
+    <record id="employee_relationship_brother" model="hr.employee.relation">
+            <field name="name">Ах</field>
+    </record>
+    <record id="employee_relationship_sister" model="hr.employee.relation">
+            <field name="name">Эгч</field>
+    </record>
 
 
     <record id="employee_ethnicity_khalkh" model="hr.employee.ethnicity">

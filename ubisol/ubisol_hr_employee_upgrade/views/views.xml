@@ -208,7 +208,7 @@
         </field>
       </field>
     </record>
-
+  
     <record id="inherit_view_employee_tree" model="ir.ui.view">
       <field name="name">hr.employee.tree.inherit</field>
       <field name="model">hr.employee</field>
@@ -244,11 +244,18 @@
       </field>
     </record>
 
-    <menuitem name="Recruitment" id="hr_recruitment.menu_hr_recruitment_root" web_icon="hr_recruitment,static/description/icon.png" parent="hr.menu_hr_root" groups="hr_recruitment.group_hr_recruitment_user" sequence="4"/>
+    <menuitem name="Recruitment"
+      id="hr_recruitment.menu_hr_recruitment_root"
+      web_icon="hr_recruitment,static/description/icon.png"
+      parent="hr.menu_hr_root"
+      groups="hr_recruitment.group_hr_recruitment_user"
+      sequence="4"/>
 
-    <menuitem id="hr_attendance.menu_hr_attendance_root" name="Attendances" sequence="7" parent="hr.menu_hr_root" groups="hr_attendance.group_hr_attendance" web_icon="hr_attendance,static/description/icon.png"/>
-
-    <!-- <menuitem id="create_bank_definition" name="Create Bank definition" parent="hr.menu_hr_root" sequence="5" groups="hr.group_hr_manager" action="create_bank_definition_wizard"/> -->
+    <menuitem id="hr_attendance.menu_hr_attendance_root"
+      name="Attendances" sequence="7"
+      parent="hr.menu_hr_root"
+      groups="hr_attendance.group_hr_attendance"
+      web_icon="hr_attendance,static/description/icon.png"/>
 
   </data>
 </odoo>
