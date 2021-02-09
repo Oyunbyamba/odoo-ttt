@@ -4,7 +4,8 @@
         <div t-attf-class="header">
         </div>
 
-        <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout"  t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+        <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout"  
+        t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
             <t t-raw="0"/>
         </div>
 
@@ -16,7 +17,8 @@
         <div t-attf-class="header"> 
         </div>
 
-        <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+        <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout" 
+        t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
           <t t-raw="0"/>
         </div>
     </template>
@@ -78,8 +80,8 @@
         <field name="orientation">Portrait</field>
         <field name="margin_top">25</field>
         <field name="margin_bottom">25</field>
-        <field name="margin_left">19</field>
-        <field name="margin_right">19</field>
+        <field name="margin_left">20</field>
+        <field name="margin_right">15</field>
         <field name="header_line" eval="False"/>
         <field name="header_spacing">0</field>
         <field name="dpi">90</field>
@@ -138,12 +140,12 @@
     <report
         id="employee_working_report_pdf"
         model="hr.employee" 
-        string="Covid work definition"
+        string="Карантенаар ажиллах тодорхойлолт"
         report_type="qweb-pdf"
-        menu="True"
+        menu="False"
         name="ubisol_hr_employee_upgrade.employee_working_report"
         file="ubisol_hr_employee_upgrade.employee_working_report"
-        print_report_name="'Employee working definition'"
+        print_report_name="'QD - %s' % (employee.name)"
         paperformat="ubisol_hr_employee_upgrade.general_paperformat"
     />
 </odoo>

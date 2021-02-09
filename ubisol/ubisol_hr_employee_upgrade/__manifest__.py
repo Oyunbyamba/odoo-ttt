@@ -36,6 +36,7 @@
         'report/employee_working_definition.xml',
         'wizards/create_bank_definition.xml',
         'wizards/print_employee_definition.xml',
+        'wizards/quarantine_working_definition.xml',
         'views/hr_resume_views.xml',
         'views/hr_departure.xml',
     ],

@@ -5,7 +5,10 @@
 
 from datetime import datetime, timedelta
 from odoo import models, fields, _, api
+from odoo.exceptions import ValidationError
+import logging
 
+_logger = logging.getLogger(__name__)
 
 class HrEmployeeFamilyInfo(models.Model):
     """Table for keep employee family information"""
@@ -82,6 +85,18 @@ class HrEmployee(models.Model):
     employee_code = fields.Char('Ажилтаны код', groups="hr.group_hr_user")
     rfid_code = fields.Char('Картын дугаар', groups="hr.group_hr_user")
     attendance_ids = fields.One2many('hr.attendance', 'employee_id', string='Employee attendance')
+
+    @api.constrains('pin', 'identification_id')
+    def _check_pin(self):
+        if self.pin:
+            same_pin = self.env['hr.employee'].search_count([('pin', '=', self.pin), ('id', '!=', self.id)])
+            if same_pin > 0:
+                raise ValidationError("Давхардсан пин кодтой ажилтан байна.")
+
+        if self.identification_id:        
+            same_regno = self.env['hr.employee'].search_count([('identification_id', '=', self.identification_id), ('id', '!=', self.id)])
+            if(same_regno) > 0:
+                raise ValidationError("Давхардсан регистрийн дугаартай ажилтан байна.")
 
     @api.onchange('spouse_complete_name', 'spouse_birthdate')
     def onchange_spouse(self):
@@ -174,6 +189,8 @@ class HrEmployee(models.Model):
         employee = self.env['hr.employee'].browse(employee_id)
         print(employee.attendance_ids.read(['fullname', 'check_in', 'check_out']))
         return employee.attendance_ids
+
+        
    
     # @api.model
     # def _getBase64Image(self):

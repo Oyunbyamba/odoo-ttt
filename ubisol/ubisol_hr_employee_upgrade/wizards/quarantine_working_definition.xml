@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="create_document_order_form" model="ir.ui.view">
+         <field name="name">create.document_order.wizard</field>
+         <field name="model">create.document_order</field>
+         <field name="arch" type="xml">
+            <form string="Баримтын дугаар өгөх">
+                <group>
+                    <field name="document_order"/>
+                </group>
+            
+
+                <footer>
+                    <button name="print_report" string="Хэвлэх" type="object" class="btn-primary"/>
+                    <button string="Болих" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+         </field>
+     </record>
+
+    <record id="create_document_order_wizard" model="ir.actions.act_window">
+        <field name="name">Карантенаар ажиллах тодорхойлолт</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">create.document_order</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="create_document_order_form"/>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="hr.model_hr_employee"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

@@ -195,6 +195,7 @@
         <xpath expr="//field[@name='category_ids']" position="after">
           <field name="study_field" string="Study Field"/>
           <field name="pin" string="Пин код"/>
+          <field name="identification_id" string="Регистер"/>
         </xpath>
 
         <xpath expr="//group[1]" position="inside">

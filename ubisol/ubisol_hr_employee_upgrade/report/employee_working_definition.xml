@@ -1,49 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <template id="employee_working_definition_pdf">
+    <template id="employee_working_report">
         <t t-call="web.html_container">
         <t t-set="company" t-value="env.company"/>
-            <t t-foreach="employees" t-as="employee">
+            <t t-foreach="docs" t-as="employee">
                 <t t-call="ubisol_hr_employee_upgrade.external_layout_mn_standard">
-                    <div class="col-12 page" style="font-size: 16px !important; line-height: 135%; padding-top:250px;">
-            
-                        <div style="text-align: center;">ТОДОРХОЙЛОЛТ</div>
+                    <div class="col-12 page" style="font-size: 17px !important; line-height: 135%; padding-top: 192px;">
+                        <div style="padding-left: 20%; font-size: 14px !important; ">
+                            <t t-esc="date"/> &#160; &#160; &#160; &#160; &#160;
+                            &#160; &#160; &#160; &#160; &#160; &#160;
+                            &#160; &#160; &#160; &#160; &#160; &#160; 03/<t t-esc="document_order"/>
+                        </div>
+                        <br/>
+                        <div style="margin-top: 22px; text-align: center; margin-bottom: 4px;">ТОДОРХОЙЛОЛТ</div>
                         <br/> 
-                        <div style="margin-bottom: 7px;"> Тус компанийн ажилтан </div> 
+                        <br/> 
+                        <div style="margin-bottom: 8px;"> &#160; &#160; &#160; &#160; Тус компанийн ажилтан </div> 
             
                         <div style="text-align: center;">
-                            <t t-esc="employee.surname"/> /-ийн, ын/ <span style="text-transform: uppercase;"><t t-esc="employee.name"/></span> нь
+                            <span style="font-weight: 800;"><t t-esc="employee.surname"/></span> /-ийн, ын/ <span style="font-weight: 800; text-transform: uppercase;"><t t-esc="employee.name"/></span> нь
                         </div>
                         <div style="text-align: center; margin-bottom: 8px;">
                             /РД: <span style="text-transform: uppercase;"><t t-esc="employee.identification_id"/></span>, ID: <t t-esc="employee.pin"/>/
                         </div>
+                        <div style="text-align: justify; margin-bottom: 8px;">
+                            сайжруулсан шахмал түлшний үйлдвэрлэл, 
+                            борлуулалт, түгээлт, тээвэрлэлтийг хэвийн явуулах 
+                            зорилгоор 2021 оны 02 дугаар сарын 11-ний өдрөөс 
+                            тогтоож байгаа Гамшгаас хамгаалах бүх нийтийн бэлэн 
+                            байдлын зэрэгт шилжсэн үед ажиллах нь үнэн болно.
+                        </div>
+
                         <div style="text-align: justify;">
-                            сайжруулсан шахмал түлшний үйлдвэрлэл,
-                            борлуулалт хэвийн явуулах, захиргааны удирдлагаар
-                            хангах зорилгоор 2021 оны 02 дугаар сарын 11-ны
-                            өдрөөс тогтоож байгаа цар тахлын хорио цээрийн 
-                            дэглэмийн үед ажиллах нь үнэн болно.
+                            Жич: Өмнө олгосон ажлын үнэмлэх дугаар байхгүй тул тодорхойлолт олгов.
                         </div>
 
                         <div>
                             <hr style="border-top: 1px solid white;"/>
                             <hr style="border-top: 1px solid white;"/>
                             <hr style="border-top: 1px solid white;"/>
-                            <div style="margin-left: 29px; display:inline-block;">ЗАХИРГАА, УДИРДЛАГЫН</div>
-                            <div style="margin-left: 29px; display:inline-block;">АЛБАНЫ ДАРГА <span style="margin-left: 160px;"> Р.ГАНСҮХ</span> </div>
+                            <div style="margin-left: 26px;">ЗАХИРГАА, УДИРДЛАГЫН</div>
+                            <div style="margin-left: 26px;">АЛБАНЫ ДАРГА &#160; &#160; &#160; &#160; &#160; &#160; 
+                            &#160; &#160; &#160; &#160; &#160; &#160;
+                            &#160; &#160; &#160; &#160; &#160; &#160;
+                            &#160; &#160; &#160; &#160; &#160; &#160; &#160;Р.ГАНСҮХ </div>
                         </div>
-
                     </div>
                 </t>
-            </t>
-        </t>
-    </template>
-
-    <template id="employee_working_report">
-        <t t-call="web.html_container">
-            <t t-foreach="docs" t-as="employees">
-                <t t-call="ubisol_hr_employee_upgrade.employee_working_definition_pdf"/>
             </t>
         </t>
     </template>
