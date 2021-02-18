@@ -1,5 +1,10 @@
 from odoo import fields, models, api
+from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 import json
+import logging
+
+_logger = logging.getLogger(__name__)
 
 class HrAttendance(models.Model):
     _inherit = "hr.attendance"
@@ -22,6 +27,34 @@ class HrAttendance(models.Model):
     fullname = fields.Char(compute="_compute_fullname", compute_sudo=True)
     department_id = fields.Many2one('hr.department', related='employee_id.department_id', string="Хэлтэс", store=True)
 
+    start_date = fields.Date(compute="_compute_start_date", inverse="_set_start_date", compute_sudo=True)
+    end_date = fields.Date(compute="_compute_end_date", inverse="_set_start_date", compute_sudo=True)
+    calculate_type = fields.Selection([
+        ('department', 'Хэлтэс'),
+        ('employee', 'Ажилтан')
+    ], compute="_compute_calculate_type", inverse="set_calculate_type")
+
+    @api.depends("employee_id")
+    
+    def _compute_start_date(self):
+        for record in self:
+            sdate = datetime.today() - relativedelta(months=+1)
+            record.start_date = sdate.strftime('%Y-%m-20')
+            
+    def _set_start_date(self):
+        for record in self:
+            record.start_date = record.start
+
+    @api.depends("employee_id")
+    def _compute_end_date(self):
+        for record in self:
+            now = datetime.now()
+            record.end_date = now.strftime('%Y-%m-%d')
+
+    def _set_end_date(self):
+        for record in self:
+            record.end_date = record.end_date 
+
     @api.depends("employee_id")
     def _compute_fullname(self):
         for record in self:
@@ -40,3 +73,5 @@ class HrAttendance(models.Model):
         attendances = self.env['hr.attendance.report'].search([('hr_employee', '=', employee.id)])
         raw_data = attendances.read()
         return raw_data
+
+       

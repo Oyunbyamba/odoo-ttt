@@ -4,11 +4,36 @@
     <template id="assets_backend_hr_attendace_inherit" name="Hr Attendance inherit" inherit_id="web.assets_backend">
       <xpath expr="." position="inside">
         <script type="text/javascript" src="/ubisol_hr_attendance_upgrade/static/src/js/action_attendance_filter.js"/>
-        <script type="text/javascript" src="/ubisol_hr_attendance_upgrade/static/src/js/attendance_table.js"/>
+        <script type="text/javascript" src="/ubisol_hr_attendance_upgrade/static/src/js/my_attendance_table.js"/>
+        <script type="text/javascript" src="/ubisol_hr_attendance_upgrade/static/src/js/all_attendance_table.js"/>
       </xpath>
     </template>
 
     <!-- explicit list view definition -->
+
+    <record id="all_attendances_form" model="ir.ui.view">
+      <field name="name">Attendances</field>
+      <field name="model">hr.attendance</field>
+      <field name="arch" type="xml">
+        <form string="Бүх ирц" create="false" edit="false" js_class="all_attendances_form">
+          <sheet>
+            <group>
+              <group>
+                <field name="start_date" string="Эхлэх огноо"/>
+                <field name="end_date" string="Дуусах огноо"/>
+              </group>
+              <group>
+                <field name="employee_id" attrs="{'readonly': [True]}"/>
+              </group>
+            </group>
+            <group>
+              <button id="attendance_report_interval"  name="attendance_report_interval" string="Харах" type="object" class="oe_highlight"/>
+            </group>
+            <div class="all_attendances_table"></div>
+          </sheet>
+        </form>
+      </field>
+    </record>
 
     <record id="hr_attendance_timeline" model="ir.ui.view">
       <field name="model">hr.attendance</field>
@@ -90,7 +115,7 @@
             <group>
               <button id="attendance_report_interval"  name="attendance_report_interval" string="Харах" type="object" class="oe_highlight"/>
             </group>
-            <div class="attendance_report"></div>
+            <div class="my_attendances_table"></div>
           </sheet>
         </form>
       </field>
@@ -128,9 +153,7 @@
     <record id="hr_attendance.hr_attendance_action" model="ir.actions.act_window">
         <field name="name">Attendances</field>
         <field name="res_model">hr.attendance</field>
-        <field name="view_mode">tree,kanban,timeline,calendar,form</field>
-        <field name="context">{"search_default_today":1, "search_default_employee": 1, "search_default_department": 1}</field>
-        <field name="search_view_id" ref="hr_attendance.hr_attendance_view_filter" />
+        <field name="view_mode">form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_empty_folder">
                 No attendance records found
@@ -144,6 +167,7 @@
         <field name="name">Attendances</field>
         <field name="res_model">hr.attendance.interval</field>
         <field name="view_mode">form</field>
+        <field name="view_id" ref="hr_attendance_report_form"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_empty_folder">
                 No attendance records found
