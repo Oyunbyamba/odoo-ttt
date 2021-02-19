@@ -44,6 +44,11 @@ class UbisolHolidaysRequest(models.Model):
         ('check_in', 'Ирсэн'),
         ('check_out', 'Явсан')
         ], string='Ирсэн/явсан')
+    overtime_type = fields.Selection([
+        ('1', 'Илүү цагийн хүсэлт'),
+        ('2', 'Тушаалаар хязгаарлагдах цаг'),
+        ('3', 'Нийт батлах цаг')
+        ], string='Илүү цагийн төрөл')    
 
     _sql_constraints = [
         ('type_value',
