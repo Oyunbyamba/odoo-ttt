@@ -17,6 +17,7 @@
         <xpath expr="//group[@name='notification']" position="before">
           <group name="request_status_type" string="Хүсэлтийн төрөл">
               <field name="request_status_type"/>
+              <field name="overtime_type" attrs="{'invisible': [('request_status_type', '!=', 'overtime')]}"/>
           </group>
         </xpath>
 

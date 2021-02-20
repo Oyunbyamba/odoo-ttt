@@ -26,7 +26,7 @@ class UbisolHolidaysRequest(models.Model):
 
     holiday_type = fields.Selection([
         ('employee', 'By Employee'),
-        ('department', 'By Department'),
+        ('department', 'By Department')
         ],
         string='Allocation Mode', readonly=True, required=True, default='employee',
         states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]},
@@ -39,17 +39,14 @@ class UbisolHolidaysRequest(models.Model):
     request_status_type = fields.Selection(related='holiday_status_id.request_status_type', readonly=True)
     request_unit_hours = fields.Boolean('Custom Hours')
     request_unit_custom = fields.Boolean('Days-long custom hours')
-    frequency_request = fields.Boolean('Давтамжтай үүсгэх эсэх')
+    frequency_request = fields.Boolean('Давтамжтай үүсгэх эсэх', default=False)
     attendance_in_out = fields.Selection([
         ('check_in', 'Ирсэн'),
         ('check_out', 'Явсан')
         ], string='Ирсэн/явсан')
-    overtime_type = fields.Selection([
-        ('1', 'Илүү цагийн хүсэлт'),
-        ('2', 'Тушаалаар хязгаарлагдах цаг'),
-        ('3', 'Нийт батлах цаг')
-        ], string='Илүү цагийн төрөл')    
-
+    leave_overtime_type = fields.Selection(related='holiday_status_id.overtime_type', readonly=True)   
+    allowed_overtime_time = fields.Integer('Батлах илүү цаг') 
+    
     _sql_constraints = [
         ('type_value',
          "CHECK((holiday_type='employee' AND employee_id IS NOT NULL) or "
@@ -240,6 +237,12 @@ class UbisolHolidaysRequest(models.Model):
             else:
                 holiday.employee_holiday = 0  
 
+    @api.onchange('holiday_status_id')
+    def _change_frequency_request(self):
+        for holiday in self:
+            if holiday.leave_overtime_type == 'manager_proved_overtime':
+                holiday.frequency_request = True 
+
     @api.depends('number_of_days')
     def _compute_number_of_days_display(self):
         for holiday in self:
@@ -251,6 +254,7 @@ class UbisolHolidaysRequest(models.Model):
         if not self._context.get('leave_fast_create'):
             leave_types = self.env['hr.leave.type'].browse([values.get('holiday_status_id') for values in vals_list if values.get('holiday_status_id')])
             mapped_validation_type = {leave_type.id: leave_type.validation_type for leave_type in leave_types}
+            mapped_overtime_type = {leave_type.id: leave_type.overtime_type for leave_type in leave_types}
 
             for values in vals_list:
                 employee_id = values.get('employee_id', False)
@@ -266,6 +270,9 @@ class UbisolHolidaysRequest(models.Model):
                 # Handle double validation
                 if mapped_validation_type[leave_type_id] == 'both':
                     self._check_double_validation_rules(employee_id, values.get('state', False))
+
+                if mapped_overtime_type[leave_type_id] == 'manager_proved_overtime':
+                    values.update({'frequency_request': True})
 
         holidays = super(models.Model, self.with_context(mail_create_nosubscribe=True)).create(vals_list)
 
@@ -307,67 +314,92 @@ class UbisolHolidaysRequest(models.Model):
                 self._get_department_child(child, res)
         return res      
 
-    def create_overtime(self, holiday, s_date, start_time, end_time, employee):
-        holiday_values = []
-        holiday_values.append({
-            'name': holiday.name,
-            'state': holiday.state,
-            'report_note': holiday.report_note,
-            'user_id': holiday.user_id.id,
-            'manager_id': holiday.manager_id.id,
-            'holiday_status_id': holiday.holiday_status_id.id,
-            'employee_id': employee.id,
-            'department_id': employee.department_id.id,
-            'notes': holiday.notes,
-            'date_from': str(s_date) + ' ' + str(start_time),
-            'date_to': str(s_date) + ' ' + str(end_time),
-            'number_of_days': holiday.number_of_days,
-            'holiday_type': 'employee',
-            'request_date_from': s_date,
-            'request_date_to': s_date,
-            'request_hour_from': holiday.request_hour_from,
-            'request_hour_to': holiday.request_hour_to,
-            'request_date_from_period': holiday.request_date_from_period
-        }) 
-        hr_att_req = self.env['hr.leave'].create(holiday_values)
+    def create_overtime(self, employee_id):
+        _logger.info('create_overtime')
+        for holiday in self:
+            _logger.info(holiday.holiday_status_id)
+            employee = self.env('hr.employee').browse([employee_id])
+            holiday_values = []
+            holiday_values.append({
+                'name': holiday.name,
+                'state': holiday.state,
+                'report_note': holiday.report_note,
+                'user_id': holiday.user_id.id,
+                'manager_id': holiday.manager_id.id,
+                'holiday_status_id': holiday.holiday_status_id.id,
+                'employee_id': employee.id,
+                'department_id': employee.department_id.id,
+                'notes': holiday.notes,
+                'date_from': holiday.date_from,
+                'date_to': holiday.date_to,
+                'number_of_days': holiday.number_of_days,
+                'holiday_type': 'employee',
+                'request_date_from': holiday.request_date_from,
+                'request_date_to': holiday.request_date_to,
+                'request_hour_from': holiday.request_hour_from,
+                'request_hour_to': holiday.request_hour_to,
+                'request_date_from_period': holiday.request_date_from_period
+            }) 
+            hr_att_req = self.env['hr.leave'].create(holiday_values)
 
         return True    
 
     def multiple_overtime(self, holiday):
+        _logger.info('multiple_overtime')
         request_type = holiday.holiday_type
-        start_date = holiday.request_date_from
-        end_date = holiday.request_date_to
-        start_time =  holiday.date_from.time()
-        end_time =  holiday.date_to.time()
+        _logger.info(request_type)
+        # start_date = holiday.request_date_from
+        # end_date = holiday.request_date_to
+        # start_time = holiday.date_from.time()
+        # end_time = holiday.date_to.time()
         first_att = 1
-        delta = end_date-start_date
-        count = 0
+        # delta = end_date-start_date
+        # count = 0
 
-        while count <= delta.days:
-            s_date =  start_date + timedelta(days=+count)
-            if(request_type == 'department'):
-                department_ids = self._get_department_child(holiday.department_id, [holiday.department_id.id])
-                department_employees = self.env['hr.employee'].search([('department_id', 'in', department_ids)])
-                if len(department_employees) > 0:
-                    for department_employee in department_employees:
-                        if(first_att == 1 and department_employees[0].id == department_employee.id):
-                            holiday.holiday_type = 'employee'
-                            holiday.employee_id = department_employee.id
-                            holiday.date_from = str(s_date) + ' ' + str(start_time)
-                            holiday.date_to = str(s_date) + ' ' + str(end_time)
-                            holiday.request_date_from = s_date
-                            holiday.request_date_to = s_date
-                            first_att = 2
-                        else:
-                            self.create_overtime(holiday, s_date, start_time, end_time, department_employee)
-            elif(request_type == 'employee'):
+        if(request_type == 'department'):
+            department_ids = self._get_department_child(holiday.department_id, [holiday.department_id.id])
+            employees = self.env['hr.employee'].search([('department_id', 'in', department_ids)])
+
+        if len(employees) > 0:
+            for employee in employees:
+                _logger.info(employee.id)
                 if(first_att == 1):
-                    holiday.date_from = str(s_date) + ' ' + str(start_time)
-                    holiday.date_to = str(s_date) + ' ' + str(end_time)
-                    holiday.request_date_from = s_date
-                    holiday.request_date_to = s_date
+                    holiday.holiday_type = 'employee'
+                    holiday.employee_id = employee.id
+                    _logger.info(employee.id)
                     first_att = 2
                 else:
-                    self.create_overtime(holiday, s_date, start_time, end_time, holiday.employee_id)
+                    self.create_overtime(employee.id)
 
-            count = count+1       
+        # while count <= delta.days:
+        #     s_date =  start_date + timedelta(days=+count)
+        #     if(request_type == 'department'):
+        #         department_ids = self._get_department_child(holiday.department_id, [holiday.department_id.id])
+        #         employees = self.env['hr.employee'].search([('department_id', 'in', department_ids)])
+
+            # if(request_type == 'company'):
+            #     employees = self.env['hr.employee'].search([('company_id', '=', holiday.mode_company_id.id)])
+
+            #     if len(department_employees) > 0:
+            #         for department_employee in department_employees:
+            #             if(first_att == 1 and department_employees[0].id == department_employee.id):
+            #                 holiday.holiday_type = 'employee'
+            #                 holiday.employee_id = department_employee.id
+            #                 holiday.date_from = str(s_date) + ' ' + str(start_time)
+            #                 holiday.date_to = str(s_date) + ' ' + str(end_time)
+            #                 holiday.request_date_from = s_date
+            #                 holiday.request_date_to = s_date
+            #                 first_att = 2
+            #             else:
+            #                 self.create_overtime(holiday, s_date, start_time, end_time, department_employee)
+            # elif(request_type == 'employee'):
+            #     if(first_att == 1):
+            #         holiday.date_from = str(s_date) + ' ' + str(start_time)
+            #         holiday.date_to = str(s_date) + ' ' + str(end_time)
+            #         holiday.request_date_from = s_date
+            #         holiday.request_date_to = s_date
+            #         first_att = 2
+            #     else:
+            #         self.create_overtime(holiday, s_date, start_time, end_time, holiday.employee_id)
+
+            # count = count+1       

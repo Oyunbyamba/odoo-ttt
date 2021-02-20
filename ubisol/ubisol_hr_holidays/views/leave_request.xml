@@ -80,6 +80,7 @@
                         <field name="request_unit_custom" invisible="1" attrs="{
                             'readonly': [('state', 'not in', ('draft', 'confirm'))],
                         }"/>
+                        <field name="leave_overtime_type" invisible="1"/>
                     </div>
                     <div class="o_row o_row_readonly">
                         <field name="request_hour_from"
@@ -97,14 +98,6 @@
                     </div>
                 </div>
 
-                <label for="frequency_request" string="Давтамжтай үүсгэх" groups="hr_holidays.group_hr_holidays_user" attrs="{'invisible': [('request_status_type', '!=', 'overtime')]}"/>
-                <div>
-                    <field name="frequency_request" groups="hr_holidays.group_hr_holidays_user" attrs="{
-                        'readonly': [('state', 'not in', ('draft', 'confirm'))],
-                        'invisible': [('request_status_type', '!=', 'overtime')]
-                        }"/>
-                </div>
-
                 <label for="attendance_in_out" string="Ирсэн/явсан" attrs="{'invisible': [('request_status_type', '!=', 'attendance')]}"/>
                 <div>
                     <field name="attendance_in_out" attrs="{
@@ -116,8 +109,12 @@
 
                 <!-- When the user is leave manager, he should always see `number_of_days` to allow
                 him to edit the value. `number_of_hours_display` is only an informative field -->
-                <label for="number_of_days" string="Duration" attrs="{'invisible': [('request_status_type', '=', 'attendance')]}"/>
-                <div attrs="{'invisible': [('request_status_type', '=', 'attendance')]}">
+                <label for="number_of_days" string="Duration" attrs="{
+                    'invisible': ['|', 
+                        ('request_status_type', '=', 'attendance'),
+                        ('request_status_type', '=', 'overtime')]
+                    }"/>
+                <div attrs="{'invisible': ['|', ('request_status_type', '=', 'attendance'), ('request_status_type', '=', 'overtime')]}">
                     <div groups="!hr_holidays.group_hr_holidays_manager" attrs="{'invisible': [('leave_type_request_unit', '=', 'hour')]}">
                         <field name="number_of_days_display" nolabel="1" readonly="1" class="oe_inline"/>
                         <span class="ml8">Days</span>
@@ -130,6 +127,16 @@
                         <field name="number_of_hours_display" nolabel="1" class="oe_inline"/>
                         <span class="ml8">Hours</span>
                     </div>
+                </div>
+
+                <label for="allowed_overtime_time" string="Батлах илүү цаг" attrs="{
+                    'invisible': ['|', ('request_status_type', '!=', 'overtime'), ('leave_overtime_type', '=', 'basic_overtime_request')]
+                    }"/>
+                <div groups="hr_holidays.group_hr_holidays_manager" attrs="{
+                    'invisible': ['|', ('request_status_type', '!=', 'overtime'), ('leave_overtime_type', '=', 'basic_overtime_request')]
+                    }">
+                    <field name="allowed_overtime_time" nolabel="1" class="oe_inline"/>
+                    <span class="ml8">Hours</span>
                 </div>
 
                 <field name="user_id" invisible="1"/>
