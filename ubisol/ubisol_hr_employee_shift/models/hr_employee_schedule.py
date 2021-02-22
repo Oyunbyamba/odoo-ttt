@@ -60,6 +60,8 @@ class HrEmployeeSchedule(models.Model):
         string="Start Work Time", compute="_compute_start_work_time", required=True, help="Start Work Time")
     end_work_time = fields.Float(
         string="End Work Time", compute="_compute_end_work_time", required=True, help="End Work Time")
+    department_id = fields.Many2one(related='hr_employee.department_id')
+    shift_name = fields.Char(related='hr_employee_shift.name') 
 
     # @api.model
     # def _fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
@@ -134,7 +136,7 @@ class HrEmployeeSchedule(models.Model):
                 hour = date_result.hour
                 minute = date_result.minute
                 record.end_work_time = hour + minute/60
-
+                
     @api.model
     def get_departments(self):
         cr = self._cr
