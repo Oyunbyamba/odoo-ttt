@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import pytz
+import logging
 from lxml import etree
 from odoo import models, fields, api
 from datetime import datetime, timedelta, time
 
+_logger = logging.getLogger(__name__)
 
 class HrEmployeeSchedule(models.Model):
     """Хуваарилсан ээлж"""
@@ -136,7 +138,18 @@ class HrEmployeeSchedule(models.Model):
                 hour = date_result.hour
                 minute = date_result.minute
                 record.end_work_time = hour + minute/60
-                
+
+    @api.onchange("start_work")
+    def _change_work_day(self):
+        for record in self:
+            if record.start_work:
+                user_tz = self.env.user.tz or pytz.utc
+                local = pytz.timezone(user_tz)
+                date_result = pytz.utc.localize(
+                    record.start_work).astimezone(local)
+                record.work_day = date_result
+                # record.week_day = str(date_result.weekday())       
+
     @api.model
     def get_departments(self):
         cr = self._cr

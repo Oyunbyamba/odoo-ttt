@@ -87,23 +87,22 @@
       <field name="name">hr.employee.schedule</field>
       <field name="model">hr.employee.schedule</field>
       <field name="arch" type="xml">
-        <form string="Schedules">
+        <form string="Schedules" create="false">
           <sheet>
             <group>
               <group>
-                <field name="hr_department"/>
-                <field name="hr_employee"/>
+                <field name="hr_employee" readonly="1"/>
               </group>
               <group>
-                <field name="shift_type"/>
+                <field name="shift_type" readonly="1"/>
                 <field name="week_day" attrs="{'invisible':[('shift_type', '!=', 'days')]}"/>
                 <field name="day_period" attrs="{'invisible':[('shift_type', '!=', 'shift')]}"/>
               </group>
               <group>
-                <field name="workplan_id"/>
+                <field name="workplan_id" invisible="1"/>
               </group>
               <group>
-                <field name="work_day" string="Огноо"/>
+                <field name="work_day" string="Огноо" invisible="1"/>
                 <field name="start_work"/>
                 <field name="end_work"/>
               </group>
@@ -203,7 +202,7 @@
       </field>
     </record>
 
-    <!-- <record id="view_employee_tree1" model="ir.ui.view">
+    <record id="view_employee_tree1" model="ir.ui.view">
       <field name="name">hr.employee.workplan.tree</field>
       <field name="model">hr.employee.workplan</field>
       <field name="arch" type="xml">
@@ -213,7 +212,7 @@
           <field name="shift_id" string="Хуваарь"/>
         </tree>
       </field>
-    </record> -->
+    </record>
 
     <record id="view_employee_tree2" model="ir.ui.view">
       <field name="name">hr.employee.schedule.tree</field>
@@ -221,9 +220,12 @@
       <field name="arch" type="xml">
         <tree string="Employees" expand="false" create="false" edit="false" default_order="id desc">
           <field name="hr_employee" string="Ажилтан"/>
-          <field name="start_work" string="Эхлэх цаг"/>
-          <field name="end_work" string="Дуусах цаг"/>
-          <field name="shift_name" string="Нэр"/>
+          <field name="work_day" string="Огноо"/>
+          <field name="shift_type"/>
+          <field name="week_day" attrs="{'invisible':[('shift_type', '!=', 'days')]}"/>
+          <field name="day_period" attrs="{'invisible':[('shift_type', '!=', 'shift')]}"/>
+          <field name="start_work_time" string=" Эхлэх хугацаа" widget="float_time"/>
+          <field name="end_work_time" string=" Дуусах хугацаа" widget="float_time"/>
         </tree>
       </field>
     </record>
