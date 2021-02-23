@@ -5,11 +5,13 @@ import pytz
 import dateutil.parser
 import datetime
 import re
+import logging
 from odoo import models, fields, api
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import ValidationError
 
+_logger = logging.getLogger(__name__)
 
 class HrEmployeeShift(models.Model):
     """Ээлж хуваарилалт"""
@@ -259,14 +261,19 @@ class HrEmployeeShift(models.Model):
                 employees = self.env['hr.employee'].search(
                     [('department_id', '=', vals.get('hr_department'))])
 
-            while dates_btwn <= date_to:
-                for employee in employees:
-                    prev = self.env['hr.employee.schedule'].search(
-                        [('hr_employee', '=', employee.id), ('work_day', '=', dates_btwn.date())])
-                    if prev:
-                        return {'message': employee.name + ' ажилтны ' + str(dates_btwn.date()) + '-ны хуваарь давхардаж байна.'}
-                    dates_btwn = dates_btwn + relativedelta(days=1)
-                return None
+            for employee in employees:
+                prev_schedule = self.env['hr.employee.schedule'].search(
+                    [('hr_employee', '=', employee.id), ('work_day', '>=', date_from.date()), ('work_day', '<=', date_to.date())]).unlink()
+
+            return None
+            # while dates_btwn <= date_to:
+            #     for employee in employees:
+            #         prev = self.env['hr.employee.schedule'].search(
+            #             [('hr_employee', '=', employee.id), ('work_day', '=', dates_btwn.date())])
+            #         if prev:
+            #             return {'message': employee.name + ' ажилтны ' + str(dates_btwn.date()) + '-ны хуваарь давхардаж байна.'}
+            #         dates_btwn = dates_btwn + relativedelta(days=1)
+            #     return None
         else:
             return None
 

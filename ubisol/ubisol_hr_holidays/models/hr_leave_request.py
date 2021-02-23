@@ -273,24 +273,24 @@ class UbisolHolidaysRequest(models.Model):
                 if mapped_validation_type[leave_type_id] == 'both':
                     self._check_double_validation_rules(employee_id, values.get('state', False))
 
-                # if mapped_overtime_type[leave_type_id] == 'manager_proved_overtime':
-                #     values.update({'frequency_request': True})
+                if mapped_overtime_type[leave_type_id] == 'manager_proved_overtime':
+                    values.update({'frequency_request': True})
 
                     # Create overtime requests for employees of selected department
-                    # if values.get('holiday_type') == 'department':
-                    #     new_vals_list = []
-                    #     new_values = copy.copy(values)
-                    #     department_ids = self._get_department_child(self.env['hr.department'].browse(values.get('department_id')), [values.get('department_id')])
-                    #     employees = self.env['hr.employee'].search([('department_id', 'in', department_ids)])
-                    #     index = 0
-                    #     for employee in employees:
-                    #         if index == 0:
-                    #             values.update({'holiday_type': 'employee', 'employee_id': employee.id})
-                    #         else:
-                    #             new_values.update({'holiday_type': 'employee', 'employee_id': employee.id})
-                    #             vals_list.append(copy.copy(new_values))
+                    if values.get('holiday_type') == 'department':
+                        new_vals_list = []
+                        new_values = copy.copy(values)
+                        department_ids = self._get_department_child(self.env['hr.department'].browse(values.get('department_id')), [values.get('department_id')])
+                        employees = self.env['hr.employee'].search([('department_id', 'in', department_ids)])
+                        index = 0
+                        for employee in employees:
+                            if index == 0:
+                                values.update({'holiday_type': 'employee', 'employee_id': employee.id})
+                            else:
+                                new_values.update({'holiday_type': 'employee', 'employee_id': employee.id})
+                                vals_list.append(copy.copy(new_values))
 
-                    #         index = index + 1    
+                            index = index + 1    
 
         holidays = super(models.Model, self.with_context(mail_create_nosubscribe=True)).create(vals_list)
 

@@ -189,7 +189,6 @@ class HrEmployee(models.Model):
         employee = self.env['hr.employee'].browse(employee_id)
         print(employee.attendance_ids.read(['fullname', 'check_in', 'check_out']))
         return employee.attendance_ids
-
         
    
     # @api.model

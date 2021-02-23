@@ -148,7 +148,15 @@ class HrEmployeeSchedule(models.Model):
                 date_result = pytz.utc.localize(
                     record.start_work).astimezone(local)
                 record.work_day = date_result
-                # record.week_day = str(date_result.weekday())       
+                record.week_day = str(date_result.weekday())       
+
+    # @api.model
+    # def write(self, vals):
+    #     # employee_shift = super(HrEmployeeSchedule, self).write(vals)
+    #     employee_shift = self.env['hr.employee.schedule'].browse(id).write(vals)
+    #     _logger.info(employee_shift)
+
+    #     return employee_shift
 
     @api.model
     def get_departments(self):
