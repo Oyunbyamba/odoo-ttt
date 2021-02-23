@@ -228,9 +228,12 @@ class AttendanceReport(models.TransientModel):
         sheet = workbook.add_worksheet()
 
         sheet.set_row(0, 50)
-        sheet.set_row(1, 30)
-        sheet.set_column(0, 0, 20)
-        sheet.set_column(1, 15, 12)
+        sheet.set_row(1, 15)
+        sheet.set_row(2, 15)
+        sheet.set_row(3, 15)
+        sheet.set_column(0, 11, 10)
+        sheet.set_column(12, 25, 5)
+        sheet.set_column(26, 26, 10)
 
         header_format = workbook.add_format({
             'bold': 1,
@@ -250,88 +253,82 @@ class AttendanceReport(models.TransientModel):
             'valign': 'vcenter',
             'text_wrap': True
         })
+        header_rotation_format = workbook.add_format({
+            'bold': 1,
+            'border': 1,
+            'align': 'center',
+            'valign': 'vcenter',
+            'text_wrap': True,
+            'rotation': '90'
+        })
+        footer_format = workbook.add_format({
+            'bold': 0,
+            'border': 0,
+            'align': 'initial',
+            'valign': 'vcenter',
+            'text_wrap': False
+        })
+        footer_format_bold = workbook.add_format({
+            'bold': 1,
+            'border': 0,
+            'align': 'initial',
+            'valign': 'vcenter',
+            'text_wrap': False
+        })
 
         headers = data['header']
         lines = data['data']
         filters = data['filters']
 
-        title = filters['start_date'] + '-аас ' + \
-            filters['end_date'] + '-ны хоорондох ирцийн мэдээлэл'
-
-        sheet.merge_range('A1:P1', title, merge_format)
-
-        row = 1
+        row = 4
 
         # write data (for column title)
-        for i, h in enumerate(headers):
-            sheet.write(row, i, h[1], header_format)
-        row += 1
+        sheet.merge_range('A2:A4', 'Огноо', merge_format)
+        sheet.merge_range('B2:C3', 'Ажиллавал зохих', merge_format)
+        sheet.merge_range('D2:E3', 'Ажилласан', merge_format)
+        sheet.merge_range('F2:L2', 'Илүү цаг', merge_format)
+        sheet.merge_range('F3:G3', 'Цалин бодогдох илүү цаг', merge_format)
+        sheet.merge_range('H3:H4', 'Батлагдсан илүү цаг', merge_format)
+        sheet.merge_range('I3:I4', 'Нийт илүү цаг', merge_format)
+        sheet.merge_range('J3:L3', 'Үүнээс', merge_format)
+        sheet.merge_range('M2:Z2', 'Ажиллаагүй', merge_format)
+        sheet.merge_range('M3:N3', 'БҮГД', merge_format)
+        sheet.merge_range('O3:P3', 'Чөлөөтэй /цалинтай/', merge_format)
+        sheet.merge_range('Q3:R3', 'Чөлөөтэй /цалингүй/', merge_format)
+        sheet.merge_range('S3:T3', 'Өвчтэй', merge_format)
+        sheet.merge_range('U3:V3', 'Ээлжийн амралттай', merge_format)
+        sheet.merge_range('W3:X3', 'Жирэмсэний амралттай', merge_format)
+        sheet.merge_range('Y3:Z3', 'Тасалсан', merge_format)
+        sheet.merge_range('AA2:AA4', 'Хоцорсон цаг', merge_format)
+        sheet.write(3, 1, 'Өдөр', header_format)
+        sheet.write(3, 2, 'Нийт цаг', header_format)
+        sheet.write(3, 3, 'Өдөр', header_format)
+        sheet.write(3, 4, 'Нийт цаг', header_format)
+        sheet.write(3, 5, 'Илүү цаг', header_format)
+        sheet.write(3, 6, 'Баяр ёслолын өдөр ажилласан илүү цаг', header_format)
+        sheet.write(3, 9, 'Хуруу дарж авах илүү цаг', header_format)
+        sheet.write(3, 10, 'Баяр ёслолын өдөр ажилласан илүү цаг', header_format)
+        sheet.write(3, 11, 'Хүсэлтээр баталгаажсан илүү цаг', header_format)
+        sheet.write(3, 12, 'Өдөр', header_rotation_format)
+        sheet.write(3, 13, 'Цаг', header_rotation_format)
+        sheet.write(3, 14, 'Өдөр', header_rotation_format)
+        sheet.write(3, 15, 'Цаг', header_rotation_format)
+        sheet.write(3, 16, 'Өдөр', header_rotation_format)
+        sheet.write(3, 17, 'Цаг', header_rotation_format)
+        sheet.write(3, 18, 'Өдөр', header_rotation_format)
+        sheet.write(3, 19, 'Цаг', header_rotation_format)
+        sheet.write(3, 20, 'Өдөр', header_rotation_format)
+        sheet.write(3, 21, 'Цаг', header_rotation_format)
+        sheet.write(3, 22, 'Өдөр', header_rotation_format)
+        sheet.write(3, 23, 'Цаг', header_rotation_format)
+        sheet.write(3, 24, 'Өдөр', header_rotation_format)
+        sheet.write(3, 25, 'Цаг', header_rotation_format)
 
-        full_name = ''
-        emp_first_row = 0
-        emp_first_row_i = 0
-        total = {'full_name': '-', 'work_day': '-', 'check_in': '-', 'check_out': '-', 'work_days': 0.0, 'work_hours': 0.0, 'worked_days': 0.0, 'worked_hours': 0.0,
-                 'formal_worked_hours': 0.0, 'overtime': 0.0, 'informal_overtime': 0.0, 'paid_req_time': 0.0, 'unpaid_req_time': 0.0, 'take_off_day': 0.0, 'difference_check_out': 0.0, 'difference_check_in': 0.0}
-
-        # Set data
-        for l in lines:
-            if emp_first_row == 0:
-                full_name = l['full_name']
-                emp_first_row = l['hr_employee'][0]
-                emp_first_row_i = row
-            employee_id = l['hr_employee'][0]
-            if emp_first_row != employee_id:
-                row += 1
-                for i, h in enumerate(headers):
-                    index = h[0]
-                    if index == 'full_name' or index == 'check_in' or index == 'check_out' or index == 'worked_days' or index == 'take_off_day' or index == 'work_day' or index == 'work_days':
-                        sheet.write(row - 1, i, total[index], border_format)
-                    else:
-                        sheet.write(row - 1, i, self._set_hour_format(
-                            total[index]), border_format)
-                sheet.merge_range('A'+str(emp_first_row_i + 1) +
-                                  ':A'+str(row), full_name, merge_format)
-                full_name = l['full_name']
-                emp_first_row = l['hr_employee'][0]
-                emp_first_row_i = row
-                total = {'full_name': '-', 'work_day': '-', 'check_in': '-', 'check_out': '-', 'work_days': 0.0, 'work_hours': 0.0, 'worked_days': 0.0, 'worked_hours': 0.0,
-                         'formal_worked_hours': 0.0, 'overtime': 0.0, 'informal_overtime': 0.0, 'paid_req_time': 0.0, 'unpaid_req_time': 0.0, 'take_off_day': 0.0, 'difference_check_out': 0.0, 'difference_check_in': 0.0}
-            for i, h in enumerate(headers):
-                index = h[0]
-                try:
-                    if l[index]:
-                        if index == 'work_days' or index == 'work_hours' or index == 'worked_days' or index == 'worked_hours' or index == 'formal_worked_hours' or index == 'overtime' or index == 'informal_overtime' or index == 'paid_req_time' or index == 'unpaid_req_time' or index == 'take_off_day' or index == 'difference_check_out' or index == 'difference_check_in':
-                            total[index] += l[index]
-
-                        if index == 'hr_employee_shift':
-                            sheet.write(row, i, l[index][1], border_format)
-                        elif index == 'worked_days' or index == 'take_off_day' or index == 'full_name' or index == 'work_day' or index == 'work_days':
-                            sheet.write(row, i, l[index], border_format)
-                        elif index == 'check_in' or index == 'check_out':
-                            sheet.write(row, i, self._set_check_format(
-                                l[index]), border_format)
-                        else:
-                            sheet.write(row, i, self._set_hour_format(
-                                l[index]), border_format)
-                    else:
-                        if index == 'worked_days' or index == 'take_off_day' or index == 'work_days':
-                            sheet.write(row, i, 0, border_format)
-                        elif index == 'check_in' or index == 'check_out':
-                            sheet.write(row, i, '-', border_format)
-                        else:
-                            sheet.write(row, i, '00:00', border_format)
-                except KeyError:
-                    sheet.write(row, i, '', border_format)
-            row += 1
-        for i, h in enumerate(headers):
-            index = h[0]
-            if index == 'full_name' or index == 'check_in' or index == 'check_out' or index == 'worked_days' or index == 'take_off_day' or index == 'work_day' or index == 'work_days':
-                sheet.write(row - 1, i, total[index], border_format)
-            else:
-                sheet.write(row - 1, i, self._set_hour_format(
-                    total[index]), border_format)
-        sheet.merge_range('A'+str(emp_first_row_i + 1)+':A' +
-                          str(row + 1), full_name, merge_format)
+        # write column index
+        i = 0
+        while i < 27:
+            sheet.write(4, i, i, header_format)
+            i += 1
 
         workbook.close()
         output.seek(0)
