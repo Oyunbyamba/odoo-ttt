@@ -120,6 +120,8 @@ class HrAttendanceReport(models.Model):
 
     global_leaves = fields.One2many(
         related='hr_employee.resource_calendar_id.global_leave_ids')
+    register_id = fields.Char(
+        related='hr_employee.identification_id', store=True,)
 
     @api.depends("hr_employee")
     def _compute_full_name(self):
@@ -965,7 +967,6 @@ class HrAttendanceReport(models.Model):
         raw_data = att_report_onj.read_group(
             domain=domain,
             fields=[
-                'hr_employee.identification_id'
                 'hr_employee_shift',
                 'work_days',
                 'work_hours',
@@ -978,10 +979,12 @@ class HrAttendanceReport(models.Model):
                 'unpaid_req_time',
                 'take_off_day',
                 'difference_check_out',
-                'difference_check_in'
+                'difference_check_in',
+                'ceo_approved_overtime:max',
+                'overtime_holiday',
             ],
             groupby=['full_name', 'hr_department',
-                     'hr_employee'],
+                     'hr_employee', 'register_id'],
             lazy=False
         )
 
@@ -1009,6 +1012,7 @@ class HrAttendanceReport(models.Model):
             'filters': filters,
             'type': 0
         }
+        _logger.info(raw_data)
         return data
 
     @api.model

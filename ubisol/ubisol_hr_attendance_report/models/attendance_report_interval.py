@@ -17,6 +17,7 @@ except ImportError:
 
 _logger = logging.getLogger(__name__)
 
+
 class AttendanceReport(models.TransientModel):
     _name = 'attendance.report.interval'
     _description = 'Attendance Report Interval'
@@ -143,6 +144,14 @@ class AttendanceReport(models.TransientModel):
             'text_wrap': False
         })
 
+        body_format = workbook.add_format({
+            'bold': 0,
+            'border': 1,
+            'align': 'center',
+            'valign': 'vcenter',
+            'text_wrap': True
+        })
+
         headers = data['header']
         lines = data['data']
         filters = data['filters']
@@ -173,9 +182,11 @@ class AttendanceReport(models.TransientModel):
         sheet.write(3, 4, 'Өдөр', header_format)
         sheet.write(3, 5, 'Нийт цаг', header_format)
         sheet.write(3, 6, 'Илүү цаг', header_format)
-        sheet.write(3, 7, 'Баяр ёслолын өдөр ажилласан илүү цаг', header_format)
+        sheet.write(3, 7, 'Баяр ёслолын өдөр ажилласан илүү цаг',
+                    header_format)
         sheet.write(3, 10, 'Хуруу дарж авах илүү цаг', header_format)
-        sheet.write(3, 11, 'Баяр ёслолын өдөр ажилласан илүү цаг', header_format)
+        sheet.write(3, 11, 'Баяр ёслолын өдөр ажилласан илүү цаг',
+                    header_format)
         sheet.write(3, 12, 'Хүсэлтээр баталгаажсан илүү цаг', header_format)
         sheet.write(3, 13, 'Өдөр', header_rotation_format)
         sheet.write(3, 14, 'Цаг', header_rotation_format)
@@ -197,12 +208,57 @@ class AttendanceReport(models.TransientModel):
         while i < 28:
             sheet.write(4, i, i, header_format)
             i += 1
+        row = 5
+        for l in lines:
+            sheet.write(row, 0, l['full_name'] or '', body_format)
+            sheet.write(row, 1, l['register_id'] or '', body_format)
+            sheet.write(row, 2, l['work_days'] or '', body_format)
+            sheet.write(row, 3, self._set_hour_format(
+                l['work_hours']) or '', body_format)
+            sheet.write(row, 4, l['worked_days'] or '', body_format)
+            sheet.write(row, 5, self._set_hour_format(
+                l['worked_hours']) or '', body_format)
+            sheet.write(row, 7, self._set_hour_format(
+                l['overtime_holiday']), body_format)
+
+            confirmed_time = 0
+            if l['ceo_approved_overtime'] >= l['informal_overtime']:
+                confirmed_time = l['informal_overtime'] + l['overtime']
+            else:
+                confirmed_time = l['ceo_approved_overtime'] + l['overtime']
+
+            sheet.write(row, 8, self._set_hour_format(
+                confirmed_time), body_format)
+            sheet.write(row, 10, self._set_hour_format(
+                l['informal_overtime']) or '', body_format)
+            sheet.write(row, 11, self._set_hour_format(
+                l['overtime_holiday']), body_format)
+            sheet.write(row, 16, self._set_hour_format(
+                l['paid_req_time']) or '', body_format)
+            sheet.write(row, 18, self._set_hour_format(
+                l['unpaid_req_time']) or '', body_format)
+
+            sheet.write(row, 12, self._set_hour_format(
+                l['overtime']) or '', body_format)
+
+            sheet.write(row, 25, l['take_off_day']
+                        or '', body_format)
+            sheet.write(row, 26, l['difference_check_out']
+                        or '', body_format)
+
+            sheet.write(row, 27, l['difference_check_in'] or '', body_format)
+
+            sheet.write(row, 9, '=TEXT(K'+str(row+1)+'+'+'L'+str(row+1) +
+                        '+'+'M'+str(row+1)+',"h:mm")', body_format)
+
+            row += 1
 
         # last row
-        row += 1
 
-        sheet.write(row, 1, 'Тушаалаар баталгаажиж олговол зохих илүү цагийн хязгаар: ', footer_format)
-        sheet.write(row, 12, 'Цагийн дээд хязгаартай байх /10-аас ихгүй гм/: ', footer_format)
+        sheet.write(
+            row, 1, 'Тушаалаар баталгаажиж олговол зохих илүү цагийн хязгаар: ', footer_format)
+        sheet.write(
+            row, 12, 'Цагийн дээд хязгаартай байх /10-аас ихгүй гм/: ', footer_format)
         row += 2
         sheet.write(row, 1, 'Хянасан: ', footer_format_bold)
         sheet.write(row, 10, 'Шалгасан: ', footer_format_bold)
@@ -212,10 +268,10 @@ class AttendanceReport(models.TransientModel):
         row += 2
         sheet.write(row, 2, 'Дарга: ', footer_format)
         row += 2
-        sheet.write(row, 1, 'Нийгмийн асуудал, хүний нөөцийн алба ', footer_format)
+        sheet.write(
+            row, 1, 'Нийгмийн асуудал, хүний нөөцийн алба ', footer_format)
         row += 2
         sheet.write(row, 2, 'Ахлах мэргэжилтэн: ', footer_format)
-
 
         workbook.close()
         output.seek(0)
@@ -305,9 +361,11 @@ class AttendanceReport(models.TransientModel):
         sheet.write(3, 3, 'Өдөр', header_format)
         sheet.write(3, 4, 'Нийт цаг', header_format)
         sheet.write(3, 5, 'Илүү цаг', header_format)
-        sheet.write(3, 6, 'Баяр ёслолын өдөр ажилласан илүү цаг', header_format)
+        sheet.write(3, 6, 'Баяр ёслолын өдөр ажилласан илүү цаг',
+                    header_format)
         sheet.write(3, 9, 'Хуруу дарж авах илүү цаг', header_format)
-        sheet.write(3, 10, 'Баяр ёслолын өдөр ажилласан илүү цаг', header_format)
+        sheet.write(3, 10, 'Баяр ёслолын өдөр ажилласан илүү цаг',
+                    header_format)
         sheet.write(3, 11, 'Хүсэлтээр баталгаажсан илүү цаг', header_format)
         sheet.write(3, 12, 'Өдөр', header_rotation_format)
         sheet.write(3, 13, 'Цаг', header_rotation_format)
@@ -335,12 +393,12 @@ class AttendanceReport(models.TransientModel):
         response.stream.write(output.read())
         output.close()
 
-    @api.model
+    @ api.model
     def _set_hour_format(self, val):
         result = '{0:02.0f}:{1:02.0f}'.format(*divmod(val * 60, 60))
         return result
 
-    @api.model
+    @ api.model
     def _set_check_format(self, val):
         DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
         time = datetime.strptime(val, DATE_FORMAT) + relativedelta(hours=8)
