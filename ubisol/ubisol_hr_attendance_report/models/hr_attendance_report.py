@@ -1061,7 +1061,9 @@ class HrAttendanceReport(models.Model):
             'difference_check_out',
             'difference_check_in',
             'check_in',
-            'check_out'
+            'check_out',
+            'ceo_approved_overtime',
+            'overtime_holiday'
         ])
 
         header = [

@@ -326,9 +326,9 @@ class AttendanceReport(models.TransientModel):
         sheet.set_row(6, 15)
         sheet.set_row(9, 15)
         sheet.set_row(10, 15)
-        sheet.set_column(0, 11, 10)
-        sheet.set_column(12, 25, 5)
-        sheet.set_column(26, 26, 10)
+        sheet.set_column(0, 13, 10)
+        sheet.set_column(14, 27, 5)
+        sheet.set_column(28, 28, 10)
 
         header_format = workbook.add_format({
             'bold': 1,
@@ -377,6 +377,14 @@ class AttendanceReport(models.TransientModel):
             'valign': 'vcenter',
             'text_wrap': False
         })
+        body_format = workbook.add_format({
+            'bold': 0,
+            'border': 1,
+            'align': 'center',
+            'valign': 'vcenter',
+            'text_wrap': True
+        })
+
 
         headers = data['header']
         lines = data['data']
@@ -390,45 +398,46 @@ class AttendanceReport(models.TransientModel):
         sheet.write(3, 0, 'Алба', header_footer_format)
         sheet.write(3, 1, 'ТӨЛӨВЛӨЛТ ХӨГЖҮҮЛЭЛТИЙН АЛБА', footer_format_bold)
         sheet.write(
-            3, 26, 'Сангийн сайдын 2017 оны 347 дугаар тушаалын хавсралт', header_right_format)
+            3, 28, 'Сангийн сайдын 2017 оны 347 дугаар тушаалын хавсралт', header_right_format)
         sheet.write(4, 0, 'Хэлтэс', header_footer_format)
         sheet.write(4, 1, 'МЭДЭЭЛЛИЙН ТЕХНОЛОГИЙН ХЭЛТЭС', footer_format_bold)
-        sheet.write(4, 26, 'НМаягт ЦХ-2', header_right_format)
+        sheet.write(4, 28, 'НМаягт ЦХ-2', header_right_format)
         sheet.write(5, 0, 'Хугацаа', header_footer_format)
-        sheet.write(5, 26, 'Системээс таталт хийсэн огноо: ' +
+        sheet.write(5, 28, 'Системээс таталт хийсэн огноо: ' +
                     datetime.today().strftime('%Y.%m.%d'), header_right_format)
 
         # write data (for column title)
         sheet.merge_range('A7:A9', 'Огноо', merge_format)
         sheet.merge_range('B7:C8', 'Ажиллавал зохих', merge_format)
         sheet.merge_range('D7:E8', 'Ажилласан', merge_format)
-        sheet.merge_range('F7:L7', 'Илүү цаг', merge_format)
-        sheet.merge_range('F8:G8', 'Цалин бодогдох илүү цаг', merge_format)
-        sheet.merge_range('H8:H9', 'Батлагдсан илүү цаг', merge_format)
-        sheet.merge_range('I8:I9', 'Нийт илүү цаг', merge_format)
-        sheet.merge_range('J8:L8', 'Үүнээс', merge_format)
-        sheet.merge_range('M7:Z7', 'Ажиллаагүй', merge_format)
-        sheet.merge_range('M8:N8', 'БҮГД', merge_format)
-        sheet.merge_range('O8:P8', 'Чөлөөтэй /цалинтай/', merge_format)
-        sheet.merge_range('Q8:R8', 'Чөлөөтэй /цалингүй/', merge_format)
-        sheet.merge_range('S8:T8', 'Өвчтэй', merge_format)
-        sheet.merge_range('U8:V8', 'Ээлжийн амралттай', merge_format)
-        sheet.merge_range('W8:X8', 'Жирэмсэний амралттай', merge_format)
-        sheet.merge_range('Y8:Z8', 'Тасалсан', merge_format)
-        sheet.merge_range('AA7:AA9', 'Хоцорсон цаг', merge_format)
+        sheet.merge_range('F7:G8', 'Цаг бүртгэл', merge_format)
+        sheet.merge_range('H7:N7', 'Илүү цаг', merge_format)
+        sheet.merge_range('H8:I8', 'Цалин бодогдох илүү цаг', merge_format)
+        sheet.merge_range('J8:J9', 'Батлагдсан илүү цаг', merge_format)
+        sheet.merge_range('K8:K9', 'Нийт илүү цаг', merge_format)
+        sheet.merge_range('L8:N8', 'Үүнээс', merge_format)
+        sheet.merge_range('O7:AB7', 'Ажиллаагүй', merge_format)
+        sheet.merge_range('O8:P8', 'БҮГД', merge_format)
+        sheet.merge_range('Q8:R8', 'Чөлөөтэй /цалинтай/', merge_format)
+        sheet.merge_range('S8:T8', 'Чөлөөтэй /цалингүй/', merge_format)
+        sheet.merge_range('U8:V8', 'Өвчтэй', merge_format)
+        sheet.merge_range('W8:X8', 'Ээлжийн амралттай', merge_format)
+        sheet.merge_range('Y8:Z8', 'Жирэмсэний амралттай', merge_format)
+        sheet.merge_range('AA8:AB8', 'Тасалсан', merge_format)
+        sheet.merge_range('AC7:AC9', 'Хоцорсон цаг', merge_format)
         sheet.write(8, 1, 'Өдөр', header_format)
         sheet.write(8, 2, 'Нийт цаг', header_format)
         sheet.write(8, 3, 'Өдөр', header_format)
         sheet.write(8, 4, 'Нийт цаг', header_format)
-        sheet.write(8, 5, 'Илүү цаг', header_format)
-        sheet.write(8, 6, 'Баяр ёслолын өдөр ажилласан илүү цаг',
+        sheet.write(8, 5, 'Ирсэн', header_format)
+        sheet.write(8, 6, 'Явсан', header_format)
+        sheet.write(8, 7, 'Илүү цаг', header_format)
+        sheet.write(8, 8, 'Баяр ёслолын өдөр ажилласан илүү цаг',
                     header_format)
-        sheet.write(8, 9, 'Хуруу дарж авах илүү цаг', header_format)
-        sheet.write(8, 10, 'Баяр ёслолын өдөр ажилласан илүү цаг',
+        sheet.write(8, 11, 'Хуруу дарж авах илүү цаг', header_format)
+        sheet.write(8, 12, 'Баяр ёслолын өдөр ажилласан илүү цаг',
                     header_format)
-        sheet.write(8, 11, 'Хүсэлтээр баталгаажсан илүү цаг', header_format)
-        sheet.write(8, 12, 'Өдөр', header_rotation_format)
-        sheet.write(8, 13, 'Цаг', header_rotation_format)
+        sheet.write(8, 13, 'Хүсэлтээр баталгаажсан илүү цаг', header_format)
         sheet.write(8, 14, 'Өдөр', header_rotation_format)
         sheet.write(8, 15, 'Цаг', header_rotation_format)
         sheet.write(8, 16, 'Өдөр', header_rotation_format)
@@ -441,12 +450,67 @@ class AttendanceReport(models.TransientModel):
         sheet.write(8, 23, 'Цаг', header_rotation_format)
         sheet.write(8, 24, 'Өдөр', header_rotation_format)
         sheet.write(8, 25, 'Цаг', header_rotation_format)
+        sheet.write(8, 26, 'Өдөр', header_rotation_format)
+        sheet.write(8, 27, 'Цаг', header_rotation_format)
 
         # write column index
         i = 0
-        while i < 27:
+        while i < 29:
             sheet.write(row, i, i, header_format)
             i += 1
+
+        row = 10
+        for l in lines:
+            sheet.write(row, 0, l['work_day'] or '', body_format)
+            sheet.write(row, 1, l['work_days'] or '', body_format)
+            sheet.write(row, 2, self._set_hour_format(
+                l['work_hours']) or '', body_format)
+            sheet.write(row, 3, l['worked_days'] or '', body_format)
+            sheet.write(row, 4, self._set_hour_format(
+                l['worked_hours']) or '', body_format)
+            sheet.write(row, 5, l['check_in'] or '', body_format)
+            sheet.write(row, 6, l['check_out'] or '', body_format)    
+            sheet.write(row, 7, self._set_hour_format(
+                l['overtime_holiday']), body_format)
+
+            confirmed_time = 0
+            approved_time = 0
+            if l['ceo_approved_overtime'] >= l['informal_overtime']:
+                confirmed_time = l['informal_overtime'] + l['overtime']
+            else:
+                confirmed_time = l['ceo_approved_overtime'] + l['overtime']
+
+            sheet.write(row, 10, self._set_hour_format(
+                confirmed_time), body_format)
+
+            approved_time = confirmed_time - l['difference_check_in']
+            sheet.write(row, 8, self._set_hour_format(
+                approved_time) or '', body_format)
+
+            sheet.write(row, 12, self._set_hour_format(
+                l['informal_overtime']) or '', body_format)
+            sheet.write(row, 13, self._set_hour_format(
+                l['overtime_holiday']), body_format)
+            sheet.write(row, 18, self._set_hour_format(
+                l['paid_req_time']) or '', body_format)
+            sheet.write(row, 20, self._set_hour_format(
+                l['unpaid_req_time']) or '', body_format)
+
+            sheet.write(row, 14, self._set_hour_format(
+                l['overtime']) or '', body_format)
+
+            sheet.write(row, 27, l['take_off_day']
+                        or '', body_format)
+            sheet.write(row, 28, l['difference_check_out']
+                        or '', body_format)
+
+            sheet.write(row, 29, l['difference_check_in'] or '', body_format)
+
+            sheet.write(row, 11, '=TEXT(K'+str(row+1)+'+'+'L'+str(row+1) +
+                        '+'+'M'+str(row+1)+',"h:mm")', body_format)
+
+            row += 1
+
 
         workbook.close()
         output.seek(0)
