@@ -167,20 +167,43 @@ class AttendanceReport(models.TransientModel):
         headers = data['header']
         lines = data['data']
         filters = data['filters']
+        title = data['title']
 
         row = 9
-        # header
-        sheet.write(1, 9, 'ТАВАН ТОЛГОЙ ТҮЛШ ХХК', footer_format_bold)
-        sheet.write(2, 8, 'ЦАГИЙН ТООЦООНЫ ХУУДАС /Алба, хэлтэсээр/',
-                    footer_format_bold)
-        sheet.write(3, 0, 'Алба', header_footer_format)
-        sheet.write(3, 1, 'ТӨЛӨВЛӨЛТ ХӨГЖҮҮЛЭЛТИЙН АЛБА', footer_format_bold)
-        sheet.write(
-            3, 27, 'Сангийн сайдын 2017 оны 347 дугаар тушаалын хавсралт', header_right_format)
-        sheet.write(4, 0, 'Хэлтэс', header_footer_format)
-        sheet.write(4, 1, 'МЭДЭЭЛЛИЙН ТЕХНОЛОГИЙН ХЭЛТЭС', footer_format_bold)
-        sheet.write(4, 27, 'НМаягт ЦХ-2', header_right_format)
-        sheet.write(5, 0, 'Хугацаа', header_footer_format)
+
+        if filters['calculate_type'] == 'employee':
+            # header
+            sheet.write(1, 9, 'ТАВАН ТОЛГОЙ ТҮЛШ ХХК', footer_format_bold)
+            sheet.write(2, 8, 'ЦАГИЙН ТООЦООНЫ ХУУДАС /Ажилтнаар/',
+                        footer_format_bold)
+            sheet.write(3, 0, 'Алба,хэлтэс', header_footer_format)
+            sheet.write(3, 1, title[0], footer_format_bold)
+            sheet.write(
+                3, 28, 'Сангийн сайдын 2017 оны 347 дугаар тушаалын хавсралт', header_right_format)
+            sheet.write(4, 0, 'Албан тушаал', header_footer_format)
+            sheet.write(4, 1, title[1], footer_format_bold)
+            sheet.write(4, 28, 'НМаягт ЦХ-2', header_right_format)
+            sheet.write(5, 0, 'Овог,нэр (ID) ', header_footer_format)
+            sheet.write(5, 1, title[2], footer_format_bold)
+            sheet.write(5, 28, 'Системээс таталт хийсэн огноо: ' +
+                        datetime.today().strftime('%Y.%m.%d'), header_right_format)
+
+        else:
+
+            # header
+            sheet.write(1, 9, 'ТАВАН ТОЛГОЙ ТҮЛШ ХХК', footer_format_bold)
+            sheet.write(2, 8, 'ЦАГИЙН ТООЦООНЫ ХУУДАС /Алба, хэлтэсээр/',
+                        footer_format_bold)
+            sheet.write(3, 0, 'Алба', header_footer_format)
+            sheet.write(3, 1, title[0], footer_format_bold)
+            sheet.write(
+                3, 27, 'Сангийн сайдын 2017 оны 347 дугаар тушаалын хавсралт', header_right_format)
+            sheet.write(4, 0, 'Хэлтэс', header_footer_format)
+            sheet.write(4, 1, title[1], footer_format_bold)
+            sheet.write(4, 27, 'НМаягт ЦХ-2', header_right_format)
+            sheet.write(5, 0, 'Хугацаа', header_footer_format)
+            sheet.write(5, 1, title[2], footer_format_bold)
+
         sheet.write(5, 27, 'Системээс таталт хийсэн огноо: ' +
                     datetime.today().strftime('%Y.%m.%d'), header_right_format)
 
@@ -249,10 +272,10 @@ class AttendanceReport(models.TransientModel):
 
             confirmed_time = 0
             approved_time = 0
-            if l['ceo_approved_overtime'] >= l['informal_overtime']:
+            if title[3] >= l['informal_overtime']:
                 confirmed_time = l['informal_overtime'] + l['overtime']
             else:
-                confirmed_time = l['ceo_approved_overtime'] + l['overtime']
+                confirmed_time = title[3] + l['overtime']
 
             sheet.write(row, 8, self._set_hour_format(
                 confirmed_time), body_format)
@@ -261,27 +284,40 @@ class AttendanceReport(models.TransientModel):
             sheet.write(row, 6, self._set_hour_format(
                 approved_time) or '', body_format)
 
+            total_overtime = l['informal_overtime'] + \
+                l['overtime_holiday']+l['overtime']
+            sheet.write(row, 9, self._set_hour_format(
+                total_overtime), body_format)
             sheet.write(row, 10, self._set_hour_format(
                 l['informal_overtime']) or '', body_format)
             sheet.write(row, 11, self._set_hour_format(
                 l['overtime_holiday']), body_format)
+            sheet.write(row, 12, self._set_hour_format(
+                l['overtime']) or '', body_format)
+            sheet.write(row, 13, '', body_format)
+            sheet.write(row, 14, '', body_format)
+            sheet.write(row, 15, '', body_format)
+
             sheet.write(row, 16, self._set_hour_format(
                 l['paid_req_time']) or '', body_format)
+            sheet.write(row, 17, '', body_format)
             sheet.write(row, 18, self._set_hour_format(
                 l['unpaid_req_time']) or '', body_format)
 
-            sheet.write(row, 12, self._set_hour_format(
-                l['overtime']) or '', body_format)
+            sheet.write(row, 19, '', body_format)
+            sheet.write(row, 20, '', body_format)
+            sheet.write(row, 21, '', body_format)
+            sheet.write(row, 22, '', body_format)
+            sheet.write(row, 23, '', body_format)
+            sheet.write(row, 24, '', body_format)
 
             sheet.write(row, 25, l['take_off_day']
                         or '', body_format)
-            sheet.write(row, 26, l['difference_check_out']
-                        or '', body_format)
+            sheet.write(row, 26, self._set_hour_format(
+                l['difference_check_out']), body_format)
 
-            sheet.write(row, 27, l['difference_check_in'] or '', body_format)
-
-            sheet.write(row, 9, '=TEXT(K'+str(row+1)+'+'+'L'+str(row+1) +
-                        '+'+'M'+str(row+1)+',"h:mm")', body_format)
+            sheet.write(row, 27, self._set_hour_format(
+                l['difference_check_in']), body_format)
 
             row += 1
 
@@ -290,6 +326,8 @@ class AttendanceReport(models.TransientModel):
 
         sheet.write(
             row, 1, 'Тушаалаар баталгаажиж олговол зохих илүү цагийн хязгаар: ', header_footer_format)
+        sheet.write(
+            row, 6, title[3], header_footer_format)
         sheet.write(
             row, 12, 'Цагийн дээд хязгаартай байх /10-аас ихгүй гм/: ', header_footer_format)
         row += 2
@@ -385,24 +423,25 @@ class AttendanceReport(models.TransientModel):
             'text_wrap': True
         })
 
-
         headers = data['header']
         lines = data['data']
         filters = data['filters']
+        title = data['title']
 
         row = 9
         # header
         sheet.write(1, 9, 'ТАВАН ТОЛГОЙ ТҮЛШ ХХК', footer_format_bold)
         sheet.write(2, 8, 'ЦАГИЙН ТООЦООНЫ ХУУДАС /Ажилтнаар/',
                     footer_format_bold)
-        sheet.write(3, 0, 'Алба', header_footer_format)
-        sheet.write(3, 1, 'ТӨЛӨВЛӨЛТ ХӨГЖҮҮЛЭЛТИЙН АЛБА', footer_format_bold)
+        sheet.write(3, 0, 'Алба,хэлтэс', header_footer_format)
+        sheet.write(3, 1, title[0], footer_format_bold)
         sheet.write(
             3, 28, 'Сангийн сайдын 2017 оны 347 дугаар тушаалын хавсралт', header_right_format)
-        sheet.write(4, 0, 'Хэлтэс', header_footer_format)
-        sheet.write(4, 1, 'МЭДЭЭЛЛИЙН ТЕХНОЛОГИЙН ХЭЛТЭС', footer_format_bold)
+        sheet.write(4, 0, 'Албан тушаал', header_footer_format)
+        sheet.write(4, 1, title[1], footer_format_bold)
         sheet.write(4, 28, 'НМаягт ЦХ-2', header_right_format)
-        sheet.write(5, 0, 'Хугацаа', header_footer_format)
+        sheet.write(5, 0, 'Овог,нэр (ID) ', header_footer_format)
+        sheet.write(5, 1, title[2], footer_format_bold)
         sheet.write(5, 28, 'Системээс таталт хийсэн огноо: ' +
                     datetime.today().strftime('%Y.%m.%d'), header_right_format)
 
@@ -468,49 +507,45 @@ class AttendanceReport(models.TransientModel):
             sheet.write(row, 3, l['worked_days'] or '', body_format)
             sheet.write(row, 4, self._set_hour_format(
                 l['worked_hours']) or '', body_format)
-            sheet.write(row, 5, l['check_in'] or '', body_format)
-            sheet.write(row, 6, l['check_out'] or '', body_format)    
-            sheet.write(row, 7, self._set_hour_format(
+            sheet.write(row, 5, self._set_check_format(
+                l['check_in']), body_format)
+            sheet.write(row, 6, self._set_check_format(
+                l['check_out']), body_format)
+            sheet.write(row, 8, self._set_hour_format(
                 l['overtime_holiday']), body_format)
 
             confirmed_time = 0
-            approved_time = 0
-            if l['ceo_approved_overtime'] >= l['informal_overtime']:
-                confirmed_time = l['informal_overtime'] + l['overtime']
-            else:
-                confirmed_time = l['ceo_approved_overtime'] + l['overtime']
+
+            confirmed_time = l['informal_overtime'] + l['overtime']
 
             sheet.write(row, 10, self._set_hour_format(
                 confirmed_time), body_format)
-
-            approved_time = confirmed_time - l['difference_check_in']
-            sheet.write(row, 8, self._set_hour_format(
-                approved_time) or '', body_format)
-
-            sheet.write(row, 12, self._set_hour_format(
+            sheet.write(row, 11, self._set_hour_format(
                 l['informal_overtime']) or '', body_format)
-            sheet.write(row, 13, self._set_hour_format(
+            sheet.write(row, 12, self._set_hour_format(
                 l['overtime_holiday']), body_format)
-            sheet.write(row, 18, self._set_hour_format(
-                l['paid_req_time']) or '', body_format)
-            sheet.write(row, 20, self._set_hour_format(
-                l['unpaid_req_time']) or '', body_format)
-
             sheet.write(row, 14, self._set_hour_format(
                 l['overtime']) or '', body_format)
+            sheet.write(row, 17, self._set_hour_format(
+                l['paid_req_time']) or '', body_format)
+            sheet.write(row, 19, self._set_hour_format(
+                l['unpaid_req_time']) or '', body_format)
+            sheet.write(row, 20, '', body_format)
+            sheet.write(row, 21, '', body_format)
+            sheet.write(row, 22, '', body_format)
+            sheet.write(row, 23, '', body_format)
+            sheet.write(row, 24, '', body_format)
+            sheet.write(row, 25, '', body_format)
 
-            sheet.write(row, 27, l['take_off_day']
+            sheet.write(row, 26, l['take_off_day']
                         or '', body_format)
-            sheet.write(row, 28, l['difference_check_out']
-                        or '', body_format)
+            sheet.write(row, 27, self._set_hour_format(
+                l['difference_check_out']), body_format)
 
-            sheet.write(row, 29, l['difference_check_in'] or '', body_format)
-
-            sheet.write(row, 11, '=TEXT(K'+str(row+1)+'+'+'L'+str(row+1) +
-                        '+'+'M'+str(row+1)+',"h:mm")', body_format)
+            sheet.write(row, 28, self._set_hour_format(
+                l['difference_check_in']), body_format)
 
             row += 1
-
 
         workbook.close()
         output.seek(0)
@@ -524,6 +559,9 @@ class AttendanceReport(models.TransientModel):
 
     @ api.model
     def _set_check_format(self, val):
+        if val == False:
+            return '-'
+
         DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
         time = datetime.strptime(val, DATE_FORMAT) + relativedelta(hours=8)
         time = time.time()

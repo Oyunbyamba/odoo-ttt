@@ -942,11 +942,44 @@ class HrAttendanceReport(models.Model):
         start_date = filters['start_date']
         end_date = filters['end_date']
 
+        report_title_person = ''
+        report_title_dep = ''
+        report_title_position = ''
+
+        report_title_parent = ''
+        report_title_duration = ''
+        report_title_dep = ''
+        ceo_approved_overtime = 0.0
+
         if filters['calculate_type']:
             if filters['calculate_type'] == 'employee':
                 employee_id = filters['employee_id']
                 domain = [('hr_employee', '=', employee_id.id), ('work_day',
                                                                  '>=', start_date), ('work_day', '<=', end_date)]
+
+                approved_overtimes = self.env['hr.leave'].sudo().search([
+                    ('date_from', '>=', start_date),
+                    ('date_to', '<=', end_date),
+                    ('department_id', '=', employee_id.department_id.id),
+                    ('holiday_status_id.overtime_type',
+                     '=', 'total_allowed_overtime'),
+                    ('state', 'in', ['validate', 'validate1'])
+                ])
+                for approved in approved_overtimes:
+                    ceo_approved_overtime = approved.allowed_overtime_time
+
+                report_title_person = employee_id.surname + \
+                    ' ' + employee_id.name.upper() + ' (' + employee_id.pin + ')'
+                report_title_dep = employee_id.department_id.name
+                report_title_position = employee_id.job_id.name
+
+                title = [
+                    report_title_dep,
+                    report_title_position,
+                    report_title_person,
+                    ceo_approved_overtime
+                ]
+
             else:
                 department_id = filters['department_id']
                 if type(department_id) is int:
@@ -959,6 +992,35 @@ class HrAttendanceReport(models.Model):
                 departments = list(dict.fromkeys(departments))
                 domain = [('hr_department', '=', departments), ('work_day',
                                                                 '>=', start_date), ('work_day', '<=', end_date)]
+
+                emp = self.env['hr.department'].search(
+                    [('id', '=', department_id.id)], limit=1)
+                if emp:
+                    if emp.parent_id:
+                        report_title_parent = emp.parent_id.name.upper()
+                    report_title_dep = emp.name.upper()
+                    report_title_duration = str(
+                        start_date) + '  -  ' + str(end_date)
+
+                approved_overtimes = self.env['hr.leave'].sudo().search([
+                    ('date_from', '>=', start_date),
+                    ('date_to', '<=', end_date),
+                    ('department_id', 'in', [department_id.id]),
+                    ('holiday_status_id.overtime_type',
+                     '=', 'total_allowed_overtime'),
+                    ('state', 'in', ['validate', 'validate1'])
+                ], )
+
+                for approved in approved_overtimes:
+                    ceo_approved_overtime = approved.allowed_overtime_time
+
+                title = [
+                    report_title_parent,
+                    report_title_dep,
+                    report_title_duration,
+                    ceo_approved_overtime
+                ]
+
         else:
             domain = [('work_day', '>=', start_date),
                       ('work_day', '<=', end_date)]
@@ -1010,7 +1072,8 @@ class HrAttendanceReport(models.Model):
             'data': raw_data,
             'header': header,
             'filters': filters,
-            'type': 0
+            'type': 0,
+            'title': title
         }
         _logger.info(raw_data)
         return data
@@ -1020,12 +1083,28 @@ class HrAttendanceReport(models.Model):
         start_date = filters['start_date']
         end_date = filters['end_date']
 
+        report_title_person = ''
+        report_title_dep = ''
+        report_title_position = ''
+
         if filters['calculate_type']:
             if filters['calculate_type'] == 'employee':
                 employee_id = filters['employee_id']
                 domain = [('hr_employee', '=', employee_id.id), ('work_day',
                                                                  '>=', start_date), ('work_day', '<=', end_date)]
+                report_title_person = employee_id.surname + \
+                    ' ' + employee_id.name.upper() + ' (' + employee_id.pin + ')'
+                report_title_dep = employee_id.department_id.name
+                report_title_position = employee_id.job_id.name
+                title = [
+                    report_title_dep,
+                    report_title_position,
+                    report_title_person,
+                    ceo_approved_overtime
+                ]
+
             else:
+
                 department_id = filters['department_id']
                 if type(department_id) is int:
                     dep = self.env['hr.department'].browse(department_id)
@@ -1037,6 +1116,23 @@ class HrAttendanceReport(models.Model):
                 departments = list(dict.fromkeys(departments))
                 domain = [('hr_department', '=', departments), ('work_day',
                                                                 '>=', start_date), ('work_day', '<=', end_date)]
+
+                emp = self.env['hr.department'].search(
+                    [('id', '=', department_id.id)], limit=1)
+                if emp:
+                    if emp.parent_id:
+                        report_title_parent = emp.parent_id.name.upper()
+                    report_title_dep = emp.name.upper()
+                    report_title_duration = str(
+                        start_date) + '  -  ' + str(end_date)
+
+                title = [
+                    report_title_parent,
+                    report_title_dep,
+                    report_title_duration,
+                    ceo_approved_overtime
+                ]
+
         else:
             domain = [('work_day', '>=', start_date),
                       ('work_day', '<=', end_date)]
@@ -1090,7 +1186,8 @@ class HrAttendanceReport(models.Model):
             'data': raw_data,
             'header': header,
             'filters': filters,
-            'type': 1
+            'type': 1,
+            'title': title
         }
         return data
 
