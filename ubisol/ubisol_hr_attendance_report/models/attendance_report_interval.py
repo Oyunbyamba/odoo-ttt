@@ -97,6 +97,11 @@ class AttendanceReport(models.TransientModel):
         sheet.set_row(1, 15)
         sheet.set_row(2, 15)
         sheet.set_row(3, 15)
+        sheet.set_row(4, 15)
+        sheet.set_row(5, 15)
+        sheet.set_row(6, 15)
+        sheet.set_row(9, 15)
+        sheet.set_row(10, 15)
         sheet.set_column(0, 0, 20)
         sheet.set_column(1, 12, 10)
         sheet.set_column(13, 26, 5)
@@ -128,10 +133,17 @@ class AttendanceReport(models.TransientModel):
             'text_wrap': True,
             'rotation': '90'
         })
-        footer_format = workbook.add_format({
+        header_footer_format = workbook.add_format({
             'bold': 0,
             'border': 0,
             'align': 'initial',
+            'valign': 'vcenter',
+            'text_wrap': False
+        })
+        header_right_format = workbook.add_format({
+            'bold': 0,
+            'border': 0,
+            'align': 'right',
             'valign': 'vcenter',
             'text_wrap': False
         })
@@ -147,74 +159,85 @@ class AttendanceReport(models.TransientModel):
         lines = data['data']
         filters = data['filters']
 
-        row = 4
+        row = 9
+        #header
+        sheet.write(1, 9, 'ТАВАН ТОЛГОЙ ТҮЛШ ХХК', footer_format_bold)
+        sheet.write(2, 8, 'ЦАГИЙН ТООЦООНЫ ХУУДАС /Алба, хэлтэсээр/', footer_format_bold)
+        sheet.write(3, 0, 'Алба', header_footer_format)
+        sheet.write(3, 1, 'ТӨЛӨВЛӨЛТ ХӨГЖҮҮЛЭЛТИЙН АЛБА', footer_format_bold)
+        sheet.write(3, 27, 'Сангийн сайдын 2017 оны 347 дугаар тушаалын хавсралт', header_right_format)
+        sheet.write(4, 0, 'Хэлтэс', header_footer_format)
+        sheet.write(4, 1, 'МЭДЭЭЛЛИЙН ТЕХНОЛОГИЙН ХЭЛТЭС', footer_format_bold)
+        sheet.write(4, 27, 'НМаягт ЦХ-2', header_right_format)
+        sheet.write(5, 0, 'Хугацаа', header_footer_format)
+        sheet.write(5, 27, 'Системээс таталт хийсэн огноо: '+datetime.today().strftime('%Y.%m.%d'), header_right_format)
 
         # write data (for column title)
-        sheet.merge_range('A2:A4', 'Овог Нэр', merge_format)
-        sheet.merge_range('B2:B4', 'Регистрийн дугаар', merge_format)
-        sheet.merge_range('C2:D3', 'Ажиллавал зохих', merge_format)
-        sheet.merge_range('E2:F3', 'Ажилласан', merge_format)
-        sheet.merge_range('G2:M2', 'Илүү цаг', merge_format)
-        sheet.merge_range('G3:H3', 'Цалин бодогдох илүү цаг', merge_format)
-        sheet.merge_range('I3:I4', 'Батлагдсан илүү цаг', merge_format)
-        sheet.merge_range('J3:J4', 'Нийт илүү цаг', merge_format)
-        sheet.merge_range('K3:M3', 'Үүнээс', merge_format)
-        sheet.merge_range('N2:AA2', 'Ажиллаагүй', merge_format)
-        sheet.merge_range('N3:O3', 'БҮГД', merge_format)
-        sheet.merge_range('P3:Q3', 'Чөлөөтэй /цалинтай/', merge_format)
-        sheet.merge_range('R3:S3', 'Чөлөөтэй /цалингүй/', merge_format)
-        sheet.merge_range('T3:U3', 'Өвчтэй', merge_format)
-        sheet.merge_range('V3:W3', 'Ээлжийн амралттай', merge_format)
-        sheet.merge_range('X3:Y3', 'Жирэмсэний амралттай', merge_format)
-        sheet.merge_range('Z3:AA3', 'Тасалсан', merge_format)
-        sheet.merge_range('AB2:AB4', 'Хоцорсон цаг', merge_format)
-        sheet.write(3, 2, 'Өдөр', header_format)
-        sheet.write(3, 3, 'Нийт цаг', header_format)
-        sheet.write(3, 4, 'Өдөр', header_format)
-        sheet.write(3, 5, 'Нийт цаг', header_format)
-        sheet.write(3, 6, 'Илүү цаг', header_format)
-        sheet.write(3, 7, 'Баяр ёслолын өдөр ажилласан илүү цаг', header_format)
-        sheet.write(3, 10, 'Хуруу дарж авах илүү цаг', header_format)
-        sheet.write(3, 11, 'Баяр ёслолын өдөр ажилласан илүү цаг', header_format)
-        sheet.write(3, 12, 'Хүсэлтээр баталгаажсан илүү цаг', header_format)
-        sheet.write(3, 13, 'Өдөр', header_rotation_format)
-        sheet.write(3, 14, 'Цаг', header_rotation_format)
-        sheet.write(3, 15, 'Өдөр', header_rotation_format)
-        sheet.write(3, 16, 'Цаг', header_rotation_format)
-        sheet.write(3, 17, 'Өдөр', header_rotation_format)
-        sheet.write(3, 18, 'Цаг', header_rotation_format)
-        sheet.write(3, 19, 'Өдөр', header_rotation_format)
-        sheet.write(3, 20, 'Цаг', header_rotation_format)
-        sheet.write(3, 21, 'Өдөр', header_rotation_format)
-        sheet.write(3, 22, 'Цаг', header_rotation_format)
-        sheet.write(3, 23, 'Өдөр', header_rotation_format)
-        sheet.write(3, 24, 'Цаг', header_rotation_format)
-        sheet.write(3, 25, 'Өдөр', header_rotation_format)
-        sheet.write(3, 26, 'Цаг', header_rotation_format)
+        sheet.merge_range('A7:A9', 'Овог Нэр', merge_format)
+        sheet.merge_range('B7:B9', 'Регистрийн дугаар', merge_format)
+        sheet.merge_range('C7:D8', 'Ажиллавал зохих', merge_format)
+        sheet.merge_range('E7:F9', 'Ажилласан', merge_format)
+        sheet.merge_range('G7:M7', 'Илүү цаг', merge_format)
+        sheet.merge_range('G8:H8', 'Цалин бодогдох илүү цаг', merge_format)
+        sheet.merge_range('I8:I9', 'Батлагдсан илүү цаг', merge_format)
+        sheet.merge_range('J8:J9', 'Нийт илүү цаг', merge_format)
+        sheet.merge_range('K8:M8', 'Үүнээс', merge_format)
+        sheet.merge_range('N7:AA7', 'Ажиллаагүй', merge_format)
+        sheet.merge_range('N8:O8', 'БҮГД', merge_format)
+        sheet.merge_range('P8:Q8', 'Чөлөөтэй /цалинтай/', merge_format)
+        sheet.merge_range('R8:S8', 'Чөлөөтэй /цалингүй/', merge_format)
+        sheet.merge_range('T8:U8', 'Өвчтэй', merge_format)
+        sheet.merge_range('V8:W8', 'Ээлжийн амралттай', merge_format)
+        sheet.merge_range('X8:Y8', 'Жирэмсэний амралттай', merge_format)
+        sheet.merge_range('Z8:AA8', 'Тасалсан', merge_format)
+        sheet.merge_range('AB7:AB9', 'Хоцорсон цаг', merge_format)
+        sheet.write(8, 2, 'Өдөр', header_format)
+        sheet.write(8, 3, 'Нийт цаг', header_format)
+        sheet.write(8, 4, 'Өдөр', header_format)
+        sheet.write(8, 5, 'Нийт цаг', header_format)
+        sheet.write(8, 6, 'Илүү цаг', header_format)
+        sheet.write(8, 7, 'Баяр ёслолын өдөр ажилласан илүү цаг', header_format)
+        sheet.write(8, 10, 'Хуруу дарж авах илүү цаг', header_format)
+        sheet.write(8, 11, 'Баяр ёслолын өдөр ажилласан илүү цаг', header_format)
+        sheet.write(8, 12, 'Хүсэлтээр баталгаажсан илүү цаг', header_format)
+        sheet.write(8, 13, 'Өдөр', header_rotation_format)
+        sheet.write(8, 14, 'Цаг', header_rotation_format)
+        sheet.write(8, 15, 'Өдөр', header_rotation_format)
+        sheet.write(8, 16, 'Цаг', header_rotation_format)
+        sheet.write(8, 17, 'Өдөр', header_rotation_format)
+        sheet.write(8, 18, 'Цаг', header_rotation_format)
+        sheet.write(8, 19, 'Өдөр', header_rotation_format)
+        sheet.write(8, 20, 'Цаг', header_rotation_format)
+        sheet.write(8, 21, 'Өдөр', header_rotation_format)
+        sheet.write(8, 22, 'Цаг', header_rotation_format)
+        sheet.write(8, 23, 'Өдөр', header_rotation_format)
+        sheet.write(8, 24, 'Цаг', header_rotation_format)
+        sheet.write(8, 25, 'Өдөр', header_rotation_format)
+        sheet.write(8, 26, 'Цаг', header_rotation_format)
 
         # write column index
         i = 0
         while i < 28:
-            sheet.write(4, i, i, header_format)
+            sheet.write(9, i, i, header_format)
             i += 1
 
         # last row
-        row += 1
+        row += 2
 
-        sheet.write(row, 1, 'Тушаалаар баталгаажиж олговол зохих илүү цагийн хязгаар: ', footer_format)
-        sheet.write(row, 12, 'Цагийн дээд хязгаартай байх /10-аас ихгүй гм/: ', footer_format)
+        sheet.write(row, 1, 'Тушаалаар баталгаажиж олговол зохих илүү цагийн хязгаар: ', header_footer_format)
+        sheet.write(row, 12, 'Цагийн дээд хязгаартай байх /10-аас ихгүй гм/: ', header_footer_format)
         row += 2
         sheet.write(row, 1, 'Хянасан: ', footer_format_bold)
         sheet.write(row, 10, 'Шалгасан: ', footer_format_bold)
         row += 1
-        sheet.write(row, 1, 'Төлөвлөлт, хөгжүүлэлтийн алба ', footer_format)
-        sheet.write(row, 10, 'Нягтлан бодогч: ', footer_format)
+        sheet.write(row, 1, 'Төлөвлөлт, хөгжүүлэлтийн алба ', header_footer_format)
+        sheet.write(row, 10, 'Нягтлан бодогч: ', header_footer_format)
         row += 2
-        sheet.write(row, 2, 'Дарга: ', footer_format)
+        sheet.write(row, 2, 'Дарга: ', header_footer_format)
         row += 2
-        sheet.write(row, 1, 'Нийгмийн асуудал, хүний нөөцийн алба ', footer_format)
+        sheet.write(row, 1, 'Нийгмийн асуудал, хүний нөөцийн алба ', header_footer_format)
         row += 2
-        sheet.write(row, 2, 'Ахлах мэргэжилтэн: ', footer_format)
+        sheet.write(row, 2, 'Ахлах мэргэжилтэн: ', header_footer_format)
 
 
         workbook.close()
@@ -227,10 +250,16 @@ class AttendanceReport(models.TransientModel):
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         sheet = workbook.add_worksheet()
 
+
         sheet.set_row(0, 50)
         sheet.set_row(1, 15)
         sheet.set_row(2, 15)
         sheet.set_row(3, 15)
+        sheet.set_row(4, 15)
+        sheet.set_row(5, 15)
+        sheet.set_row(6, 15)
+        sheet.set_row(9, 15)
+        sheet.set_row(10, 15)
         sheet.set_column(0, 11, 10)
         sheet.set_column(12, 25, 5)
         sheet.set_column(26, 26, 10)
@@ -261,7 +290,7 @@ class AttendanceReport(models.TransientModel):
             'text_wrap': True,
             'rotation': '90'
         })
-        footer_format = workbook.add_format({
+        header_footer_format = workbook.add_format({
             'bold': 0,
             'border': 0,
             'align': 'initial',
@@ -275,59 +304,77 @@ class AttendanceReport(models.TransientModel):
             'valign': 'vcenter',
             'text_wrap': False
         })
+        header_right_format = workbook.add_format({
+            'bold': 0,
+            'border': 0,
+            'align': 'right',
+            'valign': 'vcenter',
+            'text_wrap': False
+        })
 
         headers = data['header']
         lines = data['data']
         filters = data['filters']
 
-        row = 4
+        row = 9
+        #header
+        sheet.write(1, 9, 'ТАВАН ТОЛГОЙ ТҮЛШ ХХК', footer_format_bold)
+        sheet.write(2, 8, 'ЦАГИЙН ТООЦООНЫ ХУУДАС /Алба, хэлтэсээр/', footer_format_bold)
+        sheet.write(3, 0, 'Алба', header_footer_format)
+        sheet.write(3, 1, 'ТӨЛӨВЛӨЛТ ХӨГЖҮҮЛЭЛТИЙН АЛБА', footer_format_bold)
+        sheet.write(3, 26, 'Сангийн сайдын 2017 оны 347 дугаар тушаалын хавсралт', header_right_format)
+        sheet.write(4, 0, 'Хэлтэс', header_footer_format)
+        sheet.write(4, 1, 'МЭДЭЭЛЛИЙН ТЕХНОЛОГИЙН ХЭЛТЭС', footer_format_bold)
+        sheet.write(4, 26, 'НМаягт ЦХ-2', header_right_format)
+        sheet.write(5, 0, 'Хугацаа', header_footer_format)
+        sheet.write(5, 26, 'Системээс таталт хийсэн огноо: '+datetime.today().strftime('%Y.%m.%d'), header_right_format)
 
         # write data (for column title)
-        sheet.merge_range('A2:A4', 'Огноо', merge_format)
-        sheet.merge_range('B2:C3', 'Ажиллавал зохих', merge_format)
-        sheet.merge_range('D2:E3', 'Ажилласан', merge_format)
-        sheet.merge_range('F2:L2', 'Илүү цаг', merge_format)
-        sheet.merge_range('F3:G3', 'Цалин бодогдох илүү цаг', merge_format)
-        sheet.merge_range('H3:H4', 'Батлагдсан илүү цаг', merge_format)
-        sheet.merge_range('I3:I4', 'Нийт илүү цаг', merge_format)
-        sheet.merge_range('J3:L3', 'Үүнээс', merge_format)
-        sheet.merge_range('M2:Z2', 'Ажиллаагүй', merge_format)
-        sheet.merge_range('M3:N3', 'БҮГД', merge_format)
-        sheet.merge_range('O3:P3', 'Чөлөөтэй /цалинтай/', merge_format)
-        sheet.merge_range('Q3:R3', 'Чөлөөтэй /цалингүй/', merge_format)
-        sheet.merge_range('S3:T3', 'Өвчтэй', merge_format)
-        sheet.merge_range('U3:V3', 'Ээлжийн амралттай', merge_format)
-        sheet.merge_range('W3:X3', 'Жирэмсэний амралттай', merge_format)
-        sheet.merge_range('Y3:Z3', 'Тасалсан', merge_format)
-        sheet.merge_range('AA2:AA4', 'Хоцорсон цаг', merge_format)
-        sheet.write(3, 1, 'Өдөр', header_format)
-        sheet.write(3, 2, 'Нийт цаг', header_format)
-        sheet.write(3, 3, 'Өдөр', header_format)
-        sheet.write(3, 4, 'Нийт цаг', header_format)
-        sheet.write(3, 5, 'Илүү цаг', header_format)
-        sheet.write(3, 6, 'Баяр ёслолын өдөр ажилласан илүү цаг', header_format)
-        sheet.write(3, 9, 'Хуруу дарж авах илүү цаг', header_format)
-        sheet.write(3, 10, 'Баяр ёслолын өдөр ажилласан илүү цаг', header_format)
-        sheet.write(3, 11, 'Хүсэлтээр баталгаажсан илүү цаг', header_format)
-        sheet.write(3, 12, 'Өдөр', header_rotation_format)
-        sheet.write(3, 13, 'Цаг', header_rotation_format)
-        sheet.write(3, 14, 'Өдөр', header_rotation_format)
-        sheet.write(3, 15, 'Цаг', header_rotation_format)
-        sheet.write(3, 16, 'Өдөр', header_rotation_format)
-        sheet.write(3, 17, 'Цаг', header_rotation_format)
-        sheet.write(3, 18, 'Өдөр', header_rotation_format)
-        sheet.write(3, 19, 'Цаг', header_rotation_format)
-        sheet.write(3, 20, 'Өдөр', header_rotation_format)
-        sheet.write(3, 21, 'Цаг', header_rotation_format)
-        sheet.write(3, 22, 'Өдөр', header_rotation_format)
-        sheet.write(3, 23, 'Цаг', header_rotation_format)
-        sheet.write(3, 24, 'Өдөр', header_rotation_format)
-        sheet.write(3, 25, 'Цаг', header_rotation_format)
+        sheet.merge_range('A7:A9', 'Огноо', merge_format)
+        sheet.merge_range('B7:C8', 'Ажиллавал зохих', merge_format)
+        sheet.merge_range('D7:E8', 'Ажилласан', merge_format)
+        sheet.merge_range('F7:L7', 'Илүү цаг', merge_format)
+        sheet.merge_range('F8:G8', 'Цалин бодогдох илүү цаг', merge_format)
+        sheet.merge_range('H8:H9', 'Батлагдсан илүү цаг', merge_format)
+        sheet.merge_range('I8:I9', 'Нийт илүү цаг', merge_format)
+        sheet.merge_range('J8:L8', 'Үүнээс', merge_format)
+        sheet.merge_range('M7:Z7', 'Ажиллаагүй', merge_format)
+        sheet.merge_range('M8:N8', 'БҮГД', merge_format)
+        sheet.merge_range('O8:P8', 'Чөлөөтэй /цалинтай/', merge_format)
+        sheet.merge_range('Q8:R8', 'Чөлөөтэй /цалингүй/', merge_format)
+        sheet.merge_range('S8:T8', 'Өвчтэй', merge_format)
+        sheet.merge_range('U8:V8', 'Ээлжийн амралттай', merge_format)
+        sheet.merge_range('W8:X8', 'Жирэмсэний амралттай', merge_format)
+        sheet.merge_range('Y8:Z8', 'Тасалсан', merge_format)
+        sheet.merge_range('AA7:AA9', 'Хоцорсон цаг', merge_format)
+        sheet.write(8, 1, 'Өдөр', header_format)
+        sheet.write(8, 2, 'Нийт цаг', header_format)
+        sheet.write(8, 3, 'Өдөр', header_format)
+        sheet.write(8, 4, 'Нийт цаг', header_format)
+        sheet.write(8, 5, 'Илүү цаг', header_format)
+        sheet.write(8, 6, 'Баяр ёслолын өдөр ажилласан илүү цаг', header_format)
+        sheet.write(8, 9, 'Хуруу дарж авах илүү цаг', header_format)
+        sheet.write(8, 10, 'Баяр ёслолын өдөр ажилласан илүү цаг', header_format)
+        sheet.write(8, 11, 'Хүсэлтээр баталгаажсан илүү цаг', header_format)
+        sheet.write(8, 12, 'Өдөр', header_rotation_format)
+        sheet.write(8, 13, 'Цаг', header_rotation_format)
+        sheet.write(8, 14, 'Өдөр', header_rotation_format)
+        sheet.write(8, 15, 'Цаг', header_rotation_format)
+        sheet.write(8, 16, 'Өдөр', header_rotation_format)
+        sheet.write(8, 17, 'Цаг', header_rotation_format)
+        sheet.write(8, 18, 'Өдөр', header_rotation_format)
+        sheet.write(8, 19, 'Цаг', header_rotation_format)
+        sheet.write(8, 20, 'Өдөр', header_rotation_format)
+        sheet.write(8, 21, 'Цаг', header_rotation_format)
+        sheet.write(8, 22, 'Өдөр', header_rotation_format)
+        sheet.write(8, 23, 'Цаг', header_rotation_format)
+        sheet.write(8, 24, 'Өдөр', header_rotation_format)
+        sheet.write(8, 25, 'Цаг', header_rotation_format)
 
         # write column index
         i = 0
         while i < 27:
-            sheet.write(4, i, i, header_format)
+            sheet.write(row, i, i, header_format)
             i += 1
 
         workbook.close()
