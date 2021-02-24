@@ -319,7 +319,7 @@ class AttendanceReport(models.TransientModel):
         row = 9
         #header
         sheet.write(1, 9, 'ТАВАН ТОЛГОЙ ТҮЛШ ХХК', footer_format_bold)
-        sheet.write(2, 8, 'ЦАГИЙН ТООЦООНЫ ХУУДАС /Алба, хэлтэсээр/', footer_format_bold)
+        sheet.write(2, 8, 'ЦАГИЙН ТООЦООНЫ ХУУДАС /Ажилтнаар/', footer_format_bold)
         sheet.write(3, 0, 'Алба', header_footer_format)
         sheet.write(3, 1, 'ТӨЛӨВЛӨЛТ ХӨГЖҮҮЛЭЛТИЙН АЛБА', footer_format_bold)
         sheet.write(3, 26, 'Сангийн сайдын 2017 оны 347 дугаар тушаалын хавсралт', header_right_format)
