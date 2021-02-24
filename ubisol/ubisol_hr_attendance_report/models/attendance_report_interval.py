@@ -169,17 +169,20 @@ class AttendanceReport(models.TransientModel):
         filters = data['filters']
 
         row = 9
-        #header
+        # header
         sheet.write(1, 9, 'ТАВАН ТОЛГОЙ ТҮЛШ ХХК', footer_format_bold)
-        sheet.write(2, 8, 'ЦАГИЙН ТООЦООНЫ ХУУДАС /Алба, хэлтэсээр/', footer_format_bold)
+        sheet.write(2, 8, 'ЦАГИЙН ТООЦООНЫ ХУУДАС /Алба, хэлтэсээр/',
+                    footer_format_bold)
         sheet.write(3, 0, 'Алба', header_footer_format)
         sheet.write(3, 1, 'ТӨЛӨВЛӨЛТ ХӨГЖҮҮЛЭЛТИЙН АЛБА', footer_format_bold)
-        sheet.write(3, 27, 'Сангийн сайдын 2017 оны 347 дугаар тушаалын хавсралт', header_right_format)
+        sheet.write(
+            3, 27, 'Сангийн сайдын 2017 оны 347 дугаар тушаалын хавсралт', header_right_format)
         sheet.write(4, 0, 'Хэлтэс', header_footer_format)
         sheet.write(4, 1, 'МЭДЭЭЛЛИЙН ТЕХНОЛОГИЙН ХЭЛТЭС', footer_format_bold)
         sheet.write(4, 27, 'НМаягт ЦХ-2', header_right_format)
         sheet.write(5, 0, 'Хугацаа', header_footer_format)
-        sheet.write(5, 27, 'Системээс таталт хийсэн огноо: '+datetime.today().strftime('%Y.%m.%d'), header_right_format)
+        sheet.write(5, 27, 'Системээс таталт хийсэн огноо: ' +
+                    datetime.today().strftime('%Y.%m.%d'), header_right_format)
 
         # write data (for column title)
         sheet.merge_range('A7:A9', 'Овог Нэр', merge_format)
@@ -205,9 +208,11 @@ class AttendanceReport(models.TransientModel):
         sheet.write(8, 4, 'Өдөр', header_format)
         sheet.write(8, 5, 'Нийт цаг', header_format)
         sheet.write(8, 6, 'Илүү цаг', header_format)
-        sheet.write(8, 7, 'Баяр ёслолын өдөр ажилласан илүү цаг', header_format)
+        sheet.write(8, 7, 'Баяр ёслолын өдөр ажилласан илүү цаг',
+                    header_format)
         sheet.write(8, 10, 'Хуруу дарж авах илүү цаг', header_format)
-        sheet.write(8, 11, 'Баяр ёслолын өдөр ажилласан илүү цаг', header_format)
+        sheet.write(8, 11, 'Баяр ёслолын өдөр ажилласан илүү цаг',
+                    header_format)
         sheet.write(8, 12, 'Хүсэлтээр баталгаажсан илүү цаг', header_format)
         sheet.write(8, 13, 'Өдөр', header_rotation_format)
         sheet.write(8, 14, 'Цаг', header_rotation_format)
@@ -229,7 +234,7 @@ class AttendanceReport(models.TransientModel):
         while i < 28:
             sheet.write(9, i, i, header_format)
             i += 1
-        row = 5
+        row = 10
         for l in lines:
             sheet.write(row, 0, l['full_name'] or '', body_format)
             sheet.write(row, 1, l['register_id'] or '', body_format)
@@ -243,6 +248,7 @@ class AttendanceReport(models.TransientModel):
                 l['overtime_holiday']), body_format)
 
             confirmed_time = 0
+            approved_time = 0
             if l['ceo_approved_overtime'] >= l['informal_overtime']:
                 confirmed_time = l['informal_overtime'] + l['overtime']
             else:
@@ -250,6 +256,11 @@ class AttendanceReport(models.TransientModel):
 
             sheet.write(row, 8, self._set_hour_format(
                 confirmed_time), body_format)
+
+            approved_time = confirmed_time - l['difference_check_in']
+            sheet.write(row, 6, self._set_hour_format(
+                approved_time) or '', body_format)
+
             sheet.write(row, 10, self._set_hour_format(
                 l['informal_overtime']) or '', body_format)
             sheet.write(row, 11, self._set_hour_format(
@@ -277,18 +288,22 @@ class AttendanceReport(models.TransientModel):
         # last row
         row += 2
 
-        sheet.write(row, 1, 'Тушаалаар баталгаажиж олговол зохих илүү цагийн хязгаар: ', header_footer_format)
-        sheet.write(row, 12, 'Цагийн дээд хязгаартай байх /10-аас ихгүй гм/: ', header_footer_format)
+        sheet.write(
+            row, 1, 'Тушаалаар баталгаажиж олговол зохих илүү цагийн хязгаар: ', header_footer_format)
+        sheet.write(
+            row, 12, 'Цагийн дээд хязгаартай байх /10-аас ихгүй гм/: ', header_footer_format)
         row += 2
         sheet.write(row, 1, 'Хянасан: ', footer_format_bold)
         sheet.write(row, 10, 'Шалгасан: ', footer_format_bold)
         row += 1
-        sheet.write(row, 1, 'Төлөвлөлт, хөгжүүлэлтийн алба ', header_footer_format)
+        sheet.write(row, 1, 'Төлөвлөлт, хөгжүүлэлтийн алба ',
+                    header_footer_format)
         sheet.write(row, 10, 'Нягтлан бодогч: ', header_footer_format)
         row += 2
         sheet.write(row, 2, 'Дарга: ', header_footer_format)
         row += 2
-        sheet.write(row, 1, 'Нийгмийн асуудал, хүний нөөцийн алба ', header_footer_format)
+        sheet.write(row, 1, 'Нийгмийн асуудал, хүний нөөцийн алба ',
+                    header_footer_format)
         row += 2
         sheet.write(row, 2, 'Ахлах мэргэжилтэн: ', header_footer_format)
 
@@ -301,7 +316,6 @@ class AttendanceReport(models.TransientModel):
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         sheet = workbook.add_worksheet()
-
 
         sheet.set_row(0, 50)
         sheet.set_row(1, 15)
@@ -369,17 +383,20 @@ class AttendanceReport(models.TransientModel):
         filters = data['filters']
 
         row = 9
-        #header
+        # header
         sheet.write(1, 9, 'ТАВАН ТОЛГОЙ ТҮЛШ ХХК', footer_format_bold)
-        sheet.write(2, 8, 'ЦАГИЙН ТООЦООНЫ ХУУДАС /Ажилтнаар/', footer_format_bold)
+        sheet.write(2, 8, 'ЦАГИЙН ТООЦООНЫ ХУУДАС /Ажилтнаар/',
+                    footer_format_bold)
         sheet.write(3, 0, 'Алба', header_footer_format)
         sheet.write(3, 1, 'ТӨЛӨВЛӨЛТ ХӨГЖҮҮЛЭЛТИЙН АЛБА', footer_format_bold)
-        sheet.write(3, 26, 'Сангийн сайдын 2017 оны 347 дугаар тушаалын хавсралт', header_right_format)
+        sheet.write(
+            3, 26, 'Сангийн сайдын 2017 оны 347 дугаар тушаалын хавсралт', header_right_format)
         sheet.write(4, 0, 'Хэлтэс', header_footer_format)
         sheet.write(4, 1, 'МЭДЭЭЛЛИЙН ТЕХНОЛОГИЙН ХЭЛТЭС', footer_format_bold)
         sheet.write(4, 26, 'НМаягт ЦХ-2', header_right_format)
         sheet.write(5, 0, 'Хугацаа', header_footer_format)
-        sheet.write(5, 26, 'Системээс таталт хийсэн огноо: '+datetime.today().strftime('%Y.%m.%d'), header_right_format)
+        sheet.write(5, 26, 'Системээс таталт хийсэн огноо: ' +
+                    datetime.today().strftime('%Y.%m.%d'), header_right_format)
 
         # write data (for column title)
         sheet.merge_range('A7:A9', 'Огноо', merge_format)
@@ -404,9 +421,11 @@ class AttendanceReport(models.TransientModel):
         sheet.write(8, 3, 'Өдөр', header_format)
         sheet.write(8, 4, 'Нийт цаг', header_format)
         sheet.write(8, 5, 'Илүү цаг', header_format)
-        sheet.write(8, 6, 'Баяр ёслолын өдөр ажилласан илүү цаг', header_format)
+        sheet.write(8, 6, 'Баяр ёслолын өдөр ажилласан илүү цаг',
+                    header_format)
         sheet.write(8, 9, 'Хуруу дарж авах илүү цаг', header_format)
-        sheet.write(8, 10, 'Баяр ёслолын өдөр ажилласан илүү цаг', header_format)
+        sheet.write(8, 10, 'Баяр ёслолын өдөр ажилласан илүү цаг',
+                    header_format)
         sheet.write(8, 11, 'Хүсэлтээр баталгаажсан илүү цаг', header_format)
         sheet.write(8, 12, 'Өдөр', header_rotation_format)
         sheet.write(8, 13, 'Цаг', header_rotation_format)
