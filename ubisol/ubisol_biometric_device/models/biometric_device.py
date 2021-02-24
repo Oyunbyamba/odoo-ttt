@@ -337,12 +337,19 @@ class BiometricMachine(models.Model):
         de = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
         de = datetime.strptime(de, "%Y-%m-%d %H:%M:%S") + \
             timedelta(hours=23, minutes=59, seconds=59)
-        attendance_reqs = self.env['hr.attendance.request'].search([
-            ('end_datetime', '>=', ds),
-            ('end_datetime', '<=', de),
+        # attendance_reqs = self.env['hr.attendance.request'].search([
+        #     ('end_datetime', '>=', ds),
+        #     ('end_datetime', '<=', de),
+        #     ('employee_id', '=', get_user_id.id),
+        #     ('request_type', '=', 'employee'),
+        # ])
+        attendance_reqs = self.env['hr.leave'].search([
+            ('date_from', '>=', ds),
+            ('date_to', '<=', de),
             ('employee_id', '=', get_user_id.id),
-            ('request_type', '=', 'employee'),
+            ('holiday_type', '=', 'employee'),
         ])
+
         if attendance_reqs and attendance_reqs.end_datetime > dt:
             return attendance_reqs.start_datetime + timedelta(hours=8)
         else:

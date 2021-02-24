@@ -30,8 +30,7 @@ class UbisolHolidaysRequest(models.Model):
         ('department', 'By Department')
         ],
         string='Allocation Mode', readonly=True, required=True, default='employee',
-        states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]},
-        help='By Employee: Allocation/Request for individual Employee, By Employee Tag: Allocation/Request for group of employees in category')
+        states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]})
     years_of_worked_state = fields.Integer('Улсад ажилласан жил', compute='_compute_years_of_worked_state', readonly=True)
     years_of_worked_company = fields.Float('Байгууллагад ажилласан жил', digits=(2,1), compute='_compute_years_of_worked_company', readonly=True)
     employee_holiday = fields.Integer('Ажилласан жил', compute='_compute_employee_holiday', readonly=True)
@@ -46,7 +45,7 @@ class UbisolHolidaysRequest(models.Model):
         ('check_out', 'Явсан')
         ], string='Ирсэн/явсан')
     leave_overtime_type = fields.Selection(related='holiday_status_id.overtime_type', readonly=True)   
-    allowed_overtime_time = fields.Integer('Батлах илүү цаг') 
+    allowed_overtime_time = fields.Integer('Батлах илүү цаг', required=True, default='') 
     
     _sql_constraints = [
         ('type_value',
@@ -249,13 +248,28 @@ class UbisolHolidaysRequest(models.Model):
         for holiday in self:
             holiday.number_of_days_display = holiday.number_of_days  
 
+    @api.constrains('date_from', 'date_to', 'state', 'employee_id')
+    def _check_date(self):
+        domains = [[
+            ('date_from', '<=', holiday.date_to),
+            ('date_to', '>=', holiday.date_from),
+            ('employee_id', '=', holiday.employee_id.id),
+            ('id', '!=', holiday.id),
+        ] for holiday in self.filtered('employee_id')]
+        domain = expression.AND([
+            [('state', 'not in', ['cancel', 'refuse'])],
+            expression.OR(domains)
+        ])
+        if self.search_count(domain):
+            raise ValidationError(_('You can not set 2 times off that overlaps on the same day for the same employee.'))
+
     @api.model_create_multi
     def create(self, vals_list):
         """ Override to avoid automatic logging of creation """
         if not self._context.get('leave_fast_create'):
             leave_types = self.env['hr.leave.type'].browse([values.get('holiday_status_id') for values in vals_list if values.get('holiday_status_id')])
             mapped_validation_type = {leave_type.id: leave_type.validation_type for leave_type in leave_types}
-            mapped_overtime_type = {leave_type.id: leave_type.overtime_type for leave_type in leave_types}
+            # mapped_overtime_type = {leave_type.id: leave_type.overtime_type for leave_type in leave_types}
 
             for values in vals_list:
                 employee_id = values.get('employee_id', False)
@@ -320,8 +334,6 @@ class UbisolHolidaysRequest(models.Model):
                 elif not self._context.get('import_file'):
                     holiday_sudo.activity_update()
 
-        # For created overtime requests for employees of selected department
-        # return holidays[0]  
         return holidays                                
 
     def _get_department_child(self, department, res):
@@ -341,13 +353,14 @@ class UbisolHolidaysRequest(models.Model):
         self.filtered(lambda holiday: holiday.validation_type != 'both').write({'first_approver_id': current_employee.id})
 
         for holiday in self.filtered(lambda holiday: holiday.holiday_type != 'employee'):
-            if holiday.holiday_status_id.overtime_type != 'total_allowed_overtime':
-                if holiday.holiday_type == 'category':
-                    employees = holiday.category_id.employee_ids
-                elif holiday.holiday_type == 'company':
-                    employees = self.env['hr.employee'].search([('company_id', '=', holiday.mode_company_id.id)])
-                else:
-                    employees = holiday.department_id.member_ids
+            # if holiday.holiday_type == 'category':
+            #     employees = holiday.category_id.employee_ids
+            # elif holiday.holiday_type == 'company':
+            #     employees = self.env['hr.employee'].search([('company_id', '=', holiday.mode_company_id.id)])
+            # else:
+            #     employees = holiday.department_id.member_ids
+            if holiday.holiday_type == 'department':
+                employees = holiday.department_id.member_ids
 
             # conflicting_leaves = self.env['hr.leave'].with_context(
             #     tracking_disable=True,
@@ -361,19 +374,26 @@ class UbisolHolidaysRequest(models.Model):
             #     ('employee_id', 'in', employees.ids)])
 
             if holiday.holiday_status_id.overtime_type == 'total_allowed_overtime':
-                additional_domain = ('holiday_status_id.overtime_type', '=', 'total_allowed_overtime')
+                domain = [
+                    ('date_from', '<=', holiday.date_to),
+                    ('date_to', '>=', holiday.date_from),
+                    ('state', 'not in', ['cancel', 'refuse']),
+                    ('holiday_status_id.overtime_type', '=', 'total_allowed_overtime'),
+                    ('id', '!=', holiday.id)]
             else:
-                additional_domain = ('holiday_status_id.overtime_type', '!=', 'total_allowed_overtime')    
+                domain = [
+                    ('date_from', '<=', holiday.date_to),
+                    ('date_to', '>=', holiday.date_from),
+                    ('state', 'not in', ['cancel', 'refuse']),
+                    ('employee_id', 'in', employees.ids),
+                    ('holiday_type', '=', 'employee'),
+                    ('holiday_status_id.overtime_type', '!=', 'total_allowed_overtime')]   
 
             conflicting_leaves = self.env['hr.leave'].with_context(
                 tracking_disable=True,
                 mail_activity_automation_skip=True,
                 leave_fast_create=True
-            ).search([
-                ('date_from', '<=', holiday.date_to),
-                ('date_to', '>', holiday.date_from),
-                ('state', 'not in', ['cancel', 'refuse']),
-                additional_domain])
+            ).search(domain)
 
             if conflicting_leaves:
                 # YTI: More complex use cases could be managed in master
