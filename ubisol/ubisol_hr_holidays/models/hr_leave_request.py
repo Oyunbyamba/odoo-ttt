@@ -341,12 +341,29 @@ class UbisolHolidaysRequest(models.Model):
         self.filtered(lambda holiday: holiday.validation_type != 'both').write({'first_approver_id': current_employee.id})
 
         for holiday in self.filtered(lambda holiday: holiday.holiday_type != 'employee'):
-            if holiday.holiday_type == 'category':
-                employees = holiday.category_id.employee_ids
-            elif holiday.holiday_type == 'company':
-                employees = self.env['hr.employee'].search([('company_id', '=', holiday.mode_company_id.id)])
+            if holiday.holiday_status_id.overtime_type != 'total_allowed_overtime':
+                if holiday.holiday_type == 'category':
+                    employees = holiday.category_id.employee_ids
+                elif holiday.holiday_type == 'company':
+                    employees = self.env['hr.employee'].search([('company_id', '=', holiday.mode_company_id.id)])
+                else:
+                    employees = holiday.department_id.member_ids
+
+            # conflicting_leaves = self.env['hr.leave'].with_context(
+            #     tracking_disable=True,
+            #     mail_activity_automation_skip=True,
+            #     leave_fast_create=True
+            # ).search([
+            #     ('date_from', '<=', holiday.date_to),
+            #     ('date_to', '>', holiday.date_from),
+            #     ('state', 'not in', ['cancel', 'refuse']),
+            #     ('holiday_type', '=', 'employee'),
+            #     ('employee_id', 'in', employees.ids)])
+
+            if holiday.holiday_status_id.overtime_type == 'total_allowed_overtime':
+                additional_domain = ('holiday_status_id.overtime_type', '=', 'total_allowed_overtime')
             else:
-                employees = holiday.department_id.member_ids
+                additional_domain = ('holiday_status_id.overtime_type', '!=', 'total_allowed_overtime')    
 
             conflicting_leaves = self.env['hr.leave'].with_context(
                 tracking_disable=True,
@@ -356,8 +373,7 @@ class UbisolHolidaysRequest(models.Model):
                 ('date_from', '<=', holiday.date_to),
                 ('date_to', '>', holiday.date_from),
                 ('state', 'not in', ['cancel', 'refuse']),
-                ('holiday_type', '=', 'employee'),
-                ('employee_id', 'in', employees.ids)])
+                additional_domain])
 
             if conflicting_leaves:
                 # YTI: More complex use cases could be managed in master
@@ -415,15 +431,16 @@ class UbisolHolidaysRequest(models.Model):
 
                 split_leaves.filtered(lambda l: l.state in 'validate')._validate_leave_request()
 
-            values = holiday._prepare_employees_holiday_values(employees)
-            leaves = self.env['hr.leave'].with_context(
-                tracking_disable=True,
-                mail_activity_automation_skip=True,
-                leave_fast_create=True,
-                leave_skip_state_check=True,
-            ).create(values)
+            if holiday.holiday_status_id.overtime_type != 'total_allowed_overtime':
+                values = holiday._prepare_employees_holiday_values(employees)
+                leaves = self.env['hr.leave'].with_context(
+                    tracking_disable=True,
+                    mail_activity_automation_skip=True,
+                    leave_fast_create=True,
+                    leave_skip_state_check=True,
+                ).create(values)
 
-            leaves._validate_leave_request()
+                leaves._validate_leave_request()
 
         employee_requests = self.filtered(lambda hol: hol.holiday_type == 'employee')
         employee_requests._validate_leave_request()
