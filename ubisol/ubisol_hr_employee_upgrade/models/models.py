@@ -57,14 +57,14 @@ class HrEmployee(models.Model):
         ('3', '3'),
         ('4', '4')
     ], string="Driver's blood type", groups="hr.group_hr_user")
-    certificate = fields.Selection([
+    certificate = fields.Selection(selection=[
         ('Ерөнхий боловсрол', 'Ерөнхий боловсрол'),
         ('Тусгай дунд боловсрол', 'Тусгай дунд боловсрол'),
         ('Дээд боловсрол', 'Дээд боловсрол'),
         ('Магистр', 'Магистр'),
         ('Доктор', 'Доктор'),
         ('Бусад', 'Бусад'),
-    ], 'Certificate Level', default='Дээд боловсрол', groups="hr.group_hr_user", tracking=True)
+    ])
     years_of_driving = fields.Integer(string='Years of driving', groups="hr.group_hr_user")
     relative_employee_id = fields.Many2one('hr.employee', 'Relative', domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]", groups="hr.group_hr_user")
     size_of_shirt = fields.Char(string='The size of shirt', groups="hr.group_hr_user")

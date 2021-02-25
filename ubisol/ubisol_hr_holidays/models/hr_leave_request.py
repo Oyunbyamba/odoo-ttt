@@ -25,12 +25,7 @@ class UbisolHolidaysRequest(models.Model):
     _inherit = 'hr.leave'
     _description = "Time Off"
 
-    holiday_type = fields.Selection([
-        ('employee', 'By Employee'),
-        ('department', 'By Department')
-        ],
-        string='Allocation Mode', readonly=True, required=True, default='employee',
-        states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]})
+    holiday_type = fields.Selection(selection='_holiday_type_selection')
     years_of_worked_state = fields.Integer('Улсад ажилласан жил', compute='_compute_years_of_worked_state', readonly=True)
     years_of_worked_company = fields.Float('Байгууллагад ажилласан жил', digits=(2,1), compute='_compute_years_of_worked_company', readonly=True)
     employee_holiday = fields.Integer('Ажилласан жил', compute='_compute_employee_holiday', readonly=True)
@@ -74,7 +69,7 @@ class UbisolHolidaysRequest(models.Model):
             'view_id': False,
             'view_mode': 'tree,form',
             'type': 'ir.actions.act_window'
-        }          
+        }    
 
     @api.onchange('holiday_status_id')
     def _onchange_holiday_status_id(self):
@@ -178,7 +173,6 @@ class UbisolHolidaysRequest(models.Model):
         # if self.employee_id.user_id != self.env.user and self._origin.employee_id != self.employee_id:
         #     self.holiday_status_id = False
         
-                    
     @api.onchange('holiday_status_id')
     def _compute_base_vacation_days(self):
         for holiday in self:
@@ -261,7 +255,27 @@ class UbisolHolidaysRequest(models.Model):
             expression.OR(domains)
         ])
         if self.search_count(domain):
-            raise ValidationError(_('You can not set 2 times off that overlaps on the same day for the same employee.'))
+            raise ValidationError(_('You can not set 2 times off that overlaps on the same day for the same employee.'))    
+
+    @api.model
+    def _holiday_type_selection(self):
+        # user = self.env['res.users'].browse(self._uid)
+        records = [('employee', 'Ажилтан')]
+
+        # if user.has_group('hr_holidays.group_hr_holidays_manager') | user.has_group('hr_holidays.group_hr_holidays_user'):
+        #     records += [('department', 'By Department'),
+        #                 ('company', 'By Company')]
+        # elif user.has_group('hr_holidays.group_hr_holidays_responsible'):
+        #     records += [('department', 'By Department')]
+
+        _logger.info(self)
+        # if holiday.leave_overtime_type == 'total_allowed_overtime':
+        #     holiday.holiday_type.append('company', 'Компани')
+        # else:
+        #     holiday.holiday_type.append('department', 'Хэлтэс')   
+
+        return records
+
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -269,7 +283,6 @@ class UbisolHolidaysRequest(models.Model):
         if not self._context.get('leave_fast_create'):
             leave_types = self.env['hr.leave.type'].browse([values.get('holiday_status_id') for values in vals_list if values.get('holiday_status_id')])
             mapped_validation_type = {leave_type.id: leave_type.validation_type for leave_type in leave_types}
-            # mapped_overtime_type = {leave_type.id: leave_type.overtime_type for leave_type in leave_types}
 
             for values in vals_list:
                 employee_id = values.get('employee_id', False)
@@ -286,25 +299,6 @@ class UbisolHolidaysRequest(models.Model):
                 # Handle double validation
                 if mapped_validation_type[leave_type_id] == 'both':
                     self._check_double_validation_rules(employee_id, values.get('state', False))
-
-                # if mapped_overtime_type[leave_type_id] == 'manager_proved_overtime':
-                #     values.update({'frequency_request': True})
-
-                    # Create overtime requests for employees of selected department
-                    # if values.get('holiday_type') == 'department':
-                    #     new_vals_list = []
-                    #     new_values = copy.copy(values)
-                    #     department_ids = self._get_department_child(self.env['hr.department'].browse(values.get('department_id')), [values.get('department_id')])
-                    #     employees = self.env['hr.employee'].search([('department_id', 'in', department_ids)])
-                    #     index = 0
-                    #     for employee in employees:
-                    #         if index == 0:
-                    #             values.update({'holiday_type': 'employee', 'employee_id': employee.id})
-                    #         else:
-                    #             new_values.update({'holiday_type': 'employee', 'employee_id': employee.id})
-                    #             vals_list.append(copy.copy(new_values))
-
-                    #         index = index + 1    
 
         holidays = super(models.Model, self.with_context(mail_create_nosubscribe=True)).create(vals_list)
 
@@ -361,17 +355,6 @@ class UbisolHolidaysRequest(models.Model):
             #     employees = holiday.department_id.member_ids
             if holiday.holiday_type == 'department':
                 employees = holiday.department_id.member_ids
-
-            # conflicting_leaves = self.env['hr.leave'].with_context(
-            #     tracking_disable=True,
-            #     mail_activity_automation_skip=True,
-            #     leave_fast_create=True
-            # ).search([
-            #     ('date_from', '<=', holiday.date_to),
-            #     ('date_to', '>', holiday.date_from),
-            #     ('state', 'not in', ['cancel', 'refuse']),
-            #     ('holiday_type', '=', 'employee'),
-            #     ('employee_id', 'in', employees.ids)])
 
             if holiday.holiday_status_id.overtime_type == 'total_allowed_overtime':
                 domain = [
@@ -466,4 +449,4 @@ class UbisolHolidaysRequest(models.Model):
         employee_requests._validate_leave_request()
         if not self.env.context.get('leave_fast_create'):
             employee_requests.filtered(lambda holiday: holiday.validation_type != 'no_validation').activity_update()
-        return True
+        return True  

@@ -1139,7 +1139,7 @@ class HrAttendanceReport(models.Model):
             domain = [('work_day', '>=', start_date),
                       ('work_day', '<=', end_date)]
 
-        att_report_obj = self.env['hr.attendance.report'].search(domain)
+        att_report_obj = self.env['hr.attendance.report'].search(domain, order='full_name asc, work_day asc')
         raw_data = att_report_obj.read([
             'full_name',
             'work_day',
