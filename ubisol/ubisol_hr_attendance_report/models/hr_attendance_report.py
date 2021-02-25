@@ -1100,7 +1100,7 @@ class HrAttendanceReport(models.Model):
                     report_title_dep,
                     report_title_position,
                     report_title_person,
-                    ceo_approved_overtime
+
                 ]
 
             else:
@@ -1130,7 +1130,7 @@ class HrAttendanceReport(models.Model):
                     report_title_parent,
                     report_title_dep,
                     report_title_duration,
-                    ceo_approved_overtime
+
                 ]
 
         else:
