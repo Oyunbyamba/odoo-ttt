@@ -179,13 +179,13 @@ class AttendanceReport(models.TransientModel):
             sheet.write(3, 0, 'Алба,хэлтэс', header_footer_format)
             sheet.write(3, 1, title[0], footer_format_bold)
             sheet.write(
-                3, 28, 'Сангийн сайдын 2017 оны 347 дугаар тушаалын хавсралт', header_right_format)
+                3, 27, 'Сангийн сайдын 2017 оны 347 дугаар тушаалын хавсралт', header_right_format)
             sheet.write(4, 0, 'Албан тушаал', header_footer_format)
             sheet.write(4, 1, title[1], footer_format_bold)
-            sheet.write(4, 28, 'НМаягт ЦХ-2', header_right_format)
+            sheet.write(4, 27, 'НМаягт ЦХ-2', header_right_format)
             sheet.write(5, 0, 'Овог,нэр (ID) ', header_footer_format)
             sheet.write(5, 1, title[2], footer_format_bold)
-            sheet.write(5, 28, 'Системээс таталт хийсэн огноо: ' +
+            sheet.write(5, 27, 'Системээс таталт хийсэн огноо: ' +
                         datetime.today().strftime('%Y.%m.%d'), header_right_format)
 
         else:
@@ -203,8 +203,7 @@ class AttendanceReport(models.TransientModel):
             sheet.write(4, 27, 'НМаягт ЦХ-2', header_right_format)
             sheet.write(5, 0, 'Хугацаа', header_footer_format)
             sheet.write(5, 1, title[2], footer_format_bold)
-
-        sheet.write(5, 27, 'Системээс таталт хийсэн огноо: ' +
+            sheet.write(5, 27, 'Системээс таталт хийсэн огноо: ' +
                     datetime.today().strftime('%Y.%m.%d'), header_right_format)
 
         # write data (for column title)

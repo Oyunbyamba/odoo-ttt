@@ -1086,6 +1086,8 @@ class HrAttendanceReport(models.Model):
         report_title_person = ''
         report_title_dep = ''
         report_title_position = ''
+        report_title_parent = ''
+        report_title_duration = ''
 
         if filters['calculate_type']:
             if filters['calculate_type'] == 'employee':
