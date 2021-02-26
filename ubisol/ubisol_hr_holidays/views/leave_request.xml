@@ -30,14 +30,9 @@
                 <separator/>
                 <filter name="year" string="Active Time Off"
                     domain="[('holiday_status_id.active', '=', True)]" help="Active Time Off"/>
-                <filter invisible="1" string="Late Activities" name="activities_overdue"
-                    domain="[('activity_ids.date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"
-                    help="Show all records which has next action date is before today"/>
-                <filter invisible="1" string="Today Activities" name="activities_today"
-                    domain="[('activity_ids.date_deadline', '=', context_today().strftime('%Y-%m-%d'))]"/>
-                <filter invisible="1" string="Future Activities" name="activities_upcoming_all"
-                        domain="[('activity_ids.date_deadline', '&gt;', context_today().strftime('%Y-%m-%d'))
-                        ]"/>
+                <filter string="Энэ сард эхлэх" name="request_date_from"
+                    domain="[('request_date_from', '>=', context_today().strftime('%Y-%m-01')),
+                    ('request_date_from', '&lt;', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01'))]"/>   
                 <group expand="0" string="Group By">
                     <filter name="group_name" string="Description" context="{'group_by':'name'}"/>
                     <filter name="group_employee" string="Employee" context="{'group_by':'employee_id'}"/>
@@ -178,8 +173,36 @@
         <field name="model">hr.leave</field>
         <field name="inherit_id" ref="hr_holidays.hr_leave_view_tree"/>
         <field name="arch" type="xml">
-            <xpath expr="//tree/field[@name='payslip_status']" position="attributes">
-                <attribute name="invisible">1</attribute>
+            <xpath expr="//tree" position="replace">
+                <tree decoration-danger="state == 'refuse'" decoration-info="state == 'draft'" string="Time Off Requests"
+                    decoration-bf="holiday_type != 'employee'">
+                    <field name="employee_id"/>
+                    <field name="department_id"/>
+                    <field name="holiday_type" string="Mode" groups="base.group_no_one"/>
+                    <field name="holiday_status_id"/>
+                    <field name="name"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="duration_display"/>
+                    <field name="state"/>
+                    <field name="payslip_status" invisible="1" widget="toggle_button" options='{"active": "Reported in last payslips", "inactive": "To Report in Payslip"}' groups="hr_holidays.group_hr_holidays_user"/>
+                    <field name="category_id" invisible="1"/>
+                    <field name="department_id" invisible="1"/>
+                    <field name="user_id" invisible="1"/>
+                    <button string="Approve" name="action_approve" type="object"
+                        icon="fa-check text-success"
+                        states="confirm"
+                        groups="hr_holidays.group_hr_holidays_responsible"/>
+                    <button string="Validate" name="action_validate" type="object"
+                        icon="fa-check text-success"
+                        states="validate1"
+                        groups="hr_holidays.group_hr_holidays_manager"/>
+                    <button string="Refuse" name="action_refuse" type="object"
+                        icon="fa-ban text-danger"
+                        states="confirm,validate,validate1"
+                        groups="hr_holidays.group_hr_holidays_manager"/>
+                    <field name="activity_exception_decoration" widget="activity_exception"/>
+                </tree>
             </xpath>
         </field>
     </record>
@@ -192,6 +215,27 @@
             <xpath expr="//field[@name='payslip_status']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
+        </field>
+    </record>
+
+     <record id="hr_holidays.hr_leave_action_all" model="ir.actions.act_window">
+        <field name="name">Time Off</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hr.leave</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="view_mode">tree,kanban,form,calendar,activity</field>
+        <field name="context">{'search_default_request_date_from': 1}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree'}),
+            (0, 0, {'view_mode': 'kanban'}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('hr_holidays.hr_leave_view_form_manager')}),
+            (0, 0, {'view_mode': 'calendar'}),
+            (0, 0, {'view_mode': 'activity'})]"/>
+        <field name="domain">[]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new time off request
+            </p>
         </field>
     </record>
 

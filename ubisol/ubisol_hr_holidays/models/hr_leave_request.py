@@ -25,7 +25,12 @@ class UbisolHolidaysRequest(models.Model):
     _inherit = 'hr.leave'
     _description = "Time Off"
 
-    holiday_type = fields.Selection(selection='_holiday_type_selection')
+    holiday_type = fields.Selection(selection=[
+        ('employee', 'Ажилтан'),
+        ('department', 'Хэлтэс'),
+        ('company', 'Компани'),
+    ])
+    # holiday_type = fields.Selection(selection='_holiday_type_selection')
     years_of_worked_state = fields.Integer('Улсад ажилласан жил', compute='_compute_years_of_worked_state', readonly=True)
     years_of_worked_company = fields.Float('Байгууллагад ажилласан жил', digits=(2,1), compute='_compute_years_of_worked_company', readonly=True)
     employee_holiday = fields.Integer('Ажилласан жил', compute='_compute_employee_holiday', readonly=True)
@@ -40,8 +45,8 @@ class UbisolHolidaysRequest(models.Model):
         ('check_out', 'Явсан')
         ], string='Ирсэн/явсан')
     leave_overtime_type = fields.Selection(related='holiday_status_id.overtime_type', readonly=True)   
-    allowed_overtime_time = fields.Integer('Батлах илүү цаг', required=True, default='') 
-    
+    allowed_overtime_time = fields.Integer('Батлах илүү цаг', required=True, default='')
+
     _sql_constraints = [
         ('type_value',
          "CHECK((holiday_type='employee' AND employee_id IS NOT NULL) or "
@@ -257,26 +262,6 @@ class UbisolHolidaysRequest(models.Model):
         if self.search_count(domain):
             raise ValidationError(_('You can not set 2 times off that overlaps on the same day for the same employee.'))    
 
-    @api.model
-    def _holiday_type_selection(self):
-        # user = self.env['res.users'].browse(self._uid)
-        records = [('employee', 'Ажилтан')]
-
-        # if user.has_group('hr_holidays.group_hr_holidays_manager') | user.has_group('hr_holidays.group_hr_holidays_user'):
-        #     records += [('department', 'By Department'),
-        #                 ('company', 'By Company')]
-        # elif user.has_group('hr_holidays.group_hr_holidays_responsible'):
-        #     records += [('department', 'By Department')]
-
-        _logger.info(self)
-        # if holiday.leave_overtime_type == 'total_allowed_overtime':
-        #     holiday.holiday_type.append('company', 'Компани')
-        # else:
-        #     holiday.holiday_type.append('department', 'Хэлтэс')   
-
-        return records
-
-
     @api.model_create_multi
     def create(self, vals_list):
         """ Override to avoid automatic logging of creation """
@@ -336,6 +321,25 @@ class UbisolHolidaysRequest(models.Model):
                 res.append(child.id)
                 self._get_department_child(child, res)
         return res      
+
+    def _prepare_employees_holiday_values(self, employees):
+        self.ensure_one()
+        work_days_data = employees._get_work_days_data_batch(self.date_from, self.date_to)
+        return [{
+            'name': self.name,
+            'holiday_type': 'employee',
+            'holiday_status_id': self.holiday_status_id.id,
+            'date_from': self.date_from,
+            'date_to': self.date_to,
+            'request_date_from': self.date_from,
+            'request_date_to': self.date_to,
+            'notes': self.notes,
+            'number_of_days': work_days_data[employee.id]['days'],
+            'parent_id': self.id,
+            'employee_id': employee.id,
+            'state': 'validate',
+            'allowed_overtime_time': self.allowed_overtime_time,
+        } for employee in employees]    
 
     def action_validate(self):
         current_employee = self.env.user.employee_id
@@ -400,16 +404,7 @@ class UbisolHolidaysRequest(models.Model):
                         })[0]
                         before_leave = self.env['hr.leave'].new(before_leave_vals)
                         before_leave._onchange_request_parameters()
-                        # Could happen for part-time contract, that time off is not necessary
-                        # anymore.
-                        # Imagine you work on monday-wednesday-friday only.
-                        # You take a time off on friday.
-                        # We create a company time off on friday.
-                        # By looking at the last attendance before the company time off
-                        # start date to compute the date_to, you would have a date_from > date_to.
-                        # Just don't create the leave at that time. That's the reason why we use
-                        # new instead of create. As the leave is not actually created yet, the sql
-                        # constraint didn't check date_from < date_to yet.
+                        
                         if before_leave.date_from < before_leave.date_to:
                             split_leaves_vals.append(before_leave._convert_to_write(before_leave._cache))
                     if conflicting_leave.date_to > holiday.date_to:
@@ -450,3 +445,4 @@ class UbisolHolidaysRequest(models.Model):
         if not self.env.context.get('leave_fast_create'):
             employee_requests.filtered(lambda holiday: holiday.validation_type != 'no_validation').activity_update()
         return True  
+

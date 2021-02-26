@@ -167,8 +167,7 @@ class HolidaysRequest(models.Model):
     holiday_type = fields.Selection([
         ('employee', 'By Employee'),
         ('company', 'By Company'),
-        ('department', 'By Department'),
-        ('category', 'By Employee Tag')
+        ('department', 'By Department')
         ],
         string='Allocation Mode', readonly=True, required=True, default='employee',
         states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]},
