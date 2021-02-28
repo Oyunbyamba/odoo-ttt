@@ -46,6 +46,8 @@ class UbisolHolidaysRequest(models.Model):
         ], string='Ирсэн/явсан')
     leave_overtime_type = fields.Selection(related='holiday_status_id.overtime_type', readonly=True)   
     allowed_overtime_time = fields.Integer('Батлах илүү цаг', required=True, default='')
+    employee_ids = fields.Many2many('hr.employee', string='Ажилтан', help='Employee')
+    department_ids = fields.Many2many('hr.department', string='Хэлтэс', help='Department')
 
     _sql_constraints = [
         ('type_value',
@@ -241,6 +243,11 @@ class UbisolHolidaysRequest(models.Model):
         for holiday in self:
             if holiday.leave_overtime_type == 'manager_proved_overtime':
                 holiday.frequency_request = True 
+
+    @api.onchange('employee_ids')
+    def _change_employee_ids(self):
+        for holiday in self:
+            _logger.info(holiday.employee_ids)
 
     @api.depends('number_of_days')
     def _compute_number_of_days_display(self):

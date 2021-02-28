@@ -30,9 +30,15 @@
                 <separator/>
                 <filter name="year" string="Active Time Off"
                     domain="[('holiday_status_id.active', '=', True)]" help="Active Time Off"/>
-                <filter string="Энэ сард эхлэх" name="request_date_from"
+                <filter string="Өнгөрсөн сард эхлэх" name="last_month_request"
+                    domain="[('request_date_from', '>=', (context_today()-relativedelta(months=1)).strftime('%Y-%m-01')),
+                    ('request_date_from', '&lt;', context_today().strftime('%Y-%m-01'))]"/>     
+                <filter string="Энэ сард эхлэх" name="this_month_request"
                     domain="[('request_date_from', '>=', context_today().strftime('%Y-%m-01')),
-                    ('request_date_from', '&lt;', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01'))]"/>   
+                    ('request_date_from', '&lt;', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
+                <filter string="Дараа сард эхлэх" name="next_month_request"
+                    domain="[('request_date_from', '>=', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01')),
+                    ('request_date_from', '&lt;', (context_today()+relativedelta(months=2)).strftime('%Y-%m-01'))]"/>       
                 <group expand="0" string="Group By">
                     <filter name="group_name" string="Description" context="{'group_by':'name'}"/>
                     <filter name="group_employee" string="Employee" context="{'group_by':'employee_id'}"/>
@@ -215,6 +221,24 @@
             <xpath expr="//field[@name='payslip_status']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
+            <xpath expr="//field[@name='employee_id']" position="after">
+                <field name="employee_ids" groups="hr_holidays.group_hr_holidays_user" attrs="{
+                    'required': [('holiday_type', '=', 'employee')],
+                    'invisible': [('holiday_type', '!=', 'employee')]
+                    }"/>
+            </xpath>
+            <xpath expr="//field[@name='department_id']" position="after">
+                <field name="department_ids" groups="hr_holidays.group_hr_holidays_user" attrs="{
+                    'required': [('holiday_type', '=', 'department')],
+                    'invisible': [('holiday_type', '!=', 'department')]
+                    }"/>
+            </xpath>
+            <xpath expr="//field[@name='employee_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='department_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
         </field>
     </record>
 
@@ -224,7 +248,7 @@
         <field name="res_model">hr.leave</field>
         <field name="binding_model_id" eval="False"/>
         <field name="view_mode">tree,kanban,form,calendar,activity</field>
-        <field name="context">{'search_default_request_date_from': 1}</field>
+        <field name="context">{'search_default_this_month_request': 1}</field>
         <field name="view_ids" eval="[(5, 0, 0),
             (0, 0, {'view_mode': 'tree'}),
             (0, 0, {'view_mode': 'kanban'}),
