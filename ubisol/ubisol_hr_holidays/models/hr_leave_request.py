@@ -75,7 +75,7 @@ class UbisolHolidaysRequest(models.Model):
             'view_id': False,
             'view_mode': 'tree,form',
             'type': 'ir.actions.act_window'
-        }    
+        }   
 
     @api.onchange('holiday_status_id')
     def _onchange_holiday_status_id(self):
@@ -243,11 +243,6 @@ class UbisolHolidaysRequest(models.Model):
             if holiday.leave_overtime_type == 'manager_proved_overtime':
                 holiday.frequency_request = True 
 
-    # @api.onchange('employee_ids')
-    # def _change_employee_ids(self):
-    #     for holiday in self:
-    #         _logger.info(holiday.employee_ids)
-
     @api.depends('number_of_days')
     def _compute_number_of_days_display(self):
         for holiday in self:
@@ -277,14 +272,15 @@ class UbisolHolidaysRequest(models.Model):
             mapped_validation_type = {leave_type.id: leave_type.validation_type for leave_type in leave_types}
 
             for values in vals_list:
-                employee_ids = values.get('employee_ids')[0][2]
-                if not employee_ids:
+                if values.get('employee_ids'):
+                    employee_ids = values.get('employee_ids')[0][2]
+                else:
                     break
                 
                 multi_employee_request = True
                 employees = self.env['hr.employee'].browse(employee_ids)
                 vals_list = self._prepare_employees_holiday_vals_list(employees, vals_list[0])
-
+            
             for values in vals_list:
                 employee_id = values.get('employee_id', False)
                 leave_type_id = values.get('holiday_status_id')
@@ -357,7 +353,6 @@ class UbisolHolidaysRequest(models.Model):
             'number_of_days': work_days_data[employee.id]['days'],
             'employee_id': employee.id,
             'department_id': employee.department_id.id,
-            'state': 'validate',
             'allowed_overtime_time': values.get('allowed_overtime_time'),
         } for employee in employees]
 
