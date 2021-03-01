@@ -260,24 +260,24 @@ class HrAttendanceReport(models.Model):
             if record.worked_hours and record.shift_type == 'days':
                 for leaves in record.global_leaves:
                     leave_dates = pd.date_range(
-                        leaves.date_from, leaves.date_to,).date
+                        leaves.date_from+relativedelta(hours=8), leaves.date_to + relativedelta(hours=8),).date
                     if record.check_in and record.check_out:
                         holiday_dates = pd.date_range(
-                            record.check_in, record.check_out).date
+                            record.check_in + relativedelta(hours=8), record.check_out + relativedelta(hours=8)).date
                     elif record.check_in:
                         holiday_dates = pd.date_range(
-                            record.check_in, record.check_in).date
+                            record.check_in + relativedelta(hours=8), record.check_in + relativedelta(hours=8)).date
                     elif record.check_out:
                         holiday_dates = pd.date_range(
-                            record.check_out, record.check_out).date
+                            record.check_out + relativedelta(hours=8), record.check_out + relativedelta(hours=8)).date
                     for hd in holiday_dates:
+
                         for leave_date in leave_dates:
                             if leave_date == hd:
                                 holiday = True
             if holiday:
                 overtime_holiday = record.worked_hours
-
-        record.overtime_holiday = overtime_holiday
+                record.overtime_holiday = overtime_holiday
 
     @ api.depends('overtime_req_id', 'check_in', 'check_out', 'start_work', "end_work", "attendance_req_id", "overtime", "overtime_holiday")
     def _compute_informal_overtime(self):
@@ -300,22 +300,17 @@ class HrAttendanceReport(models.Model):
                         informal_overtime = delta.total_seconds() / 3600.0
             else:
                 if not record.check_out:
-                    informal_overtime += 0.0
+                    informal_overtime = 0.0
                 # ali 1 taldaa huruu daraagui bol iluu tsag bodohgui
-                elif record.check_in and record.check_out < record.end_work:
+                elif not record.check_in:
                     informal_overtime += 0.0
+                elif record.check_in and record.check_out < record.end_work:
+                    informal_overtime = 0.0
                 else:
                     delta = record.check_out - record.end_work
                     informal_overtime += delta.total_seconds() / 3600.0
 
                 # by Sainaa ugluu ert irseng tootsohgui
-                # if not record.check_in:
-                #     informal_overtime += 0.0
-                # elif record.check_in > record.start_work:
-                #     informal_overtime += 0.0
-                # else:
-                #     delta = record.start_work - record.check_in
-                #     informal_overtime += delta.total_seconds() / 3600.0
 
                 if record.attendance_req_id and (record.overtime > 0 or record.overtime_holiday > 0):
                     record.informal_overtime = 0.0
@@ -1088,7 +1083,7 @@ class HrAttendanceReport(models.Model):
             'type': 0,
             'title': title
         }
-        _logger.info(raw_data)
+
         return data
 
     @api.model
