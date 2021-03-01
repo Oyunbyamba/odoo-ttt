@@ -204,7 +204,7 @@ class AttendanceReport(models.TransientModel):
             sheet.write(5, 0, 'Хугацаа', header_footer_format)
             sheet.write(5, 1, title[2], footer_format_bold)
             sheet.write(5, 27, 'Системээс таталт хийсэн огноо: ' +
-                    datetime.today().strftime('%Y.%m.%d'), header_right_format)
+                        datetime.today().strftime('%Y.%m.%d'), header_right_format)
 
         # write data (for column title)
         sheet.merge_range('A7:A9', 'Овог Нэр', merge_format)
@@ -252,6 +252,9 @@ class AttendanceReport(models.TransientModel):
         sheet.write(8, 26, 'Цаг', header_rotation_format)
 
         # write column index
+        total_confirmed_time = 0
+        total_approved_time = 0
+        total_overtime_all = 0
         i = 0
         while i < 28:
             sheet.write(9, i, i, header_format)
@@ -278,13 +281,18 @@ class AttendanceReport(models.TransientModel):
 
             sheet.write(row, 8, self._set_hour_format(
                 confirmed_time), body_format)
+            total_confirmed_time += confirmed_time
 
             approved_time = confirmed_time - l['difference_check_in']
             sheet.write(row, 6, self._set_hour_format(
                 approved_time) or '', body_format)
+            total_approved_time += approved_time
 
             total_overtime = l['informal_overtime'] + \
                 l['overtime_holiday']+l['overtime']
+
+            total_overtime_all += total_overtime
+
             sheet.write(row, 9, self._set_hour_format(
                 total_overtime), body_format)
             sheet.write(row, 10, self._set_hour_format(
@@ -319,6 +327,58 @@ class AttendanceReport(models.TransientModel):
                 l['difference_check_in']), body_format)
 
             row += 1
+
+        sheet.write(row, 0,  'Нийт', header_format)
+        sheet.write(row, 1, '', body_format)
+        sheet.write(row, 2, self._total_by_field(
+            lines, 'work_days'), body_format)
+        sheet.write(row, 3, self._set_hour_format(
+            self._total_by_field(lines, 'work_hours')), body_format)
+        sheet.write(row, 4, self._total_by_field(
+            lines, 'worked_days'), body_format)
+        sheet.write(row, 5, self._set_hour_format(
+            self._total_by_field(lines, 'worked_hours')), body_format)
+        sheet.write(row, 7, self._set_hour_format(
+            self._total_by_field(lines, 'overtime_holiday')), body_format)
+
+        sheet.write(row, 8, self._set_hour_format(
+            total_confirmed_time), body_format)
+
+        sheet.write(row, 6, self._set_hour_format(
+            total_approved_time) or '', body_format)
+
+        sheet.write(row, 9, self._set_hour_format(
+            total_overtime_all), body_format)
+        sheet.write(row, 10, self._set_hour_format(
+            self._total_by_field(lines, 'informal_overtime')), body_format)
+        sheet.write(row, 11, self._set_hour_format(
+            self._total_by_field(lines, 'overtime_holiday')), body_format)
+        sheet.write(row, 12, self._set_hour_format(
+            self._total_by_field(lines, 'overtime')), body_format)
+        sheet.write(row, 13, '', body_format)
+        sheet.write(row, 14, '', body_format)
+        sheet.write(row, 15, '', body_format)
+
+        sheet.write(row, 16, self._set_hour_format(
+            self._total_by_field(lines, 'paid_req_time')), body_format)
+        sheet.write(row, 17, '', body_format)
+        sheet.write(row, 18, self._set_hour_format(
+            self._total_by_field(lines, 'unpaid_req_time')), body_format)
+
+        sheet.write(row, 19, '', body_format)
+        sheet.write(row, 20, '', body_format)
+        sheet.write(row, 21, '', body_format)
+        sheet.write(row, 22, '', body_format)
+        sheet.write(row, 23, '', body_format)
+        sheet.write(row, 24, '', body_format)
+
+        sheet.write(row, 25, self._total_by_field(
+            lines, 'take_off_day'), body_format)
+        sheet.write(row, 26, self._set_hour_format(
+            self._total_by_field(lines, 'difference_check_out')), body_format)
+
+        sheet.write(row, 27, self._set_hour_format(
+            self._total_by_field(lines, 'difference_check_in')), body_format)
 
         # last row
         row += 2
@@ -510,6 +570,7 @@ class AttendanceReport(models.TransientModel):
                     i += 1
                 last_emp = l['hr_employee'][0]
                 row = 10
+            total_confirmed_time = 0.0
 
             sheet.write(row, 0, l['work_day'] or '', body_format)
             sheet.write(row, 1, l['work_days'] or '', body_format)
@@ -528,7 +589,7 @@ class AttendanceReport(models.TransientModel):
             confirmed_time = 0
 
             confirmed_time = l['informal_overtime'] + l['overtime']
-
+            total_confirmed_time += confirmed_time
             sheet.write(row, 10, self._set_hour_format(
                 confirmed_time), body_format)
             sheet.write(row, 11, self._set_hour_format(
@@ -558,6 +619,47 @@ class AttendanceReport(models.TransientModel):
 
             row += 1
 
+        sheet.write(row, 0, 'Нийт', header_format)
+        sheet.write(row, 1, self._total_by_field(
+            lines, 'work_days'), body_format)
+        sheet.write(row, 2, self._set_hour_format(
+            self._total_by_field(lines, 'work_hours')), body_format)
+        sheet.write(row, 3, self._total_by_field(
+            lines, 'worked_days'), body_format)
+        sheet.write(row, 4, self._set_hour_format(
+            self._total_by_field(lines, 'worked_hours')), body_format)
+        sheet.write(row, 5, '', body_format)
+        sheet.write(row, 6, '', body_format)
+        sheet.write(row, 8, self._set_hour_format(
+            self._total_by_field(lines, 'overtime_holiday')), body_format)
+
+        sheet.write(row, 10, self._set_hour_format(
+            total_confirmed_time), body_format)
+        sheet.write(row, 11, self._set_hour_format(
+            self._total_by_field(lines, 'informal_overtime')), body_format)
+        sheet.write(row, 12, self._set_hour_format(
+            self._total_by_field(lines, 'overtime_holiday')), body_format)
+        sheet.write(row, 14, self._set_hour_format(
+            self._total_by_field(lines, 'overtime')), body_format)
+        sheet.write(row, 17, self._set_hour_format(
+            self._total_by_field(lines, 'paid_req_time')), body_format)
+        sheet.write(row, 19, self._set_hour_format(
+            self._total_by_field(lines, 'unpaid_req_time')), body_format)
+        sheet.write(row, 20, '', body_format)
+        sheet.write(row, 21, '', body_format)
+        sheet.write(row, 22, '', body_format)
+        sheet.write(row, 23, '', body_format)
+        sheet.write(row, 24, '', body_format)
+        sheet.write(row, 25, '', body_format)
+
+        sheet.write(row, 26, self._total_by_field(
+            lines, 'take_off_day'), body_format)
+        sheet.write(row, 27, self._set_hour_format(
+            self._total_by_field(lines, 'difference_check_out')), body_format)
+
+        sheet.write(row, 28, self._set_hour_format(
+            self._total_by_field(lines, 'difference_check_in')), body_format)
+
         workbook.close()
         output.seek(0)
         response.stream.write(output.read())
@@ -578,3 +680,11 @@ class AttendanceReport(models.TransientModel):
         time = time.time()
         time = time.strftime("%H:%M")
         return time
+
+    @ api.model
+    def _total_by_field(self, list, key):
+        total = 0.0
+        for l in list:
+            if l[key]:
+                total += float(l[key])
+        return total

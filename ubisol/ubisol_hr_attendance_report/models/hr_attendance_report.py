@@ -301,7 +301,8 @@ class HrAttendanceReport(models.Model):
             else:
                 if not record.check_out:
                     informal_overtime += 0.0
-                elif record.check_out < record.end_work:
+                # ali 1 taldaa huruu daraagui bol iluu tsag bodohgui
+                elif record.check_in and record.check_out < record.end_work:
                     informal_overtime += 0.0
                 else:
                     delta = record.check_out - record.end_work
@@ -392,12 +393,16 @@ class HrAttendanceReport(models.Model):
 
     @ api.depends("check_in", "start_work")
     def _compute_difference_check_in(self):
+        setting_obj = self.env['hr.attendance.settings'].search(
+            [], limit=1, order='id desc')
         for record in self:
             if record.hr_employee_schedule.id == 0:
                 record.difference_check_in = 0
             else:
                 if record.check_in:
                     if record.start_work >= record.check_in:
+                        record.difference_check_in = 0
+                    elif (setting_obj.late_min * 3600) <= (record.check_in - record.start_work).total_seconds():
                         record.difference_check_in = 0
                     else:
                         record.difference_check_in = self._diff_by_hours(
@@ -588,16 +593,24 @@ class HrAttendanceReport(models.Model):
                 check_in = record.start_work
                 check_out = record.end_work
                 if record.check_out and record.check_in:
-                    check_in = record.check_in
+                    # ajildaa ert irsen eseh
+                    if record.check_in > record.start_work:
+                        check_in = record.check_in
+                    else:
+                        check_in = record.start_work
                     check_out = record.check_out
                     delta = check_out - check_in
                     worked_hours = delta.total_seconds() / 3600.0 - diff
+
                 elif record.check_out:
                     record.check_out
                     delta = check_out - check_in
                     worked_hours = delta.total_seconds() / 3600.0 - setting_obj.late_subtrack - diff
                 elif record.check_in:
-                    check_in = record.check_in
+                    if record.check_in > record.start_work:
+                        check_in = record.check_in
+                    else:
+                        check_in = record.start_work
                     delta = check_out - check_in
                     worked_hours = delta.total_seconds() / 3600.0 - setting_obj.late_subtrack - diff
                 else:
@@ -1139,7 +1152,8 @@ class HrAttendanceReport(models.Model):
             domain = [('work_day', '>=', start_date),
                       ('work_day', '<=', end_date)]
 
-        att_report_obj = self.env['hr.attendance.report'].search(domain, order='full_name asc, work_day asc')
+        att_report_obj = self.env['hr.attendance.report'].search(
+            domain, order='full_name asc, work_day asc')
         raw_data = att_report_obj.read([
             'full_name',
             'work_day',
