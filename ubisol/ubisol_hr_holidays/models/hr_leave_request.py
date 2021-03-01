@@ -58,7 +58,6 @@ class UbisolHolidaysRequest(models.Model):
         ('duration_check', "CHECK ( number_of_days >= 0 )", "If you want to change the number of days you should use the 'period' mode"),
     ]
 
-
     def get_filtered_record(self):
         record_ids = []
         user = self.env['res.users'].browse(self._uid)
@@ -244,10 +243,10 @@ class UbisolHolidaysRequest(models.Model):
             if holiday.leave_overtime_type == 'manager_proved_overtime':
                 holiday.frequency_request = True 
 
-    @api.onchange('employee_ids')
-    def _change_employee_ids(self):
-        for holiday in self:
-            _logger.info(holiday.employee_ids)
+    # @api.onchange('employee_ids')
+    # def _change_employee_ids(self):
+    #     for holiday in self:
+    #         _logger.info(holiday.employee_ids)
 
     @api.depends('number_of_days')
     def _compute_number_of_days_display(self):
@@ -275,6 +274,16 @@ class UbisolHolidaysRequest(models.Model):
         if not self._context.get('leave_fast_create'):
             leave_types = self.env['hr.leave.type'].browse([values.get('holiday_status_id') for values in vals_list if values.get('holiday_status_id')])
             mapped_validation_type = {leave_type.id: leave_type.validation_type for leave_type in leave_types}
+            multi_employee_request = False
+
+            for values in vals_list:
+                employee_ids = values.get('employee_ids')[0][2]
+                if not employee_ids:
+                    break
+                
+                multi_employee_request = True
+                employees = self.env['hr.employee'].browse(employee_ids)
+                vals_list = self._prepare_employees_holiday_vals_list(employees, vals_list[0])
 
             for values in vals_list:
                 employee_id = values.get('employee_id', False)
@@ -320,6 +329,8 @@ class UbisolHolidaysRequest(models.Model):
                 elif not self._context.get('import_file'):
                     holiday_sudo.activity_update()
 
+        if multi_employee_request:
+            return holidays[0]
         return holidays                                
 
     def _get_department_child(self, department, res):
@@ -328,6 +339,27 @@ class UbisolHolidaysRequest(models.Model):
                 res.append(child.id)
                 self._get_department_child(child, res)
         return res      
+
+    def _prepare_employees_holiday_vals_list(self, employees, values):
+        # self.ensure_one()
+        date_from = datetime.strptime(values.get('date_from'), '%Y-%m-%d %H:%M:%S')
+        date_to = datetime.strptime(values.get('date_to'), '%Y-%m-%d %H:%M:%S')
+        work_days_data = employees._get_work_days_data_batch(date_from, date_to)
+        return [{
+            'name': values.get('name'),
+            'holiday_type': 'employee',
+            'holiday_status_id': values.get('holiday_status_id'),
+            'date_from': values.get('date_from'),
+            'date_to': values.get('date_to'),
+            'request_date_from': values.get('date_from'),
+            'request_date_to': values.get('date_to'),
+            'notes': values.get('notes'),
+            'number_of_days': work_days_data[employee.id]['days'],
+            'employee_id': employee.id,
+            'department_id': employee.department_id.id,
+            'state': 'validate',
+            'allowed_overtime_time': values.get('allowed_overtime_time'),
+        } for employee in employees]
 
     def _prepare_employees_holiday_values(self, employees):
         self.ensure_one()

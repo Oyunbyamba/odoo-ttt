@@ -227,18 +227,18 @@
                     'invisible': [('holiday_type', '!=', 'employee')]
                     }"/>
             </xpath>
-            <xpath expr="//field[@name='department_id']" position="after">
+            <!-- <xpath expr="//field[@name='department_id']" position="after">
                 <field name="department_ids" groups="hr_holidays.group_hr_holidays_user" attrs="{
                     'required': [('holiday_type', '=', 'department')],
                     'invisible': [('holiday_type', '!=', 'department')]
                     }"/>
-            </xpath>
+            </xpath> -->
             <xpath expr="//field[@name='employee_id']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//field[@name='department_id']" position="attributes">
+            <!-- <xpath expr="//field[@name='department_id']" position="attributes">
                 <attribute name="invisible">1</attribute>
-            </xpath>
+            </xpath> -->
         </field>
     </record>
 
