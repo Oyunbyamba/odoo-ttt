@@ -221,34 +221,24 @@
             <xpath expr="//field[@name='payslip_status']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-            <xpath expr="//field[@name='employee_id']" position="before">
-                <field name="id"/>
+            <field name="employee_id" position="replace"/>
+            <field name="department_id" position="replace"/>
+            <xpath expr="//field[@name='holiday_type']" position="after">
+                <field name="employee_id" groups="hr_holidays.group_hr_holidays_user" attrs="{
+                    'required': [('holiday_type', '=', 'employee')],
+                    'invisible': [('id', '=', False)]
+                    }"/>
             </xpath>
             <xpath expr="//field[@name='employee_id']" position="after" >
                 <field name="employee_ids" groups="hr_holidays.group_hr_holidays_user" attrs="{
                     'required': [('holiday_type', '=', 'employee')],
-                    'invisible': [('holiday_type', '!=', 'employee')]
+                    'invisible': ['|', ('holiday_type', '!=', 'employee'), ('id', '!=', False)]
                     }"/>
-            </xpath>
-            <field name="employee_id" groups="hr_holidays.group_hr_holidays_user" attrs="{
-                'required': [('holiday_type', '=', 'employee')],
-                'invisible': [('id', '=', False)]
-                }"/>
-
-            <field name="report_note" attrs="{'invisible': [('id', '=', False)]}" placeholder="e.g. Report to the next month..."/>                
-            <!-- <xpath expr="//field[@name='employee_id']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath> -->
-
-            <!-- <xpath expr="//field[@name='department_id']" position="after">
-                <field name="department_ids" groups="hr_holidays.group_hr_holidays_user" attrs="{
+                <field name="department_id" groups="hr_holidays.group_hr_holidays_user" attrs="{
                     'required': [('holiday_type', '=', 'department')],
-                    'invisible': [('holiday_type', '!=', 'department')]
-                    }"/>
-            </xpath> -->
-            <!-- <xpath expr="//field[@name='department_id']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath> -->
+                    'invisible': [('holiday_type', '!=', ('department'))]
+                    }"/>    
+            </xpath>
         </field>
     </record>
 
