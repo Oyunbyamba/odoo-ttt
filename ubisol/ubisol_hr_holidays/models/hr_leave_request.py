@@ -271,10 +271,10 @@ class UbisolHolidaysRequest(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         """ Override to avoid automatic logging of creation """
+        multi_employee_request = False
         if not self._context.get('leave_fast_create'):
             leave_types = self.env['hr.leave.type'].browse([values.get('holiday_status_id') for values in vals_list if values.get('holiday_status_id')])
             mapped_validation_type = {leave_type.id: leave_type.validation_type for leave_type in leave_types}
-            multi_employee_request = False
 
             for values in vals_list:
                 employee_ids = values.get('employee_ids')[0][2]

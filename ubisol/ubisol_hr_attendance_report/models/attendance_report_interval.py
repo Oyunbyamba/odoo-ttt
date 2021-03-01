@@ -508,9 +508,15 @@ class AttendanceReport(models.TransientModel):
                 sheet.write(5, 0, 'Овог,нэр (ID) ', header_footer_format)
                 if filters['calculate_type'] == 'employee':
                     sheet.write(5, 1, title[2], footer_format_bold)
-
                 else:
-                    sheet.write(5, 1, l['full_name'], footer_format_bold)
+                    part_str = l['full_name'].partition(' ')
+                    firstname = part_str[0]
+                    part_str2 = part_str[2].partition(' ')
+                    lastname = part_str2[0]
+                    pin = part_str2[2][1:-1]
+
+                    fullname = lastname + ' ' + firstname.upper() + ' (' + pin + ')'
+                    sheet.write(5, 1, fullname, footer_format_bold)
 
                 sheet.write(5, 28, 'Системээс таталт хийсэн огноо: ' +
                             datetime.today().strftime('%Y.%m.%d'), header_right_format)
