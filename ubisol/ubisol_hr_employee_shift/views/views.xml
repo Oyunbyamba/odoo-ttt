@@ -178,6 +178,16 @@
       </field>
     </record>
 
+    <record model="ir.actions.act_window" id="ubisol_hr_employee_shift.action_window_shift">
+      <field name="name">Employee Shifts</field>
+      <field name="res_model">hr.employee.shift</field>
+      <field name="view_mode">tree,form</field>
+      <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+          Ээлжийн хуваарийн төлөвлөгөө
+        </p>
+      </field>
+    </record>
 
     <!-- Top menu item -->
     <menuitem 
