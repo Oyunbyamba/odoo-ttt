@@ -1,0 +1,128 @@
+<odoo>
+  <data>
+
+    <record id="hr_employee_schedule_form" model="ir.ui.view">
+      <field name="name">hr.employee.schedule</field>
+      <field name="model">hr.employee.schedule</field>
+      <field name="arch" type="xml">
+        <form string="Schedules" create="false">
+          <sheet>
+            <group>
+              <group>
+                <field name="hr_employee" readonly="1"/>
+              </group>
+              <group>
+                <field name="shift_type" readonly="1"/>
+                <field name="week_day" attrs="{'invisible':[('shift_type', '!=', 'days')]}"/>
+                <field name="day_period" attrs="{'invisible':[('shift_type', '!=', 'shift')]}"/>
+              </group>
+              <group>
+                <field name="workplan_id"/>
+              </group>
+              <group>
+                <field name="work_day" string="Огноо" invisible="1"/>
+                <field name="start_work"/>
+                <field name="end_work"/>
+              </group>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="hr_employee_schedule_timeline" model="ir.ui.view">
+      <field name="model">hr.employee.schedule</field>
+      <field name="type">timeline</field>
+      <field name="arch" type="xml">
+        <timeline
+          date_start="start_work"
+          date_stop="end_work"
+          mode="week"
+          default_group_by="hr_employee"
+          event_open_popup="true"
+          zoomKey="ctrlKey"
+          colors="#f2d096: day_period_int==1; #49beb7: day_period_int==2; #ed8975: day_period_int==3; #2F4858: day_period_int==4; #57423F: day_period_int==5;"
+          creatable="false"
+          updatable="true"
+          draggable="false"
+          removable="false"
+        >
+          <field name="day_period" />
+          <field name="start_time"/>
+          <field name="end_time"/>
+          <templates>
+            <t t-name="timeline-item">
+              <div class="o_project_timeline_item">
+                <span name="display_name">
+                  <t t-esc="record.day_period[1]" />
+                </span>
+                <small name="start_end_time" class="text-muted ml4">
+                    <t t-esc="record.start_time"/> - 
+                    <t t-esc="record.end_time"/>
+                </small>
+              </div>
+            </t>
+          </templates>
+        </timeline>
+      </field>
+    </record>
+
+    <record id="view_employee_tree" model="ir.ui.view">
+      <field name="name">hr.employee.schedule.tree</field>
+      <field name="model">hr.employee.schedule</field>
+      <field name="arch" type="xml">
+        <tree string="Employees" expand="false" create="false" edit="false" default_order="id desc">
+          <field name="hr_employee" string="Ажилтан"/>
+          <field name="work_day" string="Огноо"/>
+          <field name="shift_type"/>
+          <field name="week_day" attrs="{'invisible':[('shift_type', '!=', 'days')]}"/>
+          <field name="day_period" attrs="{'invisible':[('shift_type', '!=', 'shift')]}"/>
+          <field name="start_work_time" string=" Эхлэх хугацаа" widget="float_time"/>
+          <field name="end_work_time" string=" Дуусах хугацаа" widget="float_time"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="hr_employee_schedule_search" model="ir.ui.view">
+        <field name="name">hr.employee.schedule.search</field>
+        <field name="model">hr.employee.schedule</field>
+        <field name="arch" type="xml">
+            <search string="Search">
+              <field name="employee_name" string="Ажилтан"/>
+              <field name="pin" string="Пин код"/>
+              <filter string="Өмнө сар" name="start_prev_month"
+                  domain="[('date_from', '>=', (context_today()-relativedelta(months=1)).strftime('%Y-%m-01')),
+                  ('date_from', '&lt;', context_today().strftime('%Y-%m-01'))]"/>
+              <filter string="Энэ сар" name="start_this_month"
+                  domain="[('date_from', '>=', context_today().strftime('%Y-%m-01')),
+                  ('date_from', '&lt;', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
+              <filter string="Дараа сар" name="next_month_request"
+                  domain="[('date_from', '>=', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01')),
+                  ('date_from', '&lt;', (context_today()+relativedelta(months=2)).strftime('%Y-%m-01'))]"/> 
+              <searchpanel>
+                <field name="hr_employee_shift_template" string="Хуваарийн загвар" icon="fa-calendar"/>
+                <field name="hr_department" string="Хэлтэс" icon="fa-building"/>
+              </searchpanel>
+            </search>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="ubisol_hr_employee_shift.action_window_emp_schedule">
+      <field name="name">Ажиллах төлөвлөгөө</field>
+      <field name="res_model">hr.employee.schedule</field>
+      <field name="view_mode">timeline,tree,form</field>
+      <field name="context">{'search_default_start_this_month':1}</field>
+      <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+          Ажиллах төлөвлөгөө
+        </p>
+      </field>
+    </record>
+
+    <!-- menu categories -->
+    <menuitem name="Ажиллах төлөвлөгөө" id="ubisol_hr_employee_shift.schedules" parent="ubisol_hr_employee_shift.employee_shift"
+              action="ubisol_hr_employee_shift.action_window_emp_schedule" sequence="0"
+              groups="ubisol_hr_attendance_upgrade.group_hr_attendance_responsible,hr_attendance.group_hr_attendance_user,hr_attendance.group_hr_attendance_manager"/>
+
+  </data>
+</odoo>

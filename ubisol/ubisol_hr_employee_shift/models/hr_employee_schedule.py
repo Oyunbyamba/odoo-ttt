@@ -64,6 +64,12 @@ class HrEmployeeSchedule(models.Model):
         string="End Work Time", compute="_compute_end_work_time", required=True, help="End Work Time")
     department_id = fields.Many2one(related='hr_employee.department_id')
     shift_name = fields.Char(related='hr_employee_shift.name') 
+    pin = fields.Char(related='hr_employee.pin')
+    employee_name = fields.Char(related='hr_employee.name')
+    start_time = fields.Char(compute="_compute_start_time")
+    end_time = fields.Char(compute="_compute_end_time")
+    employee_ids = fields.Many2many(compute='_compute_employee_ids')
+
 
     # @api.model
     # def _fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
@@ -139,24 +145,27 @@ class HrEmployeeSchedule(models.Model):
                 minute = date_result.minute
                 record.end_work_time = hour + minute/60
 
-    @api.onchange("start_work")
-    def _change_work_day(self):
+    @api.depends("end_work")
+    def _compute_end_work_time(self):
         for record in self:
-            if record.start_work:
+            if record.end_work:
                 user_tz = self.env.user.tz or pytz.utc
                 local = pytz.timezone(user_tz)
                 date_result = pytz.utc.localize(
-                    record.start_work).astimezone(local)
-                record.work_day = date_result
-                record.week_day = str(date_result.weekday())       
+                    record.end_work).astimezone(local)
+                hour = date_result.hour
+                minute = date_result.minute
+                record.end_work_time = hour + minute/60            
 
-    # @api.model
-    # def write(self, vals):
-    #     # employee_shift = super(HrEmployeeSchedule, self).write(vals)
-    #     employee_shift = self.env['hr.employee.schedule'].browse(id).write(vals)
-    #     _logger.info(employee_shift)
+    @api.depends("start_work_time")
+    def _compute_start_time(self):
+        for record in self:
+            record.start_time = self._set_hour_format(record.start_work_time)  
 
-    #     return employee_shift
+    @api.depends("end_work_time")
+    def _compute_end_time(self):
+        for record in self:
+            record.end_time = self._set_hour_format(record.end_work_time)  
 
     @api.model
     def get_departments(self):
@@ -167,3 +176,8 @@ class HrEmployeeSchedule(models.Model):
         for i in range(0, len(dat)):
             data.append({'label': dat[i][2], 'value': dat[i][0]})
         return data
+
+    @ api.model
+    def _set_hour_format(self, val):
+        result = '{0:02.0f}:{1:02.0f}'.format(*divmod(val * 60, 60))
+        return result

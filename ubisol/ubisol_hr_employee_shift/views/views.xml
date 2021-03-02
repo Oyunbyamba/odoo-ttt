@@ -83,85 +83,6 @@
       </field>
     </record>
 
-    <record id="hr_employee_schedule_form" model="ir.ui.view">
-      <field name="name">hr.employee.schedule</field>
-      <field name="model">hr.employee.schedule</field>
-      <field name="arch" type="xml">
-        <form string="Schedules" create="false">
-          <sheet>
-            <group>
-              <group>
-                <field name="hr_employee" readonly="1"/>
-              </group>
-              <group>
-                <field name="shift_type" readonly="1"/>
-                <field name="week_day" attrs="{'invisible':[('shift_type', '!=', 'days')]}"/>
-                <field name="day_period" attrs="{'invisible':[('shift_type', '!=', 'shift')]}"/>
-              </group>
-              <group>
-                <field name="workplan_id" invisible="1"/>
-              </group>
-              <group>
-                <field name="work_day" string="Огноо" invisible="1"/>
-                <field name="start_work"/>
-                <field name="end_work"/>
-              </group>
-            </group>
-          </sheet>
-        </form>
-      </field>
-    </record>
-
-    <!-- <record id="hr_employee_workplan_form" model="ir.ui.view">
-      <field name="name">hr.employee.workplan</field>
-      <field name="model">hr.employee.workplan</field>
-      <field name="arch" type="xml">
-        <form string="Schedules" create="false" edit="false">
-          <sheet>
-            <group>
-              <field name="employee_id" string="Ажилтан" readonly="1"/>
-            </group>
-            <group>
-              <field name="shift_id" string="Хуваарь" readonly="1"/>
-            </group>
-            <group>
-              <div>
-                <button id="emp_schedules"  name="emp_schedules" string="Ажиллах график" type="object" class="oe_highlight"/>
-              </div>
-            </group>
-            <group>
-              <div class="schedule_table"></div>
-            </group>
-            <group>
-              <field name="schedule_ids" string="Ажиллах хуваарь">
-                <tree default_order="work_day desc" editable="bottom">
-                  <field name="work_day" string="Огноо"/>
-                  <field name="shift_type"/>
-                  <field name="week_day" attrs="{'invisible':[('shift_type', '!=', 'days')]}"/>
-                  <field name="day_period" attrs="{'invisible':[('shift_type', '!=', 'shift')]}"/>
-                  <field name="start_work_time" string=" Эхлэх хугацаа" widget="float_time"/>
-                  <field name="end_work_time" string="Дуусах хугацаа" widget="float_time"/>
-                </tree>
-              </field>
-            </group>
-          </sheet>
-        </form>
-      </field>
-    </record> -->
-
-    <!-- <record model="ir.ui.view" id="hr_employee_inherit_form_view1">
-      <field name="name">hr.employee.form.view</field>
-      <field name="model">hr.employee</field>
-      <field name="inherit_id" ref="ubisol_hr_employee_upgrade.hr_employee_inherit_form_view"/>
-      <field name="arch" type="xml">
-        <xpath expr="//page[@name='public']/div/div/group[7]" position="after">
-          <group name="resignation" string="Хуваарь">
-            <field name="shift_id"/>
-          </group>
-        </xpath>
-      </field>
-    </record> -->
-
     <record id="shift_template_kanban_view" model="ir.ui.view">
       <field name="name">employee.shift.kanban</field>
       <field name="model">resource.calendar</field>
@@ -214,88 +135,6 @@
       </field>
     </record>
 
-    <record id="view_employee_tree2" model="ir.ui.view">
-      <field name="name">hr.employee.schedule.tree</field>
-      <field name="model">hr.employee.schedule</field>
-      <field name="arch" type="xml">
-        <tree string="Employees" expand="false" create="false" edit="false" default_order="id desc">
-          <field name="hr_employee" string="Ажилтан"/>
-          <field name="work_day" string="Огноо"/>
-          <field name="shift_type"/>
-          <field name="week_day" attrs="{'invisible':[('shift_type', '!=', 'days')]}"/>
-          <field name="day_period" attrs="{'invisible':[('shift_type', '!=', 'shift')]}"/>
-          <field name="start_work_time" string=" Эхлэх хугацаа" widget="float_time"/>
-          <field name="end_work_time" string=" Дуусах хугацаа" widget="float_time"/>
-        </tree>
-      </field>
-    </record>
-
-    <record id="hr_employee_schedule_timeline" model="ir.ui.view">
-      <field name="model">hr.employee.schedule</field>
-      <field name="type">timeline</field>
-      <field name="arch" type="xml">
-        <timeline
-          date_start="start_work"
-          date_stop="end_work"
-          mode="week"
-          default_group_by="hr_employee"
-          event_open_popup="true"
-          zoomKey="ctrlKey"
-          colors="#f2d096: day_period_int==1; #49beb7: day_period_int==2; #ed8975: day_period_int==3; #2F4858: day_period_int==4; #57423F: day_period_int==5;"
-          creatable="true"
-          updatable="true"
-          draggable="true"
-          removable="true"
-        >
-          <field name="day_period" />
-          <field name="workplan_id" />
-          <templates>
-            <t t-name="timeline-item">
-              <div class="o_project_timeline_item">
-                <span name="display_name">
-                  <t t-esc="record.day_period[1]" />
-                </span>
-              </div>
-            </t>
-          </templates>
-        </timeline>
-      </field>
-    </record>
-
-    <!--search view for the patient-->
-    <!-- <record id="hr_employee_schedule_search" model="ir.ui.view">
-        <field name="name">hr.employee.workplan.search</field>
-        <field name="model">hr.employee.workplan</field>
-        <field name="arch" type="xml">
-            <search string="Search">
-              <group expand="0" string="Group By">
-                <filter string="Ажиллах хуваариар бүлэглэх" name="shift_id" context="{'group_by': 'shift_id'}"/>
-              </group>
-              <searchpanel>
-                <field name="department_id" string="Хэлтэс" icon="fa-building"/>
-                <field name="calendar_id" string="Ажлын хуваарь" icon="fa-calendar"/>
-              </searchpanel>
-            </search>
-        </field>
-    </record> -->
-
-    <record id="hr_employee_schedule_search" model="ir.ui.view">
-        <field name="name">hr.employee.schedule.search</field>
-        <field name="model">hr.employee.schedule</field>
-        <field name="arch" type="xml">
-            <search string="Search">
-              <group expand="0" string="Group By">
-                <filter string="Ажиллах хуваариар бүлэглэх" name="hr_employee_shift" context="{'group_by': 'hr_employee_shift'}"/>
-                <filter string="Ажилтанаар бүлэглэх" name="hr_employee" context="{'group_by': 'hr_employee'}"/>
-              </group>
-              <searchpanel>
-                <field name="hr_department" string="Хэлтэс" icon="fa-building"/>
-                <field name="hr_employee_shift_template" string="Ажлын хуваарь" icon="fa-calendar"/>
-              </searchpanel>
-            </search>
-        </field>
-    </record>
-
     <record id="hr_employee_shift_search" model="ir.ui.view">
         <field name="name">hr.employee.shift.search</field>
         <field name="model">hr.employee.shift</field>
@@ -317,6 +156,10 @@
             <searchpanel>
               <field name="shift_type" string="Төрөл" icon="fa-calendar"/>
             </searchpanel>
+            <group expand="0" string="Group By">
+                <filter string="Ажилтанаар бүлэглэх" name="hr_employ
+                ee" context="{'group_by': 'hr_employee'}"/>
+              </group>
           </xpath>
         </field>
     </record>
@@ -335,68 +178,20 @@
       </field>
     </record>
 
-    <record model="ir.actions.act_window" id="ubisol_hr_employee_shift.action_window_shift">
-      <field name="name">Employee Shifts</field>
-      <field name="res_model">hr.employee.shift</field>
-      <field name="view_mode">tree,form</field>
-      <field name="help" type="html">
-        <p class="oe_view_nocontent_create">
-          Ээлжийн хуваарийн төлөвлөгөө
-        </p>
-      </field>
-    </record>
-
-    <record model="ir.actions.act_window" id="ubisol_hr_employee_shift.action_window_schedule">
-      <field name="name">Employee Shift Schedules</field>
-      <field name="res_model">hr.employee.schedule</field>
-      <field name="view_mode">timeline</field>
-      <field name="help" type="html">
-        <p class="oe_view_nocontent_create">
-          Ээлжийн хуваарь
-        </p>
-      </field>
-    </record>
-
-    <!-- <record model="ir.actions.act_window" id="ubisol_hr_employee_shift.action_window_emp_schedule_prev">
-      <field name="name">Ээлжийн хуваарь</field>
-      <field name="res_model">hr.employee.workplan</field>
-      <field name="view_mode">tree,form</field>
-      <field name="context">{"search_default_shift_id":1}</field>
-      <field name="help" type="html">
-        <p class="oe_view_nocontent_create">
-          Ээлжийн хуваарь
-        </p>
-      </field>
-    </record> -->
-
-    <record model="ir.actions.act_window" id="ubisol_hr_employee_shift.action_window_emp_schedule">
-      <field name="name">Ээлжийн хуваарь</field>
-      <field name="res_model">hr.employee.schedule</field>
-      <field name="view_mode">tree,form</field>
-      <field name="context">{"search_default_hr_employee_shift":1, "search_default_hr_employee": 1}</field>
-      <field name="help" type="html">
-        <p class="oe_view_nocontent_create">
-          Ээлжийн хуваарь
-        </p>
-      </field>
-    </record>
 
     <!-- Top menu item -->
     <menuitem 
-      name="Employee Shifts" 
+      name="Ажиллах график" 
       id="ubisol_hr_employee_shift.employee_shift" 
       groups="ubisol_hr_attendance_upgrade.group_hr_attendance_responsible,hr_attendance.group_hr_attendance_user,hr_attendance.group_hr_attendance_manager"
       sequence="10"
     />
 
     <!-- menu categories -->
-    <menuitem name="Schedules" id="ubisol_hr_employee_shift.schedules" parent="ubisol_hr_employee_shift.employee_shift"
-              action="ubisol_hr_employee_shift.action_window_emp_schedule" sequence="0"
-              groups="ubisol_hr_attendance_upgrade.group_hr_attendance_responsible,hr_attendance.group_hr_attendance_user,hr_attendance.group_hr_attendance_manager"/>
-    <menuitem name="Shifts" id="ubisol_hr_employee_shift.shifts" parent="ubisol_hr_employee_shift.employee_shift"
+    <menuitem name="Ажлын төлөвлөгөө" id="ubisol_hr_employee_shift.shifts" parent="ubisol_hr_employee_shift.employee_shift"
               action="ubisol_hr_employee_shift.action_window_shift" sequence="1"
               groups="hr_attendance.group_hr_attendance_user,hr_attendance.group_hr_attendance_manager" />
-    <menuitem name="Configure" id="ubisol_hr_employee_shift.configure" parent="ubisol_hr_employee_shift.employee_shift"
+    <menuitem name="Тохиргоо" id="ubisol_hr_employee_shift.configure" parent="ubisol_hr_employee_shift.employee_shift"
               action="ubisol_hr_employee_shift.action_window_calendar" sequence="2"
               groups="hr_attendance.group_hr_attendance_manager"/>
 

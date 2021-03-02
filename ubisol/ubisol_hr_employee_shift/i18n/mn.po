@@ -35,11 +35,6 @@ msgid "Color Index"
 msgstr "Өнгө"
 
 #. module: ubisol_hr_employee_shift
-#: model:ir.ui.menu,name:ubisol_hr_employee_shift.configure
-msgid "Configure"
-msgstr "Тохиргоо"
-
-#. module: ubisol_hr_employee_shift
 #: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule__create_uid
 #: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_shift__create_uid
 #: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar_dayperiod__create_uid
@@ -160,12 +155,6 @@ msgid "Employee Shift Template"
 msgstr "Ажлын хуваарийн загвар"
 
 #. module: ubisol_hr_employee_shift
-#: model:ir.actions.act_window,name:ubisol_hr_employee_shift.action_window_shift
-#: model:ir.ui.menu,name:ubisol_hr_employee_shift.employee_shift
-msgid "Employee Shifts"
-msgstr "Ажиллах хуваарь"
-
-#. module: ubisol_hr_employee_shift
 #: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule__date_to
 #: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule__work_day
 #: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_shift__date_to
@@ -274,11 +263,6 @@ msgid "Saturday"
 msgstr "Бямба"
 
 #. module: ubisol_hr_employee_shift
-#: model:ir.ui.menu,name:ubisol_hr_employee_shift.schedules
-msgid "Schedules"
-msgstr "Ажиллах график"
-
-#. module: ubisol_hr_employee_shift
 #: model_terms:ir.ui.view,arch_db:ubisol_hr_employee_shift.hr_employee_schedule_search
 msgid "Search"
 msgstr "Хайх"
@@ -306,11 +290,6 @@ msgstr "Ажлын хуваарийн загвар"
 #: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_resource_calendar__shift_type
 msgid "Shift Type"
 msgstr "Төрөл"
-
-#. module: ubisol_hr_employee_shift
-#: model:ir.ui.menu,name:ubisol_hr_employee_shift.shifts
-msgid "Shifts"
-msgstr "Ажлын хуваарь"
 
 #. module: ubisol_hr_employee_shift
 #: model:ir.model.fields,field_description:ubisol_hr_employee_shift.field_hr_employee_schedule__start_work
