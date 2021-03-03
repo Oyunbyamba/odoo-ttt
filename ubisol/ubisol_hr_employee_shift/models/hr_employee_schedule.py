@@ -62,7 +62,7 @@ class HrEmployeeSchedule(models.Model):
         string="Start Work Time", compute="_compute_start_work_time", required=True, help="Start Work Time")
     end_work_time = fields.Float(
         string="End Work Time", compute="_compute_end_work_time", required=True, help="End Work Time")
-    department_id = fields.Many2one(related='hr_employee.department_id')
+    user_department_id = fields.Many2one(related='create_uid.department_id')
     shift_name = fields.Char(related='hr_employee_shift.name') 
     pin = fields.Char(related='hr_employee.pin')
     employee_name = fields.Char(related='hr_employee.name')

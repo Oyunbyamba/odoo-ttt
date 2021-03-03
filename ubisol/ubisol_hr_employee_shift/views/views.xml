@@ -12,7 +12,7 @@
       <field name="name">hr.employee.shift</field>
       <field name="model">hr.employee.shift</field>
       <field name="arch" type="xml">
-        <form string="shifts">
+        <form string="shifts" create="false" delete="false">
           <sheet>
             <group>
               <group>
@@ -83,19 +83,6 @@
       </field>
     </record>
 
-    <!-- <record model="ir.ui.view" id="hr_employee_inherit_form_view1">
-      <field name="name">hr.employee.form.view</field>
-      <field name="model">hr.employee</field>
-      <field name="inherit_id" ref="ubisol_hr_employee_upgrade.hr_employee_inherit_form_view"/>
-      <field name="arch" type="xml">
-        <xpath expr="//page[@name='public']/div/div/group[7]" position="after">
-          <group name="resignation" string="Хуваарь">
-            <field name="shift_id"/>
-          </group>
-        </xpath>
-      </field>
-    </record> -->
-
     <record id="shift_template_kanban_view" model="ir.ui.view">
       <field name="name">resource.calendar.kanban</field>
       <field name="model">resource.calendar</field>
@@ -127,6 +114,19 @@
       </field>
     </record>
 
+    <record id="view_employee_shift_tree" model="ir.ui.view">
+      <field name="name">hr.employee.shift.tree</field>
+      <field name="model">hr.employee.shift</field>
+      <field name="arch" type="xml">
+        <tree string="Ажиллах төлөвлөгөө" expand="false" edit="false" delete="false" default_order="id desc">
+          <field name="name" string="Нэр"/>
+          <field name="assign_type" string="Төрөл"/>
+          <field name="date_from" string="Эхлэх хугацаа"/>
+          <field name="date_to" string="Дуусах хугацаа"/>
+        </tree>
+      </field>
+    </record>
+
     <record id="view_employee_tree1" model="ir.ui.view">
       <field name="name">hr.employee.workplan.tree</field>
       <field name="model">hr.employee.workplan</field>
@@ -145,8 +145,29 @@
         <field name="model">hr.employee.shift</field>
         <field name="arch" type="xml">
             <search string="Search">
+              <field name="hr_employee" string="Ажилтан"/>
+              <field name="pin" string="Пин код"/>
+              <field name="resource_calendar_ids" string="Хуваарийн загвар"/>
+              <field name="name" string="Ажиллах төлөвлөгөө"/>
+              <field name="hr_department" string="Хэлтэс"/>
+
+              <filter string="Өмнө сар" name="start_prev_month"
+                  domain="[('work_day', '>=', (context_today()-relativedelta(months=1)).strftime('%Y-%m-01')),
+                  ('work_day', '&lt;', context_today().strftime('%Y-%m-01'))]"/>
+              <filter string="Энэ сар" name="start_this_month"
+                  domain="[('work_day', '>=', context_today().strftime('%Y-%m-01')),
+                  ('work_day', '&lt;', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
+              <filter string="Дараа сар" name="next_month_request"
+                  domain="[('work_day', '>=', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01')),
+                  ('work_day', '&lt;', (context_today()+relativedelta(months=2)).strftime('%Y-%m-01'))]"/>
+
+              <group expand="0" string="Group By">
+                <filter string="Хэлтэсээр бүлэглэх" name="hr_department" context="{'group_by': 'hr_department'}"/>
+                <filter string="Хуваарийн загвараар бүлэглэх" name="resource_calendar_ids" context="{'group_by': 'resource_calendar_ids'}"/>
+              </group>
               <searchpanel>
                 <field name="resource_calendar_ids" string="Хуваарийн загвар" icon="fa-calendar"/>
+                <field name="hr_department" string="Хэлтэс" icon="fa-building"/>
               </searchpanel>
             </search>
         </field>
@@ -192,7 +213,7 @@
 
     <!-- Top menu item -->
     <menuitem 
-      name="Ажиллах график" 
+      name="Ажиллах хуваарь" 
       id="ubisol_hr_employee_shift.employee_shift" 
       groups="ubisol_hr_attendance_upgrade.group_hr_attendance_responsible,hr_attendance.group_hr_attendance_user,hr_attendance.group_hr_attendance_manager"
       sequence="10"
