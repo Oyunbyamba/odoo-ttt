@@ -140,6 +140,8 @@
         <field name="model">hr.employee.shift</field>
         <field name="arch" type="xml">
             <search string="Search">
+              <field name="employee_name" string="Ажилтан"/>
+              <field name="pin" string="Пин код"/>
               <searchpanel>
                 <field name="resource_calendar_ids" string="Хуваарийн загвар" icon="fa-calendar"/>
               </searchpanel>
@@ -179,7 +181,7 @@
     </record>
 
     <record model="ir.actions.act_window" id="ubisol_hr_employee_shift.action_window_shift">
-      <field name="name">Employee Shifts</field>
+      <field name="name">Ээлжийн хуваарийн төлөвлөгөө</field>
       <field name="res_model">hr.employee.shift</field>
       <field name="view_mode">tree,form</field>
       <field name="help" type="html">
@@ -198,7 +200,7 @@
     />
 
     <!-- menu categories -->
-    <menuitem name="Ажлын төлөвлөгөө" id="ubisol_hr_employee_shift.shifts" parent="ubisol_hr_employee_shift.employee_shift"
+    <menuitem name="Ажиллах төлөвлөгөө" id="ubisol_hr_employee_shift.shifts" parent="ubisol_hr_employee_shift.employee_shift"
               action="ubisol_hr_employee_shift.action_window_shift" sequence="1"
               groups="hr_attendance.group_hr_attendance_user,hr_attendance.group_hr_attendance_manager" />
     <menuitem name="Тохиргоо" id="ubisol_hr_employee_shift.configure" parent="ubisol_hr_employee_shift.employee_shift"

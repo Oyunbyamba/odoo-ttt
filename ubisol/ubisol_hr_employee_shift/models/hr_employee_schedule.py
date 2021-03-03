@@ -68,7 +68,6 @@ class HrEmployeeSchedule(models.Model):
     employee_name = fields.Char(related='hr_employee.name')
     start_time = fields.Char(compute="_compute_start_time")
     end_time = fields.Char(compute="_compute_end_time")
-    employee_ids = fields.Many2many(compute='_compute_employee_ids')
 
 
     # @api.model
@@ -143,19 +142,7 @@ class HrEmployeeSchedule(models.Model):
                     record.end_work).astimezone(local)
                 hour = date_result.hour
                 minute = date_result.minute
-                record.end_work_time = hour + minute/60
-
-    @api.depends("end_work")
-    def _compute_end_work_time(self):
-        for record in self:
-            if record.end_work:
-                user_tz = self.env.user.tz or pytz.utc
-                local = pytz.timezone(user_tz)
-                date_result = pytz.utc.localize(
-                    record.end_work).astimezone(local)
-                hour = date_result.hour
-                minute = date_result.minute
-                record.end_work_time = hour + minute/60            
+                record.end_work_time = hour + minute/60         
 
     @api.depends("start_work_time")
     def _compute_start_time(self):

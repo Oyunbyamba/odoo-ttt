@@ -30,8 +30,10 @@ class HrEmployeeShift(models.Model):
         'hr.employee', string="Employee", help="Employee")
     date_from = fields.Date(string='Starting Date')
     date_to = fields.Date(string='End Date')
-    resource_calendar_ids = fields.Many2one(
-        'resource.calendar', 'Working Hours')
+    resource_calendar_ids = fields.Many2one('resource.calendar', 'Working Hours')
+    employee_name = fields.Char(related='hr_employee.name')
+    pin = fields.Char(related='hr_employee.pin')
+
 
     def _convert_datetime_field(self, datetime_field, user=None):
         user_tz = self.env.user.tz or pytz.utc
