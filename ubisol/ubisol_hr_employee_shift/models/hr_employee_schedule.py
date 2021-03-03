@@ -68,6 +68,7 @@ class HrEmployeeSchedule(models.Model):
     employee_name = fields.Char(related='hr_employee.name')
     start_time = fields.Char(compute="_compute_start_time")
     end_time = fields.Char(compute="_compute_end_time")
+    period_type_name = fields.Char(string='Ээлж', compute='_compute_period_type_name')
 
 
     # @api.model
@@ -154,6 +155,13 @@ class HrEmployeeSchedule(models.Model):
         for record in self:
             record.end_time = self._set_hour_format(record.end_work_time)  
 
+    @api.depends("week_day", "day_period")
+    def _compute_period_type_name(self):
+        for record in self:
+            record.period_type_name = record.day_period.name
+            if record.shift_type == 'days':
+                record.period_type_name = record.week_day
+
     @api.model
     def get_departments(self):
         cr = self._cr
@@ -164,7 +172,7 @@ class HrEmployeeSchedule(models.Model):
             data.append({'label': dat[i][2], 'value': dat[i][0]})
         return data
 
-    @ api.model
+    @api.model
     def _set_hour_format(self, val):
         result = '{0:02.0f}:{1:02.0f}'.format(*divmod(val * 60, 60))
         return result

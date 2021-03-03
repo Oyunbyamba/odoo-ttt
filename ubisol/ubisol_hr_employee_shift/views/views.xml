@@ -83,42 +83,46 @@
       </field>
     </record>
 
+    <!-- <record model="ir.ui.view" id="hr_employee_inherit_form_view1">
+      <field name="name">hr.employee.form.view</field>
+      <field name="model">hr.employee</field>
+      <field name="inherit_id" ref="ubisol_hr_employee_upgrade.hr_employee_inherit_form_view"/>
+      <field name="arch" type="xml">
+        <xpath expr="//page[@name='public']/div/div/group[7]" position="after">
+          <group name="resignation" string="Хуваарь">
+            <field name="shift_id"/>
+          </group>
+        </xpath>
+      </field>
+    </record> -->
+
     <record id="shift_template_kanban_view" model="ir.ui.view">
-      <field name="name">employee.shift.kanban</field>
+      <field name="name">resource.calendar.kanban</field>
       <field name="model">resource.calendar</field>
       <field name="arch" type="xml">
-        <kanban class="oe_background_grey o_kanban_dashboard o_shift_kanban">
-          <field name="color"/>
+        <kanban class="o_kanban_mobile">
+          <field name="name"/>
+          <field name="shift_type"/>
           <templates>
-            <t t-name="kanban-box">
-              <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card oe_kanban_global_click ">
-                <div class="o_dropdown_kanban dropdown">
-                    <a class="dropdown-toggle btn" data-toggle="dropdown" href="#" >
-                      <span class="fa fa-bars fa-lg"/>
-                    </a>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                      <t t-if="widget.editable"><li><a type="edit">Засах</a></li></t>
-                      <t t-if="widget.deletable"><li><a type="delete">Устгах</a></li></t>
-                      <li><ul class="oe_kanban_colorpicker" data-field="color"/></li>
-                    </ul>
-                </div>
-                <div class="oe_kanban_content">
-                  <div class="row">
-                    <div class="o_primary style_shift">
-                      <div class="text-center"><span style="margin-left:25px;"><strong><field name="name"/></strong></span></div>
-                    </div>
+              <t t-name="kanban-box">
+                  <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                      <div class="oe_kanban_content">
+                        <div class="row">
+                          <div class="o_primary style_shift">
+                            <div class="text-center"><span style="margin-left:25px;"><strong><field name="name"/></strong></span></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="oe_kanban_details">
+                        <strong>
+                          <div class="text-center">
+                            <span t-if="record.shift_type.value">[<field name="shift_type"/>]</span>
+                          </div>
+                        </strong>
+                      </div>
                   </div>
-                </div>
-                <div class="oe_kanban_details">
-                  <strong>
-                    <div class="text-center">
-                      <span t-if="record.shift_type.value">[<field name="shift_type"/>]</span>
-                    </div>
-                  </strong>
-                </div>
-              </div>
-            </t>
-          </templates>
+              </t>
+            </templates>
         </kanban>
       </field>
     </record>
@@ -135,13 +139,12 @@
       </field>
     </record>
 
+    <!--search view for the patient-->
     <record id="hr_employee_shift_search" model="ir.ui.view">
         <field name="name">hr.employee.shift.search</field>
         <field name="model">hr.employee.shift</field>
         <field name="arch" type="xml">
             <search string="Search">
-              <field name="employee_name" string="Ажилтан"/>
-              <field name="pin" string="Пин код"/>
               <searchpanel>
                 <field name="resource_calendar_ids" string="Хуваарийн загвар" icon="fa-calendar"/>
               </searchpanel>
@@ -158,10 +161,6 @@
             <searchpanel>
               <field name="shift_type" string="Төрөл" icon="fa-calendar"/>
             </searchpanel>
-            <group expand="0" string="Group By">
-                <filter string="Ажилтанаар бүлэглэх" name="hr_employ
-                ee" context="{'group_by': 'hr_employee'}"/>
-              </group>
           </xpath>
         </field>
     </record>
