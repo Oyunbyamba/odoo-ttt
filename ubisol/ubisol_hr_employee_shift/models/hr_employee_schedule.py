@@ -35,13 +35,13 @@ class HrEmployeeSchedule(models.Model):
         ('shift', 'Shift')
     ], default="shift", tracking=True)
     week_day = fields.Selection([
-        ('0', 'Monday'),
-        ('1', 'Tuesday'),
-        ('2', 'Wednesday'),
-        ('3', 'Thursday'),
-        ('4', 'Friday'),
-        ('5', 'Saturday'),
-        ('6', 'Sunday')
+        ('0', 'Даваа'),
+        ('1', 'Мягмар'),
+        ('2', 'Лхагва'),
+        ('3', 'Пүрэв'),
+        ('4', 'Баасан'),
+        ('5', 'Бямба'),
+        ('6', 'Ням')
     ], 'Day of Week', required=True, index=True, default='0')
     day_period = fields.Many2one(
         'resource.calendar.dayperiod', string="Day Period", help="Day Period of Work")
@@ -160,7 +160,7 @@ class HrEmployeeSchedule(models.Model):
         for record in self:
             record.period_type_name = record.day_period.name
             if record.shift_type == 'days':
-                record.period_type_name = record.week_day
+                record.period_type_name = dict(self._fields['week_day'].selection).get(record.week_day)
 
     @api.model
     def get_departments(self):

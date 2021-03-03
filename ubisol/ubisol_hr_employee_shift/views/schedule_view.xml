@@ -5,7 +5,7 @@
       <field name="name">hr.employee.schedule</field>
       <field name="model">hr.employee.schedule</field>
       <field name="arch" type="xml">
-        <form string="Schedules" create="false">
+        <form string="Schedules" create="false" delete='false'>
           <sheet>
             <group>
               <group>
