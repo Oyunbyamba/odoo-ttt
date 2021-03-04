@@ -30,7 +30,7 @@ class HrEmployeeShift(models.Model):
         'hr.employee', string="Employee", help="Employee")
     date_from = fields.Date(string='Starting Date')
     date_to = fields.Date(string='End Date')
-    resource_calendar_ids = fields.Many2one('resource.calendar', 'Working Hours')
+    resource_calendar_ids = fields.Many2one('resource.calendar', 'Хуваарийн загвар')
     pin = fields.Char(related='hr_employee.pin')
 
 

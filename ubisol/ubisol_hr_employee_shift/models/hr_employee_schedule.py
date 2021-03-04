@@ -17,7 +17,7 @@ class HrEmployeeSchedule(models.Model):
     workplan_id = fields.Many2one(
         'hr.employee.workplan', string="Workplan", help="Workplan")
     hr_department = fields.Many2one(
-        'hr.department', string="Department", help="Department")
+        'hr.department', string="Department", domain=_department_id_domain help="Department")
     hr_employee = fields.Many2one(
         'hr.employee', string="Employee", help="Employee")
     hr_employee_shift = fields.Many2one(
@@ -62,7 +62,6 @@ class HrEmployeeSchedule(models.Model):
         string="Start Work Time", compute="_compute_start_work_time", required=True, help="Start Work Time")
     end_work_time = fields.Float(
         string="End Work Time", compute="_compute_end_work_time", required=True, help="End Work Time")
-    user_department_id = fields.Many2one(related='create_uid.department_id')
     shift_name = fields.Char(related='hr_employee_shift.name') 
     pin = fields.Char(related='hr_employee.pin')
     employee_name = fields.Char(related='hr_employee.name')
@@ -92,6 +91,9 @@ class HrEmployeeSchedule(models.Model):
     #     if self.user_has_groups('hr_holidays.group_hr_holidays_responsible'):
     #         return ['|', ('parent_id', '=', self.env.user.employee_id.id), ('user_id', '=', self.env.user.id)]
     #     return [('user_id', '=', self.env.user.id)]
+
+    def _department_id_domain(self):
+        return [('hr_department', '=', self.env.user.employee_id.department_id.id)]
 
     @api.depends("day_period", "shift_type")
     def _compute_day_period(self):
