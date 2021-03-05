@@ -25,21 +25,12 @@ class UbisolHolidaysRequest(models.Model):
     _inherit = 'hr.leave'
     _description = "Time Off"
 
-    def _default_holiday_status_id(self):
-        if self.user_has_groups('hr_holidays.group_hr_holidays_user') or self.user_has_groups('hr_holidays.group_hr_holidays_manager'):
-            domain = [('valid', '=', True)]
-        if self.user_has_groups('hr_holidays.group_hr_holidays_responsible'):
-            domain = [('valid', '=', True), ('overtime_type', '!=', 'total_allowed_overtime')]
-        domain = [('valid', '=', True), ('overtime_type', '=', 'basic_overtime_request')]
-        _logger.info(domain)
-        return self.env['hr.leave.type'].search(domain, limit=1)
-
     def _holiday_status_id_domain(self):
         if self.user_has_groups('hr_holidays.group_hr_holidays_user') or self.user_has_groups('hr_holidays.group_hr_holidays_manager'):
             return [('valid', '=', True)]
         if self.user_has_groups('hr_holidays.group_hr_holidays_responsible'):
             return [('valid', '=', True), ('overtime_type', '!=', 'total_allowed_overtime')]
-        return [('valid', '=', True), ('overtime_type', '=', 'basic_overtime_request')]
+        return [('valid', '=', True), ('overtime_type', '!=', 'total_allowed_overtime'), ('overtime_type', '!=', 'manager_proved_overtime')]
 
     holiday_type = fields.Selection(selection=[
         ('employee', 'Ажилтан'),
@@ -49,7 +40,7 @@ class UbisolHolidaysRequest(models.Model):
     holiday_status_id = fields.Many2one(
         "hr.leave.type", string="Time Off Type", required=True, readonly=True,
         states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]},
-        domain=_holiday_status_id_domain, default=_default_holiday_status_id)
+        domain=_holiday_status_id_domain)
     years_of_worked_state = fields.Integer('Улсад ажилласан жил', compute='_compute_years_of_worked_state', readonly=True)
     years_of_worked_company = fields.Float('Байгууллагад ажилласан жил', digits=(2,1), compute='_compute_years_of_worked_company', readonly=True)
     employee_holiday = fields.Integer('Ажилласан жил', compute='_compute_employee_holiday', readonly=True)

@@ -1,0 +1,44 @@
+<odoo>
+  <data>
+
+    <record id="hr_employee_schedule_form" model="ir.ui.view">
+      <field name="name">hr.employee.workplan.form</field>
+      <field name="model">hr.employee.workplan</field>
+      <field name="arch" type="xml">
+        <form string="Ажиллах график" create="false" delete='false'>
+          <sheet>
+            <group>
+              <group>
+                <field name="shift_id"/>
+                <field name="calendar_id"/>
+              </group>
+              <group>
+                <field name="start_work"/>
+                <field name="end_work"/>
+              </group>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+
+    <record id="hr_employee_workplan_calendar_view" model="ir.ui.view">
+        <field name="name">hr.employee.workplan.view.calendar</field>
+        <field name="model">hr.employee.workplan</field>
+        <field name="arch" type="xml">
+            <calendar string="Ажиллах төлөвлөгөө" 
+              event_open_popup="true" 
+              date_start="start_work" 
+              date_stop="end_work" 
+              mode="month" 
+              quick_add="False" 
+              color="calendar_id">
+                  <field name="shift_id"/>
+            </calendar>
+        </field>
+    </record>
+
+
+  </data>
+</odoo>

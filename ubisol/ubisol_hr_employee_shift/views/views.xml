@@ -28,6 +28,11 @@
                 <field name="hr_employee" attrs="{'invisible':[('assign_type', '!=', 'employee')]}"/>
                 <field name="resource_calendar_ids"/>
               </group>
+              <group>
+                <div>
+                  <button id="shift_workplans" name="shift_workplans" string="Ажиллах график" type="object" class="oe_highlight"/>
+                </div>
+              </group>
             </group>
           </sheet>
         </form>

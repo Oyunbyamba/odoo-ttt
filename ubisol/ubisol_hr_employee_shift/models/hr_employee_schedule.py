@@ -95,7 +95,6 @@ class HrEmployeeSchedule(models.Model):
     #         return ['|', ('parent_id', '=', self.env.user.employee_id.id), ('user_id', '=', self.env.user.id)]
     #     return [('user_id', '=', self.env.user.id)]
     
-    
 
     @api.depends("day_period", "shift_type")
     def _compute_day_period(self):

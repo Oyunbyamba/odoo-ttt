@@ -31,6 +31,7 @@
         'views/views.xml',
         'views/templates.xml',
         'views/schedule_view.xml',
+        'views/workplan_view.xml',
         'wizards/create_datetime_filter.xml',
     ],
     'qweb': [
