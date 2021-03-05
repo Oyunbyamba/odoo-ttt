@@ -283,7 +283,8 @@ class AttendanceReport(models.TransientModel):
                 confirmed_time), body_format)
             total_confirmed_time += confirmed_time
 
-            approved_time = confirmed_time - l['difference_check_in']
+            approved_time = confirmed_time - \
+                l['difference_check_in']-l['overtime_holiday']
             sheet.write(row, 6, self._set_hour_format(
                 approved_time) or '', body_format)
             total_approved_time += approved_time
@@ -589,6 +590,7 @@ class AttendanceReport(models.TransientModel):
                 l['check_in']), body_format)
             sheet.write(row, 6, self._set_check_format(
                 l['check_out']), body_format)
+
             sheet.write(row, 8, self._set_hour_format(
                 l['overtime_holiday']), body_format)
 
@@ -598,12 +600,18 @@ class AttendanceReport(models.TransientModel):
             total_confirmed_time += confirmed_time
             sheet.write(row, 10, self._set_hour_format(
                 confirmed_time), body_format)
+
+            sheet.write(row, 7, self._set_hour_format(
+                confirmed_time - l['overtime_holiday']), body_format)
+
             sheet.write(row, 11, self._set_hour_format(
                 l['informal_overtime']) or '', body_format)
             sheet.write(row, 12, self._set_hour_format(
                 l['overtime_holiday']), body_format)
-            sheet.write(row, 14, self._set_hour_format(
+
+            sheet.write(row, 13, self._set_hour_format(
                 l['overtime']) or '', body_format)
+            sheet.write(row, 14, '', body_format)
             sheet.write(row, 17, self._set_hour_format(
                 l['paid_req_time']) or '', body_format)
             sheet.write(row, 19, self._set_hour_format(

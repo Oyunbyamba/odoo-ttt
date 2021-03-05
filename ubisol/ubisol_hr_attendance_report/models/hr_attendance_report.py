@@ -877,12 +877,26 @@ class HrAttendanceReport(models.Model):
     def get_attendances_report(self, filters):
         start_date = filters['start_date']
         end_date = filters['end_date']
-
+        ceo_approved_overtime = 0.0
+        helper = [ceo_approved_overtime]
         if filters['calculate_type']:
             if filters['calculate_type'] == 'employee':
                 employee_id = filters['employee_id']
                 domain = [('hr_employee', '=', employee_id), ('work_day',
                                                               '>=', start_date), ('work_day', '<=', end_date)]
+
+                approved_overtimes = self.env['hr.leave'].sudo().search([
+                    ('date_from', '>=', start_date),
+                    ('date_to', '<=', end_date),
+                    ('department_id', '=', employee_id.department_id.id),
+                    ('holiday_status_id.overtime_type',
+                     '=', 'total_allowed_overtime'),
+                    ('state', 'in', ['validate', 'validate1'])
+                ])
+                for approved in approved_overtimes:
+                    ceo_approved_overtime = approved.allowed_overtime_time
+                    helper = [ceo_approved_overtime]
+
             else:
                 department_id = filters['department_id']
                 if type(department_id) is int:
@@ -895,6 +909,19 @@ class HrAttendanceReport(models.Model):
                 departments = list(dict.fromkeys(departments))
                 domain = [('hr_department', '=', departments), ('work_day',
                                                                 '>=', start_date), ('work_day', '<=', end_date)]
+                approved_overtimes = self.env['hr.leave'].sudo().search([
+                    ('date_from', '>=', start_date),
+                    ('date_to', '<=', end_date),
+                    ('department_id', 'in', [department_id]),
+                    ('holiday_status_id.overtime_type',
+                     '=', 'total_allowed_overtime'),
+                    ('state', 'in', ['validate', 'validate1'])
+                ], )
+
+                for approved in approved_overtimes:
+                    ceo_approved_overtime = approved.allowed_overtime_time
+                    helper = [ceo_approved_overtime]
+
         else:
             domain = [('work_day', '>=', start_date),
                       ('work_day', '<=', end_date)]
@@ -915,33 +942,44 @@ class HrAttendanceReport(models.Model):
                 'unpaid_req_time',
                 'take_off_day',
                 'difference_check_out',
-                'difference_check_in'
-            ],
-            groupby=['full_name', 'hr_department',
-                     'hr_employee', 'hr_employee_shift'],
+                'difference_check_in',
+                'ceo_approved_overtime:max',
+                'overtime_holiday',
+            ], groupby=['full_name', 'hr_department',
+                        'hr_employee', 'register_id'],
             lazy=False
         )
 
         header = [
             ['full_name', 'Нэр овог'],
-            ['hr_employee_shift', 'Ажиллах хуваарь'],
-            ['work_days', 'Ажиллавал зохих өдөр'],
-            ['work_hours', 'Ажиллавал зохих цаг'],
-            ['worked_days', 'Ажилласан өдөр'],
-            ['formal_worked_hours', 'Хуваарийн ажилласан цаг'],
-            ['worked_hours', 'Нийт ажилласан цаг'],
-            ['overtime', 'Баталсан илүү цаг'],
-            ['informal_overtime', 'Нийт илүү цаг'],
-            ['paid_req_time', 'Цалинтай чөлөө'],
-            ['unpaid_req_time', 'Цалингүй чөлөө'],
+            ['register_id', 'Регистерийн дугаар'],
+            ['work_days', 'Ажиллавал зохих'],
+            ['work_hours', 'Цаг'],
+            ['worked_days', 'Нийт ажилласан'],
+            ['worked_hours', 'Цаг'],
+            ['total_approved_time', 'Цалин бодогдох илүү цаг'],
+            ['overtime_holiday', 'Баяр ёслслын өдөр ажилласан цаг'],  # 7
+            ['total_confirmed_time', 'Батлагдсан илүү цаг'],
+            ['total_informal_overtime', 'Нийт илүү цаг'],
+            ['informal_overtime', 'Хуруу дарж авар илүү цаг'],
+            ['overtime_holiday', 'Баяр ёслолын өдөр ажилласан илүү цаг'],
+            ['overtime', 'Хүсэлтээр баталгаажсан илүү цаг'],
+            ['total_absent_day', 'Нийт ажиллаагүй '],
+            ['total_absent_hour', 'Цаг'],
+            ['paid_req_time', 'Чөлөөтэй цаг '],
+            ['unpaid_req_time', 'Цалингүй'],
+            ['sick_time', 'Өвчтэй цаг'],
+            ['', 'Э.Амралт  /өдөр/'],
+            ['', 'Жирэмсний амралт /өдөр/'],
             ['take_off_day', 'Тасалсан өдөр'],
-            ['difference_check_out', 'Таслалт'],
-            ['difference_check_in', 'Хоцролт']
+            ['difference_check_out', 'Тасалсан цаг'],
+            ['difference_check_in', 'Хоцорсон цаг']
         ]
 
         data = {
             'data': raw_data,
-            'header': header
+            'header': header,
+            'helper': helper
         }
         return data
 

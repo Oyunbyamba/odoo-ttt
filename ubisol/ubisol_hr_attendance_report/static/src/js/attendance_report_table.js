@@ -8,6 +8,8 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
     var rpc = require('web.rpc');
 
     function convertNumToTime(number) {
+        if (!number)
+            return '-';
         var sign = (number >= 0) ? 1 : -1;
         number = number * sign;
         var hour = Math.floor(number);
@@ -50,6 +52,7 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
                 }).then(function (data) {
                     self._renderTitle()
                     self._renderTable(self, data)
+                    $('#ceo-approved-time').text(data.helper[0])
                 });
             });
         },
@@ -86,15 +89,74 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
             var $tbody = $('<tbody>');
             var headers = data.header;
             var rows = data.data;
+            var ceo_approved_time = data.helper[0];
 
             var $tr = $('<tr/>', { class: 'o_data_row' });
             $tr.css({"background-color": "#d9d9d9"})
             headers.forEach(h => {
-                var $cell = $('<th>');
-                $cell.css({"background-color": "#eee", "position": "sticky", "top": "-1px"})
-                $cell.html(h[1]);
-                $tr.append($cell);
+                switch (h[0]) {
+                    case 'work_days':
+                    case 'worked_days':
+                    case 'total_absent_day':  
+                    case 'paid_req_time':  
+                      
+                        var $cell = $('<th colspan="2">');
+                        $cell.css({"background-color": "#eee", "position": "sticky", "top": "-1px","text-align":"center","vertical-align":"middle",})
+                        $cell.html(h[1]);
+                        $tr.append($cell);
+                        break;
+                    case 'work_hours':
+                    case 'worked_hours':
+                    case 'total_absent_hour':
+                    case 'unpaid_req_time':
+                        
+                        
+                        break;
+                    default:
+                        var $cell = $('<th rowspan="2">');
+                        $cell.css({"background-color": "#eee", "position": "sticky", "top": "-1px","text-align":"center","vertical-align":"middle",})
+                        $cell.html(h[1]);
+                        $tr.append($cell);
+                        break;
+                   
+                }
             });
+            $thead.append($tr);
+            $tr = $('<tr/>', { class: 'o_data_row' });
+            $tr.css({"background-color": "#d9d9d9"})
+
+            headers.forEach(h => {
+                switch (h[0]) {
+                    case 'work_days':
+                    case 'worked_days':
+                    case 'total_absent_day':  
+                    
+                    var $cell = $('<th>');
+                    $cell.css({"background-color": "#eee", "position": "sticky", "top": "40px","text-align":"center","vertical-align":"middle",})
+                    $cell.html('Өдөр');
+                    $tr.append($cell);
+                    break;
+                    case 'work_hours':
+                    case 'worked_hours':
+                    case 'total_absent_hour':
+                    case 'unpaid_req_time':
+                        
+                        var $cell = $('<th>');
+                        $cell.css({"background-color": "#eee", "position": "sticky", "top": "40px","text-align":"center","vertical-align":"middle",})
+                        $cell.html(h[1]);
+                        $tr.append($cell);
+                        break;
+                    case 'paid_req_time':
+                            var $cell = $('<th>');
+                            $cell.css({"background-color": "#eee", "position": "sticky", "top": "40px","text-align":"center","vertical-align":"middle",})
+                            $cell.html('Цалинтай');
+                            $tr.append($cell);
+                            break;
+                    default:
+                   
+                }
+            });
+
             $thead.append($tr);
             $table.append($thead);
 
@@ -116,7 +178,7 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
                             break;
                         case 'hr_employee_shift':
                             var $cell = $('<td>');
-                            $cell.html(att[key][1]);
+                            $cell.html(att[key]);
                             $tr.append($cell);
                             break;
                         case 'full_name':
@@ -125,6 +187,45 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
                             $cell.html(att[key]);
                             $tr.append($cell);
                             break;
+                        case 'register_id':
+                                var $cell = $('<th>');
+                                $cell.css({"background-color": "#f2f2f2"})
+                                $cell.html(att[key]);
+                                $tr.append($cell);
+                                break
+                        case 'total_confirmed_time':
+                            var total_confirmed_time = 0.0;
+                            if (ceo_approved_time >= att['informal_overtime']){
+                                total_confirmed_time = att['informal_overtime']+att['overtime']}
+                            else{
+                                total_confirmed_time = ceo_approved_time+att['overtime']}
+                            var $cell = $('<th>');
+                            $cell.css({"background-color": "#f2f2f2"})
+                            $cell.html(convertNumToTime(total_confirmed_time));
+                            $tr.append($cell);
+                            break
+                        case 'total_informal_overtime':
+                                var total_informal_overtime = att['informal_overtime']+att['overtime']+ att['overtime_holiday']
+                                var $cell = $('<th>');
+                                $cell.css({"background-color": "#f2f2f2"})
+                                $cell.html(convertNumToTime(total_informal_overtime));
+                                $tr.append($cell);
+                                break
+                        case 'total_approved_time':
+                                var total_approved_time = 0;
+                                var total_confirmed_time = 0.0;
+                                if (ceo_approved_time >= att['informal_overtime']){
+                                    total_confirmed_time = att['informal_overtime']+att['overtime']}
+                                else{ 
+                                    total_confirmed_time = ceo_approved_time+att['overtime']}
+                        
+                                total_approved_time = total_confirmed_time -att['difference_check_in']-att['overtime_holiday']
+                                var $cell = $('<th>');
+                                $cell.css({"background-color": "#f2f2f2"})
+                                $cell.html(convertNumToTime(total_approved_time));
+                                $tr.append($cell);
+                                break
+                        
                         default:
                             var hours = convertNumToTime(att[key]);
                             var $cell = $('<td>');

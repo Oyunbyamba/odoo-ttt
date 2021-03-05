@@ -22,77 +22,77 @@
             <group>
               <group>
                 <div>
-                  <button id="attendance_report_interval"  name="attendance_report_interval" string="Хайх" type="object" class="oe_highlight"/>
-                  <button id="attendance_report_download"  name="attendance_report_download" string="Дэлгэрэнгүй тайлан" type="object" class="oe_highlight"/>
-                  <button id="total_attendance_report_download"  name="total_attendance_report_download" string="Нэгдсэн тайлан" type="object" class="oe_highlight"/>
+                  <button id="attendance_report_interval" name="attendance_report_interval" string="Хайх" type="object" class="oe_highlight"/>
+                  <button id="attendance_report_download" name="attendance_report_download" string="Дэлгэрэнгүй тайлан" type="object" class="oe_highlight"/>
+                  <button id="total_attendance_report_download" name="total_attendance_report_download" string="Нэгдсэн тайлан" type="object" class="oe_highlight"/>
                 </div>
               </group>
             </group>
             <group>
-              <div class="attendance_report"></div>
-            </group>
-          </sheet>
-        </form>
-      </field>
-    </record>
+              <div style="text-align:left; font-size:11px;">
+                <h3 style="font-size:12px;">Тайлбар</h3>
+                <p>-Тушаалаар баталгаажиж олговол зохих илүү цагийн хязгаар:                  <span id="ceo-approved-time" style="font-weight:bold">
+                  </span>
+                </p>
+                <p>-Тухайн өдөр 120 минут буюу түүнээс дээш хоцорсон бол ажил тасалсанд тооцно. /ЦБЖ-ын 6.2.5/<br/>
+              -Хүсэлтээр баталгаажсан илүү цаг [15] нь хязгаарлалтанд орохгүй шууд олгогдохыг анхаарна уу.<br/>
+              -Цалин бодогдох илүү цаг [9] -аас хоцорсон минутыг хасаж тооцож байгааг анхаарна уу.<br/>
+              -Баяр ёслолын өдөр [10] болон шөнийн цагаар ажилласан илүү цаг [11]-ийг Батлагдсан илүү цаг [12]-аас тооцоолон, тусд нь харуулсан болно.<br/>
+              -Хуруу дарж бодогдсон илүү цаг [14] дотор баяр ёслол, шөнийн цагаар ажилласан цаг орсон байна. Иймд тухайн өдрүүдэд ажиллахдаа заавал хуруугаа дарсан байна.</p>
+        </div>
+      </group>
+      <group>
+        <div class="attendance_report"></div>
 
-    <record id="hr_attendance_report_view_filter" model="ir.ui.view">
-      <field name="name">hr_attendance_report_filter</field>
-      <field name="model">hr.attendance.report</field>
-      <field name="arch" type="xml">
-        <search string="Ирцийн график хайлт">
-          <field name="hr_employee"/>
-          <field name="hr_department" operator="child_of"/>
-          <separator/>
-          <filter string="Амралтын өдөр харуулахгүй" name="is_rest" domain="[('day_period_int', '!=', 3)]"/>
-          <separator/>
-          <filter string="Илүү цагтай" name="informalovertime" domain="[('informal_overtime', '>', 0.0)]" />
-          <separator/>
-          <filter string="Баталсан илүү цагтай" name="overtime" domain="[('overtime', '>', 0.0)]" />
-          <separator/>
-          <filter string="Гарахдаа дараагүй" name="nocheckout" domain="[('check_out', '=', False)]" />
-          <filter string="Орохдоо дараагүй" name="nocheckin" domain="[('check_in', '=', False)]" />
-          <group expand="0" string="Group By">
-            <filter string="Хэлтэлсээр бүлэглэх" name="department" context="{'group_by': 'hr_department'}"/>
-            <filter string="Ажилтнаар бүлэглэх" name="employee" context="{'group_by': 'hr_employee'}"/>
-            <separator/>
-            <filter string="Ажиллах хуваариар бүлэглэх" name="groupby_name" context="{'group_by': 'hr_employee_shift'}"/>
-          </group>
-        </search>
-      </field>
-    </record>
+      </group>
+    </sheet>
+  </form>
+</field>
+</record>
 
-    <!-- actions opening views on models -->
-    <record id="ubisol_hr_attendance_report_action" model="ir.actions.act_window">
-      <field name="name">Ирцийн график</field>
-      <field name="res_model">attendance.report.interval</field>
-      <field name="view_mode">form</field>
-    </record>
+<record id="hr_attendance_report_view_filter" model="ir.ui.view">
+<field name="name">hr_attendance_report_filter</field>
+<field name="model">hr.attendance.report</field>
+<field name="arch" type="xml">
+  <search string="Ирцийн график хайлт">
+    <field name="hr_employee"/>
+    <field name="hr_department" operator="child_of"/>
+    <separator/>
+    <filter string="Амралтын өдөр харуулахгүй" name="is_rest" domain="[('day_period_int', '!=', 3)]"/>
+    <separator/>
+    <filter string="Илүү цагтай" name="informalovertime" domain="[('informal_overtime', '>', 0.0)]" />
+    <separator/>
+    <filter string="Баталсан илүү цагтай" name="overtime" domain="[('overtime', '>', 0.0)]" />
+    <separator/>
+    <filter string="Гарахдаа дараагүй" name="nocheckout" domain="[('check_out', '=', False)]" />
+    <filter string="Орохдоо дараагүй" name="nocheckin" domain="[('check_in', '=', False)]" />
+    <group expand="0" string="Group By">
+      <filter string="Хэлтэлсээр бүлэглэх" name="department" context="{'group_by': 'hr_department'}"/>
+      <filter string="Ажилтнаар бүлэглэх" name="employee" context="{'group_by': 'hr_employee'}"/>
+      <separator/>
+      <filter string="Ажиллах хуваариар бүлэглэх" name="groupby_name" context="{'group_by': 'hr_employee_shift'}"/>
+    </group>
+  </search>
+</field>
+</record>
 
-    <record model="ir.actions.server" id="action_update_attendance_report">
-      <field name="name">Ирцийн график шинэчлэх</field>
-      <field name="model_id" ref="model_hr_attendance_report"/>
-      <field name="type">ir.actions.server</field>
-      <field name="state">code</field>
-      <field name="code">model.calculate_report()</field>
-    </record>
+<!-- actions opening views on models -->
+<record id="ubisol_hr_attendance_report_action" model="ir.actions.act_window">
+<field name="name">Ирцийн график</field>
+<field name="res_model">attendance.report.interval</field>
+<field name="view_mode">form</field>
+</record>
 
-    <menuitem
-      id="menu_ubisol_hr_attendance_report"
-      name="Ирцийн график"
-      action="ubisol_hr_attendance_report_action"
-      parent="hr_attendance.menu_hr_attendance_report"
-      groups="hr_attendance.group_hr_attendance"
-      sequence="15"
-    />
-    <!-- <menuitem
-      id="menu_update_ubisol_hr_attendance_report"
-      name="Update Attendance Report"
-      action="action_update_attendance_report"
-      parent="menu_hr_attendance_report_root"
-      groups="hr_attendance.group_hr_attendance"
-      sequence="25"
-    /> -->
+<record model="ir.actions.server" id="action_update_attendance_report">
+<field name="name">Ирцийн график шинэчлэх</field>
+<field name="model_id" ref="model_hr_attendance_report"/>
+<field name="type">ir.actions.server</field>
+<field name="state">code</field>
+<field name="code">model.calculate_report()</field>
+</record>
 
-  </data>
+<menuitem id="menu_ubisol_hr_attendance_report" name="Ирцийн график" action="ubisol_hr_attendance_report_action" parent="hr_attendance.menu_hr_attendance_report" groups="hr_attendance.group_hr_attendance" sequence="15" />
+<!-- <menuitem id="menu_update_ubisol_hr_attendance_report" name="Update Attendance Report" action="action_update_attendance_report" parent="menu_hr_attendance_report_root" groups="hr_attendance.group_hr_attendance" sequence="25" /> -->
+
+</data>
 </odoo>
