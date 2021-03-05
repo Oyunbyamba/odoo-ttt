@@ -57,7 +57,7 @@ class HrEmployee(models.Model):
         ('3', '3'),
         ('4', '4')
     ], string="Driver's blood type", groups="hr.group_hr_user")
-    certificate = fields.Selection(selection=[
+    certificate = fields.Selection([
         ('Ерөнхий боловсрол', 'Ерөнхий боловсрол'),
         ('Тусгай дунд боловсрол', 'Тусгай дунд боловсрол'),
         ('Дээд боловсрол', 'Дээд боловсрол'),
