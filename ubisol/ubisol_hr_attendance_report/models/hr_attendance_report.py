@@ -394,6 +394,8 @@ class HrAttendanceReport(models.Model):
             if record.hr_employee_schedule.id == 0:
                 record.difference_check_in = 0
             else:
+                _logger.info(record.check_in)
+                _logger.info(record.difference_check_in)
                 if record.check_in:
                     if record.start_work >= record.check_in:
                         record.difference_check_in = 0
