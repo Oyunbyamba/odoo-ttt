@@ -272,12 +272,12 @@ class UbisolHolidaysRequest(models.Model):
             mapped_validation_type = {leave_type.id: leave_type.validation_type for leave_type in leave_types}
 
             for values in vals_list:
-                if values.get('employee_ids'):
+                if values.get('employee_ids')[0][2]:
                     employee_ids = values.get('employee_ids')[0][2]
+                    multi_employee_request = True
                 else:
                     break
                 
-                multi_employee_request = True
                 employees = self.env['hr.employee'].browse(employee_ids)
                 vals_list = self._prepare_employees_holiday_vals_list(employees, vals_list[0])
             
@@ -325,8 +325,9 @@ class UbisolHolidaysRequest(models.Model):
                 elif not self._context.get('import_file'):
                     holiday_sudo.activity_update()
 
-        if multi_employee_request:
+        if multi_employee_request == True:
             return holidays[0]
+
         return holidays                                
 
     def _get_department_child(self, department, res):

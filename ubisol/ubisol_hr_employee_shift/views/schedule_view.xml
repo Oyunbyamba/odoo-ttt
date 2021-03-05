@@ -58,7 +58,7 @@
                 <span name="display_name">
                   <t t-esc="record.day_period[1]" />
                 </span>
-                <small name="start_end_time" class="text-muted ml4">
+                <small name="start_end_time" class="ml4" style="padding: 0">
                     <t t-esc="record.start_time"/> - 
                     <t t-esc="record.end_time"/>
                 </small>
@@ -97,8 +97,14 @@
               <field name="hr_employee_shift" string="Ажиллах төлөвлөгөө"/>
               <field name="hr_department" string="Хэлтэс"/>
 
-              <!-- <filter string="Миний хэлтэс" name="my_department"
-                  domain="[('hr_department', '=', user_department_id)]"/> -->
+              <filter string="Манай хэлтэс, энэ сар" name="my_department_this_month"
+                  domain="['|', ('hr_employee.department_id.member_ids.user_id', '=', uid), ('hr_employee.user_id', '=', uid),
+                  ('work_day', '>=', context_today().strftime('%Y-%m-01')),
+                  ('work_day', '&lt;', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01'))]"
+                  help="Манай хэлтсийн хуваарь"/>
+              <filter string="Манай хэлтcийн хуваарь" name="my_department"
+                  domain="['|', ('hr_employee.department_id.member_ids.user_id', '=', uid), ('hr_employee.user_id', '=', uid)]"
+                  help="Манай хэлтсийн хуваарь"/>    
               <filter string="Өмнө сар" name="start_prev_month"
                   domain="[('work_day', '>=', (context_today()-relativedelta(months=1)).strftime('%Y-%m-01')),
                   ('work_day', '&lt;', context_today().strftime('%Y-%m-01'))]"/>
@@ -124,8 +130,7 @@
       <field name="name">Ажиллах хуваарь</field>
       <field name="res_model">hr.employee.schedule</field>
       <field name="view_mode">tree,timeline,form</field>
-      <field name="limit">15</field>
-      <field name="context">{'search_default_my_department':1, 'search_default_start_this_month':1, 'search_default_employee': 1}</field>    
+      <field name="context">{'search_default_my_department_this_month':1, 'search_default_employee':1}</field>    
       <field name="help" type="html">
         <p class="oe_view_nocontent_create">
           Ажиллах хуваарь

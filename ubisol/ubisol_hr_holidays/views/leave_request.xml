@@ -218,18 +218,14 @@
         <field name="model">hr.leave</field>
         <field name="inherit_id" ref="hr_holidays.hr_leave_view_form_manager"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='payslip_status']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
+            <field name="payslip_status" position="replace"/>
             <field name="employee_id" position="replace"/>
             <field name="department_id" position="replace"/>
             <xpath expr="//field[@name='holiday_type']" position="after">
                 <field name="employee_id" groups="hr_holidays.group_hr_holidays_user" attrs="{
                     'required': [('holiday_type', '=', 'employee')],
-                    'invisible': [('id', '=', False)]
+                    'invisible': ['|', ('holiday_type', '!=', 'employee'), ('id', '=', False)]
                     }"/>
-            </xpath>
-            <xpath expr="//field[@name='employee_id']" position="after" >
                 <field name="employee_ids" groups="hr_holidays.group_hr_holidays_user" attrs="{
                     'required': [('holiday_type', '=', 'employee')],
                     'invisible': ['|', ('holiday_type', '!=', 'employee'), ('id', '!=', False)]
