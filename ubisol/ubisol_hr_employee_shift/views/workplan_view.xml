@@ -9,12 +9,12 @@
           <sheet>
             <group>
               <group>
-                <field name="shift_id"/>
+                <field name="shift_id" readonly='1'/>
                 <field name="calendar_id"/>
               </group>
               <group>
-                <field name="start_work"/>
-                <field name="end_work"/>
+                <field name="date_from" string='Ажил эхлэх'/>
+                <field name="date_to" string='Ажил дуусах'/>
               </group>
             </group>
           </sheet>
@@ -26,15 +26,10 @@
     <record id="hr_employee_workplan_calendar_view" model="ir.ui.view">
         <field name="name">hr.employee.workplan.view.calendar</field>
         <field name="model">hr.employee.workplan</field>
+        <field name="priority" eval="2"/>
         <field name="arch" type="xml">
-            <calendar string="Ажиллах төлөвлөгөө" 
-              event_open_popup="true" 
-              date_start="start_work" 
-              date_stop="end_work" 
-              mode="month" 
-              quick_add="False" 
-              color="calendar_id">
-                  <field name="shift_id"/>
+            <calendar string="Ажиллах төлөвлөгөө" event_open_popup="true" date_start="start_work" date_stop="end_work" mode="month" quick_add="False" color="shift_id">
+                <field name="assign_type"/>
             </calendar>
         </field>
     </record>
