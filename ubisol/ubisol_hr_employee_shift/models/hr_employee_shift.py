@@ -99,7 +99,7 @@ class HrEmployeeShift(models.Model):
         return workplan
 
     def _create_schedules(self, vals, shift):
-        shift_template = self.env['resource.calendar'].browse(shift.resource_calendar_ids)
+        shift_template = self.env['resource.calendar'].browse(vals.get('resource_calendar_ids'))
 
         if shift_template.shift_type == 'days':
             day_ids = shift_template.normal_day_ids
@@ -109,12 +109,12 @@ class HrEmployeeShift(models.Model):
             counter = 0
 
         if shift.assign_type == 'employee':
-            employee_ids = shift.hr_employee
+            employee_ids = vals.get('hr_employee')[0][2]
             employees = self.env['hr.employee'].search(
                 [('id', 'in', employee_ids)])
         else:
             employees = self.env['hr.employee'].search(
-                [('department_id', '=', shift.hr_department)])
+                [('department_id', '=', vals.get('hr_department'))])
 
         DATE_FORMAT = '%Y-%m-%d'
         date_from = datetime.strptime(vals.get('date_from'), DATE_FORMAT)
@@ -250,25 +250,17 @@ class HrEmployeeShift(models.Model):
             date_from = datetime.strptime(vals.get('date_from'), DATE_FORMAT)
             date_to = datetime.strptime(vals.get('date_to'), DATE_FORMAT)
             dates_btwn = date_from
-            shift = self.env['hr.employee.shift'].browse([vals.get('shift_id')])
-
             if vals.get('assign_type') == 'employee':
-                employee_ids = shift.hr_employee
+                employee_ids = vals.get('hr_employee')[0][2]
                 employees = self.env['hr.employee'].search(
                     [('id', 'in', employee_ids)])
             else:
                 employees = self.env['hr.employee'].search(
-                    [('department_id', '=', shift.hr_department)])
+                    [('department_id', '=', vals.get('hr_department'))])
 
             for employee in employees:
                 prev_schedule = self.env['hr.employee.schedule'].search(
-                    [('hr_employee', '=', employee.id), 
-                    ('work_day', '>=', date_from.date()), 
-                    ('work_day', '<=', date_to.date())])
-                _logger.info('prev_schedule')    
-                _logger.info(prev_schedule)    
-                # prev_schedule = self.env['hr.employee.schedule'].search(
-                #     [('hr_employee', '=', employee.id), ('work_day', '>=', date_from.date()), ('work_day', '<=', date_to.date())]).unlink()
+                    [('hr_employee', '=', employee.id), ('work_day', '>=', date_from.date()), ('work_day', '<=', date_to.date())]).unlink()
 
             return None
         else:
@@ -282,7 +274,7 @@ class HrEmployeeShift(models.Model):
 
         shift = super(HrEmployeeShift, self).create(vals)
 
-        self._create_schedules(shift)
+        self._create_schedules(vals, shift)
 
         return shift
 
@@ -292,8 +284,8 @@ class HrEmployeeShift(models.Model):
             raise ValidationError(res.get('message'))
 
         shift = super(HrEmployeeShift, self).write(vals)
-        self.env['hr.employee.schedule'].search(
-            [('hr_employee_shift', '=', self.id)]).unlink()
+        # self.env['hr.employee.schedule'].search(
+        #     [('hr_employee_shift', '=', self.id)]).unlink()
 
         values = {}
         if "hr_department" in vals:

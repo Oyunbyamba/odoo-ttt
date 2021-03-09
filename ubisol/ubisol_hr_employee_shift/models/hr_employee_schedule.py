@@ -58,13 +58,13 @@ class HrEmployeeSchedule(models.Model):
         string="End Work", required=True, help="End Work")
 
     start_work_date = fields.Date(
-        string="Start Work Date", compute="_compute_start_work_date", required=True, help="Start Work Date")
+        string="Start Work Date", compute="_compute_start_work_date", help="Start Work Date")
     end_work_date = fields.Date(
-        string="End Work Date", compute="_compute_end_work_date", required=True, help="End Work Date")
+        string="End Work Date", compute="_compute_end_work_date", help="End Work Date")
     start_work_time = fields.Float(
-        string="Start Work Time", compute="_compute_start_work_time", required=True, help="Start Work Time")
+        string="Start Work Time", compute="_compute_start_work_time", help="Start Work Time")
     end_work_time = fields.Float(
-        string="End Work Time", compute="_compute_end_work_time", required=True, help="End Work Time")
+        string="End Work Time", compute="_compute_end_work_time", help="End Work Time")
     shift_name = fields.Char(related='hr_employee_shift.name') 
     pin = fields.Char(related='hr_employee.pin')
     employee_name = fields.Char(related='hr_employee.name')
