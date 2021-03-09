@@ -28,7 +28,6 @@
     <record id="hr_employee_workplan_calendar_view" model="ir.ui.view">
         <field name="name">hr.employee.workplan.view.calendar</field>
         <field name="model">hr.employee.workplan</field>
-        <field name="priority" eval="2"/>
         <field name="arch" type="xml">
             <calendar string="Ажиллах төлөвлөгөө" 
               event_open_popup="true" 

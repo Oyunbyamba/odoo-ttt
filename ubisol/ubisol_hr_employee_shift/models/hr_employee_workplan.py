@@ -2,12 +2,10 @@
 
 # from odoo import models, fields, api
 
-import pytz
-import logging
+
 from datetime import datetime, timedelta
 from odoo import models, fields, _, api
 
-_logger = logging.getLogger(__name__)
 
 class HrEmployeeWorkplan(models.Model):
     _name = 'hr.employee.workplan'
@@ -15,6 +13,8 @@ class HrEmployeeWorkplan(models.Model):
 
     schedule_ids = fields.One2many(
         'hr.employee.schedule', 'workplan_id', string='Schedule', help='Schedule')
+    employee_id = fields.Many2one('hr.employee')
+    department_id = fields.Many2one('hr.department')
     pin = fields.Char(string="PIN")
     shift_id = fields.Many2one('hr.employee.shift', string='Ажлын төлөвлөгөө')
     calendar_id = fields.Many2one('resource.calendar', string='Ажлын хуваарийн загвар')
@@ -28,6 +28,18 @@ class HrEmployeeWorkplan(models.Model):
     date_to = fields.Date(
         string="End Work Date", compute="_compute_date_to", inverse='_set_date_to', help="End Work Date")
     assign_type = fields.Selection(related='shift_id.assign_type', store=True)
+
+    def emp_schedules(self):
+        domain = [('hr_employee', '=', self.employee_id.id)]
+        action = {
+            "name": "Ажиллах график",
+            "type": "ir.actions.act_window",
+            "res_model": "hr.employee.schedule",
+            'domain': domain,
+            # 'context': {"search_default_employee": 1, "search_default_is_rest": 1},
+            "view_mode": "timeline",
+        }
+        return action
 
     def _set_date_from(self):
         for record in self:
@@ -95,9 +107,3 @@ class HrEmployeeWorkplan(models.Model):
             schedules = log_obj._create_schedules(values, values.get('shift_id'))
 
             return workplan    
-
-    # def unlink(self):
-    #     self.env['hr.employee.workplan'].browse(
-    #         [('id', '=', self.id)]).unlink()
-    #     return super(HrEmployeeWorkplan, self).unlink()
-
