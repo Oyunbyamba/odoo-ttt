@@ -16,7 +16,6 @@ class HrEmployeeWorkplan(models.Model):
     employee_id = fields.Many2one('hr.employee')
     department_id = fields.Many2one('hr.department')
     pin = fields.Char(string="PIN")
-<<<<<<< HEAD
     shift_id = fields.Many2one('hr.employee.shift', string='Ажлын төлөвлөгөө')
     calendar_id = fields.Many2one('resource.calendar', string='Ажлын хуваарийн загвар')
     employee_id = fields.Many2one('hr.employee')
@@ -28,12 +27,6 @@ class HrEmployeeWorkplan(models.Model):
         string="Start Work Date", compute="_compute_date_from", inverse='_set_date_from', help="Start Work Date")
     date_to = fields.Date(
         string="End Work Date", compute="_compute_date_to", inverse='_set_date_to', help="End Work Date")
-=======
-    shift_id = fields.Many2one('hr.employee.shift')
-    calendar_id = fields.Many2one('resource.calendar', 'Working Hours')
-    start_work = fields.Datetime(string='Ажил эхлэх цаг')
-    end_work = fields.Datetime(string='Ажил дуусах цаг')
->>>>>>> parent of 9d981b2d (workplan)
     assign_type = fields.Selection(related='shift_id.assign_type', store=True)
 
     def emp_schedules(self):
@@ -48,7 +41,6 @@ class HrEmployeeWorkplan(models.Model):
         }
         return action
 
-<<<<<<< HEAD
     def _set_date_from(self):
         for record in self:
             record.date_from = record.date_from 
@@ -115,14 +107,3 @@ class HrEmployeeWorkplan(models.Model):
             schedules = log_obj._create_schedules(values, values.get('shift_id'))
 
             return workplan    
-=======
-    def unlink(self):
-        self.env['hr.employee.schedule'].search(
-            [('workplan_id', '=', self.id)]).unlink()
-        return super(HrEmployeeWorkplan, self).unlink()
-
-# class HrEmployeeWork(models.Model):
-#     _inherit = 'hr.employee'
-
-#     shift_id = fields.Many2one('hr.employee.shift')
->>>>>>> parent of 9d981b2d (workplan)
