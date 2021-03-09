@@ -283,9 +283,14 @@ class HrAttendanceReport(models.Model):
     def _compute_informal_overtime(self):
         for record in self:
             informal_overtime = 0.0
+
+            if record.take_off_day == 1:
+                record.informal_overtime = 0.0
+                return
+
             is_rest = True
             if record.shift_type == 'shift':
-                is_rest = record.day_period.is_rest
+                is_rest = record.day_period.is_
             elif int(record.week_day) < 5:
                 is_rest = False
 
@@ -375,18 +380,20 @@ class HrAttendanceReport(models.Model):
                     check_out = record.outside_work_req_id.date_to
                 record.outside_work = self._diff_by_hours(date_from, check_out)
 
-    @ api.depends("check_in", "check_out")
+    @ api.depends("check_in", "check_out", "difference_check_in")
     def _compute_take_off_day(self):
         for record in self:
             if record.hr_employee_schedule.id == 0:
                 record.take_off_day = 0
             else:
+                if (record.difference_check_in * 3600) > 120:
+                    record.take_off_day = 1
                 if not record.check_in and not record.check_out:
                     record.take_off_day = 1
                 else:
                     record.take_off_day = 0
 
-    @ api.depends("check_in", "start_work")
+    @ api.depends("check_in", "start_work", "difference_check_out")
     def _compute_difference_check_in(self):
         setting_obj = self.env['hr.attendance.settings'].search(
             [], limit=1, order='id desc')
@@ -404,6 +411,9 @@ class HrAttendanceReport(models.Model):
                             record.start_work, record.check_in)
                 else:
                     record.difference_check_in = 0
+            # ert garch yavsang hotsorson tsagt oruulna
+            if record.difference_check_out > 0:
+                record.difference_check_in += record.difference_check_out
 
     @ api.depends("check_out", "end_work")
     def _compute_difference_check_out(self):
@@ -485,7 +495,7 @@ class HrAttendanceReport(models.Model):
                     else:
                         record.worked_days = 0.0
 
-    @ api.depends('check_in', "start_work", 'check_out', "end_work", "day_period", "attendance_req_id")
+    @ api.depends('check_in', "start_work", 'check_out', "end_work", "day_period", "attendance_req_id", "take_off_day")
     def _compute_formal_worked_hours(self):
         setting_obj = self.env['hr.attendance.settings'].search(
             [], limit=1, order='id desc')
@@ -493,6 +503,9 @@ class HrAttendanceReport(models.Model):
             is_rest = True
             worked_hours = 0.0
             attendance_req_time = 0.0
+            if record.take_off_day == 1:
+                formal_worked_hours = 0.0
+                return
             if record.shift_type == 'shift':
                 is_rest = record.day_period.is_rest
             elif int(record.week_day) < 5:
@@ -934,7 +947,6 @@ class HrAttendanceReport(models.Model):
                 'work_days',
                 'work_hours',
                 'worked_days',
-                'worked_hours',
                 'formal_worked_hours',
                 'overtime',
                 'informal_overtime',
@@ -956,13 +968,12 @@ class HrAttendanceReport(models.Model):
             ['work_days', 'Ажиллавал зохих'],
             ['work_hours', 'Цаг'],
             ['worked_days', 'Нийт ажилласан'],
-            ['worked_hours', 'Цаг'],
+            ['formal_worked_hours', 'Цаг'],
             ['total_approved_time', 'Цалин бодогдох илүү цаг'],
-            ['overtime_holiday', 'Баяр ёслслын өдөр ажилласан цаг'],  # 7
+            ['overtime_holiday', 'Баяр ёслолын өдөр ажилласан цаг'],  # 7
             ['total_confirmed_time', 'Батлагдсан илүү цаг'],
             ['total_informal_overtime', 'Нийт илүү цаг'],
             ['informal_overtime', 'Хуруу дарж авар илүү цаг'],
-            ['overtime_holiday', 'Баяр ёслолын өдөр ажилласан илүү цаг'],
             ['overtime', 'Хүсэлтээр баталгаажсан илүү цаг'],
             ['total_absent_day', 'Нийт ажиллаагүй '],
             ['total_absent_hour', 'Цаг'],
@@ -972,7 +983,6 @@ class HrAttendanceReport(models.Model):
             ['', 'Э.Амралт  /өдөр/'],
             ['', 'Жирэмсний амралт /өдөр/'],
             ['take_off_day', 'Тасалсан өдөр'],
-            ['difference_check_out', 'Тасалсан цаг'],
             ['difference_check_in', 'Хоцорсон цаг']
         ]
 
