@@ -18,8 +18,8 @@ class HrEmployeeWorkplan(models.Model):
     pin = fields.Char(string="PIN")
     shift_id = fields.Many2one('hr.employee.shift', string='Ажлын төлөвлөгөө')
     calendar_id = fields.Many2one('resource.calendar', string='Ажлын хуваарийн загвар')
-    employee_id = fields.Many2one(related='shift_id.hr_employee')
-    department_id = fields.Many2one(related='shift_id.hr_department')
+    employee_id = fields.Many2one('hr.employee')
+    department_id = fields.Many2one('hr.department')
     start_work = fields.Datetime(string='Ажил эхлэх цаг')
     end_work = fields.Datetime(string='Ажил дуусах цаг')
     start_work_date = fields.Date(
