@@ -2,19 +2,19 @@
 
 # from odoo import models, fields, api
 
-import pytz
-import logging
+
 from datetime import datetime, timedelta
 from odoo import models, fields, _, api
 
-_logger = logging.getLogger(__name__)
 
 class HrEmployeeWorkplan(models.Model):
     _name = 'hr.employee.workplan'
-    _rec_name = 'employee_id'
+    _rec_name = 'calendar_id'
 
     schedule_ids = fields.One2many(
         'hr.employee.schedule', 'workplan_id', string='Schedule', help='Schedule')
+    employee_id = fields.Many2one('hr.employee')
+    department_id = fields.Many2one('hr.department')
     pin = fields.Char(string="PIN")
     shift_id = fields.Many2one('hr.employee.shift', string='Ажлын төлөвлөгөө')
     calendar_id = fields.Many2one('resource.calendar', string='Ажлын хуваарийн загвар')
@@ -27,12 +27,7 @@ class HrEmployeeWorkplan(models.Model):
         string="Start Work Date", compute="_compute_date_from", inverse='_set_date_from', help="Start Work Date")
     date_to = fields.Date(
         string="End Work Date", compute="_compute_date_to", inverse='_set_date_to', help="End Work Date")
-    # start_work_time = fields.Float(
-    #     string="Start Work Time", compute="_compute_start_work_time", help="Start Work Time")
-    # end_work_time = fields.Float(
-    #     string="End Work Time", compute="_compute_end_work_time", help="End Work Time")
     assign_type = fields.Selection(related='shift_id.assign_type', store=True)
-    # name = fields.Char(related='shift_id.name')
 
     def emp_schedules(self):
         domain = [('hr_employee', '=', self.employee_id.id)]
@@ -57,81 +52,58 @@ class HrEmployeeWorkplan(models.Model):
     @api.depends('start_work')
     def _compute_date_from(self):
         for record in self:
-            record.date_from = datetime.strftime(record.start_work, '%Y-%m-%d')
-
-    @api.depends('end_work')
-    def _compute_date_to(self):
-        for record in self:
-            record.date_to = datetime.strftime(record.end_work, '%Y-%m-%d')
-
-    @api.depends("start_work")
-    def _compute_start_work_time(self):
-        for record in self:
             if record.start_work:
                 user_tz = self.env.user.tz or pytz.utc
                 local = pytz.timezone(user_tz)
                 date_result = pytz.utc.localize(
                     record.start_work).astimezone(local)
-                hour = date_result.hour
-                minute = date_result.minute
-                record.start_work_time = hour + minute/60
+                record.date_from = date_result
 
-    @api.depends("end_work")
-    def _compute_end_work_time(self):
+    @api.depends('end_work')
+    def _compute_date_to(self):
         for record in self:
             if record.end_work:
                 user_tz = self.env.user.tz or pytz.utc
                 local = pytz.timezone(user_tz)
                 date_result = pytz.utc.localize(
                     record.end_work).astimezone(local)
-                hour = date_result.hour
-                minute = date_result.minute
-                record.end_work_time = hour + minute/60 
-
+                record.date_to = date_result
 
     @api.model
     def create(self, vals):
-        log_obj = self.env["hr.employee.shift"].search([])
-        res = log_obj._check_duplicated_schedules(vals)
-        
-        _logger.info(vals)
-        _logger.info(vals.get('shift_id'))
-        _logger.info(vals.get('shift_id').resource_calendar_ids)
+        workplan = super(HrEmployeeWorkplan, self).create(vals)
 
-        # workplans = self.env['hr.employee.workplan'].search([
-        #     ('shift_id', '=', vals.get('shift_id')),
-        #     ('work_day', '>=', vals.get('date_from')),
-        #     ('work_day', '<=', vals.get('date_to')),
-        # ])
-        # _logger.info(workplans)
-
-        # schedules = log_obj._create_schedules(vals, vals.get('shift_id'))
-        # shift = super(HrEmployeeWorkplan, self).create(vals)
-
-        return shift
+        return workplan
 
     def write(self, vals):
-        log_obj = self.env["hr.employee.shift"].search([])
-        res = log_obj._check_duplicated_schedules(vals)
-        
-        _logger.info(vals)
-        _logger.info(vals.get('shift_id'))
-        _logger.info(vals.get('shift_id').resource_calendar_ids)
+        for record in self:
+            workplan = super(HrEmployeeWorkplan, self).write(vals)
+            log_obj = self.env["hr.employee.shift"].search([])
+            
+            ids = record.shift_id.hr_employee.read(['id'])
+            employees = []
+            for emp_id in ids:
+                employees.append(emp_id['id'])
+            employees = [[False, 0, employees]]
+            values = {
+                'shift_id': record.shift_id,
+                'resource_calendar_ids': record.calendar_id.id,
+                'start_work': record.start_work,
+                'end_work': record.end_work,
+                'date_from': datetime.strftime(record.date_from, '%Y-%m-%d'),
+                'date_to': datetime.strftime(record.date_to, '%Y-%m-%d'),
+                'assign_type': record.assign_type,
+                'hr_employee': employees,
+                'hr_department': record.shift_id.hr_department.id
+            }   
+            res = log_obj._check_duplicated_schedules(values)
 
-        # workplans = self.env['hr.employee.workplan'].search([
-        #     ('shift_id', '=', vals.get('shift_id')),
-        #     ('work_day', '>=', vals.get('date_from')),
-        #     ('work_day', '<=', vals.get('date_to')),
-        # ])
-        # _logger.info(workplans)
+            workplans = self.env['hr.employee.workplan'].search([
+                ('shift_id', '=', values.get('shift_id').id),
+                ('work_day', '>=', values.get('date_from')),
+                ('work_day', '<=', values.get('date_to')),
+            ]).unlink()
 
-        # schedules = log_obj._create_schedules(vals, vals.get('shift_id'))
-        # shift = super(HrEmployeeWorkplan, self).create(vals)
+            schedules = log_obj._create_schedules(values, values.get('shift_id'))
 
-        return shift
-
-    def unlink(self):
-        self.env['hr.employee.schedule'].search(
-            [('workplan_id', '=', self.id)]).unlink()
-        return super(HrEmployeeWorkplan, self).unlink()
-
+            return workplan    
