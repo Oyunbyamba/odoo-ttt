@@ -176,6 +176,43 @@ class HrEmployeeSchedule(models.Model):
         return data
 
     @api.model
+    def create(self, vals):
+        schedule = super(HrEmployeeSchedule, self).create(vals)
+
+        return schedule
+
+    def write(self, vals):
+        for record in self:
+            # if "hr_employee_shift_template" in vals:
+            #     values['resource_calendar_ids'] = vals.get('hr_employee_shift_template')
+            # else:
+            #     values['resource_calendar_ids'] = self.resource_calendar_ids.id
+            schedule = super(HrEmployeeSchedule, self).write(vals)
+            log_obj = self.env["hr.employee.shift"].search([])
+
+            employees = []
+            employees.append(record.hr_employee.id)
+            employees = [[False, 0, employees]]
+            values = {
+                'shift_id': record.hr_employee_shift,
+                'resource_calendar_ids': record.hr_employee_shift_template.id,
+                'start_work': record.start_work,
+                'end_work': record.end_work,
+                'date_from': datetime.strftime(record.start_work_date, '%Y-%m-%d'),
+                'date_to': datetime.strftime(record.end_work_date, '%Y-%m-%d'),
+                'assign_type': 'employee',
+                'hr_employee': employees,
+                'model_type': 'schedule'
+            }
+
+            prev_schedule = self.env['hr.employee.schedule'].search(
+                    [('hr_employee', '=', record.hr_employee.id), 
+                    ('work_day', '>=', record.start_work_date), 
+                    ('work_day', '<=', record.end_work_date)]).unlink()
+
+            schedules = log_obj._create_schedules(values, values.get('shift_id'))
+            return schedules    
+
     def _set_hour_format(self, val):
         result = '{0:02.0f}:{1:02.0f}'.format(*divmod(val * 60, 60))
         return result

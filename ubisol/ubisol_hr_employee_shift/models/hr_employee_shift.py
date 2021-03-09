@@ -62,7 +62,7 @@ class HrEmployeeShift(models.Model):
         return datetime_field_from, datetime_field_to
 
     def shift_workplans(self):
-        domain = [('shift_id', '=', self.id)]
+        domain = [('shift_id', '=', self.id), '|', ('day_period.is_rest', '=', False), ('shift_type', '=', 'days')]
         action = {
             "name": "Ажиллах график",
             "type": "ir.actions.act_window",
@@ -93,7 +93,7 @@ class HrEmployeeShift(models.Model):
                 work_day, day.start_work, day.end_work)
         work_dict['assign_type'] = shift.assign_type       
         work_dict['work_day'] = work_day    
-        if shift.assign_type == 'dapertment':
+        if shift.resource_calendar_ids.shift_type == 'shift':
             work_dict['day_period'] = day.day_period.id
         workplan = self.env['hr.employee.workplan'].create(work_dict)
 
@@ -109,7 +109,7 @@ class HrEmployeeShift(models.Model):
             total_len = len(day_ids) - 1
             counter = 0
 
-        if shift.assign_type == 'employee':
+        if vals.get('assign_type') == 'employee':
             employee_ids = vals.get('hr_employee')[0][2]
             employees = self.env['hr.employee'].search(
                 [('id', 'in', employee_ids)])
@@ -125,18 +125,18 @@ class HrEmployeeShift(models.Model):
         while dates_btwn <= date_to:
             week_index = self._find_week_day_index(dates_btwn.strftime("%A"))
             if shift_template.shift_type == 'days':
-                # if week_index < 5:
                 inside_counter = 0
                 for day in day_ids:
                     if inside_counter == week_index:
-                        workplan = self._create_workplans(shift, day, dates_btwn)
+                        if not hasattr(vals, 'model_type'):
+                            workplan = self._create_workplans(shift, day, dates_btwn)
                         for index, employee in enumerate(employees):
                             schedule_dict = {}
                             schedule_dict['workplan_id'] = workplan.id
                             schedule_dict['hr_department'] = employee.department_id.id
                             schedule_dict['hr_employee'] = employee.id
-                            schedule_dict['date_from'] = shift.date_from
-                            schedule_dict['date_to'] = shift.date_to
+                            schedule_dict['date_from'] = date_from
+                            schedule_dict['date_to'] = date_to
                             schedule_dict['work_day'] = dates_btwn.date()
                             schedule_dict['hr_employee_shift'] = shift.id
                             schedule_dict['hr_employee_shift_template'] = shift_template.id
@@ -157,14 +157,15 @@ class HrEmployeeShift(models.Model):
                 inside_counter = 0
                 for day in day_ids:
                     if inside_counter == counter:
-                        workplan = self._create_workplans(shift, day, dates_btwn)
+                        if not hasattr(vals, 'model_type'):
+                            workplan = self._create_workplans(shift, day, dates_btwn)
                         for index, employee in enumerate(employees):
                             schedule_dict = {}
                             schedule_dict['workplan_id'] = workplan.id
                             schedule_dict['hr_department'] = employee.department_id.id
                             schedule_dict['hr_employee'] = employee.id
-                            schedule_dict['date_from'] = shift.date_from
-                            schedule_dict['date_to'] = shift.date_to
+                            schedule_dict['date_from'] = date_from
+                            schedule_dict['date_to'] = date_to
                             schedule_dict['work_day'] = dates_btwn.date()
                             schedule_dict['hr_employee_shift'] = shift.id
                             schedule_dict['hr_employee_shift_template'] = shift_template.id
@@ -178,22 +179,12 @@ class HrEmployeeShift(models.Model):
                             start_work = day.start_work
                             end_work = day.end_work
 
-                            # if week_index < 4:
-                            #     schedule_dict['lunch_time_from'], schedule_dict['lunch_time_to'] = self._create_datetime(
-                            #         dates_btwn, lunch_time_from, lunch_time_to)
-                            #     schedule_dict['start_work'], schedule_dict['end_work'] = self._create_datetime(
-                            #         dates_btwn, start_work, end_work)
-                            # elif week_index == 4:
                             if week_index == 4:
                                 if end_work < start_work:
                                     if shift_template.weekend_time_type == 'before':
                                         end_work = end_work - shift_template.weekend_time
                                     else:
                                         end_work = end_work + shift_template.weekend_time
-                                # schedule_dict['lunch_time_from'], schedule_dict['lunch_time_to'] = self._create_datetime(
-                                #     dates_btwn, lunch_time_from, lunch_time_to)
-                                # schedule_dict['start_work'], schedule_dict['end_work'] = self._create_datetime(
-                                #     dates_btwn, start_work, end_work)
                             elif week_index == 6:
                                 if start_work > end_work:
                                     if shift_template.weekend_time_type == 'before':
@@ -211,11 +202,6 @@ class HrEmployeeShift(models.Model):
                                         lunch_time_to = lunch_time_to + shift_template.weekend_time
                                         start_work = start_work + shift_template.weekend_time
                                         end_work = end_work + shift_template.weekend_time
-                                # schedule_dict['lunch_time_from'], schedule_dict['lunch_time_to'] = self._create_datetime(
-                                #     dates_btwn, lunch_time_from, lunch_time_to)
-                                # schedule_dict['start_work'], schedule_dict['end_work'] = self._create_datetime(
-                                #     dates_btwn, start_work, end_work)
-                            # else:
                             elif week_index == 5:
                                 if shift_template.weekend_time_type == 'before':
                                     lunch_time_from = lunch_time_from - shift_template.weekend_time

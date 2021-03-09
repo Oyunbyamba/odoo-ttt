@@ -150,7 +150,8 @@
       <field name="res_model">hr.employee.schedule</field>
       <field name="view_mode">tree,timeline,calendar,form</field>
       <field name="context">{'search_default_my_department_this_month':1, 'search_default_employee':1}</field>    
-      <field name="domain">['|', ('day_period.is_rest', '=', False), ('shift_type', '=', 'days')]</field>    
+      <!-- <field name="domain">['|', ('day_period.is_rest', '=', False), ('shift_type', '=', 'days')]</field>     -->
+      <field name="domain">[]</field>    
       <field name="help" type="html">
         <p class="oe_view_nocontent_create">
           Ажилтны хуваарь
