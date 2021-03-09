@@ -2,10 +2,12 @@
 
 # from odoo import models, fields, api
 
-
+import pytz
+import logging
 from datetime import datetime, timedelta
 from odoo import models, fields, _, api
 
+_logger = logging.getLogger(__name__)
 
 class HrEmployeeWorkplan(models.Model):
     _name = 'hr.employee.workplan'
@@ -13,8 +15,6 @@ class HrEmployeeWorkplan(models.Model):
 
     schedule_ids = fields.One2many(
         'hr.employee.schedule', 'workplan_id', string='Schedule', help='Schedule')
-    employee_id = fields.Many2one('hr.employee')
-    department_id = fields.Many2one('hr.department')
     pin = fields.Char(string="PIN")
     shift_id = fields.Many2one('hr.employee.shift', string='Ажлын төлөвлөгөө')
     calendar_id = fields.Many2one('resource.calendar', string='Ажлын хуваарийн загвар')
@@ -29,25 +29,13 @@ class HrEmployeeWorkplan(models.Model):
         string="End Work Date", compute="_compute_date_to", inverse='_set_date_to', help="End Work Date")
     assign_type = fields.Selection(related='shift_id.assign_type', store=True)
 
-    def emp_schedules(self):
-        domain = [('hr_employee', '=', self.employee_id.id)]
-        action = {
-            "name": "Ажиллах график",
-            "type": "ir.actions.act_window",
-            "res_model": "hr.employee.schedule",
-            'domain': domain,
-            # 'context': {"search_default_employee": 1, "search_default_is_rest": 1},
-            "view_mode": "timeline",
-        }
-        return action
-
     def _set_date_from(self):
         for record in self:
-            record.date_from = record.date_from 
+            record.date_from = record.date_from
 
     def _set_date_to(self):
         for record in self:
-            record.date_to = record.date_to      
+            record.date_to = record.date_to
 
     @api.depends('start_work')
     def _compute_date_from(self):
@@ -79,7 +67,7 @@ class HrEmployeeWorkplan(models.Model):
         for record in self:
             workplan = super(HrEmployeeWorkplan, self).write(vals)
             log_obj = self.env["hr.employee.shift"].search([])
-            
+
             ids = record.shift_id.hr_employee.read(['id'])
             employees = []
             for emp_id in ids:
@@ -95,7 +83,7 @@ class HrEmployeeWorkplan(models.Model):
                 'assign_type': record.assign_type,
                 'hr_employee': employees,
                 'hr_department': record.shift_id.hr_department.id
-            }   
+            }
             res = log_obj._check_duplicated_schedules(values)
 
             workplans = self.env['hr.employee.workplan'].search([
@@ -106,4 +94,10 @@ class HrEmployeeWorkplan(models.Model):
 
             schedules = log_obj._create_schedules(values, values.get('shift_id'))
 
-            return workplan    
+            return workplan
+
+    # def unlink(self):
+    #     self.env['hr.employee.workplan'].browse(
+    #         [('id', '=', self.id)]).unlink()
+    #     return super(HrEmployeeWorkplan, self).unlink()
+

@@ -32,10 +32,6 @@ class HrEmployeeShift(models.Model):
     date_to = fields.Date(string='End Date')
     resource_calendar_ids = fields.Many2one('resource.calendar', 'Хуваарийн загвар')
     pin = fields.Char(related='hr_employee.pin')
-    start_work = fields.Datetime(
-        string="Start Work", required=True, help="Start Work")
-    end_work = fields.Datetime(
-        string="End Work", required=True, help="End Work")
 
     def _convert_datetime_field(self, datetime_field, user=None):
         user_tz = self.env.user.tz or pytz.utc
@@ -90,21 +86,6 @@ class HrEmployeeShift(models.Model):
         return week.get(week_day, -1)
 
     def _create_workplans(self, shift, day, work_day):
-        # work_dict = {}
-        # work_dict['employee_id'] = employee.id
-        # if employee.department_id:
-        #     work_dict['department_id'] = employee.department_id.id
-        # work_dict['pin'] = employee.pin
-        # work_dict['shift_id'] = shift.id
-        # work_dict['calendar_id'] = shift.resource_calendar_ids.id
-        # workplan = self.env['hr.employee.workplan'].search(
-        #     [('employee_id', '=', employee.id)])
-        # if workplan:
-        #     workplan.write(work_dict)
-        # else:
-        #     workplan = self.env['hr.employee.workplan'].create(work_dict)
-        _logger.info(shift)    
-        _logger.info(day)    
         work_dict = {}
         work_dict['shift_id'] = shift.id
         work_dict['calendar_id'] = shift.resource_calendar_ids.id
@@ -147,8 +128,6 @@ class HrEmployeeShift(models.Model):
                 for day in day_ids:
                     if inside_counter == week_index:
                         workplan = self._create_workplans(shift, day, dates_btwn)
-                        _logger.info(workplan)
-
                         for index, employee in enumerate(employees):
                             schedule_dict = {}
                             schedule_dict['workplan_id'] = workplan.id

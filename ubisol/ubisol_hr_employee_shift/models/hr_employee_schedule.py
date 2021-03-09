@@ -12,7 +12,7 @@ class HrEmployeeSchedule(models.Model):
     """Хуваарилсан ээлж"""
     _name = 'hr.employee.schedule'
     _description = 'Hr Employee Schedule'
-    _rec_name = 'work_day'
+    _rec_name = 'hr_employee_shift_template'
 
     def _department_id_domain(self):
         return [('hr_department', '=', self.env.user.employee_id.department_id.id)]
