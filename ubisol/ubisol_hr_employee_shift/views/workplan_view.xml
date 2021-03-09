@@ -9,15 +9,12 @@
           <sheet>
             <group>
               <group>
-                <field name="shift_id" readonly='1'/>
-                <field name="start_work" readonly='1'/>
-                <field name="end_work" readonly='1'/>
+                <field name="shift_id"/>
+                <field name="calendar_id"/>
               </group>
               <group>
-                <field name="date_from" string='Ажил эхлэх'/>
-                <field name="date_to" string='Ажил дуусах'/>
-                <field name="calendar_id"/>
-                <field name="assign_type" invisible='1'/>
+                <field name="start_work"/>
+                <field name="end_work"/>
               </group>
             </group>
           </sheet>
@@ -36,6 +33,7 @@
               mode="month" 
               quick_add="False" 
               color="calendar_id">
+                  <field name="shift_id"/>
             </calendar>
         </field>
     </record>
