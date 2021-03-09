@@ -62,7 +62,7 @@ class HrEmployeeShift(models.Model):
         return datetime_field_from, datetime_field_to
 
     def shift_workplans(self):
-        domain = [('shift_id', '=', self.id), ('day_period.is_rest', '=', False), ('shift_type', '=', 'shift')]
+        domain = [('shift_id', '=', self.id)]
         action = {
             "name": "Ажиллах график",
             "type": "ir.actions.act_window",
