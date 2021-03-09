@@ -18,6 +18,7 @@ class HrEmployeeWorkplan(models.Model):
     pin = fields.Char(string="PIN")
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     shift_id = fields.Many2one('hr.employee.shift', string='Ажлын төлөвлөгөө')
     calendar_id = fields.Many2one('resource.calendar', string='Ажлын хуваарийн загвар')
     employee_id = fields.Many2one('hr.employee')
@@ -52,6 +53,13 @@ class HrEmployeeWorkplan(models.Model):
     end_work = fields.Datetime(string='Ажил дуусах цаг')
     assign_type = fields.Selection(related='shift_id.assign_type', store=True)
 >>>>>>> parent of 9d981b2d (workplan)
+=======
+    shift_id = fields.Many2one('hr.employee.shift')
+    calendar_id = fields.Many2one('resource.calendar', 'Working Hours')
+    start_work = fields.Datetime(string='Ажил эхлэх цаг')
+    end_work = fields.Datetime(string='Ажил дуусах цаг')
+    assign_type = fields.Selection(related='shift_id.assign_type', store=True)
+>>>>>>> parent of 9d981b2d (workplan)
 
     def emp_schedules(self):
         domain = [('hr_employee', '=', self.employee_id.id)]
@@ -65,6 +73,7 @@ class HrEmployeeWorkplan(models.Model):
         }
         return action
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -153,6 +162,8 @@ class HrEmployeeWorkplan(models.Model):
         return shift
 
 >>>>>>> 59365131679c529049b255ea8355febfa8cd76a1
+=======
+>>>>>>> parent of 9d981b2d (workplan)
 =======
 >>>>>>> parent of 9d981b2d (workplan)
     def unlink(self):
