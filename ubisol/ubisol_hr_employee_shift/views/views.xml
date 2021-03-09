@@ -30,7 +30,8 @@
               </group>
               <group>
                 <div>
-                  <button id="shift_workplans" name="shift_workplans" string="Ажиллах график" type="object" class="oe_highlight"/>
+                  <button id="shift_workplans" name="shift_workplans" string="Ажиллах график" type="object" class="oe_highlight"
+                    attrs="{'invisible':[('id', '=', False)]}"/>
                 </div>
               </group>
             </group>

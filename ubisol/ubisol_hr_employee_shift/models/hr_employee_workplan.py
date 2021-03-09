@@ -28,6 +28,9 @@ class HrEmployeeWorkplan(models.Model):
     date_to = fields.Date(
         string="End Work Date", compute="_compute_date_to", inverse='_set_date_to', help="End Work Date")
     assign_type = fields.Selection(related='shift_id.assign_type', store=True)
+    day_period = fields.Many2one(
+        'resource.calendar.dayperiod', string="Day Period", help="Day Period of Work")
+    shift_type = fields.Selection(related='calendar_id.shift_type')
 
     def _set_date_from(self):
         for record in self:
@@ -56,6 +59,13 @@ class HrEmployeeWorkplan(models.Model):
                 date_result = pytz.utc.localize(
                     record.end_work).astimezone(local)
                 record.date_to = date_result
+
+    @api.depends('shift_id')
+    def _compute_day_period(self):
+        for record in self:
+            if record.shift_id:
+                factory_day_ids = record.shift_id.resource_calendar_ids.factory_day_ids
+
 
     @api.model
     def create(self, vals):

@@ -35,7 +35,8 @@
               date_stop="end_work" 
               mode="month" 
               quick_add="False" 
-              color="calendar_id">
+              color="calendar_id"
+              >
                   <field name="shift_id"/>
             </calendar>
         </field>
