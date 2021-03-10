@@ -517,6 +517,7 @@
           return { exist: true, visible: false };
         }
       } else {
+        
         $target = $node;
         if ($target.length) {
           if (

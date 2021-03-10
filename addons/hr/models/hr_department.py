@@ -13,13 +13,19 @@ class Department(models.Model):
     _rec_name = 'complete_name'
 
     name = fields.Char('Department Name', required=True)
-    complete_name = fields.Char('Complete Name', compute='_compute_complete_name', store=True)
+    complete_name = fields.Char(
+        'Complete Name', compute='_compute_complete_name', store=True)
     active = fields.Boolean('Active', default=True)
-    company_id = fields.Many2one('res.company', string='Company', index=True, default=lambda self: self.env.company)
-    parent_id = fields.Many2one('hr.department', string='Parent Department', index=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
-    child_ids = fields.One2many('hr.department', 'parent_id', string='Child Departments')
-    manager_id = fields.Many2one('hr.employee', string='Manager', tracking=True, domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
-    member_ids = fields.One2many('hr.employee', 'department_id', string='Members', readonly=True)
+    company_id = fields.Many2one(
+        'res.company', string='Company', index=True, default=lambda self: self.env.company)
+    parent_id = fields.Many2one('hr.department', string='Parent Department', index=True,
+                                domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+    child_ids = fields.One2many(
+        'hr.department', 'parent_id', string='Child Departments')
+    manager_id = fields.Many2one('hr.employee', string='Manager', tracking=True,
+                                 domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+    member_ids = fields.One2many(
+        'hr.employee', 'department_id', string='Members', readonly=True)
     jobs_ids = fields.One2many('hr.job', 'department_id', string='Jobs')
     note = fields.Text('Note')
     color = fields.Integer('Color Index')
@@ -37,24 +43,28 @@ class Department(models.Model):
     def _compute_complete_name(self):
         for department in self:
             if department.parent_id:
-                department.complete_name = '%s / %s' % (department.parent_id.complete_name, department.name)
+                department.complete_name = '%s / %s' % (
+                    department.parent_id.complete_name, department.name)
             else:
                 department.complete_name = department.name
 
     @api.constrains('parent_id')
     def _check_parent_id(self):
         if not self._check_recursion():
-            raise ValidationError(_('You cannot create recursive departments.'))
+            raise ValidationError(
+                _('You cannot create recursive departments.'))
 
     @api.model
     def create(self, vals):
         # TDE note: auto-subscription of manager done by hand, because currently
         # the tracking allows to track+subscribe fields linked to a res.user record
         # An update of the limited behavior should come, but not currently done.
-        department = super(Department, self.with_context(mail_create_nosubscribe=True)).create(vals)
+        department = super(Department, self.with_context(
+            mail_create_nosubscribe=True)).create(vals)
         manager = self.env['hr.employee'].browse(vals.get("manager_id"))
         if manager.user_id:
-            department.message_subscribe(partner_ids=manager.user_id.partner_id.ids)
+            department.message_subscribe(
+                partner_ids=manager.user_id.partner_id.ids)
         return department
 
     def write(self, vals):
@@ -70,7 +80,8 @@ class Department(models.Model):
                 manager = self.env['hr.employee'].browse(manager_id)
                 # subscribe the manager user
                 if manager.user_id:
-                    self.message_subscribe(partner_ids=manager.user_id.partner_id.ids)
+                    self.message_subscribe(
+                        partner_ids=manager.user_id.partner_id.ids)
             # set the employees's parent to the new manager
             self._update_employee_manager(manager_id)
         return super(Department, self).write(vals)

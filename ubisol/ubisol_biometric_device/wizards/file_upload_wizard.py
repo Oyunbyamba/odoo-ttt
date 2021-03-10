@@ -385,7 +385,7 @@ class LogFileImportWizard(models.TransientModel):
             # update_check_out = self.env['hr.attendance'].search(
             #     [('employee_id', '=', get_user_id.id), ('check_out', '>=', work_start), ('check_out', '<', dt)])
             update_check_out = self.env['hr.attendance'].search(
-                [('employee_id', '=', get_user_id.id), ('check_out', '>=', work_start), ('check_out', '<', de2)])
+                [('employee_id', '=', get_user_id.id), ('check_out', '>=', work_start), ('check_out', '<', de2)], limit=1, order='check_out desc')
 
             check_out = self.env['hr.attendance'].search(
                 [('employee_id', '=', get_user_id.id), ('check_in', '>=', ds1), ('check_in', '<=', ds2)])
