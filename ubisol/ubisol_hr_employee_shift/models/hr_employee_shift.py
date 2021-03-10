@@ -24,7 +24,7 @@ class HrEmployeeShift(models.Model):
         ('employee', 'Employee')
     ], default="department", tracking=True)
     color = fields.Integer(string='Color Index', help="Color")
-    hr_department = fields.Many2one(
+    hr_department = fields.Many2many(
         'hr.department', string="Department", help="Department")
     hr_employee = fields.Many2many(
         'hr.employee', string="Employee", help="Employee")
@@ -32,6 +32,7 @@ class HrEmployeeShift(models.Model):
     date_to = fields.Date(string='End Date')
     resource_calendar_ids = fields.Many2one('resource.calendar', 'Хуваарийн загвар')
     pin = fields.Char(related='hr_employee.pin')
+    department_name = fields.Char(related='hr_department.name')
 
     def _convert_datetime_field(self, datetime_field, user=None):
         user_tz = self.env.user.tz or pytz.utc
@@ -114,8 +115,9 @@ class HrEmployeeShift(models.Model):
             employees = self.env['hr.employee'].search(
                 [('id', 'in', employee_ids)])
         else:
+            department_ids = vals.get('hr_department')[0][2]
             employees = self.env['hr.employee'].search(
-                [('department_id', '=', vals.get('hr_department'))])
+                [('department_id', 'in', department_ids)])
 
         DATE_FORMAT = '%Y-%m-%d'
         date_from = datetime.strptime(vals.get('date_from'), DATE_FORMAT)
@@ -241,75 +243,75 @@ class HrEmployeeShift(models.Model):
                 employees = self.env['hr.employee'].search(
                     [('id', 'in', employee_ids)])
             else:
+                department_ids = vals.get('hr_department')[0][2]
                 employees = self.env['hr.employee'].search(
-                    [('department_id', '=', vals.get('hr_department'))])
+                    [('department_id', 'in', department_ids)])
 
             for employee in employees:
                 prev_schedule = self.env['hr.employee.schedule'].search(
                     [('hr_employee', '=', employee.id), ('work_day', '>=', date_from.date()), ('work_day', '<=', date_to.date())]).unlink()
 
-            return None
-        else:
-            return None
+        return None
+
+    def _check_duplicated_workplans(self, shift_id):
+        if shift_id:
+            prev_workplans = self.env['hr.employee.workplan'].search([('shift_id', '=', shift_id)]).unlink()
+
+        return None
 
     @api.model
     def create(self, vals):
+        _logger.info(vals)
         res = self._check_duplicated_schedules(vals)
         if res:
             raise ValidationError(res.get('message'))
 
-        shift = super(HrEmployeeShift, self).create(vals)
-
-        self._create_schedules(vals, shift)
+        # create shift for each department
+        if vals.get('assign_type') == 'department':
+            department_ids = vals.get('hr_department')[0][2]
+            for dep_id in department_ids:
+                vals['hr_department'] = [[6, False, [dep_id]]]
+                shift = super(HrEmployeeShift, self).create(vals)
+                self._create_schedules(vals, shift)
+        else:
+            shift = super(HrEmployeeShift, self).create(vals)
+            self._create_schedules(vals, shift)
 
         return shift
 
     def write(self, vals):
-        res = self._check_duplicated_schedules(vals)
-        if res:
-            raise ValidationError(res.get('message'))
-
         shift = super(HrEmployeeShift, self).write(vals)
-        # self.env['hr.employee.schedule'].search(
-        #     [('hr_employee_shift', '=', self.id)]).unlink()
+        values = {
+            'name': self.name,
+            'assign_type': self.assign_type,
+            'hr_department': self.hr_department,
+            'hr_employee': self.hr_employee,
+            'resource_calendar_ids': self.resource_calendar_ids.id,
+            'date_from': str(self.date_from),
+            'date_to': str(self.date_to)
+        }
+        res = self._check_duplicated_workplans(self.id)
 
-        values = {}
-        if "hr_department" in vals:
-            values['hr_department'] = vals.get('hr_department')
+        # if change departments: create shift for each department
+        if self.assign_type == 'department':
+            department_ids = self.hr_department.read(['id'])
+            for index, dep in enumerate(department_ids):
+                values['hr_department'] = [[6, False, [dep['id']]]]
+                if index == 0:
+                    super(HrEmployeeShift, self).write(values)
+                    res = self._check_duplicated_schedules(values)
+                    self._create_schedules(values, self)
+                else:    
+                    new_shift = self.env['hr.employee.shift'].create(values)
         else:
-            values['hr_department'] = self.hr_department.id
-        if "hr_employee" in vals:
-            values['hr_employee'] = vals.get('hr_employee')
-        else:
-            ids = self.hr_employee.read(['id'])
-            employees = []
-            for emp_id in ids:
-                employees.append(emp_id['id'])
-            employees = [[False, 0, employees]]
-            values['hr_employee'] = employees
-        if "resource_calendar_ids" in vals:
-            values['resource_calendar_ids'] = vals.get('resource_calendar_ids')
-        else:
-            values['resource_calendar_ids'] = self.resource_calendar_ids.id
-        if "date_from" in vals:
-            values['date_from'] = vals.get('date_from')
-        else:
-            values['date_from'] = str(self.date_from)
-        if "date_to" in vals:
-            values['date_to'] = vals.get('date_to')
-        else:
-            values['date_to'] = str(self.date_to)
-
-        if values['hr_department'] == False:
-            values['assign_type'] = 'employee'
-        else:
-            values['assign_type'] = 'department'
-
-        self._create_schedules(values, self)
+            res = self._check_duplicated_schedules(values)
+            self._create_schedules(values, self)           
 
         return shift
 
     def unlink(self):
         self.env['hr.employee.schedule'].search(
             [('hr_employee_shift', '=', self.id)]).unlink()
+        self.env['hr.employee.workplan'].search(
+            [('shift_id', '=', self.id)]).unlink()    
         return super(HrEmployeeShift, self).unlink()

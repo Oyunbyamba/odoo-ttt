@@ -73,7 +73,7 @@
       <field name="name">hr.employee.schedule.tree</field>
       <field name="model">hr.employee.schedule</field>
       <field name="arch" type="xml">
-        <tree string="Employees" expand="false" create="false" edit="false" delete="false" default_order="id desc">
+        <tree string="Employees" expand="false" limit="80" create="false" edit="false" delete="false" default_order="work_day desc">
           <field name="hr_employee" string="Ажилтан"/>
           <field name="work_day" string="Огноо"/>
           <field name="start_work_time" string=" Эхлэх хугацаа" widget="float_time"/>

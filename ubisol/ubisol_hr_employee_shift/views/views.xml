@@ -124,9 +124,10 @@
       <field name="name">hr.employee.shift.tree</field>
       <field name="model">hr.employee.shift</field>
       <field name="arch" type="xml">
-        <tree string="Ажиллах төлөвлөгөө" expand="false" edit="false" delete="false" default_order="id desc">
+        <tree string="Ажиллах төлөвлөгөө" expand="false" edit="false" default_order="write_date desc">
           <field name="name" string="Нэр"/>
           <field name="assign_type" string="Төрөл"/>
+          <field name="department_name" string="Хэлтэсийн нэр"/>
           <field name="resource_calendar_ids" string="Загвар"/>
           <field name="date_from" string="Эхлэх хугацаа"/>
           <field name="date_to" string="Дуусах хугацаа"/>
@@ -158,6 +159,10 @@
               <field name="name" string="Ажиллах төлөвлөгөө"/>
               <field name="hr_department" string="Хэлтэс"/>
 
+              <filter string="Хэлтэс" name="assign_type_dep"
+                  domain="[('assign_type', 'in', ['department'])]"/>
+              <filter string="Ажилтан" name="assign_type_emp"
+                  domain="[('assign_type', 'in', ['employee'])]"/>    
               <filter string="Өмнө сар" name="start_prev_month"
                   domain="[('work_day', '>=', (context_today()-relativedelta(months=1)).strftime('%Y-%m-01')),
                   ('work_day', '&lt;', context_today().strftime('%Y-%m-01'))]"/>
@@ -169,12 +174,12 @@
                   ('work_day', '&lt;', (context_today()+relativedelta(months=2)).strftime('%Y-%m-01'))]"/>
 
               <group expand="0" string="Group By">
-                <filter string="Хэлтэсээр бүлэглэх" name="hr_department" context="{'group_by': 'hr_department'}"/>
+                <!-- <filter string="Хэлтэсээр бүлэглэх" name="department_name" context="{'group_by': 'department_name'}"/> -->
                 <filter string="Хуваарийн загвараар бүлэглэх" name="resource_calendar_ids" context="{'group_by': 'resource_calendar_ids'}"/>
               </group>
               <searchpanel>
                 <field name="resource_calendar_ids" string="Хуваарийн загвар" icon="fa-calendar"/>
-                <field name="hr_department" string="Хэлтэс" icon="fa-building"/>
+                <!-- <field name="hr_department" string="Хэлтэс" icon="fa-building"/> -->
               </searchpanel>
             </search>
         </field>
@@ -211,6 +216,7 @@
       <field name="name">Ээлжийн хуваарийн төлөвлөгөө</field>
       <field name="res_model">hr.employee.shift</field>
       <field name="view_mode">tree,form</field>
+      <field name="context">{'search_default_assign_type_dep':1}</field>    
       <field name="help" type="html">
         <p class="oe_view_nocontent_create">
           Ээлжийн хуваарийн төлөвлөгөө
