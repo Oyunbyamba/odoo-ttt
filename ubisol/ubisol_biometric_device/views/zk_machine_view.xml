@@ -77,6 +77,20 @@
                 <field name="fullname" string="Ажилтан"/>
                 <field name="pin_code" string="Пин код"/>
                 <field name="department" string="Хэлтэс"/>
+
+                <filter string="Өмнө сар" name="start_prev_month"
+                    domain="[('punch_date_time', '>=', (context_today()-relativedelta(months=1)).strftime('%Y-%m-01 00:00:00')),
+                    ('punch_date_time', '&lt;', context_today().strftime('%Y-%m-01 23:59:59'))]"/>
+                <filter string="Энэ сар" name="start_this_month"
+                    domain="[('punch_date_time', '>=', context_today().strftime('%Y-%m-01 00:00:00')),
+                    ('punch_date_time', '&lt;', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01 23:59:59'))]"/>
+                <filter string="Дараа сар" name="next_month_request"
+                    domain="[('punch_date_time', '>=', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01 00:00:00')),
+                    ('punch_date_time', '&lt;', (context_today()+relativedelta(months=2)).strftime('%Y-%m-01 23:59:59'))]"/>
+
+                <group expand="0" string="Group By">
+                    <filter string="Хэлтэсээр бүлэглэх" name="department_name" context="{'group_by': 'department'}"/>
+                </group>    
             </search>
         </field>
     </record>

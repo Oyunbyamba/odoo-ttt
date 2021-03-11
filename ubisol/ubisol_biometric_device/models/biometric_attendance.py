@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import logging
 import pytz
 import sys
 from datetime import datetime
@@ -7,7 +7,7 @@ import logging
 import binascii
 
 from odoo import models, fields, api, exceptions, _
-
+_logger = logging.getLogger(__name__)
 
 class BiometricAttendance(models.Model):
 
@@ -21,7 +21,7 @@ class BiometricAttendance(models.Model):
     attendance_data2 = fields.Char(string='Attendance data2')
     attendance_data3 = fields.Char(string='Attendance data3')
     fullname = fields.Char(compute="_compute_fullname", compute_sudo=True)
-    department = fields.Char(compute="_compute_department", compute_sudo=True, search='_value_search')
+    department = fields.Char(compute="_compute_department", compute_sudo=True, store=True)
 
     @api.depends("pin_code")
     def _compute_fullname(self):
@@ -45,9 +45,4 @@ class BiometricAttendance(models.Model):
             if employee:
                 record.department = employee.department_id.name
             else:
-                record.department = ''    
-
-    def _value_search(self, operator, value):
-        recs = self.search([]).filtered(lambda x : x.department is True)
-        if recs:
-            return [('id', 'in', [x.id for x in recs])]            
+                record.department = ''
