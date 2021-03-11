@@ -18,10 +18,16 @@ class OrgChartEmployee(models.Model):
             'children': [],
             'office': "<img src='/logo.png' />",
         }
-        employees = self.env['hr.employee'].search([('parent_id', '=', False)])
-        for employee in employees:
+        departments = self.env['hr.department'].search(
+            [('parent_id', '=', False)])
+        # employees = self.env['hr.employee'].search([('parent_id', '=', False)])
+        # for employee in departments:
+        #    data['children'].append(
+        #        self.get_children(employee, 'middle-level'))
+
+        for department in departments:
             data['children'].append(
-                self.get_children(employee, 'middle-level'))
+                self.get_children_dep(department, 'middle-level'))
 
         return {'values': data}
 
@@ -49,6 +55,30 @@ class OrgChartEmployee(models.Model):
 
         return emp_data
 
+    @api.model
+    def get_children_dep(self, dep, style=False):
+        data = []
+        dep_data = {'name': dep.manager_id.name, 'title': dep.name,
+                    'office':  self._get_image(dep)}
+        childrens = self.env['hr.department'].search(
+            [('parent_id', '=', dep.id)])
+        for child in childrens:
+            # self.env['hr.employee'].search([('parent_id','=',child.id)])
+            sub_child = False
+            next_style = self._get_style(style)
+            if not sub_child:
+                data.append({'name': child.manager_id.name, 'title': dep.name,
+                             'className': next_style, 'office': self._get_image(child)})
+            else:
+                data.append(self.get_children(child, next_style))
+
+        if childrens:
+            dep_data['children'] = data
+        if style:
+            dep_data['className'] = style
+
+        return dep_data
+
     def _get_style(self, last_style):
         if last_style == 'middle-level':
             return 'product-dept'
@@ -61,15 +91,16 @@ class OrgChartEmployee(models.Model):
 
         return 'middle-level'
 
-    def _get_image(self, emp):
-        if emp.image_128:
-            image_path = "/web/image/hr.employee/%s/image_1920" % (emp.id)
+    def _get_image(self, dep):
+        if dep.manager_id.image_128:
+            image_path = "/web/image/hr.employee/%s/image_1920" % (
+                dep.manager_id)
             return '<img src=%s />' % (image_path)
 
         image_path = "/org_chart_employee/static/src/img/default_image.png"
         return '<img src=%s />' % (image_path)
 
-    def _get_position(self, emp):
-        if emp.sudo().job_id:
-            return emp.sudo().job_id.name
+    def _get_position(self, dep):
+        if dep.manager_id.sudo().job_id:
+            return dep.manager_id.sudo().job_id.name
         return ""

@@ -947,7 +947,7 @@ class HrAttendanceReport(models.Model):
                 'work_days',
                 'work_hours',
                 'worked_days',
-                'formal_worked_hours',
+                'worked_hours',
                 'overtime',
                 'informal_overtime',
                 'paid_req_time',
@@ -968,7 +968,7 @@ class HrAttendanceReport(models.Model):
             ['work_days', 'Ажиллавал зохих'],
             ['work_hours', 'Цаг'],
             ['worked_days', 'Нийт ажилласан'],
-            ['formal_worked_hours', 'Цаг'],
+            ['worked_hours', 'Цаг'],
             ['total_approved_time', 'Цалин бодогдох илүү цаг'],
             ['overtime_holiday', 'Баяр ёслолын өдөр ажилласан цаг'],  # 7
             ['total_confirmed_time', 'Батлагдсан илүү цаг'],

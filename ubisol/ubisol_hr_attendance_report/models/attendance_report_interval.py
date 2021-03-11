@@ -266,7 +266,7 @@ class AttendanceReport(models.TransientModel):
                 l['work_hours']) or '', body_format)
             sheet.write(row, 4, l['worked_days'] or '', body_format)
             sheet.write(row, 5, self._set_hour_format(
-                l['formal_worked_hours']) or '', body_format)
+                l['worked_hours']) or '', body_format)
             sheet.write(row, 7, self._set_hour_format(
                 l['overtime_holiday']), body_format)
 
@@ -331,7 +331,7 @@ class AttendanceReport(models.TransientModel):
         sheet.write(row, 4, self._total_by_field(
             lines, 'worked_days', 0), body_format)
         sheet.write(row, 5, self._set_hour_format(
-            self._total_by_field(lines, 'formal_worked_hours', 0)), body_format)
+            self._total_by_field(lines, 'worked_hours', 0)), body_format)
         sheet.write(row, 7, self._set_hour_format(
             self._total_by_field(lines, 'overtime_holiday', 0)), body_format)
 
@@ -422,7 +422,7 @@ class AttendanceReport(models.TransientModel):
                     sheet.write(row, 3, self._total_by_field(
                         lines, 'worked_days', last_emp), body_format)
                     sheet.write(row, 4, self._set_hour_format(
-                        self._total_by_field(lines, 'formal_worked_hours', last_emp)), body_format)
+                        self._total_by_field(lines, 'worked_hours', last_emp)), body_format)
                     sheet.write(row, 5, '', body_format)
                     sheet.write(row, 6, '', body_format)
                     sheet.write(row, 7, self._set_hour_format(
@@ -615,7 +615,7 @@ class AttendanceReport(models.TransientModel):
                 l['work_hours']) or '', body_format)
             sheet.write(row, 3, l['worked_days'] or '', body_format)
             sheet.write(row, 4, self._set_hour_format(
-                l['formal_worked_hours']) or '', body_format)
+                l['worked_hours']) or '', body_format)
             sheet.write(row, 5, self._set_check_format(
                 l['check_in']), body_format)
             sheet.write(row, 6, self._set_check_format(
@@ -671,7 +671,7 @@ class AttendanceReport(models.TransientModel):
         sheet.write(row, 3, self._total_by_field(
             lines, 'worked_days', last_emp), body_format)
         sheet.write(row, 4, self._set_hour_format(
-            self._total_by_field(lines, 'formal_worked_hours', last_emp)), body_format)
+            self._total_by_field(lines, 'worked_hours', last_emp)), body_format)
         sheet.write(row, 5, '', body_format)
         sheet.write(row, 6, '', body_format)
         sheet.write(row, 7, self._set_hour_format(

@@ -106,7 +106,7 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
                         $tr.append($cell);
                         break;
                     case 'work_hours':
-                    case 'formal_worked_hours':
+                    case 'worked_hours':
                     case 'total_absent_hour':
                     case 'unpaid_req_time':
                         
@@ -137,7 +137,7 @@ odoo.define('attendance_report_table.RenderTable',function (require) {
                     $tr.append($cell);
                     break;
                     case 'work_hours':
-                    case 'formal_worked_hours':
+                    case 'worked_hours':
                     case 'total_absent_hour':
                     case 'unpaid_req_time':
                         
