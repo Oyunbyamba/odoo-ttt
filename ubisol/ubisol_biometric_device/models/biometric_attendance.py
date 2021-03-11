@@ -21,6 +21,7 @@ class BiometricAttendance(models.Model):
     attendance_data2 = fields.Char(string='Attendance data2')
     attendance_data3 = fields.Char(string='Attendance data3')
     fullname = fields.Char(compute="_compute_fullname", compute_sudo=True)
+    department = fields.Char(compute="_compute_department", compute_sudo=True)
 
     @api.depends("pin_code")
     def _compute_fullname(self):
@@ -33,3 +34,15 @@ class BiometricAttendance(models.Model):
             else:
                 fullname = employee.name
             record.fullname = fullname
+
+    @api.depends("pin_code")
+    def _compute_department(self):
+        for record in self:
+            pin_code = record.pin_code
+            employee = self.env['hr.employee'].search(
+                [('pin', '=', pin_code)], limit=1, order='id asc')
+
+            if employee:
+                record.department = employee.department_id.name
+            else:
+                record.department = ''    

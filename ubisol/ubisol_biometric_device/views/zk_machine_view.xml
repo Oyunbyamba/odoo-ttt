@@ -61,10 +61,23 @@
         <field name="arch" type="xml">
             <tree string="Ирц" create="false" delete="0">
                 <field name="fullname"/>
+                <field name="department"/>
                 <field name="pin_code"/>
                 <field name="device_id"/>
                 <field name="punch_date_time"/>
             </tree>
+        </field>
+    </record>
+
+    <record id="hr_employee_calendar_search" model="ir.ui.view">
+        <field name="name">biometric.attendance.search</field>
+        <field name="model">biometric.attendance</field>
+        <field name="arch" type="xml">
+            <search string="Search">
+                <field name="fullname" string="Ажилтан"/>
+                <field name="pin_code" string="Пин код"/>
+                <field name="department" string="Хэлтэс"/>
+            </search>
         </field>
     </record>
 
