@@ -21,7 +21,7 @@ class BiometricAttendance(models.Model):
     attendance_data2 = fields.Char(string='Attendance data2')
     attendance_data3 = fields.Char(string='Attendance data3')
     fullname = fields.Char(compute="_compute_fullname", compute_sudo=True)
-    department = fields.Char(compute="_compute_department", compute_sudo=True)
+    department = fields.Char(compute="_compute_department", compute_sudo=True, search='_value_search')
 
     @api.depends("pin_code")
     def _compute_fullname(self):
@@ -46,3 +46,8 @@ class BiometricAttendance(models.Model):
                 record.department = employee.department_id.name
             else:
                 record.department = ''    
+
+    def _value_search(self, operator, value):
+        recs = self.search([]).filtered(lambda x : x.department is True)
+        if recs:
+            return [('id', 'in', [x.id for x in recs])]            
