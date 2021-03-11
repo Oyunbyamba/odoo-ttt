@@ -154,6 +154,11 @@ class LogFileImportWizard(models.TransientModel):
                 elif (status == "update_check_out"):
                     att_var = att_obj.browse(att_id)
                     att_var.write({'check_out': atten_time})
+                elif (status == "swap_check_out"):
+                    att_var = att_obj.browse(att_id)
+                    old_check_out = att_var.check_out
+                    att_var.write({'check_in': old_check_out,
+                                   'check_out': atten_time})
                 elif (status == "update_check_in"):
                     att_var = att_obj.browse(att_id)
                     att_var.write({'check_in': atten_time})
@@ -455,11 +460,15 @@ class LogFileImportWizard(models.TransientModel):
             else:
                 return [att.id, "check_out"]
         else:
-
-            if work_start_end < dt:
-                return [0, "new_check_out"]
+            att = self.env['hr.attendance'].search(
+                [('employee_id', '=', get_user_id.id), ('check_out', '>=', work_start), ('check_out', '<', dt)], limit=1, order='create_date desc')
+            if att:
+                return [att.id, "swap_check_out"]
             else:
-                return [0, "check_in"]
+                if work_start_end < dt:
+                    return [0, "new_check_out"]
+                else:
+                    return [0, "check_in"]
 
     def _create_schedule(self, emp_id, date, shift_obj, shift_type):
         d = datetime.strftime(date, "%Y-%m-%d")

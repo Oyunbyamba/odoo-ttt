@@ -671,7 +671,7 @@ class AttendanceReport(models.TransientModel):
         sheet.write(row, 3, self._total_by_field(
             lines, 'worked_days', last_emp), body_format)
         sheet.write(row, 4, self._set_hour_format(
-            self._total_by_field(lines, 'worked_hours', last_emp)), body_format)
+            self._total_by_field(lines, 'formal_worked_hours', last_emp)), body_format)
         sheet.write(row, 5, '', body_format)
         sheet.write(row, 6, '', body_format)
         sheet.write(row, 7, self._set_hour_format(
