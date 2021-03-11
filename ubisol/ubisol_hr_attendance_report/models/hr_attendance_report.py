@@ -948,6 +948,7 @@ class HrAttendanceReport(models.Model):
                 'work_hours',
                 'worked_days',
                 'worked_hours',
+                'formal_worked_hours',
                 'overtime',
                 'informal_overtime',
                 'paid_req_time',
