@@ -284,6 +284,10 @@ class HrAttendanceReport(models.Model):
         for record in self:
             informal_overtime = 0.0
 
+            if record.overtime_holiday > 0 and record.shift_type == 'days':
+                record.informal_overtime = record.overtime_holiday
+                return
+
             if record.take_off_day == 1:
                 record.informal_overtime = 0.0
                 return
@@ -380,12 +384,16 @@ class HrAttendanceReport(models.Model):
                     check_out = record.outside_work_req_id.date_to
                 record.outside_work = self._diff_by_hours(date_from, check_out)
 
-    @ api.depends("check_in", "check_out", "difference_check_in")
+    @ api.depends("check_in", "check_out", "difference_check_in", "work_days")
     def _compute_take_off_day(self):
         for record in self:
+
             if record.hr_employee_schedule.id == 0:
                 record.take_off_day = 0
             else:
+                if record.work_days == 0.0:
+                    record.take_off_day = 0
+                    return
                 if (record.difference_check_in * 3600) > 120:
                     record.take_off_day = 1
                 if not record.check_in and not record.check_out:
@@ -393,11 +401,15 @@ class HrAttendanceReport(models.Model):
                 else:
                     record.take_off_day = 0
 
-    @ api.depends("check_in", "start_work", "difference_check_out")
+    @ api.depends("check_in", "start_work", "difference_check_out", "overtime_holiday")
     def _compute_difference_check_in(self):
         setting_obj = self.env['hr.attendance.settings'].search(
             [], limit=1, order='id desc')
         for record in self:
+            if record.overtime_holiday > 0 and record.shift_type == 'days':
+                record.difference_check_in = 0
+                return
+
             if record.hr_employee_schedule.id == 0:
                 record.difference_check_in = 0
             else:
@@ -415,9 +427,14 @@ class HrAttendanceReport(models.Model):
             if record.difference_check_out > 0:
                 record.difference_check_in += record.difference_check_out
 
-    @ api.depends("check_out", "end_work")
+    @ api.depends("check_out", "end_work", "overtime_holiday")
     def _compute_difference_check_out(self):
         for record in self:
+
+            if record.overtime_holiday > 0 and record.shift_type == 'days':
+                record.difference_check_in = 0
+                return
+
             if record.hr_employee_schedule.id == 0:
                 record.difference_check_out = 0
             else:
@@ -437,7 +454,22 @@ class HrAttendanceReport(models.Model):
             if record.shift_type == 'shift':
                 is_rest = record.day_period.is_rest
             elif int(record.week_day) < 5:
-                is_rest = False
+                holiday = False
+                if record.start_work:
+                    for leaves in record.global_leaves:
+                        leave_dates = pd.date_range(
+                            leaves.date_from+relativedelta(hours=8), leaves.date_to + relativedelta(hours=8),).date
+
+                        holiday_dates = pd.date_range(
+                            record.start_work + relativedelta(hours=8), record.start_work + relativedelta(hours=8)).date
+                        for hd in holiday_dates:
+                            for leave_date in leave_dates:
+                                if leave_date == hd:
+                                    holiday = True
+                if holiday:
+                    is_rest = True
+                else:
+                    is_rest = False
             if is_rest:
                 record.work_days = 0.0
             else:
@@ -445,13 +477,17 @@ class HrAttendanceReport(models.Model):
                 if record.work_hours < 0.0:
                     record.work_days = 0.0
 
-    @ api.depends("start_work", "end_work")
+    @ api.depends("start_work", "end_work", "work_days")
     def _compute_work_hours(self):
         for record in self:
             is_rest = True
             if record.shift_type == 'shift':
                 is_rest = record.day_period.is_rest
             elif int(record.week_day) < 5:
+                if record.work_days == 0.0:
+                    record.work_hours = 0.0
+                    return
+
                 is_rest = False
             if not record.lunch_time_to or not record.lunch_time_from:
                 diff = 0.0
