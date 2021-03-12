@@ -30,8 +30,6 @@ class LogFileImportWizard(models.TransientModel):
 
     def import_attendance(self, row):
         device_id = self.env.context.get('active_ids')
-        # _logger.info('device_id')
-        # _logger.info(device_id)
 
         atten_time = row[1]
         atten_time = datetime.strptime(atten_time, '%Y-%m-%d %H:%M:%S')
@@ -170,7 +168,7 @@ class LogFileImportWizard(models.TransientModel):
                         {'employee_id': get_user_id.id, 'check_out': atten_time})
                 elif status == "pass":
                     return {}
-                else:
+                elif status == "check_in":
                     att_obj.create(
                         {'employee_id': get_user_id.id, 'check_in': atten_time})
 
@@ -182,7 +180,8 @@ class LogFileImportWizard(models.TransientModel):
 
         week_index = self._find_week_day_index(dt1.strftime("%A"))
         calendar_leaves = self.env['resource.calendar.leaves'].search(
-            [('date_from', '<=', dt), ('date_to', '>=', dt)])
+            [('date_from', '<=', dt), ('date_to', '>=', dt), ('resource_id', '=', False)])
+
         # herev shift ni office tsagaar bgaad hagas buten saind irsen bol
         if (week_index >= 5 and general_shift.shift_type == 'days') or (calendar_leaves and general_shift.shift_type == 'days'):
             end = datetime.strptime(datetime.strftime(
@@ -214,10 +213,13 @@ class LogFileImportWizard(models.TransientModel):
                 get_user_id, dt, shift_start.start_work, check_out, check_in, ds1, ds2, de1, de2)
             return [att_id, status]
         elif(shift_end):
+
             return [0, "check_out"]
         elif(shift_start):
+
             return [0, "check_in"]
         else:
+
             # amraltiin udur bish shift bhgui bol daraahaar tootsoolol hiih
             [start_work, end_work] = self._create_schedule(
                 get_user_id, dt1, shift_obj, shift_type)
@@ -366,6 +368,7 @@ class LogFileImportWizard(models.TransientModel):
         return [ds1, ds2, de1, de2, dt1, s_type]
 
     def _check_status(self, get_user_id, dt, work_start, check_out, check_in, ds1, ds2, de1, de2):
+
         if(check_out < check_in):
             days = 0
             self._cr.execute('select id from hr_attendance where employee_id = ' +
@@ -425,6 +428,7 @@ class LogFileImportWizard(models.TransientModel):
                 else:
                     return [0, "pass"]
             elif new_check_in:
+
                 if new_check_in.check_in and new_check_in.check_in < dt:
                     return [new_check_in.id, "update_check_in"]
                 elif new_check_in.check_in and new_check_in.check_in >= dt:
