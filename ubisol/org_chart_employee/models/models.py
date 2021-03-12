@@ -67,10 +67,10 @@ class OrgChartEmployee(models.Model):
             sub_child = False
             next_style = self._get_style(style)
             if not sub_child:
-                data.append({'name': self._get_fullname(dep), 'title': dep.name, 'total': self._get_dep_emp_count(dep),
-                             'className': next_style, 'office': self._get_image(dep)})
+                data.append({'name': self._get_fullname(child), 'title': child.name, 'total': self._get_dep_emp_count(child),
+                             'className': next_style, 'office': self._get_image(child)})
             else:
-                data.append(self.get_children(child, next_style))
+                data.append(self.get_children_dep(child, next_style))
 
         if childrens:
             dep_data['children'] = data
@@ -114,4 +114,21 @@ class OrgChartEmployee(models.Model):
             return ''
 
     def _get_dep_emp_count(self, dep):
-        return len(dep.member_ids)
+        total = 0
+        if dep.child_ids:
+            res = []
+
+            res = self._get_department_child(dep, res)
+            for r in res:
+                if r.member_ids:
+                    total += len(r.member_ids)
+        total += len(dep.member_ids)
+        return total
+
+    def _get_department_child(self, department, res):
+        if(department.child_ids):
+            for child in department.child_ids:
+                res.append(child)
+                self._get_department_child(child, res)
+
+        return res
