@@ -30,9 +30,7 @@ class LogFileImportWizard(models.TransientModel):
 
     def import_attendance(self, row):
         device_id = self.env.context.get('active_ids')
-        # _logger.info('device_id')
-        # _logger.info(device_id)
-
+        
         atten_time = row[1]
         atten_time = datetime.strptime(atten_time, '%Y-%m-%d %H:%M:%S')
         local_tz = pytz.timezone(self.env.user.tz or 'GMT')

@@ -261,7 +261,6 @@ class HrEmployeeShift(models.Model):
 
     @api.model
     def create(self, vals):
-        _logger.info(vals)
         res = self._check_duplicated_schedules(vals)
         if res:
             raise ValidationError(res.get('message'))
