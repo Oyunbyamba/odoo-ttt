@@ -94,7 +94,7 @@ class HrEmployee(models.Model):
                 raise ValidationError("Давхардсан пин кодтой ажилтан байна.")
 
         if self.identification_id:        
-            same_regno = self.env['hr.employee'].search_count([('identification_id', '=', self.identification_id), ('id', '!=', self.id)])
+            same_regno = self.env['hr.employee'].search_count([('identification_id', 'ilike', self.identification_id), ('id', '!=', self.id)])
             if(same_regno) > 0:
                 raise ValidationError("Давхардсан регистрийн дугаартай ажилтан байна.")
 
@@ -118,6 +118,14 @@ class HrEmployee(models.Model):
             self.leave_manager_id = self.parent_id.user_id
         else:
            self.leave_manager_id = 0
+
+    @api.onchange('identification_id')
+    def onchange_identification_id(self):
+        if self.identification_id:    
+            _logger.info(str(self.identification_id).upper())
+            self.identification_id = str(self.identification_id).upper()   
+        else:
+            self.identification_id = ''
 
     @api.depends('departure_reason')
     def _compute_resign_date(self):
@@ -209,8 +217,7 @@ class EmployeeRelationInfo(models.Model):
     _name = 'hr.employee.relation'
     _description = 'HR Employee Relation'
 
-    name = fields.Char(string="Relationship",
-                       help="Relationship with the employee")
+    name = fields.Char(string="Relationship", help="Relationship with the employee")
 
 class EmployeeEthnicity(models.Model):
     """Table for keep ethnicity information"""
@@ -218,8 +225,7 @@ class EmployeeEthnicity(models.Model):
     _name = 'hr.employee.ethnicity'
     _description = 'HR Employee Ethnicity'
 
-    name = fields.Char(string="Ethnicity",
-                       help="Ethnicity with the employee")
+    name = fields.Char(string="Ethnicity", help="Ethnicity with the employee")
                   
 class EmployeePicture(models.Model):
     """Table for keep ethnicity information"""
