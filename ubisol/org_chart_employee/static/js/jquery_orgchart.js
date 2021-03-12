@@ -37,7 +37,11 @@
       'zoom': false,
       'zoominLimit': 7,
       'zoomoutLimit': 0.5,
-      'verticalLevel':3
+      'verticalLevel':3,
+      'createNode': function($node, data) {
+        var totalEmployees = '<div class="total-emp-container"><i class="fa fa-users"></i><span class="total-emp">' + data.total + ' (ажилтан)' + '</span></div>';
+        $node.append(totalEmployees);
+      }
     };
   };
   //
@@ -1298,6 +1302,7 @@
         if(Number(flags.substr(2,1))) {
           $nodeDiv.append('<i class="edge verticalEdge bottomEdge oci"></i>')
             .children('.title').prepend('<i class="oci '+ opts.parentNodeSymbol + ' symbol"></i>');
+            
         }
       }
 

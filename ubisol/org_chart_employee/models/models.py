@@ -58,8 +58,8 @@ class OrgChartEmployee(models.Model):
     @api.model
     def get_children_dep(self, dep, style=False):
         data = []
-        dep_data = {'name': dep.manager_id.name, 'title': dep.name,
-                    'office':  self._get_image(dep)}
+        dep_data = {'name': self._get_fullname(dep), 'title': dep.name, 'total': self._get_dep_emp_count(dep),
+                    'office': self._get_image(dep)}
         childrens = self.env['hr.department'].search(
             [('parent_id', '=', dep.id)])
         for child in childrens:
@@ -67,8 +67,8 @@ class OrgChartEmployee(models.Model):
             sub_child = False
             next_style = self._get_style(style)
             if not sub_child:
-                data.append({'name': child.manager_id.name, 'title': dep.name,
-                             'className': next_style, 'office': self._get_image(child)})
+                data.append({'name': self._get_fullname(dep), 'title': dep.name, 'total': self._get_dep_emp_count(dep),
+                             'className': next_style, 'office': self._get_image(dep)})
             else:
                 data.append(self.get_children(child, next_style))
 
@@ -104,3 +104,14 @@ class OrgChartEmployee(models.Model):
         if dep.manager_id.sudo().job_id:
             return dep.manager_id.sudo().job_id.name
         return ""
+
+    def _get_fullname(self, dep):
+        if dep.manager_id.surname:
+            return dep.manager_id.surname[0] + '.' + dep.manager_id.name
+        elif dep.manager_id:
+            return '.' + dep.manager_id.name
+        else:
+            return ''
+
+    def _get_dep_emp_count(self, dep):
+        return len(dep.member_ids)
