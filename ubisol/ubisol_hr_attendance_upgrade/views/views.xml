@@ -108,15 +108,24 @@
             <field name="department_id" operator="child_of"/>
             <filter string="Миний ирц" name="myattendances" domain="[('employee_id.user_id.id', '=', uid)]" />
             <separator/>
-            <filter string="Өнгөрсөн сар" name="start_prev_month"
+            <!-- <filter string="Өнгөрсөн сар" name="start_prev_month"
                 domain="[('check_in', '>=', (context_today()-relativedelta(months=1)).strftime('%Y-%m-01 00:00:00')),
-                ('check_in', '&lt;', context_today().strftime('%Y-%m-01 23:59:59'))]"/>
+                ('check_in', '&lt;', context_today().strftime('%Y-%m-01 23:59:59')),
+                '|',
+                ('check_out', '>=', (context_today()-relativedelta(months=1)).strftime('%Y-%m-01 00:00:00')),
+                ('check_out', '&lt;', context_today().strftime('%Y-%m-01 23:59:59'))]"/>
             <filter string="Энэ сар" name="start_this_month"
                 domain="[('check_in', '>=', context_today().strftime('%Y-%m-01 00:00:00')),
-                ('check_in', '&lt;', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01 23:59:59'))]"/>
+                ('check_in', '&lt;', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01 23:59:59'))
+                '|',
+                ('check_out', '>=', context_today().strftime('%Y-%m-01 00:00:00')),
+                ('check_out', '&lt;', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01 23:59:59'))]"/>
             <filter string="Дараа сар" name="next_month_request"
                 domain="[('check_in', '>=', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01 00:00:00')),
-                ('check_in', '&lt;', (context_today()+relativedelta(months=2)).strftime('%Y-%m-01 23:59:59'))]"/>
+                ('check_in', '&lt;', (context_today()+relativedelta(months=2)).strftime('%Y-%m-01 23:59:59'))
+                '|',
+                ('check_out', '>=', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01 00:00:00')),
+                ('check_out', '&lt;', (context_today()+relativedelta(months=2)).strftime('%Y-%m-01 23:59:59'))]"/> -->
             <separator/>  
             <filter string="Орсон" name="check_in_filter" date="check_in" default_period="last_month"/>
             <filter string="Гарахдаа дараагүй" name="nocheckout" domain="[('check_out', '=', False)]" />
