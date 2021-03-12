@@ -20,8 +20,8 @@ class BiometricAttendance(models.Model):
     attendance_data1 = fields.Char(string='Attendance data1')
     attendance_data2 = fields.Char(string='Attendance data2')
     attendance_data3 = fields.Char(string='Attendance data3')
-    fullname = fields.Char(compute="_compute_fullname", compute_sudo=True)
-    department = fields.Char(compute="_compute_department", compute_sudo=True, store=True)
+    fullname = fields.Char(compute="_compute_fullname", compute_sudo=True, search='_name_search')
+    department = fields.Char(compute="_compute_department", compute_sudo=True, search='_department_search')
 
     @api.depends("pin_code")
     def _compute_fullname(self):
@@ -38,11 +38,27 @@ class BiometricAttendance(models.Model):
     @api.depends("pin_code")
     def _compute_department(self):
         for record in self:
+            department_name = ''
             pin_code = record.pin_code
-            employee = self.env['hr.employee'].search(
-                [('pin', '=', pin_code)], limit=1, order='id asc')
+            employee = self.env['hr.employee'].search([('pin', '=', pin_code)], limit=1, order='id asc')
 
             if employee:
-                record.department = employee.department_id.name
-            else:
-                record.department = ''
+                department_name = employee.department_id.name
+            
+            record.department = department_name
+
+    def _name_search(self, operator, value):
+        employee_ids = self.env['hr.employee'].search([('name', operator, value)])
+        pin_codes = []
+        for employee_id in employee_ids:
+            pin_codes.append(employee_id.pin)
+        
+        return [('pin_code', 'in', pin_codes)]
+
+    def _department_search(self, operator, value):
+        employee_ids = self.env['hr.employee'].search([('department_id.name', operator, value)])
+        pin_codes = []
+        for employee_id in employee_ids:
+            pin_codes.append(employee_id.pin)
+        
+        return [('pin_code', 'in', pin_codes)]

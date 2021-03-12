@@ -89,7 +89,7 @@
                     ('punch_date_time', '&lt;', (context_today()+relativedelta(months=2)).strftime('%Y-%m-01 23:59:59'))]"/>
 
                 <group expand="0" string="Group By">
-                    <filter string="Хэлтэсээр бүлэглэх" name="department_name" context="{'group_by': 'department'}"/>
+                    <!-- <filter string="Хэлтэсээр бүлэглэх" name="department_name" context="{'group_by': 'department'}"/> -->
                 </group>    
             </search>
         </field>
@@ -105,6 +105,7 @@
         <field name="name">Төхөөрөмжийн ирцийн өгөгдөл</field>
         <field name="res_model">biometric.attendance</field>
         <field name="view_mode">tree</field>
+        <field name="context">{'search_default_start_this_month':1}</field>
     </record>
 
     <!-- <record id="hr_employee_inherit_form_view" model="ir.ui.view">

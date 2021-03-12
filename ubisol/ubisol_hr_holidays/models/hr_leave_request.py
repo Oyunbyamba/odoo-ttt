@@ -37,8 +37,7 @@ class UbisolHolidaysRequest(models.Model):
         ('department', 'Хэлтэс'),
         ('company', 'Компани'),
     ])
-    holiday_status_id = fields.Many2one(
-        "hr.leave.type", string="Time Off Type", required=True, readonly=True,
+    holiday_status_id = fields.Many2one("hr.leave.type", string="Time Off Type", required=True, readonly=True,
         states={'draft': [('readonly', False)], 'confirm': [('readonly', False)]},
         domain=_holiday_status_id_domain)
     years_of_worked_state = fields.Integer('Улсад ажилласан жил', compute='_compute_years_of_worked_state', readonly=True)
@@ -58,15 +57,7 @@ class UbisolHolidaysRequest(models.Model):
     allowed_overtime_time = fields.Integer('Батлах илүү цаг', required=True, default='')
     employee_ids = fields.Many2many('hr.employee', string='Ажилтан', help='Employee')
     department_ids = fields.Many2many('hr.department', string='Хэлтэс', help='Department')
-
-    _sql_constraints = [
-        ('type_value',
-         "CHECK((holiday_type='employee' AND employee_id IS NOT NULL) or "
-         "(holiday_type='department' AND department_id IS NOT NULL) )",
-         "The employee or department of this request is missing. Please make sure that your user login is linked to an employee."),
-        ('date_check2', "CHECK ((date_from <= date_to))", "The start date must be anterior to the end date."),
-        ('duration_check', "CHECK ( number_of_days >= 0 )", "If you want to change the number of days you should use the 'period' mode"),
-    ]
+    parent_leave = fields.Boolean(compute='_compute_parent_leave')
 
     def get_filtered_record(self):
         record_ids = []
@@ -258,6 +249,14 @@ class UbisolHolidaysRequest(models.Model):
         for holiday in self:
             holiday.number_of_days_display = holiday.number_of_days  
 
+    @api.depends('parent_id')
+    def _compute_parent_leave(self):
+        for holiday in self:
+            holiday.parent_leave = False
+            if not holiday.parent_id:
+                if holiday.holiday_type != 'employee':
+                    holiday.parent_leave = True        
+
     @api.constrains('date_from', 'date_to', 'state', 'employee_id')
     def _check_date(self):
         domains = [[
@@ -281,17 +280,14 @@ class UbisolHolidaysRequest(models.Model):
             leave_types = self.env['hr.leave.type'].browse([values.get('holiday_status_id') for values in vals_list if values.get('holiday_status_id')])
             mapped_validation_type = {leave_type.id: leave_type.validation_type for leave_type in leave_types}
 
+            # copying holiday data for each employees
             for values in vals_list:
                 if hasattr(values, 'employee_ids'):
                     if values.get('employee_ids')[0][2]:
-                        employee_ids = values.get('employee_ids')[0][2]
+                        employees = self.env['hr.employee'].browse(employee_ids)
+                        vals_list = self._prepare_employees_holiday_vals_list(employees, vals_list[0])
                         multi_employee_request = True
-                else:
-                    break
-                
-                employees = self.env['hr.employee'].browse(employee_ids)
-                vals_list = self._prepare_employees_holiday_vals_list(employees, vals_list[0])
-            
+               
             for values in vals_list:
                 employee_id = values.get('employee_id', False)
                 leave_type_id = values.get('holiday_status_id')
@@ -387,6 +383,25 @@ class UbisolHolidaysRequest(models.Model):
             'allowed_overtime_time': self.allowed_overtime_time,
         } for employee in employees]    
 
+    def _prepare_departments_holiday_values(self, departments):
+        self.ensure_one()
+        return [{
+            'name': self.name,
+            'holiday_type': 'department',
+            'holiday_status_id': self.holiday_status_id.id,
+            'date_from': self.date_from,
+            'date_to': self.date_to,
+            'request_date_from': self.date_from,
+            'request_date_to': self.date_to,
+            'notes': self.notes,
+            'number_of_days': self.number_of_days,
+            'parent_id': self.id,
+            'employee_id': False,
+            'department_id': department.id,
+            'state': 'validate',
+            'allowed_overtime_time': self.allowed_overtime_time,
+        } for department in departments]  
+
     def action_validate(self):
         current_employee = self.env.user.employee_id
         if any(holiday.state not in ['confirm', 'validate1'] for holiday in self):
@@ -405,6 +420,8 @@ class UbisolHolidaysRequest(models.Model):
             #     employees = holiday.department_id.member_ids
             if holiday.holiday_type == 'department':
                 employees = holiday.department_id.member_ids
+            elif holiday.holiday_type == 'company':
+                departments = self.env['hr.department'].search([('company_id', '=', holiday.mode_company_id.id)])    
 
             if holiday.holiday_status_id.overtime_type == 'total_allowed_overtime':
                 domain = [
@@ -477,14 +494,17 @@ class UbisolHolidaysRequest(models.Model):
 
             if holiday.holiday_status_id.overtime_type != 'total_allowed_overtime':
                 values = holiday._prepare_employees_holiday_values(employees)
-                leaves = self.env['hr.leave'].with_context(
-                    tracking_disable=True,
-                    mail_activity_automation_skip=True,
-                    leave_fast_create=True,
-                    leave_skip_state_check=True,
-                ).create(values)
+            else:
+                values = holiday._prepare_departments_holiday_values(departments)
 
-                leaves._validate_leave_request()
+            leaves = self.env['hr.leave'].with_context(
+                tracking_disable=True,
+                mail_activity_automation_skip=True,
+                leave_fast_create=True,
+                leave_skip_state_check=True,
+            ).create(values)
+
+            leaves._validate_leave_request()    
 
         employee_requests = self.filtered(lambda hol: hol.holiday_type == 'employee')
         employee_requests._validate_leave_request()

@@ -184,7 +184,7 @@
         <field name="arch" type="xml">
             <xpath expr="//tree" position="replace">
                 <tree decoration-danger="state == 'refuse'" decoration-info="state == 'draft'" string="Time Off Requests"
-                    decoration-bf="holiday_type != 'employee'">
+                    decoration-bf="parent_leave == True">
                     <field name="employee_id"/>
                     <field name="department_id"/>
                     <field name="holiday_type" string="Mode" groups="base.group_no_one"/>
@@ -198,6 +198,7 @@
                     <field name="category_id" invisible="1"/>
                     <field name="department_id" invisible="1"/>
                     <field name="user_id" invisible="1"/>
+                    <field name="parent_leave" invisible="1"/>
                     <button string="Approve" name="action_approve" type="object"
                         icon="fa-check text-success"
                         states="confirm"
