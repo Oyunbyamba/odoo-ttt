@@ -30,8 +30,8 @@ class LogFileImportWizard(models.TransientModel):
 
     def import_attendance(self, row):
         device_id = self.env.context.get('active_ids')
-        _logger.info('device_id')
-        _logger.info(device_id)
+        # _logger.info('device_id')
+        # _logger.info(device_id)
 
         atten_time = row[1]
         atten_time = datetime.strptime(atten_time, '%Y-%m-%d %H:%M:%S')
@@ -394,7 +394,7 @@ class LogFileImportWizard(models.TransientModel):
                 [('employee_id', '=', get_user_id.id), ('check_out', '>=', work_start), ('check_out', '<', de2)], limit=1, order='check_out desc')
 
             check_out = self.env['hr.attendance'].search(
-                [('employee_id', '=', get_user_id.id), ('check_in', '>=', ds1), ('check_in', '<=', ds2)])
+                [('employee_id', '=', get_user_id.id), ('check_in', '>=', ds1), ('check_in', '<=', ds2)], limit=1, order='check_out desc')
 
             if update_check_out:
                 if update_check_out.check_out < dt:
