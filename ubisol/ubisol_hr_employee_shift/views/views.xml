@@ -163,7 +163,7 @@
                   domain="[('assign_type', 'in', ['department'])]"/>
               <filter string="Ажилтан" name="assign_type_emp"
                   domain="[('assign_type', 'in', ['employee'])]"/>    
-              <filter string="Өмнө сар" name="start_prev_month"
+              <filter string="Өнгөрсөн сар" name="start_prev_month"
                   domain="[('work_day', '>=', (context_today()-relativedelta(months=1)).strftime('%Y-%m-01')),
                   ('work_day', '&lt;', context_today().strftime('%Y-%m-01'))]"/>
               <filter string="Энэ сар" name="start_this_month"
