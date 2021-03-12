@@ -4,6 +4,7 @@
 
 
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 from odoo import models, fields, _, api
 from odoo.exceptions import ValidationError
 import logging
@@ -94,7 +95,7 @@ class HrEmployee(models.Model):
                 raise ValidationError("Давхардсан пин кодтой ажилтан байна.")
 
         if self.identification_id:        
-            same_regno = self.env['hr.employee'].search_count([('identification_id', '=', self.identification_id), ('id', '!=', self.id)])
+            same_regno = self.env['hr.employee'].search_count([('identification_id', 'ilike', self.identification_id), ('id', '!=', self.id)])
             if(same_regno) > 0:
                 raise ValidationError("Давхардсан регистрийн дугаартай ажилтан байна.")
 
@@ -119,6 +120,13 @@ class HrEmployee(models.Model):
         else:
            self.leave_manager_id = 0
 
+    @api.onchange('identification_id')
+    def onchange_identification_id(self):
+        if self.identification_id:    
+            self.identification_id = str(self.identification_id).upper()   
+        else:
+            self.identification_id = ''
+
     @api.depends('departure_reason')
     def _compute_resign_date(self):
         for employee in self:
@@ -131,76 +139,55 @@ class HrEmployee(models.Model):
         for employee in self:
             employee.resign_date = employee.resign_date
 
+    def _prepare_contract_values(self, employee):
+        trial_date = employee.contract_signed_date + relativedelta(months=3)
+        values = {
+            'name': employee.name,
+            'employee_id': employee.id,
+            'date_start': employee.contract_signed_date,
+            'department_id': employee.department_id.id,
+            'job_id': employee.job_id.id,
+            'wage': 0,
+            'trial_date_end': trial_date
+        }
+        if employee.contract_id:
+            employee_contract = self.env['hr.contract'].browse(self.contract_id.id)
+            employee_contract.write(values)
+        else:    
+            if(trial_date < fields.Date.context_today(self)):
+                values['state'] = 'open'
+                values['kanban_state'] = 'done'
+            else:
+                values['state'] = 'draft'
+                values['kanban_state'] = 'donnormale'
+            employee_contract = self.env['hr.contract'].create(values)    
+
+        return employee_contract        
+
     @api.model
     def create(self, vals):
         employee = super(HrEmployee, self).create(vals)
-        contract_values = []
         if employee.contract_signed_date:
-            trial_date =  employee.contract_signed_date + timedelta(days=+90)
-            contract_values.append({
-                'name': employee.name,
-                'employee_id': employee.id,
-                'date_start': employee.contract_signed_date,
-                'department_id': employee.department_id.id,
-                'job_id': employee.job_id.id,
-                'wage': 0,
-                'trial_date_end': trial_date
-            })
-            hr_contract = employee.env['hr.contract'].create(contract_values)
-            hr_contract.write({'state': 'open', 'kanban_state': 'done'})
+            employee_contract = self._prepare_contract_values(employee)
+
         return employee
 
     def write(self, vals):
-        employee = super(HrEmployee, self).write(vals)
-        for hr_emp in self:
-            contract_values = []
-            if(hr_emp.contract_id.id == False):
-                if hr_emp.contract_signed_date and hr_emp.create_contract:    
-                        trial_date =  hr_emp.contract_signed_date + timedelta(days=+90)
-                        contract_values.append({
-                            'name': hr_emp.name,
-                            'employee_id': hr_emp.id,
-                            'date_start': hr_emp.contract_signed_date,
-                            'department_id': hr_emp.department_id.id,
-                            'job_id': hr_emp.job_id.id,
-                            'wage': 0,
-                            'trial_date_end': trial_date
-                        })
-                        hr_contract = hr_emp.env['hr.contract'].create(contract_values)
-                        if(trial_date < fields.Date.context_today(self)):
-                            hr_contract.write({'state': 'open', 'kanban_state': 'done'})
-                        else:
-                            hr_contract.write({'state': 'draft', 'kanban_state': 'normal'})
-                        hr_emp.contract_id = hr_contract.id
-            else:            
-                for contract_id in hr_emp.contract_id:
-                    if hr_emp.contract_signed_date:    
-                        trial_date =  hr_emp.contract_signed_date + timedelta(days=+90)
-                        prev_hr_contract = hr_emp.env['hr.contract'].browse(contract_id.id)
-                        prev_hr_contract.name = hr_emp.name
-                        prev_hr_contract.date_start = hr_emp.contract_signed_date
-                        prev_hr_contract.department_id = hr_emp.department_id.id
-                        prev_hr_contract.job_id = hr_emp.job_id.id
-                        prev_hr_contract.trial_date_end = trial_date
+        employee = super(HrEmployee, self).write(vals)  
+        if self.contract_signed_date and self.create_contract:    
+            employee_contract = self._prepare_contract_values(self)        
+
+        if self.user_id:
+            child_employees = self.env['hr.employee'].search([('parent_id', '=', self._origin.id)])
+            for child_employee in child_employees:
+                child_employee.parent_id = self.id
+
         return employee    
 
     @api.model
     def get_my_attendances(self, employee_id):
         employee = self.env['hr.employee'].browse(employee_id)
-        print(employee.attendance_ids.read(['fullname', 'check_in', 'check_out']))
         return employee.attendance_ids
-        
-   
-    # @api.model
-    # def _getBase64Image(self):
-    #     print('base64')
-    #     if(self.employee_picture):
-    #         for emp_pic in self.employee_picture:
-    #             images.append({ emp_pic.name })
-    #             print(images)    
-    #             self.image = images        
-    #     else:
-    #         self.image = images      
             
 
 class EmployeeRelationInfo(models.Model):
@@ -209,8 +196,7 @@ class EmployeeRelationInfo(models.Model):
     _name = 'hr.employee.relation'
     _description = 'HR Employee Relation'
 
-    name = fields.Char(string="Relationship",
-                       help="Relationship with the employee")
+    name = fields.Char(string="Relationship", help="Relationship with the employee")
 
 class EmployeeEthnicity(models.Model):
     """Table for keep ethnicity information"""
@@ -218,8 +204,7 @@ class EmployeeEthnicity(models.Model):
     _name = 'hr.employee.ethnicity'
     _description = 'HR Employee Ethnicity'
 
-    name = fields.Char(string="Ethnicity",
-                       help="Ethnicity with the employee")
+    name = fields.Char(string="Ethnicity", help="Ethnicity with the employee")
                   
 class EmployeePicture(models.Model):
     """Table for keep ethnicity information"""
@@ -236,3 +221,6 @@ class EmployeePicture(models.Model):
 class HrEmployeePublic(models.Model):
     _inherit = 'hr.employee.public'
     surname = fields.Char(string='Surname')
+
+class Contract(models.Model):
+    _inherit = 'hr.contract'
