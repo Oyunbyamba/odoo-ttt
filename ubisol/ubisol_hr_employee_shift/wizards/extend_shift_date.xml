@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="employee_shift_extend" model="ir.ui.view">
+         <field name="name">hr.employee.shift.extend.wizard</field>
+         <field name="model">hr.employee.shift.extend</field>
+         <field name="arch" type="xml">
+            <form string="Дуусах хугацаа">
+                <group>
+                    <field name="date_to"/>
+                </group>
+            
+                <footer>
+                    <button name="action_extend_shift" string="Сунгах" type="object" class="btn-primary"/>
+                    <button string="Болих" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+         </field>
+     </record>
+
+    <record id="employee_shift_extend_wizard" model="ir.actions.act_window">
+        <field name="name">Дуусах хугацаа сунгах</field>
+        <field name="res_model">hr.employee.shift.extend</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="ubisol_hr_employee_shift.model_hr_employee_shift"/>
+    </record>
+
+</odoo>

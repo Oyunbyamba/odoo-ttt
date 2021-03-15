@@ -3,7 +3,6 @@
 import math
 import pytz
 import dateutil.parser
-import datetime
 import re
 import logging
 from odoo import models, fields, api
@@ -101,6 +100,7 @@ class HrEmployeeShift(models.Model):
         return workplan
 
     def _create_schedules(self, vals, shift):
+        _logger.info(vals)
         shift_template = self.env['resource.calendar'].browse(vals.get('resource_calendar_ids'))
 
         if shift_template.shift_type == 'days':
@@ -130,7 +130,8 @@ class HrEmployeeShift(models.Model):
                 inside_counter = 0
                 for day in day_ids:
                     if inside_counter == week_index:
-                        if not hasattr(vals, 'model_type'):
+                        if not vals.get('model_type'):
+                            _logger.info(vals.get('model_type'))
                             workplan = self._create_workplans(shift, day, dates_btwn)
                         for index, employee in enumerate(employees):
                             schedule_dict = {}
@@ -159,7 +160,8 @@ class HrEmployeeShift(models.Model):
                 inside_counter = 0
                 for day in day_ids:
                     if inside_counter == counter:
-                        if not hasattr(vals, 'model_type'):
+                        if not vals.get('model_type'):
+                            _logger.info(vals.get('model_type'))
                             workplan = self._create_workplans(shift, day, dates_btwn)
                         for index, employee in enumerate(employees):
                             schedule_dict = {}
@@ -253,12 +255,6 @@ class HrEmployeeShift(models.Model):
 
         return None
 
-    def _check_duplicated_workplans(self, shift_id):
-        if shift_id:
-            prev_workplans = self.env['hr.employee.workplan'].search([('shift_id', '=', shift_id)]).unlink()
-
-        return None
-
     @api.model
     def create(self, vals):
         res = self._check_duplicated_schedules(vals)
@@ -279,32 +275,67 @@ class HrEmployeeShift(models.Model):
         return shift
 
     def write(self, vals):
+        prev_date_to = self._origin.date_to
         shift = super(HrEmployeeShift, self).write(vals)
+
         values = {
             'name': self.name,
             'assign_type': self.assign_type,
-            'hr_department': self.hr_department,
-            'hr_employee': self.hr_employee,
             'resource_calendar_ids': self.resource_calendar_ids.id,
             'date_from': str(self.date_from),
             'date_to': str(self.date_to)
         }
-        res = self._check_duplicated_workplans(self.id)
 
-        # if change departments: create shift for each department
-        if self.assign_type == 'department':
-            department_ids = self.hr_department.read(['id'])
-            for index, dep in enumerate(department_ids):
-                values['hr_department'] = [[6, False, [dep['id']]]]
-                if index == 0:
-                    super(HrEmployeeShift, self).write(values)
-                    res = self._check_duplicated_schedules(values)
-                    self._create_schedules(values, self)
-                else:    
-                    new_shift = self.env['hr.employee.shift'].create(values)
+        if vals.get('hr_department'):
+            values['hr_department'] = vals.get('hr_department')
         else:
+            dep_list = []
+            department_ids = self.hr_department.read(['id'])
+            for dep_id in department_ids:
+                dep_list.append(dep_id['id'])    
+            values['hr_department'] = [[6, False, dep_list]]
+
+        if vals.get('hr_employee'):
+            values['hr_employee'] = vals.get('hr_employee')
+        else:
+            emp_list = []
+            employee_ids = self.hr_employee.read(['id'])
+            for emp_id in employee_ids:
+                emp_list.append(emp_id)    
+            values['hr_employee'] = [[6, False, emp_list]]
+
+        if vals.get('hr_department') or vals.get('hr_employee') or vals.get('resource_calendar_ids') or vals.get('date_from'):
+            prev_workplans = self.env['hr.employee.workplan'].search([
+                ('shift_id', '=', self.id), 
+                ('work_day', '>=', values.get('date_from')), 
+                ('work_day', '<=', values.get('date_to'))]).unlink()
+
+            # if change departments: create shift for each department
+            if self.assign_type == 'department':
+                department_ids = self.hr_department.read(['id'])
+                for index, dep in enumerate(department_ids):
+                    values['hr_department'] = [[6, False, [dep['id']]]]
+                    if index == 0:
+                        super(HrEmployeeShift, self).write(values)
+                        res = self._check_duplicated_schedules(values)
+                        self._create_schedules(values, self)
+                    else:    
+                        new_shift = self.env['hr.employee.shift'].create(values)
+            else:
+                res = self._check_duplicated_schedules(values)
+                self._create_schedules(values, self)        
+        elif vals.get('date_to'):
+            extend_date_from = datetime.strptime(str(prev_date_to), '%Y-%m-%d')
+            extend_date_from = extend_date_from.date()+relativedelta(days=1)
+            values['date_from'] = str(extend_date_from)
+
+            prev_workplans = self.env['hr.employee.workplan'].search([
+                ('shift_id', '=', self.id), 
+                ('work_day', '>=', values.get('date_from')), 
+                ('work_day', '<=', values.get('date_to'))]).unlink()
+
             res = self._check_duplicated_schedules(values)
-            self._create_schedules(values, self)           
+            self._create_schedules(values, self)
 
         return shift
 

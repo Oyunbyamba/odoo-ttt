@@ -170,17 +170,65 @@ class HrEmployee(models.Model):
         if employee.contract_signed_date:
             employee_contract = self._prepare_contract_values(employee)
 
+        #create schedule & workplan for employee when employee has department
+        if employee.department_id:
+            shift = self.env['hr.employee.shift'].search([
+                ('hr_department', '=', vals.get('department_id')),
+                ('assign_type', '=', 'department')], limit=1, order='id desc')
+
+            if shift:
+                log_obj = self.env["hr.employee.shift"].search([])
+                employee_id = [[6, False, [employee.id]]]
+                values = {
+                    'name': shift.name,
+                    'assign_type': 'employee',
+                    'hr_department': [],
+                    'hr_employee': employee_id,
+                    'resource_calendar_ids': shift.resource_calendar_ids.id,
+                    'date_from': str(shift.date_from),
+                    'date_to': str(shift.date_to)
+                }         
+                log_obj._create_schedules(values, shift)
+
         return employee
 
     def write(self, vals):
+        prev_department_id = self._origin.department_id
         employee = super(HrEmployee, self).write(vals)  
         if self.contract_signed_date and self.create_contract:    
             employee_contract = self._prepare_contract_values(self)        
 
+        #if this employee has child employees, then their leave_manager_id is set by self.user_id
         if self.user_id:
             child_employees = self.env['hr.employee'].search([('parent_id', '=', self._origin.id)])
             for child_employee in child_employees:
                 child_employee.parent_id = self.id
+
+        #create schedule for employee when employee's department selected
+        if vals.get('department_id') & vals.get('department_id') != prev_department_id:
+            shifts = self.env['hr.employee.shift'].search([
+                ('hr_department', '=', vals.get('department_id')),
+                ('assign_type', '=', 'department')])
+
+            if len(shifts) > 0:
+                log_obj = self.env["hr.employee.shift"].search([])
+                employee_id = [[6, False, [self.id]]]
+                for shift in shifts:
+                    values = {
+                        'name': shift.name,
+                        'assign_type': 'employee',
+                        'hr_department': [],
+                        'hr_employee': employee_id,
+                        'resource_calendar_ids': shift.resource_calendar_ids.id,
+                        'date_from': str(shift.date_from),
+                        'date_to': str(shift.date_to)
+                    }
+                    date_from = datetime.strftime(shift.date_from, '%Y-%m-%d')
+                    date_to = datetime.strftime(shift.date_to, '%Y-%m-%d')
+                    prev_schedule = self.env['hr.employee.schedule'].search(
+                        [('hr_employee', '=', self.id), ('work_day', '>=', date_from), ('work_day', '<=', date_to)]).unlink()         
+                    # log_obj._check_duplicated_schedules(values)
+                    log_obj._create_schedules(values, shift)        
 
         return employee    
 
