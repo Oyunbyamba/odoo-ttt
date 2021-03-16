@@ -2,9 +2,9 @@
 <odoo>
 
     <template id="assets_backend_biometric_attendance" name="Biometric attendance" inherit_id="web.assets_backend">
-      <xpath expr="." position="inside">
-        <script type="text/javascript" src="/ubisol_biometric_device/static/src/js/biometric_attendance.js"/>
-      </xpath>
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/ubisol_biometric_device/static/src/js/biometric_attendance.js"/>
+        </xpath>
     </template>
 
     <record id="view_zk_machine_form" model="ir.ui.view">
@@ -24,6 +24,7 @@
                         <h1>
                             <field name="name" placeholder="Machine IP"/>
                         </h1>
+
                     </div>
                     <group>
                         <group>
@@ -32,6 +33,15 @@
                         </group>
                         <group>
                             <field name="desc"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="active"/>
+
+                        </group>
+                        <group>
+                            <field name="is_connected"/>
                         </group>
                     </group>
                 </sheet>
@@ -51,6 +61,8 @@
                 <field name="name"/>
                 <field name="port_no"/>
                 <field name="desc"/>
+                <field name="active"/>
+                <field name="is_connected"/>
             </tree>
         </field>
     </record>
@@ -78,19 +90,16 @@
                 <field name="pin_code" string="Пин код"/>
                 <field name="department" string="Хэлтэс"/>
 
-                <filter string="Өмнө сар" name="start_prev_month"
-                    domain="[('punch_date_time', '>=', (context_today()-relativedelta(months=1)).strftime('%Y-%m-01 00:00:00')),
+                <filter string="Өмнө сар" name="start_prev_month" domain="[('punch_date_time', '>=', (context_today()-relativedelta(months=1)).strftime('%Y-%m-01 00:00:00')),
                     ('punch_date_time', '&lt;', context_today().strftime('%Y-%m-01 23:59:59'))]"/>
-                <filter string="Энэ сар" name="start_this_month"
-                    domain="[('punch_date_time', '>=', context_today().strftime('%Y-%m-01 00:00:00')),
+                <filter string="Энэ сар" name="start_this_month" domain="[('punch_date_time', '>=', context_today().strftime('%Y-%m-01 00:00:00')),
                     ('punch_date_time', '&lt;', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01 23:59:59'))]"/>
-                <filter string="Дараа сар" name="next_month_request"
-                    domain="[('punch_date_time', '>=', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01 00:00:00')),
+                <filter string="Дараа сар" name="next_month_request" domain="[('punch_date_time', '>=', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01 00:00:00')),
                     ('punch_date_time', '&lt;', (context_today()+relativedelta(months=2)).strftime('%Y-%m-01 23:59:59'))]"/>
 
                 <group expand="0" string="Group By">
                     <!-- <filter string="Хэлтэсээр бүлэглэх" name="department_name" context="{'group_by': 'department'}"/> -->
-                </group>    
+                </group>
             </search>
         </field>
     </record>
