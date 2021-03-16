@@ -62,7 +62,7 @@ class HrEmployeeShift(models.Model):
         return datetime_field_from, datetime_field_to
 
     def shift_workplans(self):
-        domain = [('shift_id', '=', self.id), '|', ('day_period.is_rest', '=', False), ('shift_type', '=', 'days')]
+        domain = [('shift_id', '=', self.id)]
         action = {
             "name": "Ажиллах график",
             "type": "ir.actions.act_window",
@@ -85,22 +85,21 @@ class HrEmployeeShift(models.Model):
         }
         return week.get(week_day, -1)
 
-    def _create_workplans(self, shift, day, work_day):
+    def _create_workplans(self, shift_template, shift_id, day, work_day, assign_type):
         work_dict = {}
-        work_dict['shift_id'] = shift.id
-        work_dict['calendar_id'] = shift.resource_calendar_ids.id
+        work_dict['shift_id'] = shift_id
+        work_dict['calendar_id'] = shift_template.id
         work_dict['start_work'], work_dict['end_work'] = self._create_datetime(
                 work_day, day.start_work, day.end_work)
-        work_dict['assign_type'] = shift.assign_type       
+        work_dict['assign_type'] = assign_type       
         work_dict['work_day'] = work_day    
-        if shift.resource_calendar_ids.shift_type == 'shift':
+        if shift_template.shift_type == 'shift':
             work_dict['day_period'] = day.day_period.id
         workplan = self.env['hr.employee.workplan'].create(work_dict)
 
         return workplan
 
     def _create_schedules(self, vals, shift):
-        _logger.info(vals)
         shift_template = self.env['resource.calendar'].browse(vals.get('resource_calendar_ids'))
 
         if shift_template.shift_type == 'days':
@@ -131,11 +130,11 @@ class HrEmployeeShift(models.Model):
                 for day in day_ids:
                     if inside_counter == week_index:
                         if not vals.get('model_type'):
-                            _logger.info(vals.get('model_type'))
-                            workplan = self._create_workplans(shift, day, dates_btwn)
+                            workplan = self._create_workplans(shift_template, shift.id, day, dates_btwn, vals.get('assign_type'))
                         for index, employee in enumerate(employees):
                             schedule_dict = {}
-                            schedule_dict['workplan_id'] = workplan.id
+                            if 'workplan' in locals():
+                                schedule_dict['workplan_id'] = workplan.id
                             schedule_dict['hr_department'] = employee.department_id.id
                             schedule_dict['hr_employee'] = employee.id
                             schedule_dict['date_from'] = date_from
@@ -152,8 +151,7 @@ class HrEmployeeShift(models.Model):
                                 dates_btwn, day.start_work, day.end_work)
                             if index == 0:
                                 schedule_dict['is_main'] = True
-                            self.env['hr.employee.schedule'].create(
-                                schedule_dict)
+                            schedule = self.env['hr.employee.schedule'].create(schedule_dict)
                         break
                     inside_counter = inside_counter + 1
             else:
@@ -161,11 +159,11 @@ class HrEmployeeShift(models.Model):
                 for day in day_ids:
                     if inside_counter == counter:
                         if not vals.get('model_type'):
-                            _logger.info(vals.get('model_type'))
-                            workplan = self._create_workplans(shift, day, dates_btwn)
+                            workplan = self._create_workplans(shift_template, shift.id, day, dates_btwn, vals.get('assign_type'))
                         for index, employee in enumerate(employees):
                             schedule_dict = {}
-                            schedule_dict['workplan_id'] = workplan.id
+                            if 'workplan' in locals():
+                                schedule_dict['workplan_id'] = workplan.id
                             schedule_dict['hr_department'] = employee.department_id.id
                             schedule_dict['hr_employee'] = employee.id
                             schedule_dict['date_from'] = date_from
@@ -225,7 +223,7 @@ class HrEmployeeShift(models.Model):
 
                             if index == 0:
                                 schedule_dict['is_main'] = True
-                            self.env['hr.employee.schedule'].create(schedule_dict)
+                            schedule = self.env['hr.employee.schedule'].create(schedule_dict)
 
                         counter = counter + 1
                         break
@@ -233,6 +231,9 @@ class HrEmployeeShift(models.Model):
                 if counter > total_len:
                     counter = 0
             dates_btwn = dates_btwn + relativedelta(days=1)
+
+        return {'schedule_dict': schedule_dict, 'schedule': schedule}
+
 
     def _check_duplicated_schedules(self, vals):
         DATE_FORMAT = '%Y-%m-%d'

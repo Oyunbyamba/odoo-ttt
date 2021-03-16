@@ -45,6 +45,7 @@
 
         <xpath expr="//page[@name='personal_information']/group/group[1]" position="before">
           <group name="identification_id" string="Main Info">
+            <div/>
             <field name="identification_id"/>
             <field name="family_name" />
             <field name="gender"/>

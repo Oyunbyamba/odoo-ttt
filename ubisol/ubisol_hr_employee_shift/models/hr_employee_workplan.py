@@ -82,6 +82,7 @@ class HrEmployeeWorkplan(models.Model):
             for emp_id in ids:
                 employees.append(emp_id['id'])
             employees = [[6, False, employees]]
+
             values = {
                 'shift_id': record.shift_id,
                 'resource_calendar_ids': record.calendar_id.id,
