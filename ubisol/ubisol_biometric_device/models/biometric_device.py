@@ -12,6 +12,7 @@ from zk import ZK, const
 
 _logger = logging.getLogger(__name__)
 
+
 class HrAttendance(models.Model):
     _inherit = 'hr.attendance'
 
@@ -120,12 +121,94 @@ class BiometricMachine(models.Model):
     desc = fields.Char(string='Нэр', required=True,
                        help="Төхөөрөмжинд нэр өгнө үү", tracking=True)
     port_no = fields.Integer(
+
         string='Port No', required=True, help="Give the Port number", tracking=True)
+
+    active = fields.Boolean(
+        string='Төхөөрөмж идэвхтэй эсэх', default=True,
+        help="Уг төхөөрөмжийг ашиглахгүй бол сонгохгүй байна уу.")
+
+    is_connected = fields.Boolean(
+        string='Төхөөрөмжөөс автоматаар өгөгдөл татах эсэх', default=False,
+        help="Төхөөрөмжөөс автоматаар өгөгдөл татах эсэх.")
+
+    def download_all_attendance(self):
+        devices = self.env['biometric.machine'].search(
+            [('active', '=', True), ('is_connected', '=', True)])
+        log_obj = self.env["log_file_import_wizard"].search([])
+
+        last_id = self.env['biometric.attendance'].search(
+            [], limit=1, order='id desc')
+        if not last_id:
+            last_id = 0
+        else:
+            last_id = last_id.id
+        _logger.info(last_id)
+        for device in devices:
+            self.download_attendance_by_cron(device)
+
+        new_attendances = self.env['biometric.attendance'].search(
+            [('id', '>', last_id)], order='pin_code asc, punch_date_time asc')
+        _logger.info(len(new_attendances))
+        for attendance in new_attendances:
+
+            get_user_id = self.env['hr.employee'].search(
+                [('pin', '=', attendance.pin_code)], limit=1)
+            if not get_user_id:
+                _logger.info('USER Not FOUND')
+                pass
+            atten_time = attendance.punch_date_time
+            prev_date = self.checking_prev_att_within_thirty_sec(
+                get_user_id, atten_time)
+            if not prev_date:
+                _logger.info('PrevDATA')
+                return {}
+            _logger.info('NewINSerted')
+            _logger.info(atten_time)
+            log_obj.write_to_attendance(get_user_id, atten_time)
+
+    def import_attendance(self, row, dev_id):
+
+        if str(row[0]).strip() == '9999':
+            return {}
+
+        atten_time = row[1]
+        atten_time = datetime.strptime(atten_time, '%Y-%m-%d %H:%M:%S')
+        local_tz = pytz.timezone(self.env.user.tz or 'GMT')
+        local_dt = local_tz.localize(atten_time, is_dst=None)
+        utc_dt = local_dt.astimezone(pytz.utc)
+        utc_dt = utc_dt.strftime("%Y-%m-%d %H:%M:%S")
+        atten_time = datetime.strptime(utc_dt, "%Y-%m-%d %H:%M:%S")
+
+        duplicate_atten_ids = self.env['biometric.attendance'].search(
+            [('pin_code', '=', str(row[0]).strip()), ('punch_date_time', '=', atten_time)])
+        if duplicate_atten_ids:
+            return {}
+        else:
+            _logger.info(atten_time)
+            biometric = self.env['biometric.attendance'].create({'device_id': dev_id,
+                                                                 'pin_code': str(row[0]).strip(),
+                                                                 'punch_date_time': atten_time,
+                                                                 'attendance_data': str(row[2]),
+                                                                 'attendance_data1': str(row[3]),
+                                                                 'attendance_data2': str(row[4]),
+                                                                 'attendance_data3': str(row[5])})
+
+        # prev_date = self.checking_prev_att_within_thirty_sec(
+        #    get_user_id, atten_time)
+        # if not prev_date:
+        #    return {}
+
+        # self.write_to_attendance(get_user_id, atten_time)
+
+        return {}
 
     def download_attendance(self):
 
         for info in self:
             isIp = self.validIPAddress(info.name)
+            attendances = []
+            log_obj = self.env["log_file_import_wizard"].search([])
             if(isIp == 'IPv4'):
                 conn = None
                 zk = ZK(info.name, port=info.port_no, timeout=5)
@@ -136,17 +219,22 @@ class BiometricMachine(models.Model):
                     conn.disable_device()
                     print('Firmware Version: : {}'.format(
                         conn.get_firmware_version()))
+
                     attendances = conn.get_attendance()
                     for attendance in attendances:
-
+                        _logger.info(attendance.timestamp.strftime(
+                            "%Y-%m-%d %H:%M:%S"))
                         row = [attendance.user_id, attendance.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
                                attendance.status, attendance.punch, 0, 0]
 
                         self.import_attendance(row, info.id)
-                        # print('  User ID   : {}'.format(attendance.user_id))
-                        # print('  timestamp   : {}'.format(attendance.timestamp))
-                        # print('  status   : {}'.format(attendance.status))
-                        # print('  punch   : {}'.format(attendance.punch))
+
+                    # log_obj.import_attendance(row, info.id)
+
+                    # print('  User ID   : {}'.format(attendance.user_id))
+                    # print('  timestamp   : {}'.format(attendance.timestamp))
+                    # print('  status   : {}'.format(attendance.status))
+                    # print('  punch   : {}'.format(attendance.punch))
 
                 except:
                     raise exceptions.ValidationError(
@@ -163,9 +251,43 @@ class BiometricMachine(models.Model):
                                 'sticky': False,
                             }
                         }
+
             else:
                 raise exceptions.ValidationError(
                     'IP хаяг буруу байна.')
+
+    def download_attendance_by_cron(self, info):
+
+        if info:
+            isIp = self.validIPAddress(info.name)
+            attendances = []
+            log_obj = self.env["log_file_import_wizard"].search([])
+            isError = False
+            if(isIp == 'IPv4'):
+                conn = None
+                zk = ZK(info.name, port=info.port_no, timeout=5)
+                try:
+                    print("Connecting to device ...")
+                    conn = zk.connect()
+                    print('Disabling device ...')
+                    conn.disable_device()
+                    print('Firmware Version: : {}'.format(
+                        conn.get_firmware_version()))
+
+                    attendances = conn.get_attendance()
+
+                except:
+                    isError = True
+                finally:
+                    if conn:
+                        conn.disconnect()
+
+            for attendance in attendances:
+                row = [attendance.user_id, attendance.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+                       attendance.status, attendance.punch, 0, 0]
+                self.import_attendance(row, info.id)
+
+        return {}
 
     def test_connection(self):
         for info in self:
@@ -219,239 +341,49 @@ class BiometricMachine(models.Model):
             return "IPv6"
         return "Neither"
 
-    def import_attendance(self, row, device_id):
+    def checking_prev_att_within_thirty_sec(self, get_user_id, atten_time):
+        prev_user = self.env['ir.config_parameter'].sudo(
+        ).get_param('my.global.prev_user')
+        prev_date = self.env['ir.config_parameter'].sudo(
+        ).get_param('my.global.prev_date')
 
-        atten_time = row[1]
-        atten_time = datetime.strptime(atten_time, '%Y-%m-%d %H:%M:%S')
-        local_tz = pytz.timezone(self.env.user.tz or 'GMT')
-        local_dt = local_tz.localize(atten_time, is_dst=None)
-        utc_dt = local_dt.astimezone(pytz.utc)
-        utc_dt = utc_dt.strftime("%Y-%m-%d %H:%M:%S")
-        atten_time = datetime.strptime(utc_dt, "%Y-%m-%d %H:%M:%S")
-        att_obj = self.env['hr.attendance']
-
-        get_user_id = self.env['hr.employee'].search(
-            [('pin', '=', str(row[0]).strip())])
-        if not get_user_id:
-            record = self.env['hr.employee'].create(
-                {'name': str(row[0]).strip(), 'pin': str(row[0]).strip()})
-            get_user_id = record
-
-        duplicate_atten_ids = self.env['biometric.attendance'].search(
-            [('pin_code', '=', str(row[0]).strip()),  ('punch_date_time', '=', atten_time)])
-        if duplicate_atten_ids:
-            return {}
-        else:
-            self.env['biometric.attendance'].create({'device_id': device_id,
-                                                     'pin_code': str(row[0]).strip(),
-                                                     'punch_date_time': atten_time,
-                                                     'attendance_data': str(row[2]),
-                                                     'attendance_data1': str(row[3]),
-                                                     'attendance_data2': str(row[4]),
-                                                     'attendance_data3': str(row[5])})
-
-        # Herev hereglegch oldson bol
         if get_user_id:
-
-            status = self.check_in_out(att_obj, get_user_id, atten_time)
-            if(status == 'check_out'):
-                att_var1 = att_obj.search(
-                    [('employee_id', '=', get_user_id.id)], order="id desc")
-                if att_var1:
-                    att_var1[0].write({'check_out': atten_time})
-            elif (status == "update_check_out"):
-                att_var = att_obj.search(
-                    [('employee_id', '=', get_user_id.id)], order="id desc")
-                att_var[0].write({'check_out': atten_time})
-            elif (status == "update_check_in"):
-                # att_var = att_obj.search(
-                #     [('employee_id', '=', get_user_id.id)],order="id desc")
-                # att_var[0].write({'check_in': atten_time})
-                pass
-            elif status == "new_check_out":
-                att_obj.create(
-                    {'employee_id': get_user_id.id, 'check_out': atten_time})
-            else:
-                att_obj.create(
-                    {'employee_id': get_user_id.id, 'check_in': atten_time})
-
-        return {}
-
-    def check_in_out(self, att_obj, get_user_id, dt):
-        setting_obj = self.env['hr.attendance.settings'].search(
-            [], limit=1, order='id desc')
-        general_shift = self.env['hr.employee.schedule'].search(
-            [('hr_employee', '=', int(get_user_id.id))], limit=1, order='id asc')
-
-        [ds1, ds2, de1, de2, dt1, s_type] = self._calculate_dates(
-            setting_obj, general_shift, dt)
-        attendance_req = self._is_overtime(get_user_id, dt, dt1)
-        if attendance_req:
-            [ds1, ds2, de1, de2, dt1, s_type] = self._calculate_dates(
-                setting_obj, general_shift, attendance_req)
-
-        shift_start = self.env['hr.employee.schedule'].search(
-            [('hr_employee', '=', int(get_user_id.id)), ('day_period', '!=', 3), ('start_work', '>=', ds1), ('start_work', '<=', ds2)])
-        shift_end = self.env['hr.employee.schedule'].search(
-            [('hr_employee', '=', int(get_user_id.id)), ('day_period', '!=', 3), ('end_work', '>=', de1), ('end_work', '<=', de2)])
-
-        if attendance_req:
-            return "check_out"
-        if s_type == 'shift' and not shift_end:
-            shift_end = shift_start
-
-        if(shift_end & shift_start):
-            check_out = abs(dt - shift_end.end_work).total_seconds()
-            check_in = abs(dt - shift_start.start_work).total_seconds()
-            status = self._check_status(
-                general_shift, get_user_id, dt, shift_start.start_work, shift_end.end_work, check_out, check_in)
-            return status
-        elif(shift_end):
-            return "check_out"
-        elif(shift_start):
-            return "check_in"
-        else:
-            shift_obj = self.env['hr.employee.shift']
-            shift_type = self.env['resource.calendar'].search(
-                [('shift_type', '=', 'days')], limit=1, order='id asc')
-            [start_work, end_work] = self._create_schedule(
-                get_user_id, dt1, shift_obj, shift_type)
-            work_start = datetime.strptime(datetime.strftime(
-                dt1, "%Y-%m-%d  00:00:00"), "%Y-%m-%d %H:%M:%S")
-            work_end = datetime.strptime(datetime.strftime(
-                dt1, "%Y-%m-%d 00:00:00"), "%Y-%m-%d %H:%M:%S")
-            work_start = work_start - \
-                timedelta(hours=8) + timedelta(seconds=start_work * 3600)
-            work_end = work_end - \
-                timedelta(hours=8) + timedelta(seconds=end_work * 3600)
-
-            check_out = abs(dt - work_end).total_seconds()
-            check_in = abs(dt - work_start).total_seconds()
-            status = self._check_status(
-                general_shift, get_user_id, dt, work_start, work_end, check_out, check_in)
-
-            return status
-
-    def _is_overtime(self, get_user_id, dt, dt1):
-        ds = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
-        de = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
-        de = datetime.strptime(de, "%Y-%m-%d %H:%M:%S") + \
-            timedelta(hours=23, minutes=59, seconds=59)
-        # attendance_reqs = self.env['hr.attendance.request'].search([
-        #     ('end_datetime', '>=', ds),
-        #     ('end_datetime', '<=', de),
-        #     ('employee_id', '=', get_user_id.id),
-        #     ('request_type', '=', 'employee'),
-        # ])
-        attendance_reqs = self.env['hr.leave'].search([
-            ('date_from', '>=', ds),
-            ('date_to', '<=', de),
-            ('employee_id', '=', get_user_id.id),
-            ('holiday_type', '=', 'employee'),
-        ])
-
-        if attendance_reqs and attendance_reqs.end_datetime > dt:
-            return attendance_reqs.start_datetime + timedelta(hours=8)
-        else:
-            return None
-
-    def _calculate_dates(self, setting_obj, general_shift, dt):
-        dt1 = dt + timedelta(hours=8)
-        dt_diff = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
-        dt_diff = datetime.strptime(dt_diff, "%Y-%m-%d %H:%M:%S")
-        s_type = 'days'
-        if general_shift:
-            if general_shift.shift_type == 'shift':
-                s_type = 'shift'
-            else:
-                s_type = 'days'
-        else:
-            s_type = 'days'
-
-        if s_type == 'days':
-            if abs(dt1 - dt_diff).total_seconds() < setting_obj.start_work_date_from * 3600 and abs(dt1 - dt_diff).total_seconds() > 0:
-                dt1 = dt1 - timedelta(days=1)
-            ds1 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
-            ds2 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
-            de1 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
-            de2 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
-
-            ds1 = datetime.strptime(ds1, '%Y-%m-%d %H:%M:%S') - timedelta(
-                hours=8) + timedelta(seconds=setting_obj.start_work_date_from * 3600)
-            ds2 = datetime.strptime(ds2, '%Y-%m-%d %H:%M:%S') - timedelta(
-                hours=8) + timedelta(seconds=setting_obj.start_work_date_to * 3600 + 59)
-            de1 = datetime.strptime(de1, "%Y-%m-%d %H:%M:%S") - timedelta(
-                hours=8) + timedelta(seconds=setting_obj.end_work_date_from * 3600)
-            de2 = datetime.strptime(de2, "%Y-%m-%d %H:%M:%S") - timedelta(hours=8) + timedelta(
-                days=1) + timedelta(seconds=setting_obj.end_work_date_to * 3600 + 59)
-        else:
-            ds1 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
-            ds2 = datetime.strftime(dt1, "%Y-%m-%d 23:59:59")
-            de1 = datetime.strftime(dt1, "%Y-%m-%d 00:00:00")
-            de2 = datetime.strftime(dt1, "%Y-%m-%d 23:59:59")
-
-            ds1 = datetime.strptime(
-                ds1, '%Y-%m-%d %H:%M:%S') - timedelta(hours=8)
-            ds2 = datetime.strptime(
-                ds2, '%Y-%m-%d %H:%M:%S') - timedelta(hours=8)
-            de1 = datetime.strptime(
-                de1, "%Y-%m-%d %H:%M:%S") - timedelta(hours=8)
-            de2 = datetime.strptime(
-                de2, "%Y-%m-%d %H:%M:%S") - timedelta(hours=8)
-        return [ds1, ds2, de1, de2, dt1, s_type]
-
-    def _check_status(self, general_shift, get_user_id, dt, work_start, work_end, check_out, check_in):
-        if(check_out < check_in):
-            days = 0
-            self._cr.execute('select id from hr_attendance where employee_id = ' +
-                             str(get_user_id.id)+' order by id desc limit 1')
-            last_id = self._cr.fetchone()
-
-            if last_id:
-                new_check_out = self.env['hr.attendance'].search(
-                    [('id', '=', last_id[0])])
-                if new_check_out and new_check_out.check_in:
-                    seconds = abs(dt - new_check_out.check_in).total_seconds()
-                    days = seconds / (24 * 3600)
-            else:
-                new_check_out = None
-
-            update_check_out = self.env['hr.attendance'].search(
-                [('employee_id', '=', get_user_id.id), ('check_out', '>=', work_start), ('check_out', '<', dt)])
-
-            if(update_check_out):
-                return "update_check_out"
-            elif new_check_out:
-                if not new_check_out.check_in:
-                    return "new_check_out"
-                elif days >= 1:
-                    return "new_check_out"
+            if not prev_user and not prev_date:
+                prev_user = get_user_id.id
+                prev_date = atten_time
+                self.env['ir.config_parameter'].sudo().set_param(
+                    'my.global.prev_user', prev_user)
+                self.env['ir.config_parameter'].sudo().set_param(
+                    'my.global.prev_date', prev_date)
+            if int(prev_user) == int(get_user_id.id):
+                if type(prev_date) is str:
+                    prev_date = datetime.strptime(
+                        prev_date, '%Y-%m-%d %H:%M:%S')
+                if prev_date != atten_time:
+                    diff = (atten_time - prev_date).total_seconds()
+                    if abs(diff) <= 30:
+                        return {}
+                    else:
+                        prev_user = get_user_id.id
+                        prev_date = atten_time
+                        self.env['ir.config_parameter'].sudo().set_param(
+                            'my.global.prev_user', prev_user)
+                        self.env['ir.config_parameter'].sudo().set_param(
+                            'my.global.prev_date', prev_date)
                 else:
-                    return "check_out"
-            elif not last_id:
-                return "new_check_out"
-            return "check_out"
+                    prev_user = get_user_id.id
+                    prev_date = atten_time
+                    self.env['ir.config_parameter'].sudo().set_param(
+                        'my.global.prev_user', prev_user)
+                    self.env['ir.config_parameter'].sudo().set_param(
+                        'my.global.prev_date', prev_date)
+            elif prev_user != get_user_id.id:
+                prev_user = get_user_id.id
+                prev_date = atten_time
+                self.env['ir.config_parameter'].sudo().set_param(
+                    'my.global.prev_user', prev_user)
+                self.env['ir.config_parameter'].sudo().set_param(
+                    'my.global.prev_date', prev_date)
+            return prev_date
         else:
-            update_check_in = self.env['hr.attendance'].search(
-                [('employee_id', '=', get_user_id.id), ('check_in', '>=', work_start - timedelta(hours=3)), ('check_in', '<', dt)])
-            if(update_check_in):
-                return "update_check_in"
-            return "check_in"
-
-    def _create_schedule(self, emp_id, date, shift_obj, shift_type):
-        d = datetime.strftime(date, "%Y-%m-%d")
-        shift = self.env['hr.employee.shift'].search(
-            [('resource_calendar_ids', '=', shift_type.id)], limit=1, order='id desc')
-
-        values = {}
-        values['hr_department'] = False
-        values['hr_employee'] = emp_id.id
-        values['resource_calendar_ids'] = shift_type.id
-        values['date_from'] = str(d)
-        values['date_to'] = str(d)
-
-        # shift_obj._create_schedules(values, shift)
-
-        res = self.env['resource.calendar.shift'].search(
-            [('shift_id', '=', shift_type.id)], limit=1, order='id asc')
-        return [res.start_work, res.end_work]
+            return {}
