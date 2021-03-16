@@ -26,15 +26,34 @@
             </field>
         </record>
  
-        <menuitem id="hr_applicant_attachments" 
-            name="Хавсралтууд"
-            parent="hr_recruitment.menu_crm_case_categ0_act_job"
-            groups="base.group_user"
-            action="ir_attachment_job_applicants"
-            sequence="3"
-            />
+        <menuitem id="hr_recruitment.menu_hr_recruitment_configuration" groups="ubisol_hr_recruitment.hide"/>
+        <menuitem id="hr_recruitment.menu_crm_case_categ0_act_job" groups="ubisol_hr_recruitment.hide"/>
+        <menuitem id="hr_recruitment.report_hr_recruitment" groups="ubisol_hr_recruitment.hide"/>
 
-        <menuitem id="hr_recruitment.menu_hr_job_position_config" groups="ubisol_hr_recruitment.hide"/>
+        <menuitem name="Ажилд орох өргөдлүүд"
+            id="hr_recruitment.menu_crm_case_categ_all_app"
+            parent="hr_recruitment.menu_hr_recruitment_root" 
+            action="hr_recruitment.crm_case_categ0_act_job" sequence="1"/>
+
+        <menuitem name="Хавсралт файлууд"  
+            id="hr_applicant_attachments"
+            parent="hr_recruitment.menu_hr_recruitment_root"
+            groups="base.group_user" action="ir_attachment_job_applicants" sequence="2"/>    
+
+        <menuitem name="Үе шат"
+            id="hr_recruitment.menu_hr_recruitment_stage"
+            parent="hr_recruitment.menu_hr_recruitment_root"
+            action="hr_recruitment.hr_recruitment_stage_act" groups="base.group_no_one" sequence="3"/>
+
+        <menuitem name="Боловсролын түвшин"
+            id="hr_recruitment.menu_hr_recruitment_degree"   
+            parent="hr_recruitment.menu_hr_recruitment_root"
+            action="hr_recruitment.hr_recruitment_degree_action" sequence="4" groups="base.group_no_one"/>    
+
+        <menuitem name="ХН шинжилгээ" 
+            id="hr_recruitment.hr_applicant_report_menu" 
+            parent="hr_recruitment.menu_hr_recruitment_root" 
+            action="hr_recruitment.hr_applicant_action_analysis" sequence="5"/>
 
     </data>
 </odoo>

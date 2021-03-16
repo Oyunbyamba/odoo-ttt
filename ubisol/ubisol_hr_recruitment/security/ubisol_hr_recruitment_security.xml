@@ -6,8 +6,12 @@
         <field name="comment">Hide.</field>
     </record>
 
-    <record model="ir.ui.menu" id="hr_recruitment.menu_hr_job_position_config">
+    <record model="ir.ui.menu" id="hr_recruitment.menu_hr_recruitment_configuration">
         <field name="groups_id" eval="[(5,ref('hide'))]"/>
     </record>
     
+    <record model="ir.ui.menu" id="hr_recruitment.menu_crm_case_categ0_act_job">
+        <field name="groups_id" eval="[(5,ref('hide'))]"/>
+    </record>
+
 </odoo>
