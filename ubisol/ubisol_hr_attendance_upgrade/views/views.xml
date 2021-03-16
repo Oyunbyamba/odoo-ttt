@@ -108,24 +108,24 @@
             <field name="department_id" operator="child_of"/>
             <filter string="Миний ирц" name="myattendances" domain="[('employee_id.user_id.id', '=', uid)]" />
             <separator/>
-            <!-- <filter string="Өнгөрсөн сар" name="start_prev_month"
-                domain="[('check_in', '>=', (context_today()-relativedelta(months=1)).strftime('%Y-%m-01 00:00:00')),
-                ('check_in', '&lt;', context_today().strftime('%Y-%m-01 23:59:59')),
-                '|',
+            <filter string="Өнгөрсөн сар" name="start_prev_month"
+                domain="['|', '&amp;', ('check_in', '>=', (context_today()-relativedelta(months=1)).strftime('%Y-%m-01 00:00:00')),
+                ('check_in', '&lt;', context_today().strftime('%Y-%m-01 00:00:00')),
+                '&amp;',
                 ('check_out', '>=', (context_today()-relativedelta(months=1)).strftime('%Y-%m-01 00:00:00')),
-                ('check_out', '&lt;', context_today().strftime('%Y-%m-01 23:59:59'))]"/>
+                ('check_out', '&lt;', context_today().strftime('%Y-%m-01 00:00:00'))]"/>
             <filter string="Энэ сар" name="start_this_month"
-                domain="[('check_in', '>=', context_today().strftime('%Y-%m-01 00:00:00')),
-                ('check_in', '&lt;', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01 23:59:59'))
-                '|',
+                domain="['|', '&amp;', ('check_in', '>=', context_today().strftime('%Y-%m-01 00:00:00')),
+                ('check_in', '&lt;', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01 00:00:00')),
+                '&amp;',
                 ('check_out', '>=', context_today().strftime('%Y-%m-01 00:00:00')),
-                ('check_out', '&lt;', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01 23:59:59'))]"/>
+                ('check_out', '&lt;', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01 00:00:00'))]"/>
             <filter string="Дараа сар" name="next_month_request"
-                domain="[('check_in', '>=', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01 00:00:00')),
-                ('check_in', '&lt;', (context_today()+relativedelta(months=2)).strftime('%Y-%m-01 23:59:59'))
-                '|',
+                domain="['|', '&amp;', ('check_in', '>=', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01 00:00:00')),
+                ('check_in', '&lt;', (context_today()+relativedelta(months=2)).strftime('%Y-%m-01 00:00:00')),
+                '&amp;',
                 ('check_out', '>=', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01 00:00:00')),
-                ('check_out', '&lt;', (context_today()+relativedelta(months=2)).strftime('%Y-%m-01 23:59:59'))]"/> -->
+                ('check_out', '&lt;', (context_today()+relativedelta(months=2)).strftime('%Y-%m-01 00:00:00'))]"/>
             <separator/>  
             <filter string="Орсон" name="check_in_filter" date="check_in" default_period="last_month"/>
             <filter string="Гарахдаа дараагүй" name="nocheckout" domain="[('check_out', '=', False)]" />
@@ -149,7 +149,7 @@
         <field name="name">Attendances</field>
         <field name="res_model">hr.attendance</field>
         <field name="view_mode">tree,kanban,timeline,calendar,form</field>
-        <field name="context">{"search_default_today":1, "search_default_employee": 1, "search_default_department": 1}</field>
+        <field name="context">{"search_default_start_this_month":1, "search_default_employee": 1, "search_default_department": 1}</field>
         <field name="search_view_id" ref="hr_attendance.hr_attendance_view_filter" />
         <field name="help" type="html">
             <p class="o_view_nocontent_empty_folder">
