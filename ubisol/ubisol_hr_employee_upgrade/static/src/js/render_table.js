@@ -57,7 +57,7 @@ odoo.define('render_table.RenderTable',function (require) {
                 method: 'get_my_attendances',
                 args: [ev.data.employee_id],
             }).then(function (data) {
-                console.log(data);
+                // console.log(data);
             });
         },
     });

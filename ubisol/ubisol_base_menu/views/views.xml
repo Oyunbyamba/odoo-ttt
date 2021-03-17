@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+
+    <template id="assets_backend_menu_collapsible" name="assets.backend.menu.collapsible" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="/ubisol_base_menu/static/src/css/menu_collapsible.css" />
+            <script type="text/javascript" src="/ubisol_base_menu/static/src/js/menu_collapsible.js"></script>
+        </xpath>
+    </template>
+
+    <menuitem name="Base menu" id="ubisol_base_menu.menu_1_list" groups="base.group_user" sequence="-100"/>
+    <menuitem id="base.menu_board_root" groups="ubisol_hr_employee_upgrade.hide"/>
+
+    <menuitem name="Хянах самбар"
+        id="board.menu_board_my_dash" 
+        parent="ubisol_base_menu.menu_1_list"
+        action="board.open_board_my_dash_action" sequence="1" groups="base.group_user"/>
+
+    <menuitem name="Discuss"
+        id="mail.menu_root_discuss" 
+        parent="ubisol_base_menu.menu_1_list"
+        action="mail.action_discuss" web_icon="mail,static/description/icon.png" groups="base.group_user" sequence="2"/>
+
+    <menuitem name="Calendar"
+        id="calendar.mail_menu_calendar"
+        parent="ubisol_base_menu.menu_1_list"
+        action="calendar.action_calendar_event" web_icon="calendar,static/description/icon.png" groups="base.group_user" sequence="3"/>
+
+    <menuitem name="Employees"
+        id="hr.menu_hr_employee_payroll"
+        parent="ubisol_base_menu.menu_1_list"
+        groups="hr.group_hr_manager,hr.group_hr_user,base.group_user" sequence="4"/>  
+
+        <menuitem name="Баримтын загвар"
+            id="oh_employee_documents_expiry.hr_document_template_menuitem"
+            parent="hr.menu_hr_employee_payroll"
+            action="oh_employee_documents_expiry.hr_document_template_action" groups="hr.group_hr_manager" sequence="6"/>
+
+    <menuitem name="Цаг бүртгэл"
+        id="menu_time_management"
+        parent="ubisol_base_menu.menu_1_list"
+        groups="base.group_user" sequence="5"/>
+
+        <menuitem name="Attendances"
+            id="hr_attendance.menu_hr_attendance_root"
+            parent="ubisol_base_menu.menu_time_management" groups="hr_attendance.group_hr_attendance" sequence="1"/>
+
+        <menuitem name="Хүсэлтүүд"
+            id="ubisol_hr_holidays.menu_hr_requests_root"
+            parent="ubisol_base_menu.menu_time_management" groups="base.group_user" sequence="2"/>    
+
+        <menuitem name="Ажиллах хуваарь" 
+            id="ubisol_hr_employee_shift.employee_shift"
+            parent="ubisol_base_menu.menu_time_management" 
+            groups="ubisol_hr_attendance_upgrade.group_hr_attendance_responsible,hr_attendance.group_hr_attendance_user,hr_attendance.group_hr_attendance_manager"
+            sequence="10"
+            />    
+        
+  </data>
+</odoo>

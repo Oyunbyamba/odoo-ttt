@@ -288,10 +288,6 @@
         parent="hr.menu_human_resources_configuration" 
         action="gamification.badge_list_action" />       
 
-    <!--ATTENDANCE MENUS-->
-    <menuitem name="Attendances"
-        id="hr_attendance.menu_hr_attendance_root"
-        parent="hr.menu_hr_root" groups="hr_attendance.group_hr_attendance" sequence="7"/>
-
+    
   </data>
 </odoo>
