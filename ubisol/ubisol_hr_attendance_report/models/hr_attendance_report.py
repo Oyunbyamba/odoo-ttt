@@ -294,7 +294,7 @@ class HrAttendanceReport(models.Model):
 
             is_rest = True
             if record.shift_type == 'shift':
-                is_rest = record.day_period.is_
+                is_rest = record.day_period.is_rest
             elif int(record.week_day) < 5:
                 is_rest = False
 
@@ -931,13 +931,15 @@ class HrAttendanceReport(models.Model):
         if filters['calculate_type']:
             if filters['calculate_type'] == 'employee':
                 employee_id = filters['employee_id']
-                domain = [('hr_employee', '=', employee_id), ('work_day',
+                employee = self.env['hr.employee'].search(
+                    [('id', '=', employee_id)], limit=1)
+                domain = [('hr_employee', '=', employee.id), ('work_day',
                                                               '>=', start_date), ('work_day', '<=', end_date)]
 
                 approved_overtimes = self.env['hr.leave'].sudo().search([
                     ('date_from', '>=', start_date),
                     ('date_to', '<=', end_date),
-                    ('department_id', '=', employee_id.department_id.id),
+                    ('department_id', '=', employee.department_id.id),
                     ('holiday_status_id.overtime_type',
                      '=', 'total_allowed_overtime'),
                     ('state', 'in', ['validate', 'validate1'])

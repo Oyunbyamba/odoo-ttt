@@ -653,11 +653,8 @@ class AttendanceReport(models.TransientModel):
             sheet.write(row, 23, '', body_format)
             sheet.write(row, 24, '', body_format)
 
-            sheet.write(row, 25, l['take_off_day']
+            sheet.write(row, 26, l['take_off_day']
                         or '', body_format)
-            sheet.write(row, 26, self._set_hour_format(
-                l['difference_check_out']), body_format)
-
             sheet.write(row, 27, self._set_hour_format(
                 l['difference_check_in']), body_format)
 
