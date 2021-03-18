@@ -8,7 +8,7 @@ class ExtendHrEmployeeShift(models.TransientModel):
     _name = 'hr.employee.shift.extend'
     _description = 'Extend employee shift'
 
-    date_to = fields.Date(string="Дуусах хугацаа")
+    date_to = fields.Date(string="Дуусах хугацаа", required=True)
 
     def _prepare_schedule_values(self, shift, date_from, date_to):
         hr_department = [[6, False, [shift.hr_department.id]]]
@@ -20,7 +20,8 @@ class ExtendHrEmployeeShift(models.TransientModel):
             'hr_employee': hr_employee,
             'resource_calendar_ids': shift.resource_calendar_ids.id,
             'date_from': str(date_from),
-            'date_to': str(date_to)
+            'date_to': str(date_to),
+            'extend_shift': True
         }
 
         return values
@@ -36,9 +37,15 @@ class ExtendHrEmployeeShift(models.TransientModel):
                     extend_date_from = datetime.strptime(str(shift.date_to), '%Y-%m-%d')
                     extend_date_from = extend_date_from.date()+relativedelta(days=1)
 
-                    shift.date_to = extend_date_to
+                    update_values = {'date_to': str(extend_date_to), 'extend_shift': True}
+                    shift.write(update_values)
 
-                    # values = self._prepare_schedule_values(shift, extend_date_from, extend_date_to)
-                    # log_obj._create_schedules(values, shift)
+                    prev_workplans = self.env['hr.employee.workplan'].search([
+                        ('shift_id', '=', shift.id), 
+                        ('work_day', '>=', extend_date_from), 
+                        ('work_day', '<=', extend_date_to)]).unlink()
+
+                    values = self._prepare_schedule_values(shift, extend_date_from, extend_date_to)
+                    log_obj._create_schedules(values, shift)
 
         return {}

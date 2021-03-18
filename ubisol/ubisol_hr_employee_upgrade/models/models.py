@@ -154,12 +154,12 @@ class HrEmployee(models.Model):
             employee_contract = self.env['hr.contract'].browse(self.contract_id.id)
             employee_contract.write(values)
         else:    
-            if(trial_date < fields.Date.context_today(self)):
-                values['state'] = 'open'
-                values['kanban_state'] = 'done'
-            else:
-                values['state'] = 'draft'
-                values['kanban_state'] = 'donnormale'
+        #     if(trial_date < fields.Date.context_today(self)):
+        #         values['state'] = 'open'
+        #         values['kanban_state'] = 'done'
+        #     else:
+        #         values['state'] = 'draft'
+        #         values['kanban_state'] = 'donnormale'
             employee_contract = self.env['hr.contract'].create(values)    
 
         return employee_contract        
@@ -195,7 +195,7 @@ class HrEmployee(models.Model):
     def write(self, vals):
         prev_department_id = self._origin.department_id
         employee = super(HrEmployee, self).write(vals)  
-        if self.contract_signed_date and self.create_contract:    
+        if vals.get('contract_signed_date') and vals.get('create_contract'):    
             employee_contract = self._prepare_contract_values(self)        
 
         #if this employee has child employees, then their leave_manager_id is set by self.user_id
@@ -205,7 +205,7 @@ class HrEmployee(models.Model):
                 child_employee.parent_id = self.id
 
         #create schedule for employee when employee's department selected
-        if vals.get('department_id') & vals.get('department_id') != prev_department_id:
+        if vals.get('department_id') and (vals.get('department_id') != prev_department_id):
             shifts = self.env['hr.employee.shift'].search([
                 ('hr_department', '=', vals.get('department_id')),
                 ('assign_type', '=', 'department')])

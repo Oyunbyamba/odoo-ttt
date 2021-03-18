@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hide" model="res.groups">
+        <field name="name">Hide</field>
+        <field name="comment">Hide.</field>
+    </record>
+
+    <record model="ir.ui.menu" id="base.menu_board_root">
+        <field name="groups_id" eval="[(5,ref('hide'))]"/>
+    </record>
+
+    <record model="ir.ui.menu" id="base.menu_reporting_dashboard">
+        <field name="groups_id" eval="[(5,ref('hide'))]"/>
+    </record>
+
+    <record model="ir.ui.menu" id="base.menu_board_my_dash">
+        <field name="groups_id" eval="[(5,ref('hide'))]"/>
+    </record>
+
+    <record model="ir.ui.menu" id="hr_recruitment.hr_applicant_attachments">
+        <field name="groups_id" eval="[(5,ref('hide'))]"/>
+    </record>
+
+    <record model="ir.ui.menu" id="oh_employee_documents_expiry.hr_document_template_menuitem">
+        <field name="groups_id" eval="[(5,ref('hide'))]"/>
+    </record>
+
+    <record model="ir.ui.menu" id="oh_employee_documents_expiry.employe_document_menuitem">
+        <field name="groups_id" eval="[(5,ref('hide'))]"/>
+    </record>
+
+    <record model="ir.ui.menu" id="oh_employee_documents_expiry.document_types_menuitem">
+        <field name="groups_id" eval="[(5,ref('hide'))]"/>
+    </record>
+
+    <record model="ir.ui.menu" id="hr_recruitment.menu_hr_recruitment_root">
+        <field name="groups_id" eval="[(5,ref('hide'))]"/>
+    </record>
+
+    <record model="ir.ui.menu" id="hr_contract.hr_menu_contract">
+        <field name="groups_id" eval="[(5,ref('hide'))]"/>
+    </record>
+
+    <record model="ir.ui.menu" id="hr.menu_human_resources_configuration">
+        <field name="groups_id" eval="[(5,ref('hide'))]"/>
+    </record>
+
+    <record model="ir.ui.menu" id="hr_attendance.menu_hr_attendance_manage_attendances">
+        <field name="groups_id" eval="[(5,ref('hide'))]"/>
+    </record>
+
+    <record model="ir.ui.menu" id="ubisol_biometric_device.biometric_machine_menu">
+        <field name="groups_id" eval="[(5,ref('hide'))]"/>
+    </record>
+
+    <record model="ir.ui.menu" id="hr_attendance.menu_hr_attendance_settings">
+        <field name="groups_id" eval="[(5,ref('hide'))]"/>
+    </record>
+
+    <record model="ir.ui.menu" id="hr_attendance.menu_hr_attendance_report">
+        <field name="groups_id" eval="[(5,ref('hide'))]"/>
+    </record>
+
+    <record model="ir.ui.menu" id="hr_holidays.menu_hr_holidays_root">
+        <field name="groups_id" eval="[(5,ref('hide'))]"/>
+    </record>
+
+    <record model="ir.ui.menu" id="hr_holidays.menu_hr_holidays_approvals">
+        <field name="groups_id" eval="[(5,ref('hide'))]"/>
+    </record>
+
+    <record model="ir.ui.menu" id="hr_holidays.menu_hr_holidays_report">
+        <field name="groups_id" eval="[(5,ref('hide'))]"/>
+    </record>
+
+    <record model="ir.ui.menu" id="hr_holidays.menu_hr_holidays_configuration">
+        <field name="groups_id" eval="[(5,ref('hide'))]"/>
+    </record>
+
+</odoo>
