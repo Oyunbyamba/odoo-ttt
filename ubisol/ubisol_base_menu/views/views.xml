@@ -4,9 +4,9 @@
     <!-- dashboard related menus -->
     <menuitem id="base.menu_board_root" groups="ubisol_base_menu.hide" />
     <menuitem id="base.menu_reporting_dashboard" groups="ubisol_base_menu.hide" />
-    <menuitem id="base.menu_board_my_dash" groups="ubisol_base_menu.hide" />
+    <menuitem id="board.menu_board_my_dash" groups="ubisol_base_menu.hide" />
     <!-- document related menus -->
-    <menuitem id="hr_recruitment.hr_applicant_attachments" groups="ubisol_base_menu.hide" />
+    <menuitem id="ubisol_hr_recruitment.hr_applicant_attachments" groups="ubisol_base_menu.hide" />
     <menuitem id="oh_employee_documents_expiry.hr_document_template_menuitem" groups="ubisol_base_menu.hide" />
     <menuitem id="oh_employee_documents_expiry.employe_document_menuitem" groups="ubisol_base_menu.hide" />
     <menuitem id="oh_employee_documents_expiry.document_types_menuitem" groups="ubisol_base_menu.hide" />
@@ -158,7 +158,6 @@
             parent="ubisol_base_menu.menu_base_documents"
             action="ubisol_hr_recruitment.ir_attachment_job_applicants"
             groups="base.group_user" sequence="4"/>
-
 
     <menuitem name="Тайлан"
         id="menu_base_reports"
