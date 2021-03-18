@@ -40,7 +40,7 @@
         parent="ubisol_base_menu.menu_board_root1"
         action="calendar.action_calendar_event" web_icon="calendar,static/description/icon.png" groups="base.group_user" sequence="3"/>
 
-    <menuitem name="Employees"
+    <menuitem name="Хүний нөөц"
         id="hr.menu_hr_employee_payroll"
         parent="ubisol_base_menu.menu_board_root1"
         groups="hr.group_hr_manager,hr.group_hr_user,base.group_user" sequence="4"/>  

@@ -196,6 +196,7 @@
           <field name="study_field" string="Study Field"/>
           <field name="pin" string="Пин код"/>
           <field name="identification_id" string="Регистер"/>
+          <field name="department_id" string="Хэлтэс"/>
         </xpath>
 
         <xpath expr="//group[1]" position="inside">
