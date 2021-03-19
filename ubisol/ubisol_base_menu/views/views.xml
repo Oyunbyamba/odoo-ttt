@@ -169,12 +169,5 @@
             action="ubisol_hr_attendance_report.ubisol_hr_attendance_report_action" 
             parent="ubisol_base_menu.menu_base_reports" groups="hr_attendance.group_hr_attendance" sequence="1"/>
 
-        <menuitem
-            id="ubisol_hr_attendance_report.menu_compute_attendance_report"
-            action="ubisol_hr_attendance_report.act_wizard_compute_attendance_report"
-            parent="ubisol_base_menu.menu_base_reports"
-            groups="hr_attendance.group_hr_attendance_manager" sequence="16"
-        />
-
   </data>
 </odoo>

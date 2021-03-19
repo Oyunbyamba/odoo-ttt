@@ -79,7 +79,7 @@ class HrEmployee(models.Model):
     longitude = fields.Char('Уртраг', groups="hr.group_hr_user")
     employee_pictures = fields.One2many('hr.employee.picture', 'employee_id', string='Employee picture', groups="hr.group_hr_user")
     # image=fields.Binary(compute='_getBase64Image') 
-    departure_reason = fields.Selection(selection_add=[('other', 'Other')], groups="hr.group_hr_user")
+    departure_reason = fields.Selection(selection_add=[('other', 'Бусад')], groups="hr.group_hr_user")
     resign_date = fields.Date('Resign Date', compute='_compute_resign_date', inverse='_set_document', store=True, groups="hr.group_hr_user")
     is_disabled = fields.Boolean('Хөгжлийн бэрхшээлтэй эсэх', default=False, groups="hr.group_hr_user")
     is_in_group = fields.Boolean('Группд байдаг эсэх', default=False, groups="hr.group_hr_user")
