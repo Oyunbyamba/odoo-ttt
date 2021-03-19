@@ -39,6 +39,7 @@ class HrEmployee(models.Model):
         ('laon', 'Зээл')
     ], string='Home owner', default='own', tracking=True, groups="hr.group_hr_user")
     ethnicity = fields.Many2one('hr.employee.ethnicity', string="Ethnicity", help="Ethnicity with the employee", groups="hr.group_hr_user")
+    social_status = fields.Char('Нийгмийн гарал', groups="hr.group_hr_user")
     family_income = fields.Float('Family Income', digits=(12,0), groups="hr.group_hr_user")
     is_served_in_military = fields.Selection([
         ('yes', 'Тийм'),
@@ -86,6 +87,7 @@ class HrEmployee(models.Model):
     employee_code = fields.Char('Ажилтаны код', groups="hr.group_hr_user")
     rfid_code = fields.Char('Картын дугаар', groups="hr.group_hr_user")
     attendance_ids = fields.One2many('hr.attendance', 'employee_id', string='Employee attendance')
+    emergency_person = fields.Char(string='Таны юу болох')
 
     @api.constrains('pin', 'identification_id')
     def _check_pin(self):
