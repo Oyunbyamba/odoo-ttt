@@ -283,7 +283,8 @@ class HrAttendanceReport(models.Model):
     def _compute_informal_overtime(self):
         for record in self:
             informal_overtime = 0.0
-
+            _logger.info(informal_overtime)
+            _logger.info(record.end_work)
             if record.overtime_holiday > 0 and record.shift_type == 'days':
                 record.informal_overtime = record.overtime_holiday
                 return

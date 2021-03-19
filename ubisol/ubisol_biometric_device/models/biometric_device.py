@@ -171,6 +171,7 @@ class BiometricMachine(models.Model):
 
         if str(row[0]).strip() == '9999':
             return {}
+        less_than = datetime(2021, 2, 1, 00, 00, 00)
 
         atten_time = row[1]
         atten_time = datetime.strptime(atten_time, '%Y-%m-%d %H:%M:%S')
@@ -183,6 +184,8 @@ class BiometricMachine(models.Model):
         duplicate_atten_ids = self.env['biometric.attendance'].search(
             [('pin_code', '=', str(row[0]).strip()), ('punch_date_time', '=', atten_time)])
         if duplicate_atten_ids:
+            return {}
+        elif atten_time < less_than:
             return {}
         else:
             _logger.info(atten_time)
@@ -280,8 +283,11 @@ class BiometricMachine(models.Model):
                     isError = True
                 finally:
                     if conn:
+                        # if not isError:
+                        # conn.clear_attendance()
                         conn.disconnect()
-
+            _logger.info('TOTAL_ATT')
+            _logger.info(len(attendances))
             for attendance in attendances:
                 row = [attendance.user_id, attendance.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
                        attendance.status, attendance.punch, 0, 0]
