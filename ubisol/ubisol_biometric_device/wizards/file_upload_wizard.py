@@ -205,8 +205,12 @@ class LogFileImportWizard(models.TransientModel):
             [('hr_employee', '=', int(get_user_id.id)), ('day_period', '!=', 3), ('end_work', '>=', de1), ('end_work', '<=', de2)], limit=1, order='id desc')
 
         if(shift_end & shift_start):
+
             check_out = abs(dt - shift_end.end_work).total_seconds()
             check_in = abs(dt - shift_start.start_work).total_seconds()
+            _logger.info(dt)
+            _logger.info(check_in)
+            _logger.info(check_in)
 
             [att_id, status] = self._check_status(
                 get_user_id, dt, shift_start.start_work, check_out, check_in, ds1, ds2, de1, de2)
