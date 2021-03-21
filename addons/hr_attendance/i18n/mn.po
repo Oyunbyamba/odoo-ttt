@@ -174,7 +174,7 @@ msgstr "Ирцийн статус"
 #: model_terms:ir.ui.view,arch_db:hr_attendance.hr_department_view_kanban
 #: model_terms:ir.ui.view,arch_db:hr_attendance.res_config_settings_view_form
 msgid "Attendances"
-msgstr "Ирц"
+msgstr "Бүх ирц"
 
 #. module: hr_attendance
 #. openerp-web

@@ -26,6 +26,7 @@
     'data': [
         'data/data.xml',
         'security/ir.model.access.csv',
+        'security/ubisol_hr_employee_security.xml',
         'views/views.xml',
         'views/hr_department.xml',
         'report/report.xml',

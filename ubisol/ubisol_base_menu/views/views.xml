@@ -1,0 +1,173 @@
+<odoo>
+  <data>
+
+    <!-- dashboard related menus -->
+    <menuitem id="base.menu_board_root" groups="ubisol_base_menu.hide" />
+    <menuitem id="base.menu_reporting_dashboard" groups="ubisol_base_menu.hide" />
+    <menuitem id="board.menu_board_my_dash" groups="ubisol_base_menu.hide" />
+    <!-- document related menus -->
+    <menuitem id="ubisol_hr_recruitment.hr_applicant_attachments" groups="ubisol_base_menu.hide" />
+    <menuitem id="oh_employee_documents_expiry.hr_document_template_menuitem" groups="ubisol_base_menu.hide" />
+    <menuitem id="oh_employee_documents_expiry.employe_document_menuitem" groups="ubisol_base_menu.hide" />
+    <menuitem id="oh_employee_documents_expiry.document_types_menuitem" groups="ubisol_base_menu.hide" />
+    <menuitem id="hr_contract.hr_menu_contract" groups="ubisol_base_menu.hide" />
+    <!-- recruitment related menus -->
+    <menuitem id="hr_recruitment.menu_hr_recruitment_root" groups="ubisol_base_menu.hide" />
+    <menuitem id="hr.menu_human_resources_configuration" groups="ubisol_base_menu.hide" />
+    <!-- attendance related menus -->
+    <menuitem id="hr_attendance.menu_hr_attendance_manage_attendances" groups="ubisol_base_menu.hide" />
+    <menuitem id="ubisol_biometric_device.biometric_machine_menu" groups="ubisol_base_menu.hide" />
+    <menuitem id="hr_attendance.menu_hr_attendance_settings" groups="ubisol_base_menu.hide" />
+    <menuitem id="hr_attendance.menu_hr_attendance_report" groups="ubisol_base_menu.hide" />
+    <!-- leave related menus -->
+    <menuitem id="hr_holidays.menu_hr_holidays_root" groups="ubisol_base_menu.hide" />
+    <menuitem id="hr_holidays.menu_hr_holidays_approvals" groups="ubisol_base_menu.hide" />
+    <menuitem id="hr_holidays.menu_hr_holidays_report" groups="ubisol_base_menu.hide" />
+    <menuitem id="hr_holidays.menu_hr_holidays_configuration" groups="ubisol_base_menu.hide" />
+
+    <menuitem name="Хянах самбар" 
+        id="menu_board_root1" 
+        action="board.open_board_my_dash_action"
+        groups="base.group_user" sequence="-100"/>
+
+    <menuitem name="Discuss"
+        id="mail.menu_root_discuss" 
+        parent="ubisol_base_menu.menu_board_root1"
+        action="mail.action_discuss" web_icon="mail,static/description/icon.png" groups="base.group_user" sequence="2"/>
+
+    <menuitem name="Calendar"
+        id="calendar.mail_menu_calendar"
+        parent="ubisol_base_menu.menu_board_root1"
+        action="calendar.action_calendar_event" web_icon="calendar,static/description/icon.png" groups="base.group_user" sequence="3"/>
+
+    <menuitem name="Хүний нөөц"
+        id="hr.menu_hr_employee_payroll"
+        parent="ubisol_base_menu.menu_board_root1"
+        groups="hr.group_hr_manager,hr.group_hr_user,base.group_user" sequence="4"/>  
+
+        <menuitem name="Ажилчдын бүртгэл"
+            id="hr.menu_hr_employee_user"
+            action="hr.open_view_employee_list_my"
+            parent="hr.menu_hr_employee_payroll"
+            sequence="2"/>
+
+        <menuitem name="Сонгон шалгаруулалт"
+            id="menu_crm_case_categ_all_app1"
+            parent="hr.menu_hr_employee_payroll" 
+            action="hr_recruitment.crm_case_categ0_act_job" sequence="5"/>
+
+        <menuitem name="Медаль" 
+            id="hr_gamification.gamification_badge_menu_hr" 
+            parent="hr.menu_hr_employee_payroll" 
+            action="gamification.badge_list_action" sequence="6"/>   
+
+        <menuitem name="Ажилчдын лавлах"
+            id="hr.menu_hr_employee"
+            action="hr.hr_employee_public_action"
+            parent="hr.menu_hr_employee_payroll" sequence="7"/>     
+
+    <menuitem name="Цаг бүртгэл"
+        id="menu_time_management"
+        parent="ubisol_base_menu.menu_board_root1"
+        groups="base.group_user" sequence="5"/>
+
+        <menuitem name="Attendances"
+            id="hr_attendance.menu_hr_attendance_root"
+            parent="ubisol_base_menu.menu_time_management" groups="hr_attendance.group_hr_attendance" sequence="1"/>
+
+            <menuitem name="Бүх ирц" 
+                id="hr_attendance.menu_hr_attendance_view_attendances" 
+                parent="hr_attendance.menu_hr_attendance_root" 
+                groups="ubisol_hr_attendance_upgrade.group_hr_attendance_responsible,hr_attendance.group_hr_attendance_user,hr_attendance.group_hr_attendance_manager" 
+                action="hr_attendance.hr_attendance_action" sequence="2" />
+
+            <menuitem name="Төхөөрөмжийн бүртгэл" 
+                id="biometric_machine_sub_menu" 
+                parent="hr_attendance.menu_hr_attendance_root"  
+                action="ubisol_biometric_device.biometric_machine_action" sequence="3"/>
+
+            <menuitem name="Төхөөрөмжийн ирц" 
+                id="sub_menu_raw_data" 
+                parent="hr_attendance.menu_hr_attendance_root"  
+                action="ubisol_biometric_device.raw_data_action" sequence="4"/>
+
+            <menuitem name="Тохиргоо"
+                id="ubisol_hr_attendance_upgrade.menu_attendance_settings"
+                parent="hr_attendance.menu_hr_attendance_root"
+                action="ubisol_hr_attendance_upgrade.hr_attendance_settings_action" sequence="10"/>    
+
+        <menuitem name="Хүсэлтүүд"
+            id="ubisol_hr_holidays.menu_hr_requests_root"
+            parent="ubisol_base_menu.menu_time_management" groups="base.group_user" sequence="2"/>    
+
+            <menuitem name="Миний хүсэлт"
+                id="hr_holidays.hr_leave_menu_my1"
+                parent="ubisol_hr_holidays.menu_hr_requests_root"
+                action="hr_holidays.hr_leave_action_my" sequence="1"/>
+
+            <menuitem name="Батлах ёстой хүсэлт"
+                id="hr_holidays.menu_open_department_leave_approve2"
+                parent="ubisol_hr_holidays.menu_hr_requests_root"
+                groups="hr_holidays.group_hr_holidays_manager,hr_holidays.group_hr_holidays_user,hr_holidays.group_hr_holidays_responsible"
+                action="ubisol_hr_holidays.hr_leave_action_approve_department2" sequence="2"/>    
+
+            <menuitem name="Бүх хүсэлт"
+                id="hr_holidays.menu_open_employee_leave1"
+                parent="ubisol_hr_holidays.menu_hr_requests_root"
+                groups="hr_holidays.group_hr_holidays_manager,hr_holidays.group_hr_holidays_user"
+                action="hr_holidays.hr_leave_action_all" sequence="3"/>
+
+            <menuitem name="Time Off Types"
+                id="hr_holidays.hr_holidays_status_menu_configuration"
+                action="hr_holidays.open_view_holiday_status"
+                parent="ubisol_hr_holidays.menu_hr_requests_root"
+                groups="hr_holidays.group_hr_holidays_user" sequence="4"/>
+
+        <menuitem name="Ажиллах хуваарь" 
+            id="ubisol_hr_employee_shift.employee_shift"
+            parent="ubisol_base_menu.menu_time_management" 
+            groups="ubisol_hr_attendance_upgrade.group_hr_attendance_responsible,hr_attendance.group_hr_attendance_user,hr_attendance.group_hr_attendance_manager"
+            sequence="10"
+            />    
+        
+    <menuitem name="Бичиг баримт"
+        id="menu_base_documents"
+        parent="ubisol_base_menu.menu_board_root1"
+        groups="base.group_user" sequence="6"/>
+
+        <menuitem name="Гэрээ"
+            id="hr_menu_contract1"
+            action="hr_contract.action_hr_contract"
+            parent="ubisol_base_menu.menu_base_documents"
+            groups="hr_contract.group_hr_contract_manager" sequence="1" />
+
+        <menuitem name="Баримт"
+            id="employe_document_menuitem1"  
+            parent="ubisol_base_menu.menu_base_documents"
+            action="oh_employee_documents_expiry.hr_employee_document_action"
+            groups="hr.group_hr_manager" sequence="2"/>
+
+        <menuitem name="Баримтын загвар"
+            id="hr_document_template_menuitem1"
+            parent="ubisol_base_menu.menu_base_documents"
+            action="oh_employee_documents_expiry.hr_document_template_action"
+            groups="hr.group_hr_manager" sequence="3"/>    
+
+        <menuitem name="Анкетны хавсралт"  
+            id="hr_applicant_attachments1"
+            parent="ubisol_base_menu.menu_base_documents"
+            action="ubisol_hr_recruitment.ir_attachment_job_applicants"
+            groups="base.group_user" sequence="4"/>
+
+    <menuitem name="Тайлан"
+        id="menu_base_reports"
+        parent="ubisol_base_menu.menu_board_root1"
+        groups="base.group_user" sequence="6"/>    
+
+        <menuitem name="Ирцийн график" 
+            id="menu_ubisol_hr_attendance_report"  
+            action="ubisol_hr_attendance_report.ubisol_hr_attendance_report_action" 
+            parent="ubisol_base_menu.menu_base_reports" groups="hr_attendance.group_hr_attendance" sequence="1"/>
+
+  </data>
+</odoo>

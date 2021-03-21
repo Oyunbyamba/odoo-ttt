@@ -79,13 +79,15 @@ class BiometricAttendanceRecompute(models.TransientModel):
                 if not prev_date:
                     continue
 
-                att = self.env['hr.attendance'].search(
-                    [('employee_id', '=', emp.id), ('check_in', '=', atten_time)])
-                if not att:
-                    att = self.env['hr.attendance'].search(
-                        [('employee_id', '=', emp.id), ('check_out', '=', atten_time)])
-                    if not att:
-                        status = log_obj.write_to_attendance(emp, atten_time)
+                status = log_obj.write_to_attendance(emp, atten_time)
+
+                # att = self.env['hr.attendance'].search(
+                #     [('employee_id', '=', emp.id), ('check_in', '=', atten_time)])
+                # if not att:
+                #     att = self.env['hr.attendance'].search(
+                #         [('employee_id', '=', emp.id), ('check_out', '=', atten_time)])
+                #     if not att:
+                #         status = log_obj.write_to_attendance(emp, atten_time)
 
         action = {}
         return action

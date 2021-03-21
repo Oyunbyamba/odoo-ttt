@@ -72,7 +72,6 @@ class HrEmployeeSchedule(models.Model):
     end_time = fields.Char(compute="_compute_end_time")
     period_type_name = fields.Char(string='Ээлж', compute='_compute_period_type_name')
 
-
     # @api.model
     # def _fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
     #     result = super(HrEmployeeSchedule, self)._fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
@@ -183,10 +182,6 @@ class HrEmployeeSchedule(models.Model):
 
     def write(self, vals):
         for record in self:
-            # if "hr_employee_shift_template" in vals:
-            #     values['resource_calendar_ids'] = vals.get('hr_employee_shift_template')
-            # else:
-            #     values['resource_calendar_ids'] = self.resource_calendar_ids.id
             schedule = super(HrEmployeeSchedule, self).write(vals)
             log_obj = self.env["hr.employee.shift"].search([])
 
@@ -206,12 +201,16 @@ class HrEmployeeSchedule(models.Model):
             }
 
             prev_schedule = self.env['hr.employee.schedule'].search(
-                    [('hr_employee', '=', record.hr_employee.id), 
+                    [('id', '!=', record.id),
+                    ('hr_employee', '=', record.hr_employee.id), 
                     ('work_day', '>=', record.start_work_date), 
                     ('work_day', '<=', record.end_work_date)]).unlink()
 
             schedules = log_obj._create_schedules(values, values.get('shift_id'))
-            return schedules    
+            schedule = super(HrEmployeeSchedule, self).write(schedules['schedule_dict'])
+            schedules['schedule'].unlink()
+
+            return True
 
     def _set_hour_format(self, val):
         result = '{0:02.0f}:{1:02.0f}'.format(*divmod(val * 60, 60))

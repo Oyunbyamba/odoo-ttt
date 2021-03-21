@@ -634,7 +634,7 @@ msgstr "Хэлтэсийн Нэр"
 #: model:ir.ui.menu,name:hr.menu_hr_department_tree
 #: model_terms:ir.ui.view,arch_db:hr.view_department_filter
 msgid "Departments"
-msgstr "Хэлтэсүүд"
+msgstr "Алба хэлтэсийн бүртгэл"
 
 #. module: hr
 #: model_terms:ir.ui.view,arch_db:hr.view_employee_form
@@ -720,13 +720,13 @@ msgstr "Яаралтай үе"
 #: model:ir.model.fields,field_description:hr.field_hr_employee__emergency_contact
 #: model:ir.model.fields,field_description:hr.field_res_users__emergency_contact
 msgid "Emergency Contact"
-msgstr "Яаралтай үед холбогдох хүн"
+msgstr "Холбоо барих хүн"
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__emergency_phone
 #: model:ir.model.fields,field_description:hr.field_res_users__emergency_phone
 msgid "Emergency Phone"
-msgstr "Яаралтай үед холбогдох дугаар"
+msgstr "Холбоо барих дугаар"
 
 #. module: hr
 #: model:ir.model,name:hr.model_hr_employee
@@ -1116,7 +1116,7 @@ msgstr "Албан Тушаал"
 #: model:ir.actions.act_window,name:hr.action_hr_job
 #: model:ir.ui.menu,name:hr.menu_view_hr_job
 msgid "Job Positions"
-msgstr "Албан Тушаалууд"
+msgstr "Албан тушаалын бүртгэл"
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__job_title

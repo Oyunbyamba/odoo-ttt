@@ -45,11 +45,13 @@
 
         <xpath expr="//page[@name='personal_information']/group/group[1]" position="before">
           <group name="identification_id" string="Main Info">
+            <div/>
             <field name="identification_id"/>
             <field name="family_name" />
             <field name="gender"/>
             <field name="birthday"/>
             <field name="ethnicity"/>
+            <field name="social_status"/>
             <field name="is_served_in_military"/>
             <field name="sinid"/>
             <field name="home_owner"/>
@@ -114,6 +116,10 @@
             <field name="departure_description"/>
             <field name="resign_date"/>
           </group>
+        </xpath>
+
+        <xpath expr="//field[@name='emergency_contact']" position="before">
+          <field name="emergency_person" class="o_force_ltr"/>
         </xpath>
 
         <xpath expr="//group[@name='departure']" position="attributes">
@@ -195,6 +201,7 @@
           <field name="study_field" string="Study Field"/>
           <field name="pin" string="Пин код"/>
           <field name="identification_id" string="Регистер"/>
+          <field name="department_id" string="Хэлтэс"/>
         </xpath>
 
         <xpath expr="//group[1]" position="inside">
@@ -245,18 +252,48 @@
       </field>
     </record>
 
+    <menuitem id="hr.menu_config_plan" groups="ubisol_hr_employee_upgrade.hide"/>
+    <menuitem id="hr.menu_human_resources_configuration_employee" groups="ubisol_hr_employee_upgrade.hide"/>
+    <menuitem id="hr_skills.menu_human_resources_configuration_resume" groups="ubisol_hr_employee_upgrade.hide"/>
+    <menuitem id="hr_gamification.menu_hr_gamification" groups="ubisol_hr_employee_upgrade.hide"/>
+
+    <menuitem id="hr.menu_hr_department_tree"
+      action="hr.open_module_tree_department"
+      parent="hr.menu_hr_employee_payroll" sequence="2" groups="hr.group_hr_user"/>
+
+    <menuitem id="hr.menu_view_hr_job"
+        action="hr.action_hr_job"
+        parent="hr.menu_hr_employee_payroll" sequence="3"/>
+
     <menuitem name="Recruitment"
-      id="hr_recruitment.menu_hr_recruitment_root"
-      web_icon="hr_recruitment,static/description/icon.png"
-      parent="hr.menu_hr_root"
-      groups="hr_recruitment.group_hr_recruitment_user"
-      sequence="4"/>
+        id="hr_recruitment.menu_hr_recruitment_root"
+        parent="hr.menu_hr_employee_payroll" groups="hr_recruitment.group_hr_recruitment_user" sequence="6"/>
 
-    <menuitem id="hr_attendance.menu_hr_attendance_root"
-      name="Attendances" sequence="7"
-      parent="hr.menu_hr_root"
-      groups="hr_attendance.group_hr_attendance"
-      web_icon="hr_attendance,static/description/icon.png"/>
+    <!--CONFIGURATION MENUS-->
+    <menuitem name="Configuration"
+        id="hr.menu_human_resources_configuration"
+        parent="hr.menu_hr_employee_payroll"
+        groups="hr.group_hr_manager" sequence="100"/>
 
+    <menuitem name="Tags"
+        id="hr.menu_view_employee_category_form"
+        action="hr.open_view_categ_form"
+        parent="hr.menu_human_resources_configuration" groups="base.group_no_one" sequence="1"/>  
+
+    <menuitem name="Skills"
+        id="hr_skills.hr_skill_type_menu" 
+        action="hr_skills.hr_skill_type_action" 
+        parent="hr.menu_human_resources_configuration" sequence="2" groups="base.group_no_one"/>
+
+    <menuitem name="Resumé Types"  
+        id="hr_skills.hr_resume_line_type_menu" 
+        action="hr_skills.hr_resume_type_action" 
+        parent="hr.menu_human_resources_configuration" sequence="3" groups="base.group_no_one"/> 
+
+    <menuitem id="hr_gamification.gamification_badge_menu_hr" 
+        parent="hr.menu_human_resources_configuration" 
+        action="gamification.badge_list_action" />       
+
+    
   </data>
 </odoo>

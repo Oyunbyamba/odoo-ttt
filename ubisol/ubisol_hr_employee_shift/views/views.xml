@@ -23,9 +23,11 @@
                 <field name="date_from"/>
                 <field name="date_to"/>
               </group>
-              <group>
+              <group colspan="2">
                 <field name="hr_department" attrs="{'invisible':[('assign_type', '!=', 'department')]}"/>
                 <field name="hr_employee" attrs="{'invisible':[('assign_type', '!=', 'employee')]}"/>
+              </group>
+              <group colspan="2">
                 <field name="resource_calendar_ids"/>
               </group>
               <group>

@@ -106,7 +106,7 @@
           <search string="Hr Attendance Search">
             <field name="employee_id"/>
             <field name="department_id" operator="child_of"/>
-            <field name="pin"/>
+            <field name="pin" string='Пин'/>
             <filter string="Миний ирц" name="myattendances" domain="[('employee_id.user_id.id', '=', uid)]" />
             <separator/>
             <filter string="Өнгөрсөн сар" name="start_prev_month"
