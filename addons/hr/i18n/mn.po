@@ -720,13 +720,13 @@ msgstr "Яаралтай үе"
 #: model:ir.model.fields,field_description:hr.field_hr_employee__emergency_contact
 #: model:ir.model.fields,field_description:hr.field_res_users__emergency_contact
 msgid "Emergency Contact"
-msgstr "Яаралтай үед холбогдох хүн"
+msgstr "Холбоо барих хүн"
 
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_employee__emergency_phone
 #: model:ir.model.fields,field_description:hr.field_res_users__emergency_phone
 msgid "Emergency Phone"
-msgstr "Яаралтай үед холбогдох дугаар"
+msgstr "Холбоо барих дугаар"
 
 #. module: hr
 #: model:ir.model,name:hr.model_hr_employee

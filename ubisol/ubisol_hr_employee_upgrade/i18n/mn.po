@@ -383,12 +383,12 @@ msgstr "Цусны бүлэг"
 #. module: ubisol_hr_employee_upgrade
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee__driver_license_number
 msgid "Driver's license number"
-msgstr "Жолооны үнэмлэхний дугаар"
+msgstr "Үнэмлэхний дугаар"
 
 #. module: ubisol_hr_employee_upgrade
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_employee__driving_classification
 msgid "Driving Classification"
-msgstr "Жолооны ангилал"
+msgstr "Ангилал"
 
 #. module: ubisol_hr_employee_upgrade
 #: model:ir.model.fields,field_description:ubisol_hr_employee_upgrade.field_hr_resume_line__education_degree_id
