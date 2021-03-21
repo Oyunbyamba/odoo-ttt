@@ -161,10 +161,7 @@ class BiometricMachine(models.Model):
             prev_date = self.checking_prev_att_within_thirty_sec(
                 get_user_id, atten_time)
             if not prev_date:
-                _logger.info('PrevDATA')
-                return {}
-            _logger.info('NewINSerted')
-            _logger.info(atten_time)
+                pass
             log_obj.write_to_attendance(get_user_id, atten_time)
 
     def import_attendance(self, row, dev_id):
@@ -283,8 +280,8 @@ class BiometricMachine(models.Model):
                     isError = True
                 finally:
                     if conn:
-                        # if not isError:
-                        # conn.clear_attendance()
+                        if not isError:
+                            conn.clear_attendance()
                         conn.disconnect()
             _logger.info('TOTAL_ATT')
             _logger.info(len(attendances))
