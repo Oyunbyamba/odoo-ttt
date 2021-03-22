@@ -26,9 +26,9 @@
             </field>
         </record>
  
-        <menuitem id="hr_recruitment.menu_hr_recruitment_configuration" groups="ubisol_hr_employee_upgrade.hide"/>
-        <menuitem id="hr_recruitment.menu_crm_case_categ0_act_job" groups="ubisol_hr_employee_upgrade.hide"/>
-        <menuitem id="hr_recruitment.report_hr_recruitment" groups="ubisol_hr_employee_upgrade.hide"/>
+        <menuitem id="hr_recruitment.menu_hr_recruitment_configuration" groups="ubisol_hr_recruitment.hide"/>
+        <menuitem id="hr_recruitment.menu_crm_case_categ0_act_job" groups="ubisol_hr_recruitment.hide"/>
+        <menuitem id="hr_recruitment.report_hr_recruitment" groups="ubisol_hr_recruitment.hide"/>
 
         <menuitem name="Ажилд орох өргөдлүүд"
             id="hr_recruitment.menu_crm_case_categ_all_app"
