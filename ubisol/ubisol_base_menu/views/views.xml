@@ -25,10 +25,14 @@
     <menuitem id="hr_holidays.menu_hr_holidays_report" groups="ubisol_base_menu.hide" />
     <menuitem id="hr_holidays.menu_hr_holidays_configuration" groups="ubisol_base_menu.hide" />
 
-    <menuitem name="Хянах самбар" 
+    <!-- <menuitem name="Хянах самбар" 
         id="menu_board_root1" 
         action="board.open_board_my_dash_action"
-        groups="base.group_user" sequence="-100"/>
+        groups="base.group_user" sequence="-100"/> -->
+
+    <menuitem name="Хянах самбар" 
+        id="menu_board_root1"
+        groups="base.group_user" sequence="-100"/>    
 
     <menuitem name="Discuss"
         id="mail.menu_root_discuss" 

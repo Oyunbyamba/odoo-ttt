@@ -16,10 +16,10 @@
         <field name="implied_ids" eval="[(4, ref('ubisol_hr_attendance_upgrade.group_hr_attendance_responsible'))]"/>
     </record>
 
-    <record id="hide" model="res.groups">
+    <!-- <record id="hide" model="res.groups">
         <field name="name">Hide</field>
         <field name="comment">Hide.</field>
-    </record>
+    </record> -->
 
     <record id="ubisol_hr_attendance_upgrade.group_hr_attendance_responsible" model="res.groups">
         <field name="implied_ids" eval="[(4, ref('hr_attendance.group_hr_attendance'))]"/>

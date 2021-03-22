@@ -200,12 +200,12 @@
 
     <menuitem id="hr_attendance.menu_hr_attendance_my_attendances" 
         name="Check In / Check Out" 
-        groups="ubisol_hr_attendance_upgrade.hide"/>
+        groups="ubisol_hr_employee_upgrade.hide"/>
 
     <menuitem 
         id="hr_attendance.menu_hr_attendance_kiosk_mode" 
         name="Kiosk Mode" 
-        groups="ubisol_hr_attendance_upgrade.hide"/>    
+        groups="ubisol_hr_employee_upgrade.hide"/>    
 
   </data>
 </odoo>

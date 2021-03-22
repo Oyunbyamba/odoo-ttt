@@ -263,16 +263,16 @@
         </field>
     </record>
 
-    <menuitem id="hr_holidays.menu_hr_holidays_my_leaves" groups="ubisol_hr_holidays.hide"/>
-    <menuitem id="hr_holidays.menu_hr_holidays_dashboard" name="Everyone" groups="ubisol_hr_holidays.hide"/>  
-    <menuitem id="hr_holidays.hr_holidays_menu_manager_payroll" name="Payroll" groups="ubisol_hr_holidays.hide"/>             
-    <menuitem id="hr_holidays.hr_holidays_menu_manager_approve" name="Approve" groups="ubisol_hr_holidays.hide"/>             
-    <menuitem id="hr_holidays.menu_open_department_leave_approve" name="Time off" groups="ubisol_hr_holidays.hide"/>             
-    <menuitem id="hr_holidays.hr_holidays_menu_manager_approve_allocations" name="Allocation" groups="ubisol_hr_holidays.hide"/>             
-    <menuitem id="hr_holidays.hr_holidays_menu_manager_all" name="Manager" groups="ubisol_hr_holidays.hide"/>             
-    <menuitem id="hr_holidays.menu_open_employee_leave" name="Time off" groups="ubisol_hr_holidays.hide"/>             
-    <menuitem id="hr_holidays.hr_holidays_menu_manager_all_allocations" name="Allocation" groups="ubisol_hr_holidays.hide"/>             
-    <menuitem id="hr_holidays.hr_holidays_menu_config_activity_type" name="Ажилбарын төрөл" groups="ubisol_hr_holidays.hide"/> 
+    <menuitem id="hr_holidays.menu_hr_holidays_my_leaves" groups="ubisol_hr_employee_upgrade.hide"/>
+    <menuitem id="hr_holidays.menu_hr_holidays_dashboard" name="Everyone" groups="ubisol_hr_employee_upgrade.hide"/>  
+    <menuitem id="hr_holidays.hr_holidays_menu_manager_payroll" name="Payroll" groups="ubisol_hr_employee_upgrade.hide"/>             
+    <menuitem id="hr_holidays.hr_holidays_menu_manager_approve" name="Approve" groups="ubisol_hr_employee_upgrade.hide"/>             
+    <menuitem id="hr_holidays.menu_open_department_leave_approve" name="Time off" groups="ubisol_hr_employee_upgrade.hide"/>             
+    <menuitem id="hr_holidays.hr_holidays_menu_manager_approve_allocations" name="Allocation" groups="ubisol_hr_employee_upgrade.hide"/>             
+    <menuitem id="hr_holidays.hr_holidays_menu_manager_all" name="Manager" groups="ubisol_hr_employee_upgrade.hide"/>             
+    <menuitem id="hr_holidays.menu_open_employee_leave" name="Time off" groups="ubisol_hr_employee_upgrade.hide"/>             
+    <menuitem id="hr_holidays.hr_holidays_menu_manager_all_allocations" name="Allocation" groups="ubisol_hr_employee_upgrade.hide"/>             
+    <menuitem id="hr_holidays.hr_holidays_menu_config_activity_type" name="Ажилбарын төрөл" groups="ubisol_hr_employee_upgrade.hide"/> 
 
     <menuitem name="Хүсэлтүүд"
         id="menu_hr_requests_root"
