@@ -36,7 +36,7 @@ class EmployeeDetailPdf(models.AbstractModel):
             birthday_year = employee.birthday.strftime('%Y')
             birthday_month = employee.birthday.strftime('%m')
             birthday_day = employee.birthday.strftime('%d')
-            
+
 =======
         birthday_year = employee.birthday.strftime('%Y')
         birthday_month = employee.birthday.strftime('%m')
@@ -108,11 +108,11 @@ class EmployeeDetailPdf(models.AbstractModel):
                                 if read:
                                     if write:
                                         language_skills.append(obj)
-        
+
 <<<<<<< HEAD
         if mergeshil.date_end == False:
             delta1 = ' '
-        else:    
+        else:
             delta = mergeshil.date_end - mergeshil.date_start
             delta1 = delta.days
 =======

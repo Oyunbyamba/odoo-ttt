@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-   
+
     <template id="employee_detail_pdf">
-   
+
         <t t-call="web.html_container">
         <t t-set="company" t-value="env.company"/>
             <t t-foreach="docs" t-as="doc">
@@ -28,118 +28,78 @@
                                             </ul>
                                         </div>
                                     </div>
-                                
+
                         </div>
-                      
+
 
                         <br/>
                         <div name="private_info" style="margin-left: 40px; font-family: Arial;  line-height: 1.8;">
                             <div class="col-12">
-                                <div style="font-size: 18px !important; text-align: left; font-weight:900 !important;"> 1. ҮНДСЭН МЭДЭЭЛЭЛ </div>                         
+                                <div style="font-size: 18px !important; text-align: left; font-weight:900 !important;"> 1. ҮНДСЭН МЭДЭЭЛЭЛ </div>
                             </div>
                             <div class="col-12 row">
                                 <div class="col-12" style=" margin-left:20px; font-size:18px; !important">
-                               
+
                                     <div class="row">
                                         <div class="col-12">
                                             <span>Таны сонирхож буй ажлын байр:&#160; 1&#160;</span>
                                             <div class="zai" style="margin-left: 220px">&#160; &#160; &#160; &#160; &#160; &#160; 2 </div>
-                                        </div>                                    
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-12">
                                            <span>Анкет бөглөсөн огноо:&#160; <span t-esc="now_date"/> </span>
                                         </div>
                                     </div>
-                                </div>    
+                                </div>
                             </div>
                             <div class="col-12 row">
                                 <div class="col-8" style=" margin-left:35px; font-size:18px;">
                                     <div class="row">
-                                        
+
                                             <span>1.1 Ургийн овог:&#160; <span t-esc="doc.family_name"/></span>
-                                        
+
                                     </div>
                                     <div class="row">
-                                        
+
                                             <span>1.2 Эцэг/эх/-ийн нэр:&#160; <span t-esc="doc.surname"/></span>
-                                        
+
                                     </div>
                                     <div class="row">
-                                        
+
                                             <span>1.3 Нэр:&#160; <span t-esc="doc.name"/></span>
-                                        
+
 <<<<<<< HEAD
                                     </div>
                                     <div class="row">
-                                        
+
                                             <span>1.4 Регистерийн дугаар:&#160; <span t-esc="doc.identification_id"/></span>
-                                        
+
                                     </div>
                                     <div class="row">
-                                        
-                                            <div>1.5 Хүйс: &#160;&#160;&#160;&#160; 
+
+                                            <div>1.5 Хүйс: &#160;&#160;&#160;&#160;
                                             <t t-if="doc.gender == 'male'">
-                                            <input style="margin-bottom:5px;" type="checkbox" checked="true" />&#160;Эрэгтэй &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; 
+                                            <input style="margin-bottom:5px;" type="checkbox" checked="true" />&#160;Эрэгтэй &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                             <input style="margin-bottom:5px;" type="checkbox"/>&#160;Эмэгтэй
                                             </t>
                                             <t t-if="doc.gender == 'female'">
-                                            <input style="margin-bottom:5px;" type="checkbox" />&#160;Эрэгтэй &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; 
+                                            <input style="margin-bottom:5px;" type="checkbox" />&#160;Эрэгтэй &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                             <input style="margin-bottom:5px;" type="checkbox" checked="true"/>&#160;Эмэгтэй
                                             </t>
                                             </div>
-                                        
+
                                     </div>
                                     <div class="row">
-                                        
+
                                             <span>1.6 Төрсөн:&#160; <span t-esc="birthday_year"/> он &#160;<span t-esc="birthday_month"/> сар &#160;<span t-esc="birthday_day"/> өдөр</span>
-                                        
+
                                     </div>
                                     <div class="row">
                                             <span>1.7 Яс үндэс:&#160; <span t-esc="doc.ethnicity.name"/> </span>
                                     </div>
                                 </div>
-                            
-                                <div class="col-4" style=" float: right;">
-                                    <div style="padding-right: 0; padding-top: 0; margin-left:100px; margin-top: 10px;">
-                                            <img t-if="doc.image_1920"  t-att-src="image_data_uri(doc.image_1920)"  style="height:150px !important; width:126px !important;" />
-=======
->>>>>>> 3f02bce07a2944af4d1bbadd29e0c30a2c58ad47
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 row">
-                                <div class="col-12" style=" margin-left:20px; font-size:18px; !important">
-                                    
-                                    <div class="row">
-                                        
-                                            <span>1.4 Регистерийн дугаар:&#160; <span t-esc="doc.identification_id"/></span>
-                                        
-                                    </div>
-                                    <div class="row">
-                                        
-                                            <div>1.5 Хүйс: &#160;&#160;&#160;&#160; 
-                                            <t t-if="doc.gender == 'male'">
-                                            <input style="margin-bottom:5px;" type="checkbox" checked="true" />&#160;Эрэгтэй &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; 
-                                            <input style="margin-bottom:5px;" type="checkbox"/>&#160;Эмэгтэй
-                                            </t>
-                                            <t t-if="doc.gender == 'female'">
-                                            <input style="margin-bottom:5px;" type="checkbox" />&#160;Эрэгтэй &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; 
-                                            <input style="margin-bottom:5px;" type="checkbox" checked="true"/>&#160;Эмэгтэй
-                                            </t>
-                                            </div>
-                                        
-                                    </div>
-                                    <div class="row">
-                                        
-                                            <span>1.6 Төрсөн:&#160; <span t-esc="birthday_year"/> он &#160;<span t-esc="birthday_month"/> сар &#160;<span t-esc="birthday_day"/> өдөр</span>
-                                        
-                                    </div>
-                                    <div class="row">
-                                            <span>1.7 Яс үндэс:&#160; <span t-esc="doc.ethnicity.name"/> </span>
-                                    </div>
-                                </div>
-                            
+
                                 <div class="col-4" style=" float: right;">
                                     <div style="padding-right: 0; padding-top: 0; margin-left:100px; margin-top: 10px;">
                                             <img t-if="doc.image_1920"  t-att-src="image_data_uri(doc.image_1920)"  style="height:150px !important; width:126px !important;" />
@@ -148,7 +108,45 @@
                             </div>
                             <div class="col-12 row">
                                 <div class="col-12" style=" margin-left:20px; font-size:18px; !important">
-                                    
+
+                                    <div class="row">
+
+                                            <span>1.4 Регистерийн дугаар:&#160; <span t-esc="doc.identification_id"/></span>
+
+                                    </div>
+                                    <div class="row">
+
+                                            <div>1.5 Хүйс: &#160;&#160;&#160;&#160;
+                                            <t t-if="doc.gender == 'male'">
+                                            <input style="margin-bottom:5px;" type="checkbox" checked="true" />&#160;Эрэгтэй &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                            <input style="margin-bottom:5px;" type="checkbox"/>&#160;Эмэгтэй
+                                            </t>
+                                            <t t-if="doc.gender == 'female'">
+                                            <input style="margin-bottom:5px;" type="checkbox" />&#160;Эрэгтэй &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                            <input style="margin-bottom:5px;" type="checkbox" checked="true"/>&#160;Эмэгтэй
+                                            </t>
+                                            </div>
+
+                                    </div>
+                                    <div class="row">
+
+                                            <span>1.6 Төрсөн:&#160; <span t-esc="birthday_year"/> он &#160;<span t-esc="birthday_month"/> сар &#160;<span t-esc="birthday_day"/> өдөр</span>
+
+                                    </div>
+                                    <div class="row">
+                                            <span>1.7 Яс үндэс:&#160; <span t-esc="doc.ethnicity.name"/> </span>
+                                    </div>
+                                </div>
+
+                                <div class="col-4" style=" float: right;">
+                                    <div style="padding-right: 0; padding-top: 0; margin-left:100px; margin-top: 10px;">
+                                            <img t-if="doc.image_1920"  t-att-src="image_data_uri(doc.image_1920)"  style="height:150px !important; width:126px !important;" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 row">
+                                <div class="col-12" style=" margin-left:20px; font-size:18px; !important">
+
                                     <div class="row">
                                         <div class="col-12">
                                             <span>1.8 Нийгмийн гарал:&#160; <span t-esc="doc.social_status"/></span>
@@ -172,17 +170,16 @@
                                     <div class="row">
                                         <div class="col-12">
                                             <span>1.12  &#160;Оршин суугаа хаяг:&#160; <span t-esc="doc.address_home_id.display_name"/></span>
-<<<<<<< HEAD
                                         </div>
                                     </div>
                                      <div class="row">
                                         <div class="col-12">
                                             <div>1.13  &#160;Орон сууц/хашаа байшин/-ы байдал:&#160;
-                                            &#160;&#160;&#160;&#160; 
-                                            <t t-if="doc.home_owner == 'own'">                                           
-                                            <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;өөрийн 
-                                            &#160;&#160;&#160;&#160; 
-                                            <input style="margin-bottom:10px;" type="checkbox"/>&#160;эцэг, эх 
+                                            &#160;&#160;&#160;&#160;
+                                            <t t-if="doc.home_owner == 'own'">
+                                            <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;өөрийн
+                                            &#160;&#160;&#160;&#160;
+                                            <input style="margin-bottom:10px;" type="checkbox"/>&#160;эцэг, эх
                                             <br/>
                                             &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                             &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
@@ -190,10 +187,10 @@
                                             &#160;&#160;&#160;&#160;
                                              <input style="margin-bottom:10px;" type="checkbox"/>&#160;Зээл
                                              </t>
-                                             <t t-if="doc.home_owner == 'loan'">                                           
-                                            <input style="margin-bottom:10px;" type="checkbox" />&#160;өөрийн 
-                                            &#160;&#160;&#160;&#160; 
-                                            <input style="margin-bottom:10px;" type="checkbox"/>&#160;эцэг, эх 
+                                             <t t-if="doc.home_owner == 'loan'">
+                                            <input style="margin-bottom:10px;" type="checkbox" />&#160;өөрийн
+                                            &#160;&#160;&#160;&#160;
+                                            <input style="margin-bottom:10px;" type="checkbox"/>&#160;эцэг, эх
                                             <br/>
                                             &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                             &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
@@ -201,10 +198,10 @@
                                             &#160;&#160;&#160;&#160;
                                              <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;Зээл
                                              </t>
-                                             <t t-if="doc.home_owner == 'tenancy'">                                           
-                                            <input style="margin-bottom:10px;" type="checkbox" />&#160;өөрийн 
-                                            &#160;&#160;&#160;&#160; 
-                                            <input style="margin-bottom:10px;" type="checkbox" />&#160;эцэг, эх 
+                                             <t t-if="doc.home_owner == 'tenancy'">
+                                            <input style="margin-bottom:10px;" type="checkbox" />&#160;өөрийн
+                                            &#160;&#160;&#160;&#160;
+                                            <input style="margin-bottom:10px;" type="checkbox" />&#160;эцэг, эх
                                             <br/>
                                             &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                             &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
@@ -212,10 +209,10 @@
                                             &#160;&#160;&#160;&#160;
                                              <input style="margin-bottom:10px;" type="checkbox"/>&#160;Зээл
                                              </t>
-                                              <t t-if="doc.home_owner == 'parent'">                                           
-                                            <input style="margin-bottom:10px;" type="checkbox" />&#160;өөрийн 
-                                            &#160;&#160;&#160;&#160; 
-                                            <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;эцэг, эх 
+                                              <t t-if="doc.home_owner == 'parent'">
+                                            <input style="margin-bottom:10px;" type="checkbox" />&#160;өөрийн
+                                            &#160;&#160;&#160;&#160;
+                                            <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;эцэг, эх
                                             <br/>
                                             &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                             &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
@@ -237,87 +234,86 @@
                                      <div class="row">
                                         <div class="col-12">
                                             <span>1.15  &#160;Зайлшгүй шаардлагатай үед холбоо барих:</span>
-                                            <div>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;  Нэр&#160;<span t-esc="doc.emergency_contact"/> 
-                                            &#160; &#160; Утас&#160; <span t-esc="doc.emergency_phone"/> 
-                                            &#160; &#160; Таны юу болох&#160; <span t-esc="doc.emergency_person"/> </div>                                    
+                                            <div>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;  Нэр&#160;<span t-esc="doc.emergency_contact"/>
+                                            &#160; &#160; Утас&#160; <span t-esc="doc.emergency_phone"/>
+                                            &#160; &#160; Таны юу болох&#160; <span t-esc="doc.emergency_person"/> </div>
                                                 </div>
                                     </div>
                                      <div class="row">
                                         <div class="col-12">
-                                                                                     
+
                                             <span>1.16  &#160;Та жолооны эрхтэй юу? :&#160; &#160; &#160;
-                                            <t t-if="doc.driving_classification == ''">    
-                                             <input style="margin-bottom:10px;" type="checkbox"/>&#160;Тийм&#160; &#160; &#160; 
+                                            <t t-if="doc.driving_classification == ''">
+                                             <input style="margin-bottom:10px;" type="checkbox"/>&#160;Тийм&#160; &#160; &#160;
                                              <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;Үгүй
-                                            </t> 
-                                            <t t-if="doc.driving_classification == 'A' or doc.driving_classification == 'B' or doc.driving_classification == 'C' or doc.driving_classification == 'D' or doc.driving_classification == 'E'">    
-                                             <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;Тийм&#160; &#160; &#160; 
+                                            </t>
+                                            <t t-if="doc.driving_classification == 'A' or doc.driving_classification == 'B' or doc.driving_classification == 'C' or doc.driving_classification == 'D' or doc.driving_classification == 'E'">
+                                             <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;Тийм&#160; &#160; &#160;
                                              <input style="margin-bottom:10px;" type="checkbox"/>&#160;Үгүй
-                                            </t> 
+                                            </t>
                                             </span>
                                                 <div>&#160; &#160; &#160; &#160; &#160; Тийм бол хэдэн жил жолоо барьж багаа вэ ?&#160; <span t-esc="doc.years_of_driving"/> </div>
                                                 <div>&#160; &#160; &#160; &#160; &#160; Ангилал&#160;
-                                                <t t-if="doc.driving_classification == 'A'">    
+                                                <t t-if="doc.driving_classification == 'A'">
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;A &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;B &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;C &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;D &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;E  &#160;
                                                 </t>
-                                                <t t-if="doc.driving_classification == 'B'">    
+                                                <t t-if="doc.driving_classification == 'B'">
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox" />&#160;A &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;B &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;C &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;D &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;E  &#160;
                                                 </t>
-                                                <t t-if="doc.driving_classification == 'C'">    
+                                                <t t-if="doc.driving_classification == 'C'">
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox" />&#160;A &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox" />&#160;B &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox" checked="true"/>C &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;D &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;E  &#160;
                                                 </t>
-                                                <t t-if="doc.driving_classification == 'D'">    
+                                                <t t-if="doc.driving_classification == 'D'">
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox" />&#160;A &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;B &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;C &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;&#160;D &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;E  &#160;
                                                 </t>
-                                                <t t-if="doc.driving_classification == 'E'">    
+                                                <t t-if="doc.driving_classification == 'E'">
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox" />&#160;A &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;B &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;C &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;D &#160;
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;E  
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;E
                                                 </t>
                                                 </div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-12">
-                                            <span>1.17  &#160;Тус компанид садан төрөл ажилладаг:&#160; &#160; &#160; &#160; &#160; 
-                                            <t t-if="doc.relative_employee_id.name == NULL">    
-                                            <input style="margin-bottom:10px;" type="checkbox"/>&#160;Тийм &#160; &#160; &#160; &#160; &#160; 
-                                            <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;Үгүй 
+                                            <span>1.17  &#160;Тус компанид садан төрөл ажилладаг:&#160; &#160; &#160; &#160; &#160;
+                                            <t t-if="doc.relative_employee_id.name == NULL">
+                                            <input style="margin-bottom:10px;" type="checkbox"/>&#160;Тийм &#160; &#160; &#160; &#160; &#160;
+                                            <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;Үгүй
                                             </t>
-                                            <t t-if="doc.relative_employee_id.name != NULL">    
-                                            <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;Тийм &#160; &#160; &#160; &#160; &#160; 
-                                            <input style="margin-bottom:10px;" type="checkbox"/>&#160;Үгүй 
+                                            <t t-if="doc.relative_employee_id.name != NULL">
+                                            <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;Тийм &#160; &#160; &#160; &#160; &#160;
+                                            <input style="margin-bottom:10px;" type="checkbox"/>&#160;Үгүй
                                             </t>
                                             </span>
-=======
                                         </div>
                                     </div>
                                      <div class="row">
                                         <div class="col-12">
                                             <div>1.13  &#160;Орон сууц/хашаа байшин/-ы байдал:&#160;
-                                            &#160;&#160;&#160;&#160; 
-                                            <t t-if="doc.home_owner == 'own'">                                           
-                                            <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;өөрийн 
-                                            &#160;&#160;&#160;&#160; 
-                                            <input style="margin-bottom:10px;" type="checkbox"/>&#160;эцэг, эх 
+                                            &#160;&#160;&#160;&#160;
+                                            <t t-if="doc.home_owner == 'own'">
+                                            <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;өөрийн
+                                            &#160;&#160;&#160;&#160;
+                                            <input style="margin-bottom:10px;" type="checkbox"/>&#160;эцэг, эх
                                             <br/>
                                             &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                             &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
@@ -325,10 +321,10 @@
                                             &#160;&#160;&#160;&#160;
                                              <input style="margin-bottom:10px;" type="checkbox"/>&#160;Зээл
                                              </t>
-                                             <t t-if="doc.home_owner == 'loan'">                                           
-                                            <input style="margin-bottom:10px;" type="checkbox" />&#160;өөрийн 
-                                            &#160;&#160;&#160;&#160; 
-                                            <input style="margin-bottom:10px;" type="checkbox"/>&#160;эцэг, эх 
+                                             <t t-if="doc.home_owner == 'loan'">
+                                            <input style="margin-bottom:10px;" type="checkbox" />&#160;өөрийн
+                                            &#160;&#160;&#160;&#160;
+                                            <input style="margin-bottom:10px;" type="checkbox"/>&#160;эцэг, эх
                                             <br/>
                                             &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                             &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
@@ -336,10 +332,10 @@
                                             &#160;&#160;&#160;&#160;
                                              <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;Зээл
                                              </t>
-                                             <t t-if="doc.home_owner == 'tenancy'">                                           
-                                            <input style="margin-bottom:10px;" type="checkbox" />&#160;өөрийн 
-                                            &#160;&#160;&#160;&#160; 
-                                            <input style="margin-bottom:10px;" type="checkbox" />&#160;эцэг, эх 
+                                             <t t-if="doc.home_owner == 'tenancy'">
+                                            <input style="margin-bottom:10px;" type="checkbox" />&#160;өөрийн
+                                            &#160;&#160;&#160;&#160;
+                                            <input style="margin-bottom:10px;" type="checkbox" />&#160;эцэг, эх
                                             <br/>
                                             &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                             &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
@@ -347,10 +343,10 @@
                                             &#160;&#160;&#160;&#160;
                                              <input style="margin-bottom:10px;" type="checkbox"/>&#160;Зээл
                                              </t>
-                                              <t t-if="doc.home_owner == 'parent'">                                           
-                                            <input style="margin-bottom:10px;" type="checkbox" />&#160;өөрийн 
-                                            &#160;&#160;&#160;&#160; 
-                                            <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;эцэг, эх 
+                                              <t t-if="doc.home_owner == 'parent'">
+                                            <input style="margin-bottom:10px;" type="checkbox" />&#160;өөрийн
+                                            &#160;&#160;&#160;&#160;
+                                            <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;эцэг, эх
                                             <br/>
                                             &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                             &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
@@ -372,79 +368,79 @@
                                      <div class="row">
                                         <div class="col-12">
                                             <span>1.15  &#160;Зайлшгүй шаардлагатай үед холбоо барих:</span>
-                                            <div>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;  Нэр&#160;<span t-esc="doc.emergency_contact"/> 
-                                            &#160; &#160; Утас&#160; <span t-esc="doc.emergency_phone"/> 
-                                            &#160; &#160; Таны юу болох&#160; <span t-esc="doc.emergency_person"/> </div>                                    
+                                            <div>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;  Нэр&#160;<span t-esc="doc.emergency_contact"/>
+                                            &#160; &#160; Утас&#160; <span t-esc="doc.emergency_phone"/>
+                                            &#160; &#160; Таны юу болох&#160; <span t-esc="doc.emergency_person"/> </div>
                                                 </div>
                                     </div>
                                      <div class="row">
                                         <div class="col-12">
-                                                                                     
+
                                             <span>1.16  &#160;Та жолооны эрхтэй юу? :&#160; &#160; &#160;
-                                            <t t-if="doc.driving_classification == ''">    
-                                             <input style="margin-bottom:10px;" type="checkbox"/>&#160;Тийм&#160; &#160; &#160; 
+                                            <t t-if="doc.driving_classification == ''">
+                                             <input style="margin-bottom:10px;" type="checkbox"/>&#160;Тийм&#160; &#160; &#160;
                                              <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;Үгүй
-                                            </t> 
-                                            <t t-if="doc.driving_classification == 'A' or doc.driving_classification == 'B' or doc.driving_classification == 'C' or doc.driving_classification == 'D' or doc.driving_classification == 'E'">    
-                                             <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;Тийм&#160; &#160; &#160; 
+                                            </t>
+                                            <t t-if="doc.driving_classification == 'A' or doc.driving_classification == 'B' or doc.driving_classification == 'C' or doc.driving_classification == 'D' or doc.driving_classification == 'E'">
+                                             <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;Тийм&#160; &#160; &#160;
                                              <input style="margin-bottom:10px;" type="checkbox"/>&#160;Үгүй
-                                            </t> 
+                                            </t>
                                             </span>
                                                 <div>&#160; &#160; &#160; &#160; &#160; Тийм бол хэдэн жил жолоо барьж багаа вэ ?&#160; <span t-esc="doc.years_of_driving"/> </div>
                                                 <div>&#160; &#160; &#160; &#160; &#160; Ангилал&#160;
-                                                <t t-if="doc.driving_classification == 'A'">    
+                                                <t t-if="doc.driving_classification == 'A'">
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;A &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;B &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;C &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;D &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;E  &#160;
                                                 </t>
-                                                <t t-if="doc.driving_classification == 'B'">    
+                                                <t t-if="doc.driving_classification == 'B'">
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox" />&#160;A &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;B &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;C &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;D &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;E  &#160;
                                                 </t>
-                                                <t t-if="doc.driving_classification == 'C'">    
+                                                <t t-if="doc.driving_classification == 'C'">
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox" />&#160;A &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox" />&#160;B &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox" checked="true"/>C &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;D &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;E  &#160;
                                                 </t>
-                                                <t t-if="doc.driving_classification == 'D'">    
+                                                <t t-if="doc.driving_classification == 'D'">
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox" />&#160;A &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;B &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;C &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;&#160;D &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;E  &#160;
                                                 </t>
-                                                <t t-if="doc.driving_classification == 'E'">    
+                                                <t t-if="doc.driving_classification == 'E'">
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox" />&#160;A &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;B &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;C &#160;
                                                 &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;D &#160;
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;E  
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;E
                                                 </t>
                                                 </div>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-12">
-                                            <span>1.17  &#160;Тус компанид садан төрөл ажилладаг:&#160; &#160; &#160; &#160; &#160; 
-                                            <t t-if="doc.relative_employee_id.name == NULL">    
-                                            <input style="margin-bottom:10px;" type="checkbox"/>&#160;Тийм &#160; &#160; &#160; &#160; &#160; 
-                                            <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;Үгүй 
+                                            <span>1.17  &#160;Тус компанид садан төрөл ажилладаг:&#160; &#160; &#160; &#160; &#160;
+                                            <t t-if="doc.relative_employee_id.name == NULL">
+                                            <input style="margin-bottom:10px;" type="checkbox"/>&#160;Тийм &#160; &#160; &#160; &#160; &#160;
+                                            <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;Үгүй
                                             </t>
-                                            <t t-if="doc.relative_employee_id.name != NULL">    
-                                            <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;Тийм &#160; &#160; &#160; &#160; &#160; 
-                                            <input style="margin-bottom:10px;" type="checkbox"/>&#160;Үгүй 
+                                            <t t-if="doc.relative_employee_id.name != NULL">
+                                            <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;Тийм &#160; &#160; &#160; &#160; &#160;
+                                            <input style="margin-bottom:10px;" type="checkbox"/>&#160;Үгүй
                                             </t>
                                             </span>
 >>>>>>> 3f02bce07a2944af4d1bbadd29e0c30a2c58ad47
-                                                <div>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; Тийм бол: Нэр&#160; 
-                                                <span t-if="doc.relative_employee_id"><span t-esc="doc.relative_employee_id.name"/></span> 
+                                                <div>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; Тийм бол: Нэр&#160;
+                                                <span t-if="doc.relative_employee_id"><span t-esc="doc.relative_employee_id.name"/></span>
                                                 &#160; &#160;Албан тушаал&#160;
                                                 <span t-if="doc.relative_employee_id"><span t-esc="doc.relative_employee_id.job_id.name"/></span> </div>
 
@@ -452,12 +448,12 @@
                                     </div>
                                 </div>
                              <!--<div class="col-2">
-                                    <img 
-                                    t-if="doc.image_1920" 
-                                    t-att-src="image_data_uri(doc.image_1920)" 
+                                    <img
+                                    t-if="doc.image_1920"
+                                    t-att-src="image_data_uri(doc.image_1920)"
                                     style="height:200px!important; width:151px!important; "
                                     />
-                                </div>--> 
+                                </div>-->
                             </div>
                         </div>
                         <br/>
@@ -467,8 +463,8 @@
                         <br/>
                         <br/>
                         <br/>
-                        
-                        
+
+
 
 
 
@@ -497,15 +493,15 @@
                                                 <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.name"/></td>
                                                 <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.date_start"/></td>
                                                 <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.date_end"/></td>
-                                                <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.profession"/></td> 
-                                                <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.education_degree_id.name"/></td> 
-                                                <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.diploma_number"/></td> 
+                                                <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.profession"/></td>
+                                                <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.education_degree_id.name"/></td>
+                                                <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.diploma_number"/></td>
                                             <t t-set="i" t-value="i+1"/>
                                             </t>
                                         </tr>
-                                       
-                                     
-                                        
+
+
+
                                     </tbody>
                                 </table>
 
@@ -532,8 +528,8 @@
                                                 <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.name"/></td>
                                                 <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.date_start"/></td>
                                                 <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="delta"/>&#160; хоног</td>
-                                                <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.profession"/></td> 
-                                                <td style=" text-align:center !important;   text-align: center; border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.diploma_number"/></td> 
+                                                <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.profession"/></td>
+                                                <td style=" text-align:center !important;   text-align: center; border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.diploma_number"/></td>
                                             <t t-set="i" t-value="i+1"/>
                                             </t>
                                         </tr>
@@ -554,16 +550,16 @@
                                         <t t-set="i" t-value="1"/>
                                         <tr t-foreach="resume_lines" t-as="resume" >
                                             <t t-if="resume.line_type_id.name == 'цол-зэрэг'">
-                                            
-                                                <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="i"/></td> 
+
+                                                <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="i"/></td>
                                                 <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.education_degree_id.name"/></td>
                                                 <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.name"/></td>
                                                 <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.date_start"/></td>
-                                                <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.diploma_number"/></td> 
-                                                <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.description"/></td> 
+                                                <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.diploma_number"/></td>
+                                                <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.description"/></td>
                                             <t t-set="i" t-value="i+1"/>
                                             </t>
-                                            
+
                                         </tr>
                                     </tbody>
                                 </table>
@@ -615,7 +611,7 @@
                                                     <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-if="skill.skill_level_id.name == 'Сайн'">+</t></td>
                                                     <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-if="skill.skill_level_id.name == 'Дунд'">+</t></td>
                                                     <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-if="skill.skill_level_id.name == 'Муу'">+</t></td>
-                                                
+
                                                 </t>
                                                 </t>
                                         </t>
@@ -681,13 +677,13 @@
                                             </t>
                                         </tr>
 
-                                      
-                                        
+
+
                                     </tbody>
                                 </table>
                                 </div>
                                 <div class="col-7" style="width:60%; float:right; margin-right: 5px; font-size:18px; height:250px;">
-                                
+
                                 <table style="width:100%; margin-left:50px;border: 1px solid #ccc; ">
                                     <tbody>
                                         <tr>
@@ -702,26 +698,26 @@
 
 
                                         <tr>
-                                          
-                                            
+
+
                                             <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;" colspan="2">Интернетийн орчинд ажиллах</td>
-                                            
+
                                             <t t-foreach="employee_skills" t-as="skill">
                                             <t t-if="skill.skill_type_id.name == 'Эзэмшсэн-технологийн-нэр' and skill.skill_id.name == 'Интернетийн-орчинд-ажиллах'">
-                                            
+
 
                                             <t t-if="skill.skill_level_id.name == 'Муу'">
                                             <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"></td>
                                             <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"></td>
                                             <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;">+</td>
                                             </t>
-                                            
+
                                             <t t-if="skill.skill_level_id.name == 'Дунд'">
                                             <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;">+</td>
                                             <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"></td>
                                             <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"></td>
                                             </t>
-                                            
+
                                             <t t-if="skill.skill_level_id.name == 'Сайн'">
                                             <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"></td>
                                             <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;">+</td>
@@ -731,7 +727,7 @@
 
                                             </t>
                                             </t>
-                                          
+
                                         </tr>
                                         <tr>
                                             <td style=" text-align:center !important;  border: 1px solid #ccc; text-align:center;  padding-left: 40px; padding-right: 40px;" rowspan="6"> <br/>  Оффисын тоног төхөөрөмж ашиглах</td>
@@ -745,13 +741,13 @@
                                             <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"></td>
                                             <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;">+</td>
                                             </t>
-                                            
+
                                             <t t-if="skill.skill_level_id.name == 'Дунд'">
                                             <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;">+</td>
                                             <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"></td>
                                             <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"></td>
                                             </t>
-                                            
+
                                             <t t-if="skill.skill_level_id.name == 'Сайн'">
                                             <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"></td>
                                             <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;">+</td>
@@ -761,20 +757,8 @@
                                             </t>
                                             </t>
                                         </tr>
-                                       
 
-=======
-                                <div class="col-5" style="width:40%; float:left; font-size:18px; padding-left:0; height:300px;">
-                                <table style=" margin-left:30px;  border: 1px solid #ccc; ">
-                                    <tbody>
-                                        <tr>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">№</td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Хэрэглээний программ</td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Сайн</td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Дунд</td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Муу</td>
 
-                                        </tr>
                                         <t t-set="i" t-value="1"/>
                                         <tr t-foreach="employee_skills" t-as="skill">
                                         <t t-if="skill.skill_type_id.name == 'Хэрэглээний-программ'">
@@ -798,98 +782,20 @@
                                         <t t-set="i" t-value="i+1"/>
                                         </t>
                                         </tr>
-                                        
+
 >>>>>>> 3f02bce07a2944af4d1bbadd29e0c30a2c58ad47
                                     </tbody>
-                                    
+
                                 </table>
                                 </div>
 <<<<<<< HEAD
-=======
-                                <div class="col-7" style="width:60%; float:right; margin-right: 5px; font-size:18px; height:300px;">
-                                
-                                <table style="width:100%; margin-left:50px;border: 1px solid #ccc; ">
-                                    <tbody>
-                                        <tr>
-                                            <th style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;" colspan="2" rowspan="2">Эзэмшсэн оффисын тоног төхөөрөмж технологийн нэр</th>
-                                            <th style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;" colspan="3">Түвшин</th>
-                                        </tr>
-                                        <tr>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;">дунд</td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;">сайн</td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;">муу</td>
-                                        </tr>
-
-
-                                        <tr>
-                                          
-                                            
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;" colspan="2">Интернетийн орчинд ажиллах</td>
-                                            
-                                            <t t-foreach="employee_skills" t-as="skill">
-                                            <t t-if="skill.skill_type_id.name == 'Эзэмшсэн-технологийн-нэр' and skill.skill_id.name == 'Интернетийн-орчинд-ажиллах'">
-                                            
-
-                                            <t t-if="skill.skill_level_id.name == 'Муу'">
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"></td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"></td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;">+</td>
-                                            </t>
-                                            
-                                            <t t-if="skill.skill_level_id.name == 'Дунд'">
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;">+</td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"></td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"></td>
-                                            </t>
-                                            
-                                            <t t-if="skill.skill_level_id.name == 'Сайн'">
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"></td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;">+</td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"></td>
-                                            </t>
-
-
-                                            </t>
-                                            </t>
-                                          
-                                        </tr>
-                                        <tr>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; text-align:center;  padding-left: 40px; padding-right: 40px;" rowspan="6"> <br/>  Оффисын тоног төхөөрөмж ашиглах</td>
-                                            <t t-foreach="employee_skills" t-as="skill">
-                                            <t t-if="skill.skill_type_id.name == 'Эзэмшсэн-технологийн-нэр' and skill.skill_id.name != 'Интернетийн-орчинд-ажиллах'">
-                                            <tr>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="skill.skill_id.name"/></td>
-
-                                            <t t-if="skill.skill_level_id.name == 'Муу'">
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"></td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"></td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;">+</td>
-                                            </t>
-                                            
-                                            <t t-if="skill.skill_level_id.name == 'Дунд'">
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;">+</td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"></td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"></td>
-                                            </t>
-                                            
-                                            <t t-if="skill.skill_level_id.name == 'Сайн'">
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"></td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;">+</td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"></td>
-                                            </t>
-                                             </tr>
-                                            </t>
-                                            </t>
-                                        </tr>
-                                       
-
                                     </tbody>
-                                    
+
                                 </table>
                                 </div>
 >>>>>>> 3f02bce07a2944af4d1bbadd29e0c30a2c58ad47
                             </div>
-                            <div class="col-12">                                
+                            <div class="col-12">
                                 <span style=" font-family: Arial; font-size: 18px; margin-left: 60px;">3.2 Гадаад хэлний мэдээлэл</span>
                                 <table style=" margin-left:30px;border: 1px solid #ccc; width: 100%; font-size: 18px;">
                                     <tbody>
@@ -918,10 +824,10 @@
                                         </tr>
                                         <t t-set="i" t-value="1"/>
                                         <tr t-foreach="language_skills" t-as="l_skill">
-                                          
+
                                             <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="i"/></td>
                                             <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="l_skill['name']"/></td>
-                                            
+
                                                 <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-if="l_skill['listen'] == 'Дунд'">+</t></td>
                                                 <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-if="l_skill['listen'] == 'Сайн'">+</t></td>
                                                 <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-if="l_skill['listen'] == 'Онц'">+</t></td>
@@ -935,8 +841,6 @@
                                                 <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-if="l_skill['read'] == 'Сайн'">+</t></td>
                                                 <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-if="l_skill['read'] == 'Онц'">+</t></td>
 
-=======
-
                                                 <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-if="l_skill['speak'] == 'Дунд'">+</t></td>
                                                 <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-if="l_skill['speak'] == 'Сайн'">+</t></td>
                                                 <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-if="l_skill['speak'] == 'Онц'">+</t></td>
@@ -949,7 +853,7 @@
                                                 <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-if="l_skill['write'] == 'Дунд'">+</t></td>
                                                 <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-if="l_skill['write'] == 'Сайн'">+</t></td>
                                                 <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-if="l_skill['write'] == 'Онц'">+</t></td>
-                                       
+
                                         <t t-set="i" t-value="i+1"/>
                                         </tr>
                                     </tbody>
@@ -958,7 +862,7 @@
                         </div>
 <<<<<<< HEAD
                         <br/>
-              
+
 =======
                         <br/>
                         <br/>
@@ -988,8 +892,8 @@
                                                 <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.name"/></td>
                                                 <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.profession"/></td>
                                                 <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.date_start"/></td>
-                                                <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.date_end"/></td> 
-                                                <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.description"/></td> 
+                                                <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.date_end"/></td>
+                                                <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.description"/></td>
                                             <t t-set="i" t-value="i+1"/>
                                             </t>
                                         </tr>
@@ -1028,55 +932,11 @@
                                             <t t-set="i" t-value="i+1"/>
                                             </t>
                                         </tr>
-                                     
-                                    
+
+
                                     </tbody>
                                 </table>
                                 <br/>
-                                <div style=" margin-left: 60px;">
-                                <span>5.2 Садан төрлийн байдал /таны эцэг, эх, төрсөн ах, эгч, дүү, өрх тусгаарласан хүүхэд болон таны эхнэр /нөхөр/-ийн эцэг, эхийг оруулна уу/ </span>
-                                </div>
-                                <table style=" margin-left:30px;border: 1px solid #ccc; width: 100%;">
-=======
->>>>>>> 3f02bce07a2944af4d1bbadd29e0c30a2c58ad47
-                                    <tbody>
-                                        <tr>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">№</td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Таны юу болох</td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Овог нэр</td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Төрсөн огноо</td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Төрсөн газар</td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Одоо эрхэлж буй ажил</td>
-<<<<<<< HEAD
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Утас</td>
-                                        </tr>
-                                        <t t-set="i" t-value="1"/>
-                                        <tr t-foreach="doc.fam_ids" t-as="family">
-                                            <t t-if="family.relation_id.name == 'Аав' or family.relation_id.name == 'Ээж' or family.relation_id.name == 'Ах'">
-=======
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Утасны дугаар</td>
-                                        </tr>
-                                        <t t-set="i" t-value="1"/>
-                                        <tr t-foreach="doc.fam_ids" t-as="family">
-                                            <t t-if="family.relation_id.name== 'Эхнэр/нөхөр' or family.relation_id.name== 'Охин' or family.relation_id.name== 'Хүү'">
->>>>>>> 3f02bce07a2944af4d1bbadd29e0c30a2c58ad47
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="i"/></td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="family.relation_id.name"/></td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="family.member_name"/></td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="family.birth_date"/></td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="family.birth_place.name"/>, <t t-esc="family.address_id.display_name"/></td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="family.current_job"/></td>
-                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="family.member_contact"/></td>
-                                            <t t-set="i" t-value="i+1"/>
-                                            </t>
-                                        </tr>
-                                     
-                                    
-                                    </tbody>
-                                </table>
-                                <br/>
-<<<<<<< HEAD
-=======
                                 <div style=" margin-left: 60px;">
                                 <span>5.2 Садан төрлийн байдал /таны эцэг, эх, төрсөн ах, эгч, дүү, өрх тусгаарласан хүүхэд болон таны эхнэр /нөхөр/-ийн эцэг, эхийг оруулна уу/ </span>
                                 </div>
@@ -1104,15 +964,44 @@
                                             <t t-set="i" t-value="i+1"/>
                                             </t>
                                         </tr>
-                                    
+
+
+                                    </tbody>
+                                </table>
+                                <br/>
+                                    <tbody>
+                                        <tr>
+                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">№</td>
+                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Таны юу болох</td>
+                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Овог нэр</td>
+                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Төрсөн огноо</td>
+                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Төрсөн газар</td>
+                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Одоо эрхэлж буй ажил</td>
+                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 7px; padding-right: 7px;">Утас</td>
+                                        </tr>
+                                        <t t-set="i" t-value="1"/>
+                                        <tr t-foreach="doc.fam_ids" t-as="family">
+                                            <t t-if="family.relation_id.name == 'Аав' or family.relation_id.name == 'Ээж' or family.relation_id.name == 'Ах'">
+                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="i"/></td>
+                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="family.relation_id.name"/></td>
+                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="family.member_name"/></td>
+                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="family.birth_date"/></td>
+                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="family.birth_place.name"/>, <t t-esc="family.address_id.display_name"/></td>
+                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="family.current_job"/></td>
+                                            <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="family.member_contact"/></td>
+                                            <t t-set="i" t-value="i+1"/>
+                                            </t>
+                                        </tr>
+
+
                                     </tbody>
                                 </table>
                                 <br/>
 >>>>>>> 3f02bce07a2944af4d1bbadd29e0c30a2c58ad47
                             </div>
                         </div>
-                        
-                    
+
+
                         <div name="family_info" style="line-height: 1.4;">
                             <p style="font-size: 18px; !important text-align: left; font-family: Arial; margin-left: 60px;"> 6. Шагналын талаарх мэдээлэл</p>
                             <div class="col-12" style="font-size:18px; !important">
@@ -1128,10 +1017,10 @@
                                         <t t-set="i" t-value="1"/>
                                         <tr t-foreach="resume_lines" t-as="resume">
                                            <t t-if="resume.line_type_id.name == 'Шагнал'">
-                                                <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="i"/></td> 
+                                                <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="i"/></td>
                                                 <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.name"/></td>
                                                 <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.date_start"/></td>
-                                                <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.diploma_number"/></td> 
+                                                <td style=" text-align:center !important;  border: 1px solid #ccc; padding-left: 5px; padding-right: 5px;"><t t-esc="resume.diploma_number"/></td>
                                             <t t-set="i" t-value="i+1"/>
                                             </t>
                                         </tr>
@@ -1142,17 +1031,17 @@
 
                         <br/>
                         <div name="family_info" style="line-height: 1.4;">
-                            <p style="font-size: 18px;  text-align: left; font-family: Arial; margin-left: 60px;"> 7. Цэргийн алба хаасан эсэх:&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; 
+                            <p style="font-size: 18px;  text-align: left; font-family: Arial; margin-left: 60px;"> 7. Цэргийн алба хаасан эсэх:&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                             <t t-if="doc.is_served_in_military == 'yes'">
-                                 <input style="margin-bottom:5px;" type="checkbox" checked="true" />&#160;Тийм &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; 
+                                 <input style="margin-bottom:5px;" type="checkbox" checked="true" />&#160;Тийм &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                  <input type="checkbox"/>&#160;Үгүй
                             </t>
                             <t t-if="doc.is_served_in_military == 'no'">
-                                 <input style="margin-bottom:5px;" type="checkbox"/>&#160;Тийм &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; 
+                                 <input style="margin-bottom:5px;" type="checkbox"/>&#160;Тийм &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                  <input style="margin-bottom:5px;" type="checkbox" checked="true" />&#160;Үгүй
                             </t>
                             </p>
-                            
+
                             <div class="col-12" style="font-size:18px;">
                                 <table style=" margin-left:30px;border: 1px solid #ccc; width: 100%;">
                                     <tbody>
@@ -1181,7 +1070,7 @@
                                 <span style=" margin-left: 60px;">8.1 Та ажлын байрны талаарх мэдээллийг ямар эх сурвалжаас авсан бэ? </span><br/><br/>
 
                                 <span style=" margin-left: 60px;">8.2 Тамхи татдаг:&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                  <input style="margin-bottom:5px;" type="checkbox"/>&#160;Тийм &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; 
+                                  <input style="margin-bottom:5px;" type="checkbox"/>&#160;Тийм &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                  <input style="margin-bottom:5px;" type="checkbox"/>&#160;Үгүй</span><br/>
                                 <span style=" margin-left: 60px;">8.3 Таны хувцасны өмсгөлийн хэмжээ: </span><br/>
                                 <table style=" margin-left:30px;border: 1px solid #ccc; width: 100%;">
@@ -1211,18 +1100,18 @@
                                 <span style=" margin-left: 60px;">8.4 Эрүүл мэндийн мэдээлэл</span><br/><br/>
                                 <span style=" margin-left: 60px;">&#160;&#160;&#160;8.4.1 Харшил:&#160;
                                 :&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                  <input style="margin-bottom:5px;" type="checkbox"/>&#160;Тийм &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; 
+                                  <input style="margin-bottom:5px;" type="checkbox"/>&#160;Тийм &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                  <input style="margin-bottom:5px;" type="checkbox"/>&#160;Үгүй</span><br/>
-                                 
+
                                 <span style=" margin-left: 60px;">&#160;&#160;&#160;8.4.2 Гэмтэл болон осолд орж байсан:&#160;
                                 :&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                  <input style="margin-bottom:5px;" type="checkbox"/>&#160;Тийм &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; 
+                                  <input style="margin-bottom:5px;" type="checkbox"/>&#160;Тийм &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                  <input style="margin-bottom:5px;" type="checkbox"/>&#160;Үгүй</span><br/>
-                                 
+
                                 <span style=" margin-left: 60px;">&#160;&#160;&#160;8.4.3 Архаг, хууч өвчин:&#160;:&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                  <input style="margin-bottom:5px;" type="checkbox"/>&#160;Тийм &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; 
+                                  <input style="margin-bottom:5px;" type="checkbox"/>&#160;Тийм &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                  <input style="margin-bottom:5px;" type="checkbox"/>&#160;Үгүй</span><br/>
-                                 
+
                                 <span style=" margin-left: 60px;">8.5 Та өөрийн эрүүл мэндийн талаар бичнэ үү: </span><br/><br/>
                                 <span style=" margin-left: 60px;">8.6 Таны ойрын 5 жилийн зорилго: </span><br/><br/>
                                 <span style=" margin-left: 60px;">8.7 Таны давуу тал:</span><br/><br/>
@@ -1233,7 +1122,7 @@
                                 <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
                             </div>
                         </div>
-                        
+
                     </div>
                 </t>
             </t>
