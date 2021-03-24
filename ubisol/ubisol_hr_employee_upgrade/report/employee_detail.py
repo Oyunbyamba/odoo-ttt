@@ -27,9 +27,21 @@ class EmployeeDetailPdf(models.AbstractModel):
         now_date = (datetime.now()).strftime('%Y-%m-%d')
         mergeshil = self.env['hr.resume.line'].search(
             [('employee_id', 'in', docids), ('line_type_id.name', '=', 'Мэргэшил')])
+<<<<<<< HEAD
+        if employee.birthday == False:
+            birthday_year = ' '
+            birthday_month = ' '
+            birthday_day = ' '
+        else:
+            birthday_year = employee.birthday.strftime('%Y')
+            birthday_month = employee.birthday.strftime('%m')
+            birthday_day = employee.birthday.strftime('%d')
+
+=======
         birthday_year = employee.birthday.strftime('%Y')
         birthday_month = employee.birthday.strftime('%m')
         birthday_day = employee.birthday.strftime('%d')
+>>>>>>> 3f02bce07a2944af4d1bbadd29e0c30a2c58ad47
         language_skills = []
         speak = ''
         read = ''
@@ -96,9 +108,17 @@ class EmployeeDetailPdf(models.AbstractModel):
                                 if read:
                                     if write:
                                         language_skills.append(obj)
-        
+
+<<<<<<< HEAD
+        if mergeshil.date_end == False:
+            delta1 = ' '
+        else:
+            delta = mergeshil.date_end - mergeshil.date_start
+            delta1 = delta.days
+=======
 
         delta = mergeshil.date_end - mergeshil.date_start
+>>>>>>> 3f02bce07a2944af4d1bbadd29e0c30a2c58ad47
         return {
             'doc_model': 'hr.employee',
             'docs': employee,
@@ -107,7 +127,11 @@ class EmployeeDetailPdf(models.AbstractModel):
             'employee_skills': employee_skills,
             'employee_skills_internet': employee_skills_internet,
             'now_date': now_date,
+<<<<<<< HEAD
+            'delta': delta1,
+=======
             'delta': delta.days,
+>>>>>>> 3f02bce07a2944af4d1bbadd29e0c30a2c58ad47
             'birthday_year': birthday_year,
             'birthday_month': birthday_month,
             'birthday_day': birthday_day,
