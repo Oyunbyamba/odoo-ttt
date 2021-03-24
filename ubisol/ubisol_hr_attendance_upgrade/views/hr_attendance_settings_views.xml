@@ -103,5 +103,6 @@
         parent="hr_attendance.menu_hr_attendance_root"
         sequence="10"
         action="hr_attendance_settings_action"
+        groups="hr_attendance.group_hr_attendance_manager"
     />
 </odoo>

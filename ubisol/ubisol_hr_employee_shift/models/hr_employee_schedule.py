@@ -227,7 +227,6 @@ class HrEmployeeSchedule(models.Model):
             'model_type': 'schedule'
         }
 
-        _logger.info(values)
         prev_schedule = self.env['hr.employee.schedule'].search(
                 [('id', '!=', self.id),
                 ('hr_employee', '=', self.hr_employee.id), 

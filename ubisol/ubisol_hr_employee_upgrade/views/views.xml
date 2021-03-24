@@ -263,7 +263,7 @@
 
     <menuitem id="hr.menu_view_hr_job"
         action="hr.action_hr_job"
-        parent="hr.menu_hr_employee_payroll" sequence="3"/>
+        parent="hr.menu_hr_employee_payroll" sequence="3" groups="hr.group_hr_user"/>
 
     <menuitem name="Recruitment"
         id="hr_recruitment.menu_hr_recruitment_root"
