@@ -23,7 +23,7 @@ class HrAttendance(models.Model):
     employee_id = fields.Many2one('hr.employee', string="Employee",
                                   default=_default_employee, domain=_employee_id_domain,
                                   required=True, ondelete='cascade', index=True)
-    pin = fields.Char(related='employee_id.pin', string="PIN")
+    pin = fields.Char(compute="_compute_pin", compute_sudo=True, search='_pin_search')
     fullname = fields.Char(compute="_compute_fullname", compute_sudo=True)
     department_id = fields.Many2one('hr.department', related='employee_id.department_id', string="Хэлтэс", store=True)
 
@@ -35,7 +35,6 @@ class HrAttendance(models.Model):
     ], compute="_compute_calculate_type", inverse="set_calculate_type")
 
     @api.depends("employee_id")
-    
     def _compute_start_date(self):
         for record in self:
             sdate = datetime.today() - relativedelta(months=+1)
@@ -65,6 +64,15 @@ class HrAttendance(models.Model):
                 fullname = employee.name
             record.fullname = fullname
 
+    @api.depends("employee_id")
+    def _compute_pin(self):
+        for record in self:
+            pin = ''
+            if record.employee_id.pin:
+                pin = record.employee_id.pin
+            
+            record.pin = pin
+
     @api.model
     def get_my_attendances(self):
         resource = self.env['resource.resource'].search([('user_id','=',self.env.user.id)])
@@ -74,4 +82,8 @@ class HrAttendance(models.Model):
         raw_data = attendances.read()
         return raw_data
 
+    def _pin_search(self, operator, value):
+        employee_ids = self.env['hr.employee'].search([('pin', '=', value)]).ids
+        
+        return [('employee_id', 'in', employee_ids)]
        

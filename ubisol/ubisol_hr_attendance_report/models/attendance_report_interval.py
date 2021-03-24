@@ -653,11 +653,8 @@ class AttendanceReport(models.TransientModel):
             sheet.write(row, 23, '', body_format)
             sheet.write(row, 24, '', body_format)
 
-            sheet.write(row, 25, l['take_off_day']
+            sheet.write(row, 26, l['take_off_day']
                         or '', body_format)
-            sheet.write(row, 26, self._set_hour_format(
-                l['difference_check_out']), body_format)
-
             sheet.write(row, 27, self._set_hour_format(
                 l['difference_check_in']), body_format)
 
@@ -709,12 +706,12 @@ class AttendanceReport(models.TransientModel):
         response.stream.write(output.read())
         output.close()
 
-    @ api.model
+    @api.model
     def _set_hour_format(self, val):
         result = '{0:02.0f}:{1:02.0f}'.format(*divmod(val * 60, 60))
         return result
 
-    @ api.model
+    @api.model
     def _set_check_format(self, val):
         if val == False:
             return '-'
@@ -725,7 +722,7 @@ class AttendanceReport(models.TransientModel):
         time = time.strftime("%H:%M")
         return time
 
-    @ api.model
+    @api.model
     def _total_by_field(self, list, key, last_emp):
         total = 0.0
         if last_emp > 0:

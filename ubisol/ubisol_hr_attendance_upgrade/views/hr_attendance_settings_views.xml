@@ -99,8 +99,8 @@
     </record>
 
     <menuitem id="menu_attendance_settings"
-        name="Ирц"
-        parent="hr.menu_human_resources_configuration"
+        name="Ирцийн тохиргоо"
+        parent="hr_attendance.menu_hr_attendance_root"
         sequence="10"
         action="hr_attendance_settings_action"
     />

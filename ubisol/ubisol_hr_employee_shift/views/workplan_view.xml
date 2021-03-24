@@ -38,6 +38,8 @@
               color="calendar_id"
               >
                   <field name="shift_id"/>
+                  <field name="calendar_id"/>
+                  <field name="day_period" string="Ээлж"/>
             </calendar>
         </field>
     </record>

@@ -72,7 +72,6 @@ class HrEmployeeSchedule(models.Model):
     end_time = fields.Char(compute="_compute_end_time")
     period_type_name = fields.Char(string='Ээлж', compute='_compute_period_type_name')
 
-
     # @api.model
     # def _fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
     #     result = super(HrEmployeeSchedule, self)._fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
@@ -96,57 +95,53 @@ class HrEmployeeSchedule(models.Model):
     #     return [('user_id', '=', self.env.user.id)]
     
 
+    @api.onchange("start_work")
+    def _compute_start_work_date(self):
+        if self.start_work:
+            user_tz = self.env.user.tz or pytz.utc
+            local = pytz.timezone(user_tz)
+            date_result = pytz.utc.localize(
+                self.start_work).astimezone(local)
+            self.start_work_date = date_result
+
+    @api.onchange("end_work")
+    def _compute_end_work_date(self):
+        if self.end_work:
+            user_tz = self.env.user.tz or pytz.utc
+            local = pytz.timezone(user_tz)
+            date_result = pytz.utc.localize(
+                self.end_work).astimezone(local) 
+            self.end_work_date = date_result
+
+    @api.onchange("start_work")
+    def _compute_start_work_time(self):
+        if self.start_work:
+            user_tz = self.env.user.tz or pytz.utc
+            local = pytz.timezone(user_tz)
+            date_result = pytz.utc.localize(
+                self.start_work).astimezone(local)
+            hour = date_result.hour
+            minute = date_result.minute
+            self.start_work_time = hour + minute/60
+
+    @api.onchange("end_work")
+    def _compute_end_work_time(self):
+        if self.end_work:
+            user_tz = self.env.user.tz or pytz.utc
+            local = pytz.timezone(user_tz)
+            date_result = pytz.utc.localize(
+                self.end_work).astimezone(local)
+            hour = date_result.hour
+            minute = date_result.minute
+            self.end_work_time = hour + minute/60  
+
     @api.depends("day_period", "shift_type")
     def _compute_day_period(self):
         for record in self:
             if record.shift_type and record.shift_type == "shift" and record.day_period:
                 record.day_period_int = record.day_period.id
             else:
-                record.day_period_int = None
-
-    @api.depends("start_work")
-    def _compute_start_work_date(self):
-        for record in self:
-            if record.start_work:
-                user_tz = self.env.user.tz or pytz.utc
-                local = pytz.timezone(user_tz)
-                date_result = pytz.utc.localize(
-                    record.start_work).astimezone(local)
-                record.start_work_date = date_result
-
-    @api.depends("end_work")
-    def _compute_end_work_date(self):
-        for record in self:
-            if record.end_work:
-                user_tz = self.env.user.tz or pytz.utc
-                local = pytz.timezone(user_tz)
-                date_result = pytz.utc.localize(
-                    record.end_work).astimezone(local)
-                record.end_work_date = date_result
-
-    @api.depends("start_work")
-    def _compute_start_work_time(self):
-        for record in self:
-            if record.start_work:
-                user_tz = self.env.user.tz or pytz.utc
-                local = pytz.timezone(user_tz)
-                date_result = pytz.utc.localize(
-                    record.start_work).astimezone(local)
-                hour = date_result.hour
-                minute = date_result.minute
-                record.start_work_time = hour + minute/60
-
-    @api.depends("end_work")
-    def _compute_end_work_time(self):
-        for record in self:
-            if record.end_work:
-                user_tz = self.env.user.tz or pytz.utc
-                local = pytz.timezone(user_tz)
-                date_result = pytz.utc.localize(
-                    record.end_work).astimezone(local)
-                hour = date_result.hour
-                minute = date_result.minute
-                record.end_work_time = hour + minute/60         
+                record.day_period_int = None       
 
     @api.depends("start_work_time")
     def _compute_start_time(self):
@@ -175,6 +170,7 @@ class HrEmployeeSchedule(models.Model):
             data.append({'label': dat[i][2], 'value': dat[i][0]})
         return data
 
+
     @api.model
     def create(self, vals):
         schedule = super(HrEmployeeSchedule, self).create(vals)
@@ -182,36 +178,69 @@ class HrEmployeeSchedule(models.Model):
         return schedule
 
     def write(self, vals):
-        for record in self:
-            # if "hr_employee_shift_template" in vals:
-            #     values['resource_calendar_ids'] = vals.get('hr_employee_shift_template')
-            # else:
-            #     values['resource_calendar_ids'] = self.resource_calendar_ids.id
-            schedule = super(HrEmployeeSchedule, self).write(vals)
-            log_obj = self.env["hr.employee.shift"].search([])
+        # schedule = super(HrEmployeeSchedule, self).write(vals)
+        log_obj = self.env["hr.employee.shift"].search([])
 
-            employees = []
-            employees.append(record.hr_employee.id)
-            employees = [[False, 0, employees]]
-            values = {
-                'shift_id': record.hr_employee_shift,
-                'resource_calendar_ids': record.hr_employee_shift_template.id,
-                'start_work': record.start_work,
-                'end_work': record.end_work,
-                'date_from': datetime.strftime(record.start_work_date, '%Y-%m-%d'),
-                'date_to': datetime.strftime(record.end_work_date, '%Y-%m-%d'),
-                'assign_type': 'employee',
-                'hr_employee': employees,
-                'model_type': 'schedule'
-            }
+        employees = []
+        employees.append(self.hr_employee.id)
+        employees = [[False, 0, employees]]
+        start_time = ''
+        end_time = ''
 
-            prev_schedule = self.env['hr.employee.schedule'].search(
-                    [('hr_employee', '=', record.hr_employee.id), 
-                    ('work_day', '>=', record.start_work_date), 
-                    ('work_day', '<=', record.end_work_date)]).unlink()
+        resource_calendar_id = vals.get('hr_employee_shift_template') if vals.get('hr_employee_shift_template') else self.hr_employee_shift_template.id
+        if vals.get('start_work'):
+            date_from = datetime.strptime(vals.get('start_work'), '%Y-%m-%d %H:%M:%S')
+            user_tz = self.env.user.tz or pytz.utc
+            local = pytz.timezone(user_tz)
+            date_result = pytz.utc.localize(date_from).astimezone(local)
+            date_from = date_result.date() 
+            hour = date_result.hour
+            minute = date_result.minute
+            start_time = hour + minute/60
+        else:
+            date_from = self.start_work_date
 
-            schedules = log_obj._create_schedules(values, values.get('shift_id'))
-            return schedules    
+        if vals.get('end_work'):            
+            date_to = datetime.strptime(vals.get('end_work'), '%Y-%m-%d %H:%M:%S')
+            user_tz = self.env.user.tz or pytz.utc
+            local = pytz.timezone(user_tz)
+            date_result = pytz.utc.localize(date_to).astimezone(local)
+            date_to = date_result.date()
+            hour = date_result.hour
+            minute = date_result.minute
+            end_time = hour + minute/60
+        else:
+            date_to = self.end_work_date   
+        
+        date_from = datetime.strftime(date_from, '%Y-%m-%d')
+        date_to = datetime.strftime(date_to, '%Y-%m-%d')
+
+        values = {
+            'shift_id': self.hr_employee_shift,
+            'resource_calendar_ids': resource_calendar_id,
+            'start_time': start_time,
+            'end_time': end_time,
+            'date_from': date_from,
+            'date_to': date_to,
+            'assign_type': 'employee',
+            'hr_employee': employees,
+            'model_type': 'schedule'
+        }
+
+        _logger.info(values)
+        prev_schedule = self.env['hr.employee.schedule'].search(
+                [('id', '!=', self.id),
+                ('hr_employee', '=', self.hr_employee.id), 
+                ('work_day', '>=', date_from), 
+                ('work_day', '<=', date_to)]).unlink()
+
+        schedules = log_obj._create_schedules(values, values.get('shift_id'))
+        if schedules:
+            #Update self: with last schedule from new schedules. Then unlink new last schedule.
+            schedule = super(HrEmployeeSchedule, self).write(schedules['schedule_dict'])
+            schedules['schedule'].unlink()
+
+        return True
 
     def _set_hour_format(self, val):
         result = '{0:02.0f}:{1:02.0f}'.format(*divmod(val * 60, 60))

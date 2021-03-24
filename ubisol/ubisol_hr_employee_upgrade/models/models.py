@@ -39,6 +39,7 @@ class HrEmployee(models.Model):
         ('laon', 'Зээл')
     ], string='Home owner', default='own', tracking=True, groups="hr.group_hr_user")
     ethnicity = fields.Many2one('hr.employee.ethnicity', string="Ethnicity", help="Ethnicity with the employee", groups="hr.group_hr_user")
+    social_status = fields.Char('Нийгмийн гарал', groups="hr.group_hr_user")
     family_income = fields.Float('Family Income', digits=(12,0), groups="hr.group_hr_user")
     is_served_in_military = fields.Selection([
         ('yes', 'Тийм'),
@@ -79,13 +80,14 @@ class HrEmployee(models.Model):
     longitude = fields.Char('Уртраг', groups="hr.group_hr_user")
     employee_pictures = fields.One2many('hr.employee.picture', 'employee_id', string='Employee picture', groups="hr.group_hr_user")
     # image=fields.Binary(compute='_getBase64Image') 
-    departure_reason = fields.Selection(selection_add=[('other', 'Other')], groups="hr.group_hr_user")
+    departure_reason = fields.Selection(selection_add=[('other', 'Бусад')], groups="hr.group_hr_user")
     resign_date = fields.Date('Resign Date', compute='_compute_resign_date', inverse='_set_document', store=True, groups="hr.group_hr_user")
     is_disabled = fields.Boolean('Хөгжлийн бэрхшээлтэй эсэх', default=False, groups="hr.group_hr_user")
     is_in_group = fields.Boolean('Группд байдаг эсэх', default=False, groups="hr.group_hr_user")
     employee_code = fields.Char('Ажилтаны код', groups="hr.group_hr_user")
     rfid_code = fields.Char('Картын дугаар', groups="hr.group_hr_user")
     attendance_ids = fields.One2many('hr.attendance', 'employee_id', string='Employee attendance')
+    emergency_person = fields.Char(string='Таны юу болох')
 
     @api.constrains('pin', 'identification_id')
     def _check_pin(self):
@@ -154,12 +156,12 @@ class HrEmployee(models.Model):
             employee_contract = self.env['hr.contract'].browse(self.contract_id.id)
             employee_contract.write(values)
         else:    
-            if(trial_date < fields.Date.context_today(self)):
-                values['state'] = 'open'
-                values['kanban_state'] = 'done'
-            else:
-                values['state'] = 'draft'
-                values['kanban_state'] = 'donnormale'
+        #     if(trial_date < fields.Date.context_today(self)):
+        #         values['state'] = 'open'
+        #         values['kanban_state'] = 'done'
+        #     else:
+        #         values['state'] = 'draft'
+        #         values['kanban_state'] = 'donnormale'
             employee_contract = self.env['hr.contract'].create(values)    
 
         return employee_contract        
@@ -170,17 +172,65 @@ class HrEmployee(models.Model):
         if employee.contract_signed_date:
             employee_contract = self._prepare_contract_values(employee)
 
+        #create schedule & workplan for employee when employee has department
+        if employee.department_id:
+            shift = self.env['hr.employee.shift'].search([
+                ('hr_department', '=', vals.get('department_id')),
+                ('assign_type', '=', 'department')], limit=1, order='id desc')
+
+            if shift:
+                log_obj = self.env["hr.employee.shift"].search([])
+                employee_id = [[6, False, [employee.id]]]
+                values = {
+                    'name': shift.name,
+                    'assign_type': 'employee',
+                    'hr_department': [],
+                    'hr_employee': employee_id,
+                    'resource_calendar_ids': shift.resource_calendar_ids.id,
+                    'date_from': str(shift.date_from),
+                    'date_to': str(shift.date_to)
+                }         
+                log_obj._create_schedules(values, shift)
+
         return employee
 
     def write(self, vals):
+        prev_department_id = self._origin.department_id
         employee = super(HrEmployee, self).write(vals)  
-        if self.contract_signed_date and self.create_contract:    
+        if vals.get('contract_signed_date') and vals.get('create_contract'):    
             employee_contract = self._prepare_contract_values(self)        
 
+        #if this employee has child employees, then their leave_manager_id is set by self.user_id
         if self.user_id:
             child_employees = self.env['hr.employee'].search([('parent_id', '=', self._origin.id)])
             for child_employee in child_employees:
                 child_employee.parent_id = self.id
+
+        #create schedule for employee when employee's department selected
+        if vals.get('department_id') and (vals.get('department_id') != prev_department_id):
+            shifts = self.env['hr.employee.shift'].search([
+                ('hr_department', '=', vals.get('department_id')),
+                ('assign_type', '=', 'department')])
+
+            if len(shifts) > 0:
+                log_obj = self.env["hr.employee.shift"].search([])
+                employee_id = [[6, False, [self.id]]]
+                for shift in shifts:
+                    values = {
+                        'name': shift.name,
+                        'assign_type': 'employee',
+                        'hr_department': [],
+                        'hr_employee': employee_id,
+                        'resource_calendar_ids': shift.resource_calendar_ids.id,
+                        'date_from': str(shift.date_from),
+                        'date_to': str(shift.date_to)
+                    }
+                    date_from = datetime.strftime(shift.date_from, '%Y-%m-%d')
+                    date_to = datetime.strftime(shift.date_to, '%Y-%m-%d')
+                    prev_schedule = self.env['hr.employee.schedule'].search(
+                        [('hr_employee', '=', self.id), ('work_day', '>=', date_from), ('work_day', '<=', date_to)]).unlink()         
+                    # log_obj._check_duplicated_schedules(values)
+                    log_obj._create_schedules(values, shift)        
 
         return employee    
 

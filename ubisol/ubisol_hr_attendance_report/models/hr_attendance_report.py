@@ -252,7 +252,7 @@ class HrAttendanceReport(models.Model):
             if record.overtime_req_id.holiday_status_id.request_status_type == 'overtime' and record.overtime_req_id.holiday_status_id.overtime_type == 'manager_proved_overtime' and (record.overtime_req_id.state == 'validate' or record.overtime_req_id.state == 'validate1'):
                 record.overtime = record.overtime_req_id.allowed_overtime_time
 
-    @ api.depends("worked_hours", "shift_type", "check_in", "check_out")
+    @api.depends("worked_hours", "shift_type", "check_in", "check_out")
     def _compute_overtime_holiday(self):
         for record in self:
             overtime_holiday = 0.0
@@ -279,22 +279,22 @@ class HrAttendanceReport(models.Model):
                 overtime_holiday = record.worked_hours
                 record.overtime_holiday = overtime_holiday
 
-    @ api.depends('overtime_req_id', 'check_in', 'check_out', 'start_work', "end_work", "attendance_req_id", "overtime", "overtime_holiday")
+    @api.depends('start_work', "end_work", 'overtime_req_id', 'check_in', 'check_out', "attendance_req_id", "overtime", "overtime_holiday")
     def _compute_informal_overtime(self):
         for record in self:
             informal_overtime = 0.0
 
             if record.overtime_holiday > 0 and record.shift_type == 'days':
                 record.informal_overtime = record.overtime_holiday
-                return
+                pass
 
             if record.take_off_day == 1:
                 record.informal_overtime = 0.0
-                return
+                pass
 
             is_rest = True
             if record.shift_type == 'shift':
-                is_rest = record.day_period.is_
+                is_rest = record.day_period.is_rest
             elif int(record.week_day) < 5:
                 is_rest = False
 
@@ -312,12 +312,12 @@ class HrAttendanceReport(models.Model):
                     informal_overtime = 0.0
                 # ali 1 taldaa huruu daraagui bol iluu tsag bodohgui
                 elif not record.check_in:
-                    informal_overtime += 0.0
+                    informal_overtime = 0.0
                 elif record.check_in and record.check_out < record.end_work:
                     informal_overtime = 0.0
                 else:
                     delta = record.check_out - record.end_work
-                    informal_overtime += delta.total_seconds() / 3600.0
+                    informal_overtime = delta.total_seconds() / 3600.0
 
                 # by Sainaa ugluu ert irseng tootsohgui
 
@@ -358,7 +358,7 @@ class HrAttendanceReport(models.Model):
 
             record.informal_overtime = informal_overtime
 
-    @ api.depends("attendance_req_id")
+    @api.depends("attendance_req_id")
     def _compute_attendance_req(self):
         for record in self:
             if record.attendance_req_id:
@@ -374,7 +374,7 @@ class HrAttendanceReport(models.Model):
                     record.attendance_req_time = self._diff_by_hours(
                         check_in, check_out)
 
-    @ api.depends("outside_work_req_id")
+    @api.depends("outside_work_req_id")
     def _compute_outside_work(self):
         for record in self:
             if record.outside_work_req_id and (record.overtime_req_id.state == 'validate' or record.overtime_req_id.state == 'validate1'):
@@ -384,7 +384,7 @@ class HrAttendanceReport(models.Model):
                     check_out = record.outside_work_req_id.date_to
                 record.outside_work = self._diff_by_hours(date_from, check_out)
 
-    @ api.depends("check_in", "check_out", "difference_check_in", "work_days")
+    @api.depends("check_in", "check_out", "difference_check_in", "work_days")
     def _compute_take_off_day(self):
         for record in self:
 
@@ -401,7 +401,7 @@ class HrAttendanceReport(models.Model):
                 else:
                     record.take_off_day = 0
 
-    @ api.depends("check_in", "start_work", "difference_check_out", "overtime_holiday")
+    @api.depends("check_in", "start_work", "difference_check_out", "overtime_holiday")
     def _compute_difference_check_in(self):
         setting_obj = self.env['hr.attendance.settings'].search(
             [], limit=1, order='id desc')
@@ -427,7 +427,7 @@ class HrAttendanceReport(models.Model):
             if record.difference_check_out > 0:
                 record.difference_check_in += record.difference_check_out
 
-    @ api.depends("check_out", "end_work", "overtime_holiday")
+    @api.depends("check_out", "end_work", "overtime_holiday")
     def _compute_difference_check_out(self):
         for record in self:
 
@@ -447,7 +447,7 @@ class HrAttendanceReport(models.Model):
                 else:
                     record.difference_check_out = 0
 
-    @ api.depends("start_work", "end_work")
+    @api.depends("start_work", "end_work")
     def _compute_work_days(self):
         for record in self:
             is_rest = True
@@ -477,7 +477,7 @@ class HrAttendanceReport(models.Model):
                 if record.work_hours < 0.0:
                     record.work_days = 0.0
 
-    @ api.depends("start_work", "end_work", "work_days")
+    @api.depends("start_work", "end_work", "work_days")
     def _compute_work_hours(self):
         for record in self:
             is_rest = True
@@ -505,7 +505,7 @@ class HrAttendanceReport(models.Model):
                 else:
                     record.work_hours = 0.0
 
-    @ api.depends('check_in', "start_work", 'check_out', "end_work", "day_period", "attendance_req_id")
+    @api.depends('check_in', "start_work", 'check_out', "end_work", "day_period", "attendance_req_id")
     def _compute_worked_days(self):
         for record in self:
             is_rest = True
@@ -531,7 +531,7 @@ class HrAttendanceReport(models.Model):
                     else:
                         record.worked_days = 0.0
 
-    @ api.depends('check_in', "start_work", 'check_out', "end_work", "day_period", "attendance_req_id", "take_off_day")
+    @api.depends('check_in', "start_work", 'check_out', "end_work", "day_period", "attendance_req_id", "take_off_day")
     def _compute_formal_worked_hours(self):
         setting_obj = self.env['hr.attendance.settings'].search(
             [], limit=1, order='id desc')
@@ -931,13 +931,15 @@ class HrAttendanceReport(models.Model):
         if filters['calculate_type']:
             if filters['calculate_type'] == 'employee':
                 employee_id = filters['employee_id']
-                domain = [('hr_employee', '=', employee_id), ('work_day',
+                employee = self.env['hr.employee'].search(
+                    [('id', '=', employee_id)], limit=1)
+                domain = [('hr_employee', '=', employee.id), ('work_day',
                                                               '>=', start_date), ('work_day', '<=', end_date)]
 
                 approved_overtimes = self.env['hr.leave'].sudo().search([
                     ('date_from', '>=', start_date),
                     ('date_to', '<=', end_date),
-                    ('department_id', '=', employee_id.department_id.id),
+                    ('department_id', '=', employee.department_id.id),
                     ('holiday_status_id.overtime_type',
                      '=', 'total_allowed_overtime'),
                     ('state', 'in', ['validate', 'validate1'])

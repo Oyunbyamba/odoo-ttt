@@ -33,6 +33,7 @@
         'views/schedule_view.xml',
         'views/workplan_view.xml',
         'wizards/create_datetime_filter.xml',
+        'wizards/extend_shift_date.xml',
     ],
     'qweb': [
         "static/src/xml/datetime_filter.xml",

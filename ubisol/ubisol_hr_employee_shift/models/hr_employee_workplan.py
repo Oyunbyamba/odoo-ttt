@@ -60,13 +60,6 @@ class HrEmployeeWorkplan(models.Model):
                     record.end_work).astimezone(local)
                 record.date_to = date_result
 
-    @api.depends('shift_id')
-    def _compute_day_period(self):
-        for record in self:
-            if record.shift_id:
-                factory_day_ids = record.shift_id.resource_calendar_ids.factory_day_ids
-
-
     @api.model
     def create(self, vals):
         workplan = super(HrEmployeeWorkplan, self).create(vals)
@@ -77,12 +70,19 @@ class HrEmployeeWorkplan(models.Model):
         for record in self:
             workplan = super(HrEmployeeWorkplan, self).write(vals)
             log_obj = self.env["hr.employee.shift"].search([])
+ 
+            department_ids = record.shift_id.hr_department.read(['id'])
+            departments = []
+            for dep_id in department_ids:
+                departments.append(dep_id['id'])    
+            departments = [[6, False, departments]]
 
             ids = record.shift_id.hr_employee.read(['id'])
             employees = []
             for emp_id in ids:
                 employees.append(emp_id['id'])
-            employees = [[False, 0, employees]]
+            employees = [[6, False, employees]]
+
             values = {
                 'shift_id': record.shift_id,
                 'resource_calendar_ids': record.calendar_id.id,
@@ -92,14 +92,14 @@ class HrEmployeeWorkplan(models.Model):
                 'date_to': datetime.strftime(record.date_to, '%Y-%m-%d'),
                 'assign_type': record.assign_type,
                 'hr_employee': employees,
-                'hr_department': record.shift_id.hr_department.id
+                'hr_department': departments
             }
             res = log_obj._check_duplicated_schedules(values)
 
             workplans = self.env['hr.employee.workplan'].search([
                 ('shift_id', '=', values.get('shift_id').id),
                 ('work_day', '>=', values.get('date_from')),
-                ('work_day', '<=', values.get('date_to')),
+                ('work_day', '<=', values.get('date_to'))
             ]).unlink()
 
             schedules = log_obj._create_schedules(values, values.get('shift_id'))
