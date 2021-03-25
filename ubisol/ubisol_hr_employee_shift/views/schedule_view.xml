@@ -162,7 +162,7 @@
     <!-- menu categories -->
     <menuitem name="Ажилтны хуваарь" id="ubisol_hr_employee_shift.schedules" parent="ubisol_hr_employee_shift.employee_shift"
               action="ubisol_hr_employee_shift.action_window_emp_schedule" sequence="0"
-              groups="ubisol_hr_attendance_upgrade.group_hr_attendance_responsible,hr_attendance.group_hr_attendance_user,hr_attendance.group_hr_attendance_manager"/>
+              groups="ubisol_hr_attendance_upgrade.group_hr_attendance_responsible,hr_attendance.group_hr_attendance_user"/>
 
   </data>
 </odoo>
