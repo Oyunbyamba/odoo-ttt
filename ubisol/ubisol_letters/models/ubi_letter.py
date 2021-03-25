@@ -3,9 +3,25 @@
 from odoo import fields, models
 
 
+
+
 class UbiLetter(models.Model):
     _name = "ubi.letter"
     _description = " "
+
+    def ubi_letter_processing_next(self):
+        for rec in self:
+            rec.state = 'processing'
+
+    def ubi_letter_cancelled_next(self):
+        for rec in self:
+            rec.state = 'cancelled'
+
+    def ubi_letter_completed_next(self):
+        for rec in self:
+            rec.state = 'completed'
+
+  
 
     is_local = fields.Boolean(string='Дотоод бичиг эсэх')
     is_received_letter = fields.Boolean(string='Ирсэн бичиг эсэх')
@@ -28,11 +44,13 @@ class UbiLetter(models.Model):
 
     department_id = fields.Many2one('hr.department', string='Хариуцах Хэлтэс')
     employee_id = fields.Many2one('hr.employee', string='Хариуцах Хүн')
+    where_sent = fields.Char(string='Хаашаа явах')
 
-    state = fields.Selection(selection=[
+    state = fields.Selection([
         ('draft', 'Бүртгэсэн'),
         ('processing', 'Шийдвэрлэж байгаа'),
         ('cancelled', 'Цуцласан'),
-        ('completed', 'Хаасан')],
+        ('completed', 'Хаасан')], 
+        default='draft',
         string='Төлөв', store=True, readonly=True, copy=False, tracking=True)
-    where_sent = fields.Char(string='Хаашаа явах')
+    
