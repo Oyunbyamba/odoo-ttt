@@ -32,3 +32,4 @@ class UbiLetter(models.Model):
         ('cancelled', 'Цуцласан'),
         ('completed', 'Хаасан')],
         string='Төлөв', store=True, readonly=True, copy=False, tracking=True)
+    where_sent = fields.Char(string='Хаашаа явах')
