@@ -21,6 +21,9 @@
                 <field name="return_datetime"/>
                 <field name="is_local"/>
                 <field name="must_return"/>
+                <field name="letter_type_id"/>
+                <field name="letter_subject_id"/>
+
 
             </tree>
         </field>
@@ -53,7 +56,9 @@
                         <field name="return_datetime"/>
                         <field name="is_local"/>
                         <field name="is_received_letter"/>
-                        
+                        <field name="letter_type_id"/>
+                        <field name="letter_subject_id"/>
+
                         
                     </group>
                 </sheet>
