@@ -22,6 +22,9 @@ class UbiLetter(models.Model):
     must_return = fields.Boolean(string='Хариу өгөх эсэх', default='False')
 
     partner_id = fields.Many2one('res.partner', string='Холбогдогч тал')
+    letter_type_id = fields.Many2one('ubi.letter.type', string='Албан бичгийн төрөл')
+    letter_subject_id = fields.Many2one('ubi.letter.subject', string='Гарчиг ангилал')
+
 
     department_id = fields.Many2one('hr.department', string='Хариуцах Хэлтэс')
     employee_id = fields.Many2one('hr.employee', string='Хариуцах Хүн')
@@ -32,3 +35,4 @@ class UbiLetter(models.Model):
         ('cancelled', 'Цуцласан'),
         ('completed', 'Хаасан')],
         string='Төлөв', store=True, readonly=True, copy=False, tracking=True)
+    where_sent = fields.Char(string='Хаашаа явах')

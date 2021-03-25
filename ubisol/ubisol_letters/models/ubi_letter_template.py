@@ -3,8 +3,8 @@
 from odoo import fields, models
 
 
-class LetterTemplate(models.Model):
-    _name = "letter.template"
+class UbiLetterTemplate(models.Model):
+    _name = "ubi.letter.template"
     _description = " "
     name = fields.Char(string="name")
     types = fields.Selection([

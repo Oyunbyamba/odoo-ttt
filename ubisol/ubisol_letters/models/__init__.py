@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from . import letter_template
-from . import letter_subjects
-from . import letter_types
+from . import ubi_letter
+from . import ubi_letter_template
+from . import ubi_letter_subjects
+from . import ubi_letter_types

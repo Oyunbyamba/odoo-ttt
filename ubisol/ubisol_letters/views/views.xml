@@ -2,36 +2,64 @@
 
 <odoo>
 
-   
-       
-
     <record id = "letter_tree_view" model = "ir.ui.view">
-        <field name = "name">letter.subject.tree</field>
-        <field name = "model">letter.template</field>
+        <field name = "name">ubi.letter.subject.tree</field>
+        <field name = "model">ubi.letter</field>
         <field name = "arch" type = "xml">
-            <tree string = "Students">
-                <field name="name"/>
-                <field name = "types"/>
-                <field name = "letter_description"/>
+            <tree string = "Ubi Letter">
+                <field name="register_number"/>
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="where_sent"/>
+                <field name="card_number"/>
+                <field name="letter_number"/>
+                <field name="letter_total_num"/>
+                <field name="partner_id"/>
+                <field name="state"/>
+                <field name="received_datetime"/>
+                <field name="registered_datetime"/>
+                <field name="return_datetime"/>
+                <field name="is_local"/>
+                <field name="must_return"/>
+                <field name="letter_type_id"/>
+                <field name="letter_subject_id"/>
+
+
             </tree>
         </field>
 
     </record>
 
     <record id="letter_form_view" model="ir.ui.view">
-        <field name="name">letter.subject.form</field>
-        <field name="model">letter.subject</field>
+        <field name="name">ubi.letter.subject.form</field>
+        <field name="model">ubi.letter</field>
         <field name="arch" type="xml">
-            <form string="Students">
+            <form string="Ubi Letter">
                 <sheet>
                     <div class="oe_title">
                         <h1>
-                            <field name="name"/>
+                        <field name="employee_id"/>
+                        <field name="must_return"/>
                         </h1>
                     </div>  
                     <group>
-                        <field name="desc" widget="html"/>
-                        <field name = "code"/>
+                        <field name="register_number"/>
+                        <field name="letter_number"/>
+                        <field name="letter_total_num"/>
+                        <field name="card_number"/>
+                        <field name="partner_id"/>
+                        <field name="department_id"/>
+                        <field name="state"/>
+                        <field name="where_sent"/>
+                        <field name="received_datetime"/>
+                        <field name="registered_datetime"/>
+                        <field name="return_datetime"/>
+                        <field name="is_local"/>
+                        <field name="is_received_letter"/>
+                        <field name="letter_type_id"/>
+                        <field name="letter_subject_id"/>
+
+                        
                     </group>
                 </sheet>
             </form>
@@ -39,9 +67,9 @@
     </record>
 
     <record id = "action_settings_letter" model = "ir.actions.act_window">
-        <field name = "name">Settings Letter</field>
+        <field name = "name">Ubi Settings Letter</field>
         <field name = "type">ir.actions.act_window</field>
-        <field name = "res_model">letter.subject</field>
+        <field name = "res_model">ubi.letter.subject</field>
         <field name = "view_mode">form</field>
         <field name = "context">{}</field>
         <field name = "domain">[]</field>
@@ -51,9 +79,9 @@
 
     </record>
     <record id = "action_planning_letter" model = "ir.actions.act_window">
-        <field name = "name">Planning Letter</field>
+        <field name = "name">Ubi Planning Letter</field>
         <field name = "type">ir.actions.act_window</field>
-        <field name = "res_model">letter.subject</field>
+        <field name = "res_model">ubi.letter.subject</field>
         <field name = "view_mode">form</field>
         <field name = "context">{}</field>
         <field name = "domain">[]</field>
@@ -63,12 +91,12 @@
 
     </record>
     <record id = "action_going_letter" model = "ir.actions.act_window">
-        <field name = "name">Going Letter</field>
+        <field name = "name">Ubi Going Letter</field>
         <field name = "type">ir.actions.act_window</field>
-        <field name = "res_model">letter.template</field>
-        <field name = "view_mode">tree</field>
+        <field name = "res_model">ubi.letter</field>
+        <field name = "view_mode">tree,form</field>
         <field name = "context">{}</field>
-        <field name = "domain">[]</field>
+        <field name = "domain">[('is_received_letter','=',False)]</field>
         <field name = "help" type = "html">
             <p>action_going_letter</p>
         </field>
@@ -76,12 +104,12 @@
     </record>
 
     <record id = "action_incoming_letter" model = "ir.actions.act_window">
-        <field name = "name">Incoming Letter</field>
+        <field name = "name">Ubi Incoming Letter</field>
         <field name = "type">ir.actions.act_window</field>
-        <field name = "res_model">letter.subject</field>
-        <field name = "view_mode">tree</field>
+        <field name = "res_model">ubi.letter</field>
+        <field name = "view_mode">tree,form</field>
         <field name = "context">{}</field>
-        <field name = "domain">[]</field>
+        <field name = "domain">[('is_received_letter','=',True)]</field>
         <field name = "help" type = "html">
             <p>action_incoming_letter</p>
         </field>
@@ -89,27 +117,27 @@
     </record>
     <menuitem 
         id = "letter_root_menu"
-        name = "захидал"
+        name = "Захидал"
         sequence = "13"
         groups="base.group_user"/>
     <menuitem 
         id = "letter_menu1"
-        name = "ирсэн бичиг" action = "action_incoming_letter"
+        name = "Ирсэн бичиг" action = "action_incoming_letter"
         parent = "letter_root_menu"
         sequence = "15"/>
     <menuitem 
         id = "letter_menu2"
-        name = "явсан бичиг" action = "action_going_letter"
+        name = "Явсан бичиг" action = "action_going_letter"
         parent = "letter_root_menu"
         sequence = "16"/>
-    <menuitem 
+    <menuitem   
         id = "letter_menu3"
-        name = "бичиг төлөвлөлт" action = "action_planning_letter"
+        name = "Бичиг төлөвлөлт" action = "action_planning_letter"
         parent = "letter_root_menu"
         sequence = "17"/>
     <menuitem 
         id = "letter_menu4"
-        name = "тохиргоо" action = "action_settings_letter"
+        name = "Тохиргоо" action = "action_settings_letter"
         parent = "letter_root_menu"
         sequence = "18"/>
 
