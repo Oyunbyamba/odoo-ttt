@@ -35,6 +35,15 @@
         <field name="model">ubi.letter</field>
         <field name="arch" type="xml">
             <form string="Ubi Letter">
+                <header>
+                <button name="ubi_letter_processing_next" type="object" string="Дараагийх" states="draft" class="oe_highlight"></button>
+                <button name="ubi_letter_cancelled_next" type="object" string="Дараагийх" states="processing" class="oe_highlight"></button>
+                <button name="ubi_letter_completed_next" type="object" string="Дараагийх" states="cancelled" class="oe_highlight"></button>
+                
+
+
+                    <field name="state" widget="statusbar"/>
+                </header>
                 <sheet>
                     <div class="oe_title">
                         <h1>
@@ -49,7 +58,6 @@
                         <field name="card_number"/>
                         <field name="partner_id"/>
                         <field name="department_id"/>
-                        <field name="state"/>
                         <field name="where_sent"/>
                         <field name="received_datetime"/>
                         <field name="registered_datetime"/>
