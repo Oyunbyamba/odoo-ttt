@@ -65,7 +65,7 @@
         <menuitem name="Медаль" 
             id="hr_gamification.gamification_badge_menu_hr" 
             parent="hr.menu_hr_employee_payroll" 
-            groups="hr.group_hr_user"
+            groups="base.group_user"
             action="gamification.badge_list_action" sequence="6"/>   
 
         <menuitem name="Ажилчдын лавлах"
@@ -91,13 +91,13 @@
             <menuitem name="Төхөөрөмжийн бүртгэл" 
                 id="biometric_machine_sub_menu" 
                 parent="hr_attendance.menu_hr_attendance_root"
-                groups="hr_attendance.group_hr_attendance_manager"  
+                groups="hr_attendance.group_hr_attendance_user"  
                 action="ubisol_biometric_device.biometric_machine_action" sequence="3"/>
 
             <menuitem name="Төхөөрөмжийн ирц" 
                 id="sub_menu_raw_data" 
                 parent="hr_attendance.menu_hr_attendance_root"  
-                groups="ubisol_hr_attendance_upgrade.group_hr_attendance_responsible,hr_attendance.group_hr_attendance_manager"
+                groups="hr_attendance.group_hr_attendance_user"
                 action="ubisol_biometric_device.raw_data_action" sequence="4"/>
 
             <menuitem name="Тохиргоо"
@@ -136,7 +136,7 @@
         <menuitem name="Ажиллах хуваарь" 
             id="ubisol_hr_employee_shift.employee_shift"
             parent="ubisol_base_menu.menu_time_management" 
-            groups="ubisol_hr_attendance_upgrade.group_hr_attendance_responsible,hr_attendance.group_hr_attendance_user,hr_attendance.group_hr_attendance_manager"
+            groups="ubisol_hr_attendance_upgrade.group_hr_attendance_responsible,hr_attendance.group_hr_attendance_user"
             sequence="10"
             />    
         
@@ -155,29 +155,29 @@
             id="employe_document_menuitem1"  
             parent="ubisol_base_menu.menu_base_documents"
             action="oh_employee_documents_expiry.hr_employee_document_action"
-            groups="hr.group_hr_manager" sequence="2"/>
+            groups="hr_contract.group_hr_contract_manager" sequence="2"/>
 
         <menuitem name="Баримтын загвар"
             id="hr_document_template_menuitem1"
             parent="ubisol_base_menu.menu_base_documents"
             action="oh_employee_documents_expiry.hr_document_template_action"
-            groups="hr.group_hr_manager" sequence="3"/>    
+            groups="hr_contract.group_hr_contract_manager" sequence="3"/>    
 
         <menuitem name="Анкетны хавсралт"  
             id="hr_applicant_attachments1"
             parent="ubisol_base_menu.menu_base_documents"
             action="ubisol_hr_recruitment.ir_attachment_job_applicants"
-            groups="base.group_user" sequence="4"/>
+            groups="hr_contract.group_hr_contract_manager" sequence="4"/>
 
     <menuitem name="Тайлан"
         id="menu_base_reports"
         parent="ubisol_base_menu.menu_board_root1"
-        groups="base.group_user" sequence="6"/>    
+        groups="hr.group_hr_manager" sequence="6"/>    
 
         <menuitem name="Ирцийн график" 
             id="menu_ubisol_hr_attendance_report"  
             action="ubisol_hr_attendance_report.ubisol_hr_attendance_report_action" 
-            parent="ubisol_base_menu.menu_base_reports" groups="hr_attendance.group_hr_attendance" sequence="1"/>
+            parent="ubisol_base_menu.menu_base_reports" groups="hr.group_hr_manager" sequence="1"/>
 
   </data>
 </odoo>

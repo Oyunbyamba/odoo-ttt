@@ -230,14 +230,14 @@
     <menuitem 
       name="Ажиллах хуваарь" 
       id="ubisol_hr_employee_shift.employee_shift" 
-      groups="ubisol_hr_attendance_upgrade.group_hr_attendance_responsible,hr_attendance.group_hr_attendance_user,hr_attendance.group_hr_attendance_manager"
+      groups="ubisol_hr_attendance_upgrade.group_hr_attendance_responsible,hr_attendance.group_hr_attendance_user"
       sequence="10"
     />
 
     <!-- menu categories -->
     <menuitem name="Ажиллах төлөвлөгөө" id="ubisol_hr_employee_shift.shifts" parent="ubisol_hr_employee_shift.employee_shift"
               action="ubisol_hr_employee_shift.action_window_shift" sequence="1"
-              groups="hr_attendance.group_hr_attendance_user,hr_attendance.group_hr_attendance_manager" />
+              groups="hr_attendance.group_hr_attendance_user" />
     <menuitem name="Тохиргоо" id="ubisol_hr_employee_shift.configure" parent="ubisol_hr_employee_shift.employee_shift"
               action="ubisol_hr_employee_shift.action_window_calendar" sequence="2"
               groups="hr_attendance.group_hr_attendance_manager"/>
