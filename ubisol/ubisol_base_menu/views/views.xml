@@ -47,22 +47,25 @@
     <menuitem name="Хүний нөөц"
         id="hr.menu_hr_employee_payroll"
         parent="ubisol_base_menu.menu_board_root1"
-        groups="hr.group_hr_manager,hr.group_hr_user,base.group_user" sequence="4"/>  
+        groups="base.group_user" sequence="4"/>  
 
         <menuitem name="Ажилчдын бүртгэл"
             id="hr.menu_hr_employee_user"
             action="hr.open_view_employee_list_my"
             parent="hr.menu_hr_employee_payroll"
+            groups="hr.group_hr_user"
             sequence="2"/>
 
         <menuitem name="Сонгон шалгаруулалт"
             id="menu_crm_case_categ_all_app1"
             parent="hr.menu_hr_employee_payroll" 
+            groups="hr_recruitment.group_hr_recruitment_user"
             action="hr_recruitment.crm_case_categ0_act_job" sequence="5"/>
 
         <menuitem name="Медаль" 
             id="hr_gamification.gamification_badge_menu_hr" 
             parent="hr.menu_hr_employee_payroll" 
+            groups="hr.group_hr_user"
             action="gamification.badge_list_action" sequence="6"/>   
 
         <menuitem name="Ажилчдын лавлах"
@@ -82,22 +85,25 @@
             <menuitem name="Бүх ирц" 
                 id="hr_attendance.menu_hr_attendance_view_attendances" 
                 parent="hr_attendance.menu_hr_attendance_root" 
-                groups="ubisol_hr_attendance_upgrade.group_hr_attendance_responsible,hr_attendance.group_hr_attendance_user,hr_attendance.group_hr_attendance_manager" 
+                groups="hr_attendance.group_hr_attendance_user" 
                 action="hr_attendance.hr_attendance_action" sequence="2" />
 
             <menuitem name="Төхөөрөмжийн бүртгэл" 
                 id="biometric_machine_sub_menu" 
-                parent="hr_attendance.menu_hr_attendance_root"  
+                parent="hr_attendance.menu_hr_attendance_root"
+                groups="hr_attendance.group_hr_attendance_manager"  
                 action="ubisol_biometric_device.biometric_machine_action" sequence="3"/>
 
             <menuitem name="Төхөөрөмжийн ирц" 
                 id="sub_menu_raw_data" 
                 parent="hr_attendance.menu_hr_attendance_root"  
+                groups="ubisol_hr_attendance_upgrade.group_hr_attendance_responsible,hr_attendance.group_hr_attendance_manager"
                 action="ubisol_biometric_device.raw_data_action" sequence="4"/>
 
             <menuitem name="Тохиргоо"
                 id="ubisol_hr_attendance_upgrade.menu_attendance_settings"
                 parent="hr_attendance.menu_hr_attendance_root"
+                groups="hr_attendance.group_hr_attendance_manager"
                 action="ubisol_hr_attendance_upgrade.hr_attendance_settings_action" sequence="10"/>    
 
         <menuitem name="Хүсэлтүүд"

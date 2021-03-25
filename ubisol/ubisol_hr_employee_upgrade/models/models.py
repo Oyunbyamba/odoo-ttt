@@ -86,8 +86,8 @@ class HrEmployee(models.Model):
     is_in_group = fields.Boolean('Группд байдаг эсэх', default=False, groups="hr.group_hr_user")
     employee_code = fields.Char('Ажилтаны код', groups="hr.group_hr_user")
     rfid_code = fields.Char('Картын дугаар', groups="hr.group_hr_user")
-    attendance_ids = fields.One2many('hr.attendance', 'employee_id', string='Employee attendance')
-    emergency_person = fields.Char(string='Таны юу болох')
+    attendance_ids = fields.One2many('hr.attendance', 'employee_id', string='Employee attendance', groups="hr.group_hr_user")
+    emergency_person = fields.Char(string='Таны юу болох', groups="hr.group_hr_user")
 
     @api.constrains('pin', 'identification_id')
     def _check_pin(self):

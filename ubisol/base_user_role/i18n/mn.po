@@ -21,42 +21,42 @@ msgstr ""
 #. module: base_user_role
 #: model:ir.model.fields,field_description:base_user_role.field_res_users_role__model_access
 msgid "Access Controls"
-msgstr ""
+msgstr "Хандах удирдлага"
 
 #. module: base_user_role
 #: model:ir.model.fields,field_description:base_user_role.field_res_users_role__menu_access
 msgid "Access Menu"
-msgstr ""
+msgstr "Хандах цэс"
 
 #. module: base_user_role
 #: model:ir.model.fields,field_description:base_user_role.field_res_users_role__category_id
 msgid "Application"
-msgstr ""
+msgstr "Аппликейшн"
 
 #. module: base_user_role
 #: model:ir.model.fields,field_description:base_user_role.field_res_users_role__group_category_id
 msgid "Associated category"
-msgstr ""
+msgstr "Холбоотой ангилал"
 
 #. module: base_user_role
 #: model:ir.model.fields,field_description:base_user_role.field_res_users_role__group_id
 msgid "Associated group"
-msgstr ""
+msgstr "Холбоотой бүлэг"
 
 #. module: base_user_role
 #: model:ir.model.fields,help:base_user_role.field_res_users_role__group_category_id
 msgid "Associated group's category"
-msgstr ""
+msgstr "Холбоотой бүлгийн ангилал"
 
 #. module: base_user_role
 #: model:ir.model.fields,field_description:base_user_role.field_res_users_role__color
 msgid "Color Index"
-msgstr ""
+msgstr "Өнгөний дугаарлалт"
 
 #. module: base_user_role
 #: model:ir.model.fields,field_description:base_user_role.field_res_users_role_line__company_id
 msgid "Company"
-msgstr ""
+msgstr "Компани"
 
 #. module: base_user_role
 #: model:ir.model.fields,field_description:base_user_role.field_res_users_role__create_uid
@@ -79,27 +79,27 @@ msgstr "Дэлгэцийн Нэр"
 #. module: base_user_role
 #: model:ir.model.fields,field_description:base_user_role.field_res_users_role_line__is_enabled
 msgid "Enabled"
-msgstr ""
+msgstr "Идэвхжсэн"
 
 #. module: base_user_role
 #: model:ir.model.fields,field_description:base_user_role.field_res_users_role_line__date_from
 msgid "From"
-msgstr ""
+msgstr "Хэзээнээс"
 
 #. module: base_user_role
 #: model:ir.model.fields,field_description:base_user_role.field_res_users_role__full_name
 msgid "Group Name"
-msgstr ""
+msgstr "Бүлгийн нэр"
 
 #. module: base_user_role
 #: model:ir.model.fields,help:base_user_role.field_res_users_role__share
 msgid "Group created to set access rights for sharing data with some users."
-msgstr ""
+msgstr "Бүлэг нь бусад хэрэглэгчтэй мэдээлэл хуваалцахын тулд хандах эрх өгөх зориулалттай."
 
 #. module: base_user_role
 #: model_terms:ir.ui.view,arch_db:base_user_role.view_res_users_role_form
 msgid "Groups"
-msgstr ""
+msgstr "Бүлгүүд"
 
 #. module: base_user_role
 #: model:ir.model.fields,field_description:base_user_role.field_res_users_role__id
@@ -110,13 +110,13 @@ msgstr "ID"
 #. module: base_user_role
 #: model:ir.model.fields,field_description:base_user_role.field_res_users_role__implied_ids
 msgid "Inherits"
-msgstr ""
+msgstr "Удамшил"
 
 #. module: base_user_role
 #: model:ir.model.fields,field_description:base_user_role.field_res_users_role__comment
 #: model_terms:ir.ui.view,arch_db:base_user_role.view_res_users_role_form
 msgid "Internal Notes"
-msgstr ""
+msgstr "Дотоод тэмдэглэл"
 
 #. module: base_user_role
 #: model:ir.model.fields,field_description:base_user_role.field_res_users_role____last_update
@@ -144,7 +144,7 @@ msgstr "Нэр"
 #. module: base_user_role
 #: model:ir.model.fields,field_description:base_user_role.field_res_users_role_line__role_id
 msgid "Role"
-msgstr ""
+msgstr "Эрх"
 
 #. module: base_user_role
 #: model:ir.model.fields,field_description:base_user_role.field_res_users__role_line_ids
@@ -159,22 +159,22 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:base_user_role.view_res_users_form_inherit
 #: model_terms:ir.ui.view,arch_db:base_user_role.view_res_users_role_search
 msgid "Roles"
-msgstr ""
+msgstr "Эрхүүд"
 
 #. module: base_user_role
 #: model:ir.model.fields,field_description:base_user_role.field_res_users_role__rule_groups
 msgid "Rules"
-msgstr ""
+msgstr "Дүрмүүд"
 
 #. module: base_user_role
 #: model:ir.model.fields,field_description:base_user_role.field_res_users_role__share
 msgid "Share Group"
-msgstr ""
+msgstr "Бүлэг хуваалцах"
 
 #. module: base_user_role
 #: model:ir.model.fields,field_description:base_user_role.field_res_users_role_line__date_to
 msgid "To"
-msgstr ""
+msgstr "Хүртэл"
 
 #. module: base_user_role
 #: model:ir.model.fields,field_description:base_user_role.field_res_users_role__trans_implied_ids
@@ -186,7 +186,7 @@ msgstr ""
 #: model:ir.cron,cron_name:base_user_role.cron_update_users
 #: model:ir.cron,name:base_user_role.cron_update_users
 msgid "Update user roles"
-msgstr ""
+msgstr "Хэрэглэгчийн эрхүүд засварлах"
 
 #. module: base_user_role
 #: model:ir.model.fields,field_description:base_user_role.field_res_users_role_line__user_id
@@ -197,39 +197,39 @@ msgstr "Хэрэглэгч"
 #: code:addons/base_user_role/models/role.py:0
 #, python-format
 msgid "User \"{}\" does not have access to the company \"{}\""
-msgstr ""
+msgstr "Хэрэглэгч \"{}\" компани \"{}\" хандах эрхгүй байна"
 
 #. module: base_user_role
 #: model:ir.model,name:base_user_role.model_res_users_role
 msgid "User role"
-msgstr ""
+msgstr "Хэрэглэгчийн эрх"
 
 #. module: base_user_role
 #: model:ir.module.category,name:base_user_role.ir_module_category_role
 msgid "User roles"
-msgstr ""
+msgstr "Хэрэглэгчийн эрхүүд"
 
 #. module: base_user_role
 #: model:ir.model,name:base_user_role.model_res_users
 #: model:ir.model.fields,field_description:base_user_role.field_res_users_role__users
 #: model_terms:ir.ui.view,arch_db:base_user_role.view_res_users_role_form
 msgid "Users"
-msgstr ""
+msgstr "Хэрэглэгчид"
 
 #. module: base_user_role
 #: model:ir.model,name:base_user_role.model_res_users_role_line
 msgid "Users associated to a role"
-msgstr ""
+msgstr "Хэрэглэгчийн холбоотой эрх"
 
 #. module: base_user_role
 #: model:ir.model.fields,field_description:base_user_role.field_res_users_role__user_ids
 msgid "Users list"
-msgstr ""
+msgstr "Хэрэглэгчийн жагсаалт"
 
 #. module: base_user_role
 #: model:ir.model.fields,help:base_user_role.field_res_users_role__implied_ids
 msgid "Users of this group automatically inherit those groups"
-msgstr ""
+msgstr "Энэ бүлгэмийн хэрэглэгчид автоматаар тэдгээр бүлгүүдээс удамшина"
 
 #. module: base_user_role
 #: model:ir.model.fields,field_description:base_user_role.field_res_users_role__view_access
