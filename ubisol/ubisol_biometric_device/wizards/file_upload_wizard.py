@@ -208,9 +208,9 @@ class LogFileImportWizard(models.TransientModel):
 
             check_out = abs(dt - shift_end.end_work).total_seconds()
             check_in = abs(dt - shift_start.start_work).total_seconds()
-            _logger.info(dt)
-            _logger.info(check_in)
-            _logger.info(check_in)
+            # _logger.info(dt)
+            # _logger.info(check_in)
+            # _logger.info(check_in)
 
             [att_id, status] = self._check_status(
                 get_user_id, dt, shift_start.start_work, check_out, check_in, ds1, ds2, de1, de2)
@@ -289,10 +289,10 @@ class LogFileImportWizard(models.TransientModel):
         if general_shift:
             if general_shift.shift_type == 'shift':
                 s_type = 'shift'
-            else:
-                s_type = 'days'
-        else:
-            s_type = 'days'
+        #     else:
+        #         s_type = 'days'
+        # else:
+        #     s_type = 'days'
 
         if s_type == 'days':
             if abs(dt1 - dt_diff).total_seconds() < setting_obj.start_work_date_from * 3600 and abs(dt1 - dt_diff).total_seconds() > 0:
