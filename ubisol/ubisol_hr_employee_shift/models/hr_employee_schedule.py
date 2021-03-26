@@ -97,43 +97,47 @@ class HrEmployeeSchedule(models.Model):
 
     @api.onchange("start_work")
     def _compute_start_work_date(self):
-        if self.start_work:
-            user_tz = self.env.user.tz or pytz.utc
-            local = pytz.timezone(user_tz)
-            date_result = pytz.utc.localize(
-                self.start_work).astimezone(local)
-            self.start_work_date = date_result
+        for record in self:
+            if record.start_work:
+                user_tz = self.env.user.tz or pytz.utc
+                local = pytz.timezone(user_tz)
+                date_result = pytz.utc.localize(
+                    record.start_work).astimezone(local)
+                record.start_work_date = date_result
 
     @api.onchange("end_work")
     def _compute_end_work_date(self):
-        if self.end_work:
-            user_tz = self.env.user.tz or pytz.utc
-            local = pytz.timezone(user_tz)
-            date_result = pytz.utc.localize(
-                self.end_work).astimezone(local) 
-            self.end_work_date = date_result
+        for record in self:
+            if record.end_work:
+                user_tz = self.env.user.tz or pytz.utc
+                local = pytz.timezone(user_tz)
+                date_result = pytz.utc.localize(
+                    record.end_work).astimezone(local) 
+                record.end_work_date = date_result
 
     @api.onchange("start_work")
     def _compute_start_work_time(self):
-        if self.start_work:
-            user_tz = self.env.user.tz or pytz.utc
-            local = pytz.timezone(user_tz)
-            date_result = pytz.utc.localize(
-                self.start_work).astimezone(local)
-            hour = date_result.hour
-            minute = date_result.minute
-            self.start_work_time = hour + minute/60
+        for record in self:
+            if record.start_work:
+                user_tz = self.env.user.tz or pytz.utc
+                local = pytz.timezone(user_tz)
+                date_result = pytz.utc.localize(
+                    record.start_work).astimezone(local)
+                hour = date_result.hour
+                minute = date_result.minute
+                record.start_work_time = hour + minute/60
 
     @api.onchange("end_work")
     def _compute_end_work_time(self):
-        if self.end_work:
-            user_tz = self.env.user.tz or pytz.utc
-            local = pytz.timezone(user_tz)
-            date_result = pytz.utc.localize(
-                self.end_work).astimezone(local)
-            hour = date_result.hour
-            minute = date_result.minute
-            self.end_work_time = hour + minute/60  
+        for record in self:
+            if record.end_work:
+                user_tz = self.env.user.tz or pytz.utc
+                local = pytz.timezone(user_tz)
+                date_result = pytz.utc.localize(
+                    record.end_work).astimezone(local)
+                hour = date_result.hour
+                minute = date_result.minute
+                record.end_work_time = hour + minute/60  
 
     @api.depends("day_period", "shift_type")
     def _compute_day_period(self):

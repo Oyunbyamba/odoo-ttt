@@ -2,9 +2,6 @@
   <data>
 
     <!-- dashboard related menus -->
-    <menuitem id="base.menu_board_root" groups="ubisol_base_menu.hide" />
-    <menuitem id="base.menu_reporting_dashboard" groups="ubisol_base_menu.hide" />
-    <menuitem id="board.menu_board_my_dash" groups="ubisol_base_menu.hide" />
     <!-- document related menus -->
     <menuitem id="ubisol_hr_recruitment.hr_applicant_attachments" groups="ubisol_base_menu.hide" />
     <menuitem id="oh_employee_documents_expiry.hr_document_template_menuitem" groups="ubisol_base_menu.hide" />
@@ -25,19 +22,19 @@
     <menuitem id="hr_holidays.menu_hr_holidays_report" groups="ubisol_base_menu.hide" />
     <menuitem id="hr_holidays.menu_hr_holidays_configuration" groups="ubisol_base_menu.hide" />
 
-    <!-- <menuitem name="Хянах самбар" 
+    <menuitem name="Үндсэн хуудас" 
         id="menu_board_root1" 
-        action="board.open_board_my_dash_action"
-        groups="base.group_user" sequence="-100"/> -->
-
-    <menuitem name="Хянах самбар" 
-        id="menu_board_root1"
-        groups="base.group_user" sequence="-100"/>    
+        groups="base.group_user" sequence="-100"/>
 
     <menuitem name="Discuss"
         id="mail.menu_root_discuss" 
         parent="ubisol_base_menu.menu_board_root1"
-        action="mail.action_discuss" web_icon="mail,static/description/icon.png" groups="base.group_user" sequence="2"/>
+        action="mail.action_discuss" web_icon="mail,static/description/icon.png" groups="base.group_user" sequence="1"/>
+
+    <menuitem name="Хянах самбар" 
+        id="menu_dashboard"
+        parent="ubisol_base_menu.menu_board_root1"
+        action="board.open_board_my_dash_action" groups="base.group_user" sequence="2"/>    
 
     <menuitem name="Calendar"
         id="calendar.mail_menu_calendar"
