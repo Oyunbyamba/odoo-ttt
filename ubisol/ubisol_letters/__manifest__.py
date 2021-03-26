@@ -13,6 +13,9 @@
         'security/ir.model.access.csv',
         'views/templates.xml',
         'views/views.xml',
+        'report/letter_detail.xml',
+        'report/report.xml',
+
     ],
     'demo': [],
     'qweb': [],

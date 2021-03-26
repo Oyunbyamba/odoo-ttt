@@ -2,7 +2,42 @@
 
 <odoo>
 
-    <record id = "letter_tree_view" model = "ir.ui.view">
+    <record id="letter_planning_kanban_view" model="ir.ui.view">
+        <field name="name">ubi.letter.kanban</field>
+        <field name="model">ubi.letter</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="employee_id"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="row">
+                                    <div class="o_primary style_shift">
+                                        <div class="text-center">
+                                            <span style="margin-left:25px;">
+                                                <strong>
+                                                    <field name="employee_id"/>
+                                                </strong>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="oe_kanban_details">
+                                <strong>
+                                    <div class="text-center">
+                                    </div>
+                                </strong>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+  
+    <record id = "letter_going_tree_view" model = "ir.ui.view">
         <field name = "name">ubi.letter.subject.tree</field>
         <field name = "model">ubi.letter</field>
         <field name = "arch" type = "xml">
@@ -15,7 +50,27 @@
                 <field name="letter_number"/>
                 <field name="letter_total_num"/>
                 <field name="partner_id"/>
-                <field name="state"/>
+                <field name="registered_datetime"/>
+                <field name="is_local"/>
+                <field name="letter_type_id"/>
+                <field name="letter_subject_id"/>
+                <field name="letter_template_id"/>
+            </tree>
+        </field>
+    </record>
+    <record id = "letter_incoming_tree_view" model = "ir.ui.view">
+        <field name = "name">ubi.letter.subject.tree</field>
+        <field name = "model">ubi.letter</field>
+        <field name = "arch" type = "xml">
+            <tree string = "Ubi Letter">
+                <field name="register_number"/>
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="where_sent"/>
+                <field name="card_number"/>
+                <field name="letter_number"/>
+                <field name="letter_total_num"/>
+                <field name="partner_id"/>
                 <field name="received_datetime"/>
                 <field name="registered_datetime"/>
                 <field name="return_datetime"/>
@@ -23,52 +78,138 @@
                 <field name="must_return"/>
                 <field name="letter_type_id"/>
                 <field name="letter_subject_id"/>
-
-
+                <field name="letter_template_id"/>
             </tree>
         </field>
-
     </record>
 
-    <record id="letter_form_view" model="ir.ui.view">
+    <record id="letter_incoming_form_view" model="ir.ui.view">
         <field name="name">ubi.letter.subject.form</field>
         <field name="model">ubi.letter</field>
         <field name="arch" type="xml">
             <form string="Ubi Letter">
                 <header>
-                <button name="ubi_letter_processing_next" type="object" string="Дараагийх" states="draft" class="oe_highlight"></button>
-                <button name="ubi_letter_cancelled_next" type="object" string="Дараагийх" states="processing" class="oe_highlight"></button>
-                <button name="ubi_letter_completed_next" type="object" string="Дараагийх" states="cancelled" class="oe_highlight"></button>
-                
-
+                <button name="ubi_letter_decide_next" type="object" string="Шийдвэрлэх" states="draft" class="oe_highlight"/>
+                <button name="ubi_letter_reply_next" type="object" string="Хариу өгөх" states="decide" class="oe_highlight"/>
 
                     <field name="state" widget="statusbar"/>
+
                 </header>
                 <sheet>
                     <div class="oe_title">
                         <h1>
-                        <field name="employee_id"/>
-                        <field name="must_return"/>
+                          Гарчиг ангилал  <field name="letter_subject_id"/>
+
                         </h1>
                     </div>  
-                    <group>
-                        <field name="register_number"/>
-                        <field name="letter_number"/>
-                        <field name="letter_total_num"/>
-                        <field name="card_number"/>
-                        <field name="partner_id"/>
-                        <field name="department_id"/>
-                        <field name="where_sent"/>
-                        <field name="received_datetime"/>
-                        <field name="registered_datetime"/>
-                        <field name="return_datetime"/>
-                        <field name="is_local"/>
-                        <field name="is_received_letter"/>
-                        <field name="letter_type_id"/>
-                        <field name="letter_subject_id"/>
+                   
+                    <notebook>
+                        <page string="Үндсэн" attrs="{'invisible':[('state', '=', 'decide')]}">
+                            <group>
+                                <group string="Бүртгэл">
+                                    <field name="register_number"/>
+                                    <field name="registered_datetime" />
+                                    <field name="card_number"/>
+                                    <field name="is_local"/>
+                                    <field name="is_received_letter" invisible="1"/>
+                                </group>
 
+                                <group string="Хүлээн авах">
+                                    <field name="employee_id" />
+                                    <field name="partner_id"/>
+                                    <field name="department_id"/>
+                                    <field name="received_datetime"/>
+                                </group>
+
+                                <group string="Албан бичиг">
+                                    <field name="letter_number"/>
+                                    <field name="letter_type_id"/>
+                                    <field name="letter_template_id"/>
+                                    <field name="letter_total_num"/>
+                                </group>
+                                <field name="custom_letter_template" widget="html"/>
+                            </group> 
+                        </page>
+                        <page string="Шийдвэрлэх" attrs="{'invisible':[('state', '=', 'draft')]}">
+                            <group> 
+                                <group string="Шийдвэрлэх">
+                                    <field name="must_return"/>
+                                    <field name="return_datetime" attrs="{'invisible':[('must_return', '=', False)]}"/>
+                                    <field name="how_decide" attrs="{'invisible':[('must_return', '=', False)]}"/>
+                                    <field name="where_sent" attrs="{'invisible':[('must_return', '=', False)]}"/>
+                                </group>
+                                <group> 
+                                </group> 
+                                <field name="custom_letter_template" widget="html"/>
+
+                            </group> 
+                        </page>
                         
-                    </group>
+                        
+                        
+                    </notebook>
+               
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="letter_going_form_view" model="ir.ui.view">
+        <field name="name">ubi.letter.subject.form</field>
+        <field name="model">ubi.letter</field>
+        <field name="arch" type="xml">
+            <form string="Ubi Letter">
+                <header>
+                    <button name="ubi_letter_sent_next" type="object" string="Илгээх" state_going="plan" class="oe_highlight"/>
+
+                    <field name="state_going" widget="statusbar"/>
+
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                          Гарчиг ангилал  <field name="letter_subject_id"/>
+                        </h1>
+                    </div>
+
+                    <notebook>
+                        <page string="Төлөвлөлт">
+                            <group>
+                                <group string="Бүртгэл">
+                                    <field name="register_number" />
+                                    <field name="registered_datetime" />
+                                    <field name="card_number"/>
+                                    <field name="is_local"/>
+                                    <field name="is_received_letter" invisible="1"/>
+                                </group>
+
+                                <group string="Төлөвлөлт">
+                                    <field name="department_id"/>
+                                    <field name="employee_id"/>
+                                    <field name="partner_id"/>
+                                    <field name="where_sent"/>
+                                    <field name="sent_datetime"/>
+
+                                    
+
+                                </group>
+
+                                <group string="Албан бичиг">
+                                    <field name="letter_number"/>
+                                    <field name="letter_type_id"/>
+                                    <field name="letter_template_id"/>
+                                    <field name="letter_total_num"/>
+                                </group>
+
+                            </group>
+                        </page>
+                        
+                        <page string="Загвар">
+                            <field name="custom_letter_template" widget="html"/>
+                        </page>
+
+                    </notebook>
+
                 </sheet>
             </form>
         </field>
@@ -89,8 +230,8 @@
     <record id = "action_planning_letter" model = "ir.actions.act_window">
         <field name = "name">Ubi Planning Letter</field>
         <field name = "type">ir.actions.act_window</field>
-        <field name = "res_model">ubi.letter.subject</field>
-        <field name = "view_mode">form</field>
+        <field name = "res_model">ubi.letter</field>
+        <field name = "view_mode">kanban</field>
         <field name = "context">{}</field>
         <field name = "domain">[]</field>
         <field name = "help" type = "html">
@@ -103,7 +244,10 @@
         <field name = "type">ir.actions.act_window</field>
         <field name = "res_model">ubi.letter</field>
         <field name = "view_mode">tree,form</field>
-        <field name = "context">{}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('ubisol_letters.letter_going_tree_view')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('ubisol_letters.letter_going_form_view')})]"/>
+        <field name = "context">{'default_is_received_letter': False}</field>
         <field name = "domain">[('is_received_letter','=',False)]</field>
         <field name = "help" type = "html">
             <p>action_going_letter</p>
@@ -116,7 +260,10 @@
         <field name = "type">ir.actions.act_window</field>
         <field name = "res_model">ubi.letter</field>
         <field name = "view_mode">tree,form</field>
-        <field name = "context">{}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('ubisol_letters.letter_incoming_tree_view')},),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('ubisol_letters.letter_incoming_form_view')})]"/>
+        <field name = "context">{'default_is_received_letter': True}</field>
         <field name = "domain">[('is_received_letter','=',True)]</field>
         <field name = "help" type = "html">
             <p>action_incoming_letter</p>
@@ -125,7 +272,7 @@
     </record>
     <menuitem 
         id = "letter_root_menu"
-        name = "Захидал"
+        name = "Албан бичиг"
         sequence = "13"
         groups="base.group_user"/>
     <menuitem 
