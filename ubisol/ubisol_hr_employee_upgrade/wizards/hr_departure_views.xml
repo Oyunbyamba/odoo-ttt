@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="hr_departure_wizard_view_form_inherit" model="ir.ui.view">
+            <field name="name">hr.departure.wizard.view.form.inherit</field>
+            <field name="model">hr.departure.wizard</field>
+            <field name="inherit_id" ref="hr.hr_departure_wizard_view_form"/>
+            <field name="arch" type="xml">
+
+                <field name="employee_id" position="replace"/>
+                <xpath expr="//field[@name='plan_id']" position="after">
+                    <field name="employee_ids" invisible='1'/>
+                </xpath>
+
+            </field>
+        </record>
+
+
+
+    </data>
+</odoo>

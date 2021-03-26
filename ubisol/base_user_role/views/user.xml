@@ -25,7 +25,9 @@
                 </page>
             </xpath>
 
-            
+            <xpath>
+                
+            </xpath>
         </field>
     </record>
     <record id="view_res_users_search_inherit" model="ir.ui.view">

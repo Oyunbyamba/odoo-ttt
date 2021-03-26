@@ -6,18 +6,6 @@
         <field name="comment">Hide.</field>
     </record>
 
-    <record model="ir.ui.menu" id="base.menu_board_root">
-        <field name="groups_id" eval="[(5,ref('hide'))]"/>
-    </record>
-
-    <record model="ir.ui.menu" id="base.menu_reporting_dashboard">
-        <field name="groups_id" eval="[(5,ref('hide'))]"/>
-    </record>
-
-    <record model="ir.ui.menu" id="board.menu_board_my_dash">
-        <field name="groups_id" eval="[(5,ref('hide'))]"/>
-    </record>
-
     <record model="ir.ui.menu" id="ubisol_hr_recruitment.hr_applicant_attachments">
         <field name="groups_id" eval="[(5,ref('hide'))]"/>
     </record>

@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
-
-# from odoo import models, fields, api
-
-
+import logging
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from odoo import models, fields, _, api
 from odoo.exceptions import ValidationError
-import logging
+
 
 _logger = logging.getLogger(__name__)
 
@@ -233,6 +230,25 @@ class HrEmployee(models.Model):
                     log_obj._create_schedules(values, shift)        
 
         return employee    
+
+    def toggle_active(self):
+        res = super(HrEmployee, self).toggle_active()
+        self.filtered(lambda employee: employee.active).write({
+            'departure_reason': False,
+            'departure_description': False,
+        })
+        
+        if len(self.ids) >= 1 and not self[0].active:
+            return {
+                'type': 'ir.actions.act_window',
+                'name': _('Register Departure'),
+                'res_model': 'hr.departure.wizard',
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {'active_ids': self.ids},
+                'views': [[False, 'form']]
+            }
+        return res
 
     @api.model
     def get_my_attendances(self, employee_id):
