@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ubi_letter_subject_data" model="ubi.letter.subject">
+        <field name="name">Нэр</field>
+        <field name="code">1</field>
+        <field name="desc">description</field>
+    </record>
+    <record id="ubi_letter_type_data" model="ubi.letter.type">
+        <field name="name">Хүсэлт</field>
+        <field name="code">1</field>
+    </record>
+    <record id="ubi_letter_type_data" model="ubi.letter.type">
+        <field name="name">Гомдол</field>
+        <field name="code">2</field>
+    </record>
+</odoo> 
