@@ -20,7 +20,6 @@ class ResUsersRole(models.Model):
         ondelete="cascade",
         readonly=True,
         string="Associated group",
-        order="category_id desc"
     )
     line_ids = fields.One2many(
         comodel_name="res.users.role.line", inverse_name="role_id", string="Role lines"

@@ -121,7 +121,6 @@ class BiometricMachine(models.Model):
     desc = fields.Char(string='Нэр', required=True,
                        help="Төхөөрөмжинд нэр өгнө үү", tracking=True)
     port_no = fields.Integer(
-
         string='Port No', required=True, help="Give the Port number", tracking=True)
 
     active = fields.Boolean(
