@@ -11,8 +11,12 @@
     'depends': ['ubisol_hr_employee_upgrade'],
     'data': [
         'security/ir.model.access.csv',
+        'data/data.xml',
         'views/templates.xml',
         'views/views.xml',
+        'report/letter_detail.xml',
+        'report/report.xml',
+
     ],
     'demo': [],
     'qweb': [],

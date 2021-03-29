@@ -43,7 +43,7 @@ class HrEmployee(models.Model):
         ('no', 'Үгүй')
     ], string='Is served in the military', default='yes', groups="hr.group_hr_user")
     driving_classification = fields.Selection([
-        ('A', 'A'),
+        ('A', 'A'), 
         ('B', 'B'),
         ('C', 'C'),
         ('D', 'D'),

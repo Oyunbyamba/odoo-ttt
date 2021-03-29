@@ -1,1 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+"access_ubisol_letters_id","access_ubisol_letters_name","model_ubi_letter","hr.group_hr_user",1,1,1,1
+
+"access_ubisol_letter_subject_id","access_ubisol_letters_subject_name","model_ubi_letter_subject","hr.group_hr_user",1,1,1,1
+"access_ubisol_letter_type_id","access_ubisol_letters_type_name","model_ubi_letter_type","hr.group_hr_user",1,1,1,1
+"access_ubisol_letter_template_id","access_ubisol_letters_template_name","model_ubi_letter_template","hr.group_hr_user",1,1,1,1
+
