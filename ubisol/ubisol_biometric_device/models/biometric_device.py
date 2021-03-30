@@ -142,7 +142,6 @@ class BiometricMachine(models.Model):
             last_id = 0
         else:
             last_id = last_id.id
-        _logger.info(last_id)
         for device in devices:
             self.download_attendance_by_cron(device)
 
@@ -167,8 +166,6 @@ class BiometricMachine(models.Model):
 
         if str(row[0]).strip() == '9999':
             return {}
-        less_than = datetime(2021, 2, 1, 00, 00, 00)
-
         atten_time = row[1]
         atten_time = datetime.strptime(atten_time, '%Y-%m-%d %H:%M:%S')
         local_tz = pytz.timezone(self.env.user.tz or 'GMT')
@@ -181,8 +178,6 @@ class BiometricMachine(models.Model):
             [('pin_code', '=', str(row[0]).strip()), ('punch_date_time', '=', atten_time)])
         if duplicate_atten_ids:
             return {}
-        elif atten_time < less_than:
-            return {}
         else:
             _logger.info(atten_time)
             biometric = self.env['biometric.attendance'].create({'device_id': dev_id,
@@ -194,9 +189,9 @@ class BiometricMachine(models.Model):
                                                                  'attendance_data3': str(row[5])})
 
         # prev_date = self.checking_prev_att_within_thirty_sec(
-        #    get_user_id, atten_time)
+        #     get_user_id, atten_time)
         # if not prev_date:
-        #    return {}
+        #     return {}
 
         # self.write_to_attendance(get_user_id, atten_time)
 
@@ -223,10 +218,10 @@ class BiometricMachine(models.Model):
                     for attendance in attendances:
                         _logger.info(attendance.timestamp.strftime(
                             "%Y-%m-%d %H:%M:%S"))
-                        row = [attendance.user_id, attendance.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
-                               attendance.status, attendance.punch, 0, 0]
+                        # row = [attendance.user_id, attendance.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+                        #        attendance.status, attendance.punch, 0, 0]
 
-                        self.import_attendance(row, info.id)
+                        # self.import_attendance(row, info.id)
 
                     # log_obj.import_attendance(row, info.id)
 
@@ -267,6 +262,7 @@ class BiometricMachine(models.Model):
                 zk = ZK(info.name, port=info.port_no, timeout=5)
                 try:
                     print("Connecting to device ...")
+                    _logger.info(info.name)
                     conn = zk.connect()
                     print('Disabling device ...')
                     conn.disable_device()
@@ -277,18 +273,19 @@ class BiometricMachine(models.Model):
 
                 except:
                     isError = True
+                    if len(attendances) > 0:
+                        _logger.info('TOTAL_ATT')
+                        s_logger.info(len(attendances))
+                        for attendance in attendances:
+                            row = [attendance.user_id, attendance.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+                                attendance.status, attendance.punch, 0, 0]
+                            self.import_attendance(row, info.id)
                 finally:
                     if conn:
-                        if not isError:
-                            conn.clear_attendance()
+                        conn.enable_device()
+                        # if not isError:
+                        # conn.clear_attendance()
                         conn.disconnect()
-            _logger.info('TOTAL_ATT')
-            _logger.info(len(attendances))
-            for attendance in attendances:
-                row = [attendance.user_id, attendance.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
-                       attendance.status, attendance.punch, 0, 0]
-                self.import_attendance(row, info.id)
-
         return {}
 
     def test_connection(self):

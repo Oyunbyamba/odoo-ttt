@@ -2,12 +2,106 @@
 
 <odoo>
     
+
+    <!-- settings 1 -->
+    <record id = "ubi_letter_settings_type_tree" model = "ir.ui.view">
+        <field name = "name">ubi.letter.settings.type.tree</field>
+        <field name = "model">ubi.letter.type</field>
+        <field name = "arch" type = "xml">
+            <tree string = "Ubi Letter">
+                <field name="name"/>
+                <field name="code"/>            
+            </tree>
+        </field>
+    </record>
+
+    <record id="ubi_letter_settings_type_form" model="ir.ui.view">
+        <field name="name">ubi.letter.settings.type.form</field>
+        <field name="model">ubi.letter.type</field>
+        <field name="arch" type="xml">
+            <form string="Ubi Letter">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                        <group>
+                            <field name="code"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- settings 2 -->
+    <record id = "ubi_letter_settings_subject_tree" model = "ir.ui.view">
+        <field name = "name">ubi.letter.settings.subject.tree</field>
+        <field name = "model">ubi.letter.subject</field>
+        <field name = "arch" type = "xml">
+            <tree string = "Ubi Letter">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="desc"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="ubi_letter_settings_subject_form" model="ir.ui.view">
+        <field name="name">ubi.letter.settings.subject.form</field>
+        <field name="model">ubi.letter.subject</field>
+        <field name="arch" type="xml">
+            <form string="Ubi Letter">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                        <group>
+                            <field name="code"/>
+                        </group>
+                        <group>
+                            <field name="desc"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- settings 3 -->
+    <record id = "ubi_letter_settings_template_tree" model = "ir.ui.view">
+        <field name = "name">ubi.letter.settings.template.tree</field>
+        <field name = "model">ubi.letter.template</field>
+        <field name = "arch" type = "xml">
+            <tree string = "Ubi Letter">
+                <field name="letter_template_name"/>
+                <field name="letter_template"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="ubi_letter_settings_template_form" model="ir.ui.view">
+        <field name="name">ubi.letter.settings.template.form</field>
+        <field name="model">ubi.letter.template</field>
+        <field name="arch" type="xml">
+            <form string="Ubi Letter">
+                <sheet>
+                    <group>
+                            <field name="letter_template_name"/>                     
+                            <field name="letter_template"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- planning -->
     <record id="ubi_letter_planning_kanban_view" model="ir.ui.view">
         <field name="name">ubi.letter.kanban</field>
         <field name="model">ubi.letter</field>
         <field name="arch" type="xml">
             <kanban class="o_kanban_mobile">
-                <field name="employee_id"/>
+                <field name="user_id"/>
                 <templates>
                     <t t-name="kanban-box">
                         <div t-attf-class="oe_kanban_card oe_kanban_global_click">
@@ -17,7 +111,7 @@
                                         <div class="text-center">
                                             <span style="margin-left:25px;">
                                                 <strong>
-                                                    <field name="employee_id"/>
+                                                    <field name="user_id"/>
                                                 </strong>
                                             </span>
                                         </div>
@@ -37,34 +131,14 @@
         </field>
     </record>
   
-    <record id = "ubi_letter_going_tree_view" model = "ir.ui.view">
-        <field name = "name">ubi.letter.subject.tree</field>
-        <field name = "model">ubi.letter</field>
-        <field name = "arch" type = "xml">
-            <tree string = "Ubi Letter">
-                <field name="registered_datetime"/>
-                <field name="register_number"/>
-                <field name="card_number"/>
-                <field name="letter_number"/>
-                <field name="letter_type_id"/>
-                <field name="letter_subject_id"/>
-                <field name="letter_template_id"/>
-                <field name="letter_total_num"/>
-                <field name="partner_id"/>
-                <field name="employee_id"/>
-                <field name="department_id"/>
-                <field name="is_local"/>
-             
-            </tree>
-        </field>
-    </record>
+    <!--incoming-->
     <record id = "ubi_letter_incoming_tree_view" model = "ir.ui.view">
         <field name = "name">ubi.letter.subject.tree</field>
         <field name = "model">ubi.letter</field>
         <field name = "arch" type = "xml">
             <tree string = "Ubi Letter">
-                <field name="received_datetime"/>
-                <field name="registered_datetime"/>
+                <field name="received_date"/>
+                <field name="registered_date"/>
                 <field name="register_number"/>
                 <field name="card_number"/>
                 <field name="letter_number"/>
@@ -73,71 +147,55 @@
                 <field name="letter_template_id"/>
                 <field name="letter_total_num"/>
                 <field name="partner_id"/>
-                <field name="employee_id"/>
+                <field name="user_id"/>
                 <field name="department_id"/>
                 <field name="is_local"/>
                 <field name="must_return"/>
-                <field name="return_datetime"/>
-
-
-                
-                
+                <field name="return_date"/>
             </tree>
         </field>
     </record>
-
     <record id="ubi_letter_incoming_form_view" model="ir.ui.view">
         <field name="name">ubi.letter.subject.form</field>
         <field name="model">ubi.letter</field>
         <field name="arch" type="xml">
             <form string="Ubi Letter">
                 <header>
-                <button name="ubi_letter_decide_next" type="object" string="Шийдвэрлэх" states="draft" class="oe_highlight"/>
-                <button name="ubi_letter_reply_next" type="object" string="Хариу өгөх" states="decide" class="oe_highlight"/>
-                    <field name="state" widget="statusbar"/>
+                    <field name="receiving_state" widget="statusbar"/>
                 </header>
-
-                <sheet>
-                    <div class="oe_title">
-                        <h1>
-                          Гарчиг ангилал  <field name="letter_subject_id"/>
-                        </h1>
-                    </div>  
-                   
+                <sheet>          
                     <notebook>
-                        <page string="Үндсэн" attrs="{'invisible':[('state', '=', 'decide')]}">
+                        <page string="Үндсэн" >
                             <group>
-                                <group string="Бүртгэл">
-                                    <field name="register_number"/>
-                                    <field name="card_number"/>
-                                    <field name="registered_datetime" />
-                                    <field name="is_local"/>
-                                    <field name="received_datetime" invisible="1"/>
-                                    <field name="is_received_letter" invisible="1"/>
-                                </group>
-
-                                <group string="Хэнээс хэнд">
-                                    <field name="partner_id"/>
-                                    <field name="employee_id" />
-                                    <field name="department_id"/>
-                                </group>
-
-                                <group string="Албан бичиг">
+                                <group string="Үндсэн мэдээлэл">
+                                    <field name="letter_subject_id"/>
+                                    <field name="received_date" invisible="1"/>
+                                    <field name="letter_date"/>                                
                                     <field name="letter_number"/>
                                     <field name="letter_type_id"/>
                                     <field name="letter_total_num"/>
+                                   
                                 </group>
-                            </group> 
-                        </page>
-                        <page string="Шийдвэрлэх" attrs="{'invisible':[('state', '=', 'draft')]}">
-                            <group> 
-                                <group string="Шийдвэрлэх">
-                                    <field name="must_return"/>
-                                    <field name="return_datetime" attrs="{'invisible':[('must_return', '=', False)]}"/>
-                                    <field name="how_decide" attrs="{'invisible':[('must_return', '=', False)]}"/>
+                                
+                                <group string="Хаанаас хэнд">
+                                    <field name="partner_id"/>
+                                    <field name="department_id"/>
+                                    <field name="user_id" />
                                 </group>
-                                <group> 
-                                </group> 
+                                <group>
+                                <field name="desc" widget="text"/>
+                                <field name="is_local"/>
+                                <field name="must_return"/>
+                                <field name="is_head_company"/>
+                                <field name="return_date"/>
+
+                                </group>
+                                <group string="Бүртгэлийн мэдээлэл">
+                                    <field name="register_number"/>
+                                    <field name="card_number"/>
+                                    <field name="registered_date" />
+                                </group>
+                                
                             </group> 
                         </page>
                     </notebook>
@@ -145,80 +203,76 @@
             </form>
         </field>
     </record>
+    <!--going-->
+    <record id = "ubi_letter_going_tree_view" model = "ir.ui.view">
+        <field name = "name">ubi.letter.subject.tree</field>
+        <field name = "model">ubi.letter</field>
+        <field name = "arch" type = "xml">
+            <tree string = "Ubi Letter">
+                <field name="registered_date"/>
+                <field name="register_number"/>
+                <field name="card_number"/>
+                <field name="letter_number"/>
+                <field name="letter_type_id"/>
+                <field name="letter_subject_id"/>
+                <field name="letter_template_id"/>
+                <field name="letter_total_num"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <field name="department_id"/>
+                <field name="is_local"/>
 
+            </tree>
+        </field>
+    </record>
     <record id="ubi_letter_going_form_view" model="ir.ui.view">
         <field name="name">ubi.letter.subject.form</field>
         <field name="model">ubi.letter</field>
         <field name="arch" type="xml">
             <form string="Ubi Letter">
                 <header>
-                    <button name="ubi_letter_sent_next" type="object" string="Илгээх" state_going="plan" class="oe_highlight"/>
-
-                    <field name="state_going" widget="statusbar"/>
-
+                    <field name="return_state" widget="statusbar"/>
                 </header>
                 <sheet>
-                    <div class="oe_title">
-                        <h1>
-                          Гарчиг ангилал  <field name="letter_subject_id"/>
-                        </h1>
-                    </div>
-
                     <notebook>
-                        <page string="Төлөвлөлт">
+                        <page string="Үндсэн">
                             <group>
-                                <group string="Бүртгэл">
-                                    <field name="register_number" />
-                                    <field name="card_number"/>
-                                    <field name="registered_datetime" />
-                                    <field name="is_local"/>
-                                    <field name="is_received_letter" invisible="1"/>
-                                </group>
-
-                                <group string="Хэнээс хэнд">
-                                    <field name="partner_id"/>
-                                    <field name="employee_id"/>
-                                    <field name="department_id"/>
-                                    <field name="sent_datetime"/>
-
-                                    
-
-                                </group>
-
-                                <group string="Албан бичиг">
-                                    <field name="letter_number"/>
+                                <group string="Үндсэн мэдээлэл">
+                                    <field name="letter_subject_id"/>
                                     <field name="letter_type_id"/>
                                     <field name="letter_template_id"/>
+                                    <field name="letter_date"/>
+                                    <field name="return_date"/>
+                                </group>
+                                <group string="Хаашаа хэнээс">
+                                    <field string="Хаашаа" name="partner_id"/>
+                                    <field name="user_id"/>
+                                    <field name="department_id"/>
+                                </group>
+                                <group>
+                                    <field name="letter_number"/>
                                     <field name="letter_total_num"/>
+                                    <field name="desc" widget="text"/>
+                                    <field name="is_local"/>
+                                    <field string="Хариутай эсэх" name="must_return"/>
+                                </group>
+                                <group string="Бүртгэсэн">
+                                    <field name="register_number"/>
+                                    <field name="card_number"/>
+                                    <field name="registered_date"/>
                                 </group>
                                 <field name="custom_letter_template" widget="html"/>
-
                             </group>
                         </page>
-                        
-                       
-
                     </notebook>
-
                 </sheet>
             </form>
         </field>
     </record>
 
-    <record id = "ubi_action_settings_letter" model = "ir.actions.act_window">
-        <field name = "name">Ubi Settings Letter</field>
-        <field name = "type">ir.actions.act_window</field>
-        <field name = "res_model">ubi.letter.subject</field>
-        <field name = "view_mode">form</field>
-        <field name = "context">{}</field>
-        <field name = "domain">[]</field>
-        <field name = "help" type = "html">
-            <p>action_settings_letter</p>
-        </field>
-
-    </record>
+    <!-- undsen -->
     <record id = "ubi_action_planning_letter" model = "ir.actions.act_window">
-        <field name = "name">Ubi Planning Letter</field>
+        <field name = "name">Бичиг төлөвлөлт</field>
         <field name = "type">ir.actions.act_window</field>
         <field name = "res_model">ubi.letter</field>
         <field name = "view_mode">kanban</field>
@@ -230,15 +284,15 @@
 
     </record>
     <record id = "ubi_action_going_letter" model = "ir.actions.act_window">
-        <field name = "name">Ubi Going Letter</field>
+        <field name = "name">Явсан бичиг</field>
         <field name = "type">ir.actions.act_window</field>
         <field name = "res_model">ubi.letter</field>
         <field name = "view_mode">tree,form</field>
         <field name="view_ids" eval="[(5, 0, 0),
             (0, 0, {'view_mode': 'tree', 'view_id': ref('ubisol_letters.ubi_letter_going_tree_view')}),
             (0, 0, {'view_mode': 'form', 'view_id': ref('ubisol_letters.ubi_letter_going_form_view')})]"/>
-        <field name = "context">{'default_is_received_letter': False}</field>
-        <field name = "domain">[('is_received_letter','=',False)]</field>
+        <field name = "context">{}</field>
+        <field name = "domain">[]</field>
         <field name = "help" type = "html">
             <p>action_going_letter</p>
         </field>
@@ -246,20 +300,65 @@
     </record>
 
     <record id = "ubi_action_incoming_letter" model = "ir.actions.act_window">
-        <field name = "name">Ubi Incoming Letter</field>
+        <field name = "name">Ирсэн бичиг</field>
         <field name = "type">ir.actions.act_window</field>
         <field name = "res_model">ubi.letter</field>
         <field name = "view_mode">tree,form</field>
         <field name="view_ids" eval="[(5, 0, 0),
             (0, 0, {'view_mode': 'tree', 'view_id': ref('ubisol_letters.ubi_letter_incoming_tree_view')},),
             (0, 0, {'view_mode': 'form', 'view_id': ref('ubisol_letters.ubi_letter_incoming_form_view')})]"/>
-        <field name = "context">{'default_is_received_letter': True}</field>
-        <field name = "domain">[('is_received_letter','=',True)]</field>
+        <field name = "context">{}</field>
+        <field name = "domain">[]</field>
         <field name = "help" type = "html">
             <p>action_incoming_letter</p>
         </field>
 
     </record>
+
+    <record id = "action_settings_letter_type" model = "ir.actions.act_window">
+        <field name = "name">Албан бичгийн төрөл</field>
+        <field name = "type">ir.actions.act_window</field>
+        <field name = "res_model">ubi.letter.type</field>
+        <field name = "view_mode">tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('ubisol_letters.ubi_letter_settings_type_tree')},),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('ubisol_letters.ubi_letter_settings_type_form')})]"/>
+        <field name = "context">{}</field>
+        <field name = "domain">[]</field>
+        <field name = "help" type = "html">
+            <p>Албан бичгийн төрөл</p>
+        </field>
+    </record>
+    <record id = "action_settings_letter_subject" model = "ir.actions.act_window">
+        <field name = "name">Албан бичгийн тэргүү</field>
+        <field name = "type">ir.actions.act_window</field>
+        <field name = "res_model">ubi.letter.subject</field>
+        <field name = "view_mode">tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('ubisol_letters.ubi_letter_settings_subject_tree')},),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('ubisol_letters.ubi_letter_settings_subject_form')})]"/>
+        <field name = "context">{}</field>
+        <field name = "domain">[]</field>
+        <field name = "help" type = "html">
+            <p>Албан бичгийн тэргүү</p>
+        </field>
+    </record>
+    <record id = "action_settings_letter_template" model = "ir.actions.act_window">
+        <field name = "name">Албан бичгийн загвар</field>
+        <field name = "type">ir.actions.act_window</field>
+        <field name = "res_model">ubi.letter.template</field>
+        <field name = "view_mode">tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('ubisol_letters.ubi_letter_settings_template_tree')},),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('ubisol_letters.ubi_letter_settings_template_form')})]"/>
+        <field name = "context">{}</field>
+        <field name = "domain">[]</field>
+        <field name = "help" type = "html">
+            <p>Албан бичгийн загвар</p>
+        </field>
+    </record>
+
+    <!-- menu -->
     <menuitem 
         id = "ubi_letter_root_menu"
         name = "Албан бичиг"
@@ -269,20 +368,38 @@
         id = "ubi_letter_menu1"
         name = "Ирсэн бичиг" action = "ubi_action_incoming_letter"
         parent = "ubi_letter_root_menu"
-        sequence = "15"/>
+        sequence = "1"/>
     <menuitem 
         id = "ubi_letter_menu2"
         name = "Явсан бичиг" action = "ubi_action_going_letter"
         parent = "ubi_letter_root_menu"
-        sequence = "16"/>
+        sequence = "2"/>
     <menuitem   
         id = "ubi_letter_menu3"
         name = "Бичиг төлөвлөлт" action = "ubi_action_planning_letter"
         parent = "ubi_letter_root_menu"
-        sequence = "17"/>
+        sequence = "3"/>
     <menuitem 
         id = "ubi_letter_menu4"
-        name = "Тохиргоо" action = "ubi_action_settings_letter"
+        name = "Тохиргоо"
         parent = "ubi_letter_root_menu"
-        sequence = "18"/>
+        sequence = "4"/>
+
+    <menuitem 
+        id = "ubi_letter_menu_settings_type"
+        name = "Бичгийн төрөл" action = "action_settings_letter_type"
+        parent = "ubi_letter_menu4"
+        sequence = "1"/>
+    <menuitem 
+        id = "ubi_letter_menu_settings_subject"
+        name = "Бичгийн тэргүү" action = "action_settings_letter_subject"
+        parent = "ubi_letter_menu4"
+        sequence = "2"/>
+    <menuitem 
+        id = "ubi_letter_menu_settings_template"
+        name = "Бичгийн загвар" action = "action_settings_letter_template"
+        parent = "ubi_letter_menu4"
+        sequence = "3"/>
+    
+
 </odoo>
