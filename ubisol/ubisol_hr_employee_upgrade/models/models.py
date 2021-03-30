@@ -222,7 +222,7 @@ class HrEmployee(models.Model):
         prev_department_id = self._origin.department_id
         # previous_manager = self._origin.parent_id.user_id
         employee = super(HrEmployee, self).write(vals)  
-        
+
         if vals.get('contract_signed_date') and vals.get('create_contract'):    
             employee_contract = self._prepare_contract_values(self)          
 
@@ -255,7 +255,7 @@ class HrEmployee(models.Model):
         if vals.get('user_id'):
             child_employees = self.env['hr.employee'].search([('parent_id', '=', self.id)], order='id asc')
             for child_employee in child_employees:
-                child_employee.leave_manager_id = self.user_id.id
+                child_employee.leave_manager_id = self.user_id
 
         return employee    
 
