@@ -193,15 +193,16 @@ class HrEmployee(models.Model):
 
     def write(self, vals):
         prev_department_id = self._origin.department_id
+        previous_manager = self._origin.parent_id.user_id
         employee = super(HrEmployee, self).write(vals)  
         if vals.get('contract_signed_date') and vals.get('create_contract'):    
             employee_contract = self._prepare_contract_values(self)        
 
-        #if this employee has child employees, then their leave_manager_id is set by self.user_id
-        if self.user_id:
-            child_employees = self.env['hr.employee'].search([('parent_id', '=', self._origin.id)])
+        # if this employee has child employees, then their leave_manager_id is set by self.user_id
+        if vals.get('user_id'):
+            child_employees = self.env['hr.employee'].search([('parent_id', '=', self._origin.id)], order='id asc')
             for child_employee in child_employees:
-                child_employee.parent_id = self.id
+                child_employee.leave_manager_id = self.user_id.id      
 
         #create schedule for employee when employee's department selected
         if vals.get('department_id') and (vals.get('department_id') != prev_department_id):
