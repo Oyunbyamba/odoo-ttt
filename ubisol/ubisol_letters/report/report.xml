@@ -15,9 +15,9 @@
         <field name="page_height">210</field>
         <field name="page_width">148</field>
         <field name="orientation">Portrait</field>
-        <field name="margin_top">25</field>
-        <field name="margin_bottom">25</field>
-        <field name="margin_left">20</field>
+        <field name="margin_top">20</field>
+        <field name="margin_bottom">20</field>
+        <field name="margin_left">30</field>
         <field name="margin_right">15</field>
         <field name="header_line" eval="False"/>
         <field name="header_spacing">0</field>
@@ -27,7 +27,7 @@
     <report
             id="letter_detail_report_pdf"
             model="ubi.letter" 
-            string="Employee Letter Anket"
+            string="Албан бичиг хэвлэх"
             report_type="qweb-pdf"
             name="ubisol_letters.letter_detail_report"
             file="ubisol_letters.letter_detail_report"

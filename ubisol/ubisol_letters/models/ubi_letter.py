@@ -26,22 +26,31 @@ class UbiLetter(models.Model):
         for rec in self:
             rec.state_going = 'plan'
 
-    is_local = fields.Boolean(string='Дотоод бичиг эсэх', groups="hr.group_hr_user")
+    is_local = fields.Boolean(string='Дотоод бичиг', groups="hr.group_hr_user")
     is_received_letter = fields.Boolean(string='Ирсэн бичиг эсэх', groups="hr.group_hr_user")
-    card_number = fields.Char(string='Картын дугаар', help="Картын дугаар", groups="hr.group_hr_user")
-    letter_number = fields.Char(string='Бичгийн дугаар', help="Бичгийн дугаар", groups="hr.group_hr_user")
-    register_number = fields.Char(string='Бүртгэлийн дугаар', help="Бүртгэлийн дугаар", groups="hr.group_hr_user")
+    card_number = fields.Integer(string='Картын дугаар', help="Картын дугаар", groups="hr.group_hr_user")
+    letter_number = fields.Integer(string='Бичгийн дугаар', help="Бичгийн дугаар", groups="hr.group_hr_user")
+    register_number = fields.Integer(string='Бүртгэлийн дугаар', help="Бүртгэлийн дугаар", groups="hr.group_hr_user")
     letter_total_num = fields.Integer(string='Хуудасны тоо', help="Хуудасны тоо", groups="hr.group_hr_user")
+    desc = fields.Char(string='Товч утга', groups="hr.group_hr_user")
     
-    received_datetime = fields.Datetime(string='Хүлээн авсан огноо', groups="hr.group_hr_user")
-    registered_datetime = fields.Datetime(string='Бүртгэсэн огноо', groups="hr.group_hr_user")
-    return_datetime = fields.Datetime(string='Хариу өгөх огноо', groups="hr.group_hr_user")
-   
-    sent_datetime = fields.Datetime(string='Илгээх огноо', groups="hr.group_hr_user")
+    received_date= fields.Date(
+        string='Хүлээн авсан огноо', groups="hr.group_hr_user")
+    registered_date = fields.Date(
+        string='Бүртгэсэн огноо', groups="hr.group_hr_user")
+    return_date = fields.Date(
+        string='Шийдвэрлэх огноо', groups="hr.group_hr_user")
+    letter_date = fields.Date(
+        string='Бичгийн огноо', groups="hr.group_hr_user")
+ 
 
-    partner_id = fields.Many2one('res.partner', string='Хэнээс', groups="hr.group_hr_user")
-    letter_type_id = fields.Many2one('ubi.letter.type', string='Бичгийн төрөл', groups="hr.group_hr_user")
-    letter_subject_id = fields.Many2one('ubi.letter.subject', string='Гарчиг ангилал', groups="hr.group_hr_user")
+    partner_id = fields.Many2one(
+        'res.partner', string='Хаанаас', groups="hr.group_hr_user")
+    letter_type_id = fields.Many2one(
+        'ubi.letter.type', string='Бичгийн төрөл', groups="hr.group_hr_user")
+    letter_subject_id = fields.Many2one(
+        'ubi.letter.subject', string='Бичгийн тэргүү', groups="hr.group_hr_user")
+
 
     letter_template_id = fields.Many2one('ubi.letter.template', string='Бичгийн загвар', groups="hr.group_hr_user")
 
@@ -54,7 +63,10 @@ class UbiLetter(models.Model):
 
     how_decide = fields.Char(string="Яаж шийдвэрлэх", groups="hr.group_hr_user")
     must_return = fields.Boolean(
-        string='Хариу өгөх эсэх', default=False, groups="hr.group_hr_user")
+        string='Хариу өгөх', default=False, groups="hr.group_hr_user")
+    come_from_above = fields.Boolean(
+        string='Дээд газраас ирсэн', default=False, groups="hr.group_hr_user")
+    
 
     state = fields.Selection([
         ('draft', 'Хүлээн авах'),

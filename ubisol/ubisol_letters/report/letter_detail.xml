@@ -7,7 +7,9 @@
                     <div class="col-12 page" style="font-size: 17px !important; line-height: 135%; padding-top: 192px;">
                         <t t-esc="doc.employee_id.name"/>
                         <t t-raw="doc.custom_letter_template"/>
-
+                        <div style="font-style: arial; font-size: 11px; line-height: 1;">
+                            hi everyone
+                        </div>
                     </div>
                 </t>
             
