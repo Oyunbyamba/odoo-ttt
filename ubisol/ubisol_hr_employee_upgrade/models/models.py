@@ -77,7 +77,7 @@ class HrEmployee(models.Model):
     longitude = fields.Char('Уртраг', groups="hr.group_hr_user")
     employee_pictures = fields.One2many('hr.employee.picture', 'employee_id', string='Employee picture', groups="hr.group_hr_user")
     # image=fields.Binary(compute='_getBase64Image') 
-    departure_reason = fields.Selection(selection_add=[('other', 'Бусад')], groups="hr.group_hr_user")
+    departure_reason = fields.Selection(selection_add=[('other', 'Бусад'), ('long_leave', 'Уртын чөлөө')], groups="hr.group_hr_user")
     resign_date = fields.Date('Resign Date', compute='_compute_resign_date', inverse='_set_document', store=True, groups="hr.group_hr_user")
     is_disabled = fields.Boolean('Хөгжлийн бэрхшээлтэй эсэх', default=False, groups="hr.group_hr_user")
     is_in_group = fields.Boolean('Группд байдаг эсэх', default=False, groups="hr.group_hr_user")
@@ -85,6 +85,8 @@ class HrEmployee(models.Model):
     rfid_code = fields.Char('Картын дугаар', groups="hr.group_hr_user")
     attendance_ids = fields.One2many('hr.attendance', 'employee_id', string='Employee attendance', groups="hr.group_hr_user")
     emergency_person = fields.Char(string='Таны юу болох', groups="hr.group_hr_user")
+    check_user_status = fields.Boolean('Changed user', compute='_compute_user_state', groups="hr.group_hr_user")
+    change_leave_manager_ids = fields.Char('Change leave manager', compute='_compute_leave_manager', groups="hr.group_hr_user")
 
     @api.constrains('pin', 'identification_id')
     def _check_pin(self):
@@ -119,6 +121,11 @@ class HrEmployee(models.Model):
         else:
            self.leave_manager_id = 0
 
+    @api.onchange('user_id')
+    def _compute_user_state(self):
+        if self.user_id:
+            self.check_user_status = True
+
     @api.onchange('identification_id')
     def onchange_identification_id(self):
         if self.identification_id:    
@@ -126,14 +133,34 @@ class HrEmployee(models.Model):
         else:
             self.identification_id = ''
 
-    @api.depends('departure_reason')
+    # @api.depends('surname')
+    # def _compute_leave_manager(self):
+    #     for employee in self:
+    #         _logger.info(employee.surname)
+    #         employee.change_leave_manager_ids = True
+
+    @api.depends('active')
     def _compute_resign_date(self):
         for employee in self:
-            if(employee.departure_reason):
+            if not employee.active:
                 employee.resign_date = fields.Date.context_today(self)
             else:
-                employee.resign_date = fields.Date.context_today(self)
-    
+                employee.resign_date = ''
+  
+    # @api.depends('name')
+    # def _compute_leave_manager(self):
+    #     _logger.info('depends user_state')
+    #     for employee in self:
+    #         _logger.info('depends user_state')
+    #         _logger.info(self._origin.id)
+    #         if self.check_user_status and self.user_id:
+    #             child_employees = self.env['hr.employee'].search([('parent_id', '=', self._origin.id)], order='id asc')
+    #             _logger.info(child_employees)
+    #             for child_employee in child_employees:
+    #                 child_employee.leave_manager_id = self.user_id.id    
+    #         employee.change_leave_manager_ids = True
+
+
     def _set_document(self):
         for employee in self:
             employee.resign_date = employee.resign_date
@@ -193,16 +220,11 @@ class HrEmployee(models.Model):
 
     def write(self, vals):
         prev_department_id = self._origin.department_id
-        previous_manager = self._origin.parent_id.user_id
+        # previous_manager = self._origin.parent_id.user_id
         employee = super(HrEmployee, self).write(vals)  
+        
         if vals.get('contract_signed_date') and vals.get('create_contract'):    
-            employee_contract = self._prepare_contract_values(self)        
-
-        # if this employee has child employees, then their leave_manager_id is set by self.user_id
-        if vals.get('user_id'):
-            child_employees = self.env['hr.employee'].search([('parent_id', '=', self._origin.id)], order='id asc')
-            for child_employee in child_employees:
-                child_employee.leave_manager_id = self.user_id.id      
+            employee_contract = self._prepare_contract_values(self)          
 
         #create schedule for employee when employee's department selected
         if vals.get('department_id') and (vals.get('department_id') != prev_department_id):
@@ -229,6 +251,11 @@ class HrEmployee(models.Model):
                         [('hr_employee', '=', self.id), ('work_day', '>=', date_from), ('work_day', '<=', date_to)]).unlink()         
                     # log_obj._check_duplicated_schedules(values)
                     log_obj._create_schedules(values, shift)        
+
+        if vals.get('user_id'):
+            child_employees = self.env['hr.employee'].search([('parent_id', '=', self.id)], order='id asc')
+            for child_employee in child_employees:
+                child_employee.leave_manager_id = self.user_id.id
 
         return employee    
 

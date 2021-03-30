@@ -202,12 +202,14 @@
           <field name="pin" string="Пин код"/>
           <field name="identification_id" string="Регистер"/>
           <field name="department_id" string="Хэлтэс"/>
+          <field name="departure_reason" string="Архивын төрөл"/>
         </xpath>
 
         <xpath expr="//group[1]" position="inside">
           <filter name="group_study" string="Эзэмшсэн мэргэжил" domain="[]" context="{'group_by': 'study_field'}"/>
           <filter name="children" string="Хүүхдийн тоо" domain="[]" context="{'group_by': 'children'}"/>
           <filter name="gender" string="Хүйс" domain="[]" context="{'group_by': 'gender'}"/>
+          <filter name="departure_reason" string="Архивын төрөл" domain="[]" context="{'group_by': 'departure_reason'}"/>
         </xpath>
 
         <field name="job_id" position="after">
@@ -225,15 +227,15 @@
         <xpath expr="//tree" position="replace">
           <tree string="Employees" default_order="id">
             <field name="surname"/>
-            <field name="name"/>
-            <field name="identification_id"/>
-            <field name="work_phone" class="o_force_ltr"/>
-            <field name="work_email"/>
+            <field name="name" string='Ажилтан'/>
+            <field name="identification_id" string='Регистр'/>
+            <field name="pin" string='Пин'/>
+            <field name="mobile_phone" string='Гар утас' class="o_force_ltr"/>
+            <field name="work_email" invisible="1"/>
             <field name="company_id" groups="base.group_multi_company"/>
-            <field name="department_id"/>
+            <field name="department_id" class="o_force_ltr"/>
             <field name="job_id"/>
             <field name="parent_id"/>
-            <field name="pin"/>
             <field name="coach_id" invisible="1"/>
           </tree>
         </xpath>
@@ -294,6 +296,5 @@
         parent="hr.menu_human_resources_configuration" 
         action="gamification.badge_list_action" />       
 
-    
   </data>
 </odoo>
