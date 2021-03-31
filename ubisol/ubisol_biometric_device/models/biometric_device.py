@@ -273,19 +273,19 @@ class BiometricMachine(models.Model):
 
                 except:
                     isError = True
-                    if len(attendances) > 0:
-                        _logger.info('TOTAL_ATT')
-                        s_logger.info(len(attendances))
-                        for attendance in attendances:
-                            row = [attendance.user_id, attendance.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
-                                attendance.status, attendance.punch, 0, 0]
-                            self.import_attendance(row, info.id)
-                finally:
-                    if conn:
-                        conn.enable_device()
-                        # if not isError:
-                        # conn.clear_attendance()
-                        conn.disconnect()
+                if len(attendances) > 0:
+                    _logger.info('TOTAL_ATT')
+                    s_logger.info(len(attendances))
+                    for attendance in attendances:
+                        row = [attendance.user_id, attendance.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+                               attendance.status, attendance.punch, 0, 0]
+                        self.import_attendance(row, info.id)
+
+                if conn:
+                    conn.enable_device()
+                    # if not isError:
+                    # conn.clear_attendance()
+                    conn.disconnect()
         return {}
 
     def test_connection(self):

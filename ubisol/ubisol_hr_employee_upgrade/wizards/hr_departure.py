@@ -17,7 +17,7 @@ class HrDepartureWizard(models.TransientModel):
                 
         return res
 
-    departure_reason = fields.Selection(selection_add=[('other', 'Бусад')])
+    departure_reason = fields.Selection(selection_add=[('other', 'Бусад'), ('long_leave', 'Уртын чөлөө')])
     employee_id = fields.Many2one('hr.employee', string='Employee', required=False)
     employee_ids = fields.Many2many('hr.employee', string='Employee', required=True)
 
