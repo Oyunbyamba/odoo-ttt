@@ -51,7 +51,7 @@
                                     <field name="department_id"/>
                                 </group>
                                 <group>
-                                    <field name="document_ids" widget="many2many_binary"/>
+                                    <field name="letter_attachment_id" widget="many2many_binary"/>
                                     <field name="is_local"/>
                                     <field string="Хариутай эсэх" name="must_return"/>
                                 </group>
