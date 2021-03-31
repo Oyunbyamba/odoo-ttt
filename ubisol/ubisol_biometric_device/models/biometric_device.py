@@ -280,12 +280,12 @@ class BiometricMachine(models.Model):
                         row = [attendance.user_id, attendance.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
                                attendance.status, attendance.punch, 0, 0]
                         self.import_attendance(row, info.id)
-                finally:
-                    if conn:
-                        conn.enable_device()
-                        # if not isError:
-                        # conn.clear_attendance()
-                        conn.disconnect()
+
+                if conn:
+                    conn.enable_device()
+                    # if not isError:
+                    # conn.clear_attendance()
+                    conn.disconnect()
         return {}
 
     def test_connection(self):
