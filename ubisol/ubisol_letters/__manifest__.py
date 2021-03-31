@@ -19,7 +19,9 @@
 
     ],
     'demo': [],
-    'qweb': [],
+    'qweb': [
+        'static/src/xml/import_letter.xml'
+    ],
     'installable': True,
     'application': True,
     'auto_install': False,

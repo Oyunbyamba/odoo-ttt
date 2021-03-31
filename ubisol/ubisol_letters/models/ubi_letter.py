@@ -23,7 +23,7 @@ class UbiLetter(models.Model):
     draft_user_id = fields.Many2one('res.users', groups="hr.group_hr_user")
     monitor_user_id = fields.Many2one('res.users', groups="hr.group_hr_user")
     signed_user_id = fields.Many2one('res.users', groups="hr.group_hr_user")
-    document_ids = fields.Many2many('ir.attachment',  string="Хавсралт", copy=False)
+    document_ids = fields.Many2many('ir.attachment', 'letter_doc_attach', 'letter_id', 'doc_id', string="Хавсралт", copy=False)
  
     is_local = fields.Boolean(string='Дотоод бичиг', groups="hr.group_hr_user")
     letter_status = fields.Selection([

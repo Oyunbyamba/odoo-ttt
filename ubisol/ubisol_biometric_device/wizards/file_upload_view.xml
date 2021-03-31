@@ -14,7 +14,6 @@
                     <button name="import_dat" type="object" string="Оруулах" class="oe_highlight"/>
                     <button special="cancel" string="Cancel"/>
                 </footer>
-
             </form>
         </field>
     </record>
