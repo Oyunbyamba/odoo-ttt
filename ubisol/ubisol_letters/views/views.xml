@@ -221,9 +221,6 @@
                 <field name="user_id"/>
                 <field name="department_id"/>
                 <field name="is_local"/>
-
-                
-
             </tree>
         </field>
     </record>
