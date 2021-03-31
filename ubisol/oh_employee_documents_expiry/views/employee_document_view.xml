@@ -68,16 +68,16 @@
     </record>
 
     <record id="search_employee_documents" model="ir.ui.view">
-            <field name="name">hr.employee.document.search</field>
-            <field name="model">hr.employee.document</field>
-            <field name="arch" type="xml">
-                <search string="Employee Documents">
-                    <group expand="0" string="Group By">
-                        <filter name="Employee" string="Employee" domain="[]" context="{'group_by':'employee_ref'}"/>
-                    </group>
-                </search>
-            </field>
-        </record>
+        <field name="name">hr.employee.document.search</field>
+        <field name="model">hr.employee.document</field>
+        <field name="arch" type="xml">
+            <search string="Employee Documents">
+                <group expand="0" string="Group By">
+                    <filter name="Employee" string="Employee" domain="[]" context="{'group_by':'employee_ref'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
 
     <record id="hr_employee_document_action" model="ir.actions.act_window">
         <field name="name">Employee Documents</field>

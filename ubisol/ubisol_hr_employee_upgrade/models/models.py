@@ -133,12 +133,6 @@ class HrEmployee(models.Model):
         else:
             self.identification_id = ''
 
-    # @api.depends('surname')
-    # def _compute_leave_manager(self):
-    #     for employee in self:
-    #         _logger.info(employee.surname)
-    #         employee.change_leave_manager_ids = True
-
     @api.depends('active')
     def _compute_resign_date(self):
         for employee in self:
@@ -146,20 +140,6 @@ class HrEmployee(models.Model):
                 employee.resign_date = fields.Date.context_today(self)
             else:
                 employee.resign_date = ''
-  
-    # @api.depends('name')
-    # def _compute_leave_manager(self):
-    #     _logger.info('depends user_state')
-    #     for employee in self:
-    #         _logger.info('depends user_state')
-    #         _logger.info(self._origin.id)
-    #         if self.check_user_status and self.user_id:
-    #             child_employees = self.env['hr.employee'].search([('parent_id', '=', self._origin.id)], order='id asc')
-    #             _logger.info(child_employees)
-    #             for child_employee in child_employees:
-    #                 child_employee.leave_manager_id = self.user_id.id    
-    #         employee.change_leave_manager_ids = True
-
 
     def _set_document(self):
         for employee in self:

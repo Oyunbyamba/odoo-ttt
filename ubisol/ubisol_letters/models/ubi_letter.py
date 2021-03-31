@@ -26,7 +26,7 @@ class UbiLetter(models.Model):
     document_ids = fields.Many2many('ir.attachment',  string="Хавсралт", copy=False)
  
     is_local = fields.Boolean(string='Дотоод бичиг', groups="hr.group_hr_user")
-    t_ype = fields.Selection([
+    letter_status = fields.Selection([
         ('coming', 'Ирсэн'),
         ('going', 'Явсан'),
         ('planning', 'Төлөвлөлт')],
