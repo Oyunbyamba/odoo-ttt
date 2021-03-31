@@ -25,13 +25,14 @@ odoo.define('import_letter.importLetter',function (require) {
                 args: [user],
             }).then(function (data) {
                 alert(data);
-                // self.do_action({
-                //     name: _t('Ирсэн бичиг'),
-                //     type: 'ir.actions.act_window',
-                //     res_model: 'ubi.letter',
-                //     views: [[false,tree,form]],
-                //     view_mode: 'tree,form'
-                // });
+                self.do_action({
+                    name: _t('Ирсэн бичиг'),
+                    type: 'ir.actions.act_window',
+                    res_model: 'ubi.letter',
+                    views: [[false, 'list'], [false, 'form']],
+                    view_mode: "list",
+                    target: 'current'
+                });
             });
         
         },
