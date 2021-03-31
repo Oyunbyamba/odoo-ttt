@@ -82,7 +82,27 @@ class UbiLetter(models.Model):
                 string = self.custom_letter_template
                 number = self.letter_number
                 number_str = str(number)
-                self.custom_letter_template = string.replace("$number", number_str)
+                find = string.find("$number")
+                if ( str(find) != str(-1)):  
+                    print(str(find))
+                    self.custom_letter_template = string.replace(
+                        "$number", number_str)
+                    print("unen")
+                else:
+                    self.custom_letter_template = self.letter_template_text
+                    string = self.custom_letter_template
+                    self.custom_letter_template = string.replace(
+                        "$number", number_str)
+                    print("hudal")
+
+
+
+
+
+
+
+
+
                 
     @api.onchange('letter_date')
     def _set_letter_template2(self):
