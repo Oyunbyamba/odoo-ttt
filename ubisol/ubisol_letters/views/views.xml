@@ -174,7 +174,7 @@
                                     <field name="letter_number"/>
                                     <field name="letter_type_id"/>
                                     <field name="letter_total_num"/>
-                                   
+                                   <field name="desc" widget="text"/>
                                 </group>
                                 
                                 <group string="Хаанаас хэнд">
@@ -183,7 +183,7 @@
                                     <field name="user_id" />
                                 </group>
                                 <group>
-                                <field name="desc" widget="text"/>
+                                
                                 <field name="is_local"/>
                                 <field name="must_return"/>
                                 <field name="is_head_company"/>
@@ -222,6 +222,8 @@
                 <field name="department_id"/>
                 <field name="is_local"/>
 
+                
+
             </tree>
         </field>
     </record>
@@ -243,6 +245,10 @@
                                     <field name="letter_template_id"/>
                                     <field name="letter_date"/>
                                     <field name="return_date"/>
+                                    <field name="letter_number"/>
+                                    <field name="letter_total_num"/>
+                                    <field name="desc" widget="text"/>
+
                                 </group>
                                 <group string="Хаашаа хэнээс">
                                     <field string="Хаашаа" name="partner_id"/>
@@ -250,9 +256,7 @@
                                     <field name="department_id"/>
                                 </group>
                                 <group>
-                                    <field name="letter_number"/>
-                                    <field name="letter_total_num"/>
-                                    <field name="desc" widget="text"/>
+                                    <field name="document_ids" widget="many2many_binary"/>
                                     <field name="is_local"/>
                                     <field string="Хариутай эсэх" name="must_return"/>
                                 </group>

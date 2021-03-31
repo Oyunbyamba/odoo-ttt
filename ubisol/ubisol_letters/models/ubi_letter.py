@@ -9,19 +9,22 @@ _logger = logging.getLogger(__name__)
 class UbiLetter(models.Model):
     _name = "ubi.letter"
     _description = " "
-    
+
+ 
     def _get_default_note(self):
         result = """
             <div>
                 <p class="terms">Payment terms are</p>
                 <ul><li>15% in advance</li><ul/>
             </div>"""
+        
         return result
     follow_id = fields.Many2one('ubi.letter', groups="hr.group_hr_user")
-    draft_user_id = fields.Many2one('res_users', groups="hr.group_hr_user")
-    monitor_user_id = fields.Many2one('res_users', groups="hr.group_hr_user")
-    signed_user_id = fields.Many2one('res_users', groups="hr.group_hr_user")
-    document_ids = fields.Many2many('ubi.letter.document', groups="hr.group_hr_user")
+    draft_user_id = fields.Many2one('res.users', groups="hr.group_hr_user")
+    monitor_user_id = fields.Many2one('res.users', groups="hr.group_hr_user")
+    signed_user_id = fields.Many2one('res.users', groups="hr.group_hr_user")
+    document_ids = fields.Many2many('ir.attachment',  string="Хавсралт", copy=False)
+ 
     is_local = fields.Boolean(string='Дотоод бичиг', groups="hr.group_hr_user")
     t_ype = fields.Selection([
         ('coming', 'Ирсэн'),
@@ -38,6 +41,7 @@ class UbiLetter(models.Model):
     registered_date = fields.Date(string='Бүртгэсэн огноо', groups="hr.group_hr_user")
     return_date = fields.Date(string='Шийдвэрлэх огноо', groups="hr.group_hr_user")
     letter_date = fields.Date(string='Бичгийн огноо', groups="hr.group_hr_user")
+
     partner_id = fields.Many2many('res.partner', string='Хаанаас', groups="hr.group_hr_user")
     letter_type_id = fields.Many2one('ubi.letter.type', string='Бичгийн төрөл', groups="hr.group_hr_user")
     letter_subject_id = fields.Many2one('ubi.letter.subject', string='Бичгийн тэргүү', groups="hr.group_hr_user")
@@ -45,7 +49,8 @@ class UbiLetter(models.Model):
     letter_template_text = fields.Html(related="letter_template_id.letter_template", groups="hr.group_hr_user")
     custom_letter_template = fields.Html('Custom text', groups="hr.group_hr_user", default=_get_default_note)
     department_id = fields.Many2one('hr.department', string='Хариуцах Хэлтэс', groups="hr.group_hr_user")
-    user_id = fields.Many2one('res_users', string='Хэнд', groups="hr.group_hr_user")
+    user_id = fields.Many2one('res.users', string='Хэнд', groups="hr.group_hr_user")
+    
     must_return = fields.Boolean(string='Хариу өгөх', default=False, groups="hr.group_hr_user")
     is_head_company = fields.Boolean(string='Дээд газраас ирсэн', default=False, groups="hr.group_hr_user")
     state = fields.Selection([
@@ -70,6 +75,6 @@ class UbiLetter(models.Model):
         if self.letter_template_text:
             self.custom_letter_template = self.letter_template_text
 
-
+    
  
     
