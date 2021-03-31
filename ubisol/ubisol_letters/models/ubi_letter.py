@@ -70,11 +70,34 @@ class UbiLetter(models.Model):
         groups="hr.group_hr_user",
         string='Төлөв', store=True, readonly=True, copy=False, tracking=True)
 
+    
     @api.onchange('letter_template_id')
     def _set_letter_template(self):
         if self.letter_template_text:
             self.custom_letter_template = self.letter_template_text
+   
+    @api.onchange('letter_number')
+    def _set_letter_template1(self):
+            if self.custom_letter_template:
+                string = self.custom_letter_template
+                number = self.letter_number
+                number_str = str(number)
+                self.custom_letter_template = string.replace("$number", number_str)
+                
+    @api.onchange('letter_date')
+    def _set_letter_template2(self):
+        if self.custom_letter_template:
+            string = self.custom_letter_template
+            letter_date = self.letter_date
+            letter_date_str = str(letter_date)
+            self.custom_letter_template = string.replace(
+                "$date", letter_date_str)
 
-    
- 
-    
+    @api.onchange('partner_id')
+    def _set_letter_template3(self):
+        if self.custom_letter_template:
+            string = self.custom_letter_template
+            partner_id = self.partner_id.name
+            partner_id_str = str(partner_id)
+            self.custom_letter_template = string.replace(
+                "$where", partner_id_str)
