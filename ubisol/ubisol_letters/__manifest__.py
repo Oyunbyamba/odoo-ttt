@@ -12,7 +12,7 @@
     'data': [
         'security/ir.model.access.csv',
         'data/data.xml',
-        'views/going.xml',
+        'views/outgoing.xml',
         'views/incoming.xml',
         'views/menu.xml',
         'views/planning.xml',

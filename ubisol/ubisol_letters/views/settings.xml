@@ -2,11 +2,11 @@
 
 <odoo>
     <!-- settings 1 -->
-    <record id="ubi_letter_settings_type_tree" model = "ir.ui.view">
+    <record id="ubi_letter_settings_type_tree" model="ir.ui.view">
         <field name="name">ubi.letter.settings.type.tree</field>
         <field name="model">ubi.letter.type</field>
-        <field name="arch" type = "xml">
-            <tree string = "Ubi Letter">
+        <field name="arch" type="xml">
+            <tree string="Ubi Letter">
                 <field name="name"/>
                 <field name="code"/>
             </tree>
@@ -33,11 +33,11 @@
     </record>
 
     <!-- settings 2 -->
-    <record id="ubi_letter_settings_subject_tree" model = "ir.ui.view">
+    <record id="ubi_letter_settings_subject_tree" model="ir.ui.view">
         <field name="name">ubi.letter.settings.subject.tree</field>
         <field name="model">ubi.letter.subject</field>
-        <field name="arch" type = "xml">
-            <tree string = "Ubi Letter">
+        <field name="arch" type="xml">
+            <tree string="Ubi Letter">
                 <field name="name"/>
                 <field name="code"/>
                 <field name="desc"/>
@@ -68,11 +68,11 @@
     </record>
 
     <!-- settings 3 -->
-    <record id="ubi_letter_settings_template_tree" model = "ir.ui.view">
+    <record id="ubi_letter_settings_template_tree" model="ir.ui.view">
         <field name="name">ubi.letter.settings.template.tree</field>
         <field name="model">ubi.letter.template</field>
-        <field name="arch" type = "xml">
-            <tree string = "Ubi Letter">
+        <field name="arch" type="xml">
+            <tree string="Ubi Letter">
                 <field name="letter_template_name"/>
                 <field name="letter_template"/>
             </tree>
@@ -94,7 +94,7 @@
         </field>
     </record>
 
-    <record id="action_settings_letter_type" model = "ir.actions.act_window">
+    <record id="action_settings_letter_type" model="ir.actions.act_window">
         <field name="name">Албан бичгийн төрөл</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ubi.letter.type</field>
@@ -104,11 +104,11 @@
                 (0, 0, {'view_mode': 'form', 'view_id': ref('ubisol_letters.ubi_letter_settings_type_form')})]"/>
         <field name="context">{}</field>
         <field name="domain">[]</field>
-        <field name="help" type = "html">
+        <field name="help" type="html">
             <p>Албан бичгийн төрөл</p>
         </field>
     </record>
-    <record id="action_settings_letter_subject" model = "ir.actions.act_window">
+    <record id="action_settings_letter_subject" model="ir.actions.act_window">
         <field name="name">Албан бичгийн тэргүү</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ubi.letter.subject</field>
@@ -118,11 +118,11 @@
                 (0, 0, {'view_mode': 'form', 'view_id': ref('ubisol_letters.ubi_letter_settings_subject_form')})]"/>
         <field name="context">{}</field>
         <field name="domain">[]</field>
-        <field name="help" type = "html">
+        <field name="help" type="html">
             <p>Албан бичгийн тэргүү</p>
         </field>
     </record>
-    <record id="action_settings_letter_template" model = "ir.actions.act_window">
+    <record id="action_settings_letter_template" model="ir.actions.act_window">
         <field name="name">Албан бичгийн загвар</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ubi.letter.template</field>
@@ -132,7 +132,7 @@
                 (0, 0, {'view_mode': 'form', 'view_id': ref('ubisol_letters.ubi_letter_settings_template_form')})]"/>
         <field name="context">{}</field>
         <field name="domain">[]</field>
-        <field name="help" type = "html">
+        <field name="help" type="html">
             <p>Албан бичгийн загвар</p>
         </field>
     </record>

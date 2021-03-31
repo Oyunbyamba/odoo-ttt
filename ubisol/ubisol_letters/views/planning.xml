@@ -37,14 +37,14 @@
         </field>
     </record>
 
-    <record id="ubi_action_planning_letter" model = "ir.actions.act_window">
+    <record id="ubi_action_planning_letter" model="ir.actions.act_window">
         <field name="name">Бичиг төлөвлөлт</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ubi.letter</field>
         <field name="view_mode">kanban</field>
         <field name="context">{}</field>
         <field name="domain">[]</field>
-        <field name="help" type = "html">
+        <field name="help" type="html">
             <p>action_planning_letter</p>
         </field>
     </record>
