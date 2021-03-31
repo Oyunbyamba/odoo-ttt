@@ -14,9 +14,9 @@
         'data/data.xml',
         'views/outgoing.xml',
         'views/incoming.xml',
-        'views/menu.xml',
         'views/planning.xml',
         'views/settings.xml',
+        'views/menu.xml',
         'report/letter_detail.xml',
         'report/report.xml',
 

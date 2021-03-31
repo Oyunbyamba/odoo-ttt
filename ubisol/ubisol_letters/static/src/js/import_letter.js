@@ -19,12 +19,13 @@ odoo.define('import_letter.importLetter',function (require) {
             // event.preventDefault();
             var self = this;
             var user = session.uid;
+            console.log('check_connection_function')
             rpc.query({
                 model: 'ubi.letter',
                 method: 'check_connection_function',
                 args: [user],
             }).then(function (data) {
-                alert(data);
+                //alert(data);
                 // self.do_action({
                 //     name: _t('Ирсэн бичиг'),
                 //     type: 'ir.actions.act_window',
