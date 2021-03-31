@@ -4,7 +4,7 @@
     
 
     <!-- settings 1 -->
-    <record id = "ubi_letter_settings_type_tree" model = "ir.ui.view">
+    <record id="ubi_letter_settings_type_tree" model = "ir.ui.view">
         <field name="name">ubi.letter.settings.type.tree</field>
         <field name="model">ubi.letter.type</field>
         <field name="arch" type = "xml">
@@ -35,7 +35,7 @@
     </record>
 
     <!-- settings 2 -->
-    <record id = "ubi_letter_settings_subject_tree" model = "ir.ui.view">
+    <record id="ubi_letter_settings_subject_tree" model = "ir.ui.view">
         <field name="name">ubi.letter.settings.subject.tree</field>
         <field name="model">ubi.letter.subject</field>
         <field name="arch" type = "xml">
@@ -70,7 +70,7 @@
     </record>
 
     <!-- settings 3 -->
-    <record id = "ubi_letter_settings_template_tree" model = "ir.ui.view">
+    <record id="ubi_letter_settings_template_tree" model = "ir.ui.view">
         <field name="name">ubi.letter.settings.template.tree</field>
         <field name="model">ubi.letter.template</field>
         <field name="arch" type = "xml">
@@ -132,7 +132,7 @@
     </record>
   
     <!--incoming-->
-    <record id = "ubi_letter_incoming_tree_view" model = "ir.ui.view">
+    <record id="ubi_letter_incoming_tree_view" model = "ir.ui.view">
         <field name="name">ubi.letter.subject.tree</field>
         <field name="model">ubi.letter</field>
         <field name="arch" type = "xml">
@@ -204,7 +204,7 @@
         </field>
     </record>
     <!--going-->
-    <record id = "ubi_letter_going_tree_view" model = "ir.ui.view">
+    <record id="ubi_letter_going_tree_view" model = "ir.ui.view">
         <field name="name">ubi.letter.subject.tree</field>
         <field name="model">ubi.letter</field>
         <field name="arch" type = "xml">
@@ -275,7 +275,7 @@
     </record>
 
     <!-- undsen -->
-    <record id = "ubi_action_planning_letter" model = "ir.actions.act_window">
+    <record id="ubi_action_planning_letter" model = "ir.actions.act_window">
         <field name="name">Бичиг төлөвлөлт</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ubi.letter</field>
@@ -287,7 +287,7 @@
         </field>
 
     </record>
-    <record id = "ubi_action_going_letter" model = "ir.actions.act_window">
+    <record id="ubi_action_going_letter" model = "ir.actions.act_window">
         <field name="name">Явсан бичиг</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ubi.letter</field>
@@ -303,7 +303,7 @@
 
     </record>
 
-    <record id = "ubi_action_incoming_letter" model = "ir.actions.act_window">
+    <record id="ubi_action_incoming_letter" model = "ir.actions.act_window">
         <field name="name">Ирсэн бичиг</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ubi.letter</field>
@@ -319,7 +319,7 @@
 
     </record>
 
-    <record id = "action_settings_letter_type" model = "ir.actions.act_window">
+    <record id="action_settings_letter_type" model = "ir.actions.act_window">
         <field name="name">Албан бичгийн төрөл</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ubi.letter.type</field>
@@ -333,7 +333,7 @@
             <p>Албан бичгийн төрөл</p>
         </field>
     </record>
-    <record id = "action_settings_letter_subject" model = "ir.actions.act_window">
+    <record id="action_settings_letter_subject" model = "ir.actions.act_window">
         <field name="name">Албан бичгийн тэргүү</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ubi.letter.subject</field>
@@ -347,7 +347,7 @@
             <p>Албан бичгийн тэргүү</p>
         </field>
     </record>
-    <record id = "action_settings_letter_template" model = "ir.actions.act_window">
+    <record id="action_settings_letter_template" model = "ir.actions.act_window">
         <field name="name">Албан бичгийн загвар</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ubi.letter.template</field>
@@ -364,46 +364,46 @@
 
     <!-- menu -->
     <menuitem 
-        id = "ubi_letter_root_menu"
-        name = "Албан бичиг"
-        sequence = "13"
+        id="ubi_letter_root_menu"
+        name="Албан бичиг"
+        sequence="13"
         groups="base.group_user"/>
     <menuitem 
-        id = "ubi_letter_menu1"
-        name = "Ирсэн бичиг" action = "ubi_action_incoming_letter"
-        parent = "ubi_letter_root_menu"
-        sequence = "1"/>
+        id="ubi_letter_menu1"
+        name="Ирсэн бичиг" action = "ubi_action_incoming_letter"
+        parent="ubi_letter_root_menu"
+        sequence="1"/>
     <menuitem 
-        id = "ubi_letter_menu2"
-        name = "Явсан бичиг" action = "ubi_action_going_letter"
-        parent = "ubi_letter_root_menu"
-        sequence = "2"/>
+        id="ubi_letter_menu2"
+        name="Явсан бичиг" action = "ubi_action_going_letter"
+        parent="ubi_letter_root_menu"
+        sequence="2"/>
     <menuitem   
-        id = "ubi_letter_menu3"
-        name = "Бичиг төлөвлөлт" action = "ubi_action_planning_letter"
-        parent = "ubi_letter_root_menu"
-        sequence = "3"/>
+        id="ubi_letter_menu3"
+        name="Бичиг төлөвлөлт" action = "ubi_action_planning_letter"
+        parent="ubi_letter_root_menu"
+        sequence="3"/>
     <menuitem 
-        id = "ubi_letter_menu4"
-        name = "Тохиргоо"
-        parent = "ubi_letter_root_menu"
-        sequence = "4"/>
+        id="ubi_letter_menu4"
+        name="Тохиргоо"
+        parent="ubi_letter_root_menu"
+        sequence="4"/>
 
     <menuitem 
-        id = "ubi_letter_menu_settings_type"
-        name = "Бичгийн төрөл" action = "action_settings_letter_type"
-        parent = "ubi_letter_menu4"
-        sequence = "1"/>
+        id="ubi_letter_menu_settings_type"
+        name="Бичгийн төрөл" action = "action_settings_letter_type"
+        parent="ubi_letter_menu4"
+        sequence="1"/>
     <menuitem 
-        id = "ubi_letter_menu_settings_subject"
-        name = "Бичгийн тэргүү" action = "action_settings_letter_subject"
-        parent = "ubi_letter_menu4"
-        sequence = "2"/>
+        id="ubi_letter_menu_settings_subject"
+        name="Бичгийн тэргүү" action = "action_settings_letter_subject"
+        parent="ubi_letter_menu4"
+        sequence="2"/>
     <menuitem 
-        id = "ubi_letter_menu_settings_template"
-        name = "Бичгийн загвар" action = "action_settings_letter_template"
-        parent = "ubi_letter_menu4"
-        sequence = "3"/>
+        id="ubi_letter_menu_settings_template"
+        name="Бичгийн загвар" action = "action_settings_letter_template"
+        parent="ubi_letter_menu4"
+        sequence="3"/>
     
 
 </odoo>
