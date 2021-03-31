@@ -5,9 +5,9 @@
 
     <!-- settings 1 -->
     <record id = "ubi_letter_settings_type_tree" model = "ir.ui.view">
-        <field name = "name">ubi.letter.settings.type.tree</field>
-        <field name = "model">ubi.letter.type</field>
-        <field name = "arch" type = "xml">
+        <field name="name">ubi.letter.settings.type.tree</field>
+        <field name="model">ubi.letter.type</field>
+        <field name="arch" type = "xml">
             <tree string = "Ubi Letter">
                 <field name="name"/>
                 <field name="code"/>            
@@ -36,9 +36,9 @@
 
     <!-- settings 2 -->
     <record id = "ubi_letter_settings_subject_tree" model = "ir.ui.view">
-        <field name = "name">ubi.letter.settings.subject.tree</field>
-        <field name = "model">ubi.letter.subject</field>
-        <field name = "arch" type = "xml">
+        <field name="name">ubi.letter.settings.subject.tree</field>
+        <field name="model">ubi.letter.subject</field>
+        <field name="arch" type = "xml">
             <tree string = "Ubi Letter">
                 <field name="name"/>
                 <field name="code"/>
@@ -71,9 +71,9 @@
 
     <!-- settings 3 -->
     <record id = "ubi_letter_settings_template_tree" model = "ir.ui.view">
-        <field name = "name">ubi.letter.settings.template.tree</field>
-        <field name = "model">ubi.letter.template</field>
-        <field name = "arch" type = "xml">
+        <field name="name">ubi.letter.settings.template.tree</field>
+        <field name="model">ubi.letter.template</field>
+        <field name="arch" type = "xml">
             <tree string = "Ubi Letter">
                 <field name="letter_template_name"/>
                 <field name="letter_template"/>
@@ -133,9 +133,9 @@
   
     <!--incoming-->
     <record id = "ubi_letter_incoming_tree_view" model = "ir.ui.view">
-        <field name = "name">ubi.letter.subject.tree</field>
-        <field name = "model">ubi.letter</field>
-        <field name = "arch" type = "xml">
+        <field name="name">ubi.letter.subject.tree</field>
+        <field name="model">ubi.letter</field>
+        <field name="arch" type = "xml">
             <tree string = "Ubi Letter">
                 <field name="received_date"/>
                 <field name="registered_date"/>
@@ -205,9 +205,9 @@
     </record>
     <!--going-->
     <record id = "ubi_letter_going_tree_view" model = "ir.ui.view">
-        <field name = "name">ubi.letter.subject.tree</field>
-        <field name = "model">ubi.letter</field>
-        <field name = "arch" type = "xml">
+        <field name="name">ubi.letter.subject.tree</field>
+        <field name="model">ubi.letter</field>
+        <field name="arch" type = "xml">
             <tree string = "Ubi Letter">
                 <field name="registered_date"/>
                 <field name="register_number"/>
@@ -276,88 +276,88 @@
 
     <!-- undsen -->
     <record id = "ubi_action_planning_letter" model = "ir.actions.act_window">
-        <field name = "name">Бичиг төлөвлөлт</field>
-        <field name = "type">ir.actions.act_window</field>
-        <field name = "res_model">ubi.letter</field>
-        <field name = "view_mode">kanban</field>
-        <field name = "context">{}</field>
-        <field name = "domain">[]</field>
-        <field name = "help" type = "html">
+        <field name="name">Бичиг төлөвлөлт</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ubi.letter</field>
+        <field name="view_mode">kanban</field>
+        <field name="context">{}</field>
+        <field name="domain">[]</field>
+        <field name="help" type = "html">
             <p>action_planning_letter</p>
         </field>
 
     </record>
     <record id = "ubi_action_going_letter" model = "ir.actions.act_window">
-        <field name = "name">Явсан бичиг</field>
-        <field name = "type">ir.actions.act_window</field>
-        <field name = "res_model">ubi.letter</field>
-        <field name = "view_mode">tree,form</field>
+        <field name="name">Явсан бичиг</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ubi.letter</field>
+        <field name="view_mode">tree,form</field>
         <field name="view_ids" eval="[(5, 0, 0),
             (0, 0, {'view_mode': 'tree', 'view_id': ref('ubisol_letters.ubi_letter_going_tree_view')}),
             (0, 0, {'view_mode': 'form', 'view_id': ref('ubisol_letters.ubi_letter_going_form_view')})]"/>
-        <field name = "context">{}</field>
-        <field name = "domain">[]</field>
-        <field name = "help" type = "html">
+        <field name="context">{}</field>
+        <field name="domain">[]</field>
+        <field name="help" type = "html">
             <p>action_going_letter</p>
         </field>
 
     </record>
 
     <record id = "ubi_action_incoming_letter" model = "ir.actions.act_window">
-        <field name = "name">Ирсэн бичиг</field>
-        <field name = "type">ir.actions.act_window</field>
-        <field name = "res_model">ubi.letter</field>
-        <field name = "view_mode">tree,form</field>
+        <field name="name">Ирсэн бичиг</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ubi.letter</field>
+        <field name="view_mode">tree,form</field>
         <field name="view_ids" eval="[(5, 0, 0),
             (0, 0, {'view_mode': 'tree', 'view_id': ref('ubisol_letters.ubi_letter_incoming_tree_view')},),
             (0, 0, {'view_mode': 'form', 'view_id': ref('ubisol_letters.ubi_letter_incoming_form_view')})]"/>
-        <field name = "context">{}</field>
-        <field name = "domain">[]</field>
-        <field name = "help" type = "html">
+        <field name="context">{}</field>
+        <field name="domain">[]</field>
+        <field name="help" type = "html">
             <p>action_incoming_letter</p>
         </field>
 
     </record>
 
     <record id = "action_settings_letter_type" model = "ir.actions.act_window">
-        <field name = "name">Албан бичгийн төрөл</field>
-        <field name = "type">ir.actions.act_window</field>
-        <field name = "res_model">ubi.letter.type</field>
-        <field name = "view_mode">tree,form</field>
+        <field name="name">Албан бичгийн төрөл</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ubi.letter.type</field>
+        <field name="view_mode">tree,form</field>
         <field name="view_ids" eval="[(5, 0, 0),
             (0, 0, {'view_mode': 'tree', 'view_id': ref('ubisol_letters.ubi_letter_settings_type_tree')},),
             (0, 0, {'view_mode': 'form', 'view_id': ref('ubisol_letters.ubi_letter_settings_type_form')})]"/>
-        <field name = "context">{}</field>
-        <field name = "domain">[]</field>
-        <field name = "help" type = "html">
+        <field name="context">{}</field>
+        <field name="domain">[]</field>
+        <field name="help" type = "html">
             <p>Албан бичгийн төрөл</p>
         </field>
     </record>
     <record id = "action_settings_letter_subject" model = "ir.actions.act_window">
-        <field name = "name">Албан бичгийн тэргүү</field>
-        <field name = "type">ir.actions.act_window</field>
-        <field name = "res_model">ubi.letter.subject</field>
-        <field name = "view_mode">tree,form</field>
+        <field name="name">Албан бичгийн тэргүү</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ubi.letter.subject</field>
+        <field name="view_mode">tree,form</field>
         <field name="view_ids" eval="[(5, 0, 0),
             (0, 0, {'view_mode': 'tree', 'view_id': ref('ubisol_letters.ubi_letter_settings_subject_tree')},),
             (0, 0, {'view_mode': 'form', 'view_id': ref('ubisol_letters.ubi_letter_settings_subject_form')})]"/>
-        <field name = "context">{}</field>
-        <field name = "domain">[]</field>
-        <field name = "help" type = "html">
+        <field name="context">{}</field>
+        <field name="domain">[]</field>
+        <field name="help" type = "html">
             <p>Албан бичгийн тэргүү</p>
         </field>
     </record>
     <record id = "action_settings_letter_template" model = "ir.actions.act_window">
-        <field name = "name">Албан бичгийн загвар</field>
-        <field name = "type">ir.actions.act_window</field>
-        <field name = "res_model">ubi.letter.template</field>
-        <field name = "view_mode">tree,form</field>
+        <field name="name">Албан бичгийн загвар</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ubi.letter.template</field>
+        <field name="view_mode">tree,form</field>
         <field name="view_ids" eval="[(5, 0, 0),
             (0, 0, {'view_mode': 'tree', 'view_id': ref('ubisol_letters.ubi_letter_settings_template_tree')},),
             (0, 0, {'view_mode': 'form', 'view_id': ref('ubisol_letters.ubi_letter_settings_template_form')})]"/>
-        <field name = "context">{}</field>
-        <field name = "domain">[]</field>
-        <field name = "help" type = "html">
+        <field name="context">{}</field>
+        <field name="domain">[]</field>
+        <field name="help" type = "html">
             <p>Албан бичгийн загвар</p>
         </field>
     </record>
