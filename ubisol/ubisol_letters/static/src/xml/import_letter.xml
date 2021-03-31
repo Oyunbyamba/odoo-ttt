@@ -2,7 +2,8 @@
     <template xml:space="preserve">
         <t t-extend="ListView.buttons">
             <t t-jquery="button.o_list_button_add" t-operation="after">
-                <button t-if='widget.modelName == "ubi.letter"' type="button" class="btn btn-primary oe_import_letter" accesskey="f">Албан бичиг татах</button>
+                <button t-if='widget.modelName == "ubi.letter"' type="button" class="btn btn-success fa fa-download o_button_to_call_import_letter">
+                </button>
             </t>
         </t>
     </template>

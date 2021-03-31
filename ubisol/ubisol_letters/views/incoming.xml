@@ -2,10 +2,9 @@
 
 <odoo>
     <!--incoming-->
-
-    <template id="button_render_js" inherit_id="web.assets_backend">
+    <template id="assets_backend_ubisol_letters" name="Import letter" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
-            <script src="ubisol_letter/static/src/js/import_letter.js" type="text/javascript"/>
+            <script type="text/javascript" src="/ubisol_letters/static/src/js/import_letter.js"/>
         </xpath>
     </template>
 
@@ -13,7 +12,7 @@
         <field name="name">ubi.letter.subject.tree</field>
         <field name="model">ubi.letter</field>
         <field name="arch" type="xml">
-            <tree string="Ubi Letter">
+            <tree string="Ubi Letter" import='false' export_xlsx='false'>
                 <field name="received_date"/>
                 <field name="registered_date"/>
                 <field name="register_number"/>

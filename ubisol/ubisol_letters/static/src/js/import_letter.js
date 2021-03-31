@@ -1,4 +1,4 @@
-odoo.define('ubisol_letter.importLetter',function (require) {
+odoo.define('import_letter.importLetter',function (require) {
     "use strict";
     
     var core = require('web.core');
@@ -11,27 +11,27 @@ odoo.define('ubisol_letter.importLetter',function (require) {
         renderButtons: function($node){
             this._super.apply(this, arguments);
             if (this.$buttons) {
-                this.$buttons.on('click', '.oe_import_letter', this.action_to_call_import_letter.bind(this));
+                this.$buttons.on('click', '.o_button_to_call_import_letter', this.action_to_call_import_letter.bind(this));
                 this.$buttons.appendTo($node);
             }
         },
         action_to_call_import_letter: function(event) {
-            event.preventDefault();
+            // event.preventDefault();
             var self = this;
             var user = session.uid;
-
             rpc.query({
                 model: 'ubi.letter',
-                method: 'model_function',
-                args: [[user],{'id':user}],
-            }).then(function (e) {
-                self.do_action({
-                    name: _t('Ирсэн бичиг'),
-                    type: 'ir.actions.act_window',
-                    res_model: 'ubi.letter',
-                    views: [[false,tree,form]],
-                    view_mode: 'tree,form'
-                });
+                method: 'check_connection_function',
+                args: [user],
+            }).then(function (data) {
+                alert(data);
+                // self.do_action({
+                //     name: _t('Ирсэн бичиг'),
+                //     type: 'ir.actions.act_window',
+                //     res_model: 'ubi.letter',
+                //     views: [[false,tree,form]],
+                //     view_mode: 'tree,form'
+                // });
             });
         
         },

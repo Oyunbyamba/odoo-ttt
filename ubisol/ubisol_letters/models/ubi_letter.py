@@ -69,7 +69,6 @@ class UbiLetter(models.Model):
         ('return', 'return')],
         groups="hr.group_hr_user",
         string='Төлөв', store=True, readonly=True, copy=False, tracking=True)
-
     
     @api.onchange('letter_template_id')
     def _set_letter_template(self):
@@ -96,13 +95,6 @@ class UbiLetter(models.Model):
                         "$number", number_str)
                     print("hudal")     
    
-
-
-
-
-
-                
-
     @api.onchange('partner_id')
     def _set_letter_template3(self):
         if self.custom_letter_template:
@@ -111,3 +103,12 @@ class UbiLetter(models.Model):
             partner_id_str = str(partner_id)
             self.custom_letter_template = string.replace(
                 "$where", partner_id_str)
+
+    @api.model
+    def check_connection_function(self, user):
+        _logger.info(self.id)
+        _logger.info(user)
+        card_number = '0001'
+        self.env['ubi.letter'].create({'card_number': card_number})
+
+        return 'done'

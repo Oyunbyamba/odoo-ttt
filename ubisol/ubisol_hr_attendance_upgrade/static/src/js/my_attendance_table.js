@@ -1,4 +1,4 @@
-odoo.define("attendance_table.RenderTable", function(require) {
+odoo.define("my_attendance_table.RenderTable", function(require) {
   "use strict";
 
   var FormController = require("web.FormController");
