@@ -12,8 +12,11 @@
     'data': [
         'security/ir.model.access.csv',
         'data/data.xml',
-        'views/templates.xml',
-        'views/views.xml',
+        'views/going.xml',
+        'views/incoming.xml',
+        'views/menu.xml',
+        'views/planning.xml',
+        'views/settings.xml',
         'report/letter_detail.xml',
         'report/report.xml',
 

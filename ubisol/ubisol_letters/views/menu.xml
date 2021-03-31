@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <!-- menu -->
+    <menuitem id="ubi_letter_root_menu" name="Албан бичиг" sequence="13" groups="base.group_user"/>
+    <menuitem id="ubi_letter_menu1" name="Ирсэн бичиг" action = "ubi_action_incoming_letter" parent="ubi_letter_root_menu" sequence="1"/>
+    <menuitem id="ubi_letter_menu2" name="Явсан бичиг" action = "ubi_action_going_letter" parent="ubi_letter_root_menu" sequence="2"/>
+    <menuitem id="ubi_letter_menu3" name="Бичиг төлөвлөлт" action = "ubi_action_planning_letter" parent="ubi_letter_root_menu" sequence="3"/>
+    <menuitem id="ubi_letter_menu4" name="Тохиргоо" parent="ubi_letter_root_menu" sequence="4"/>
+
+    <menuitem id="ubi_letter_menu_settings_type" name="Бичгийн төрөл" action = "action_settings_letter_type" parent="ubi_letter_menu4" sequence="1"/>
+    <menuitem id="ubi_letter_menu_settings_subject" name="Бичгийн тэргүү" action = "action_settings_letter_subject" parent="ubi_letter_menu4" sequence="2"/>
+    <menuitem id="ubi_letter_menu_settings_template" name="Бичгийн загвар" action = "action_settings_letter_template" parent="ubi_letter_menu4" sequence="3"/>
+
+</odoo>
