@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <!--incoming-->
+    <record id="ubi_letter_incoming_tree_view" model = "ir.ui.view">
+        <field name="name">ubi.letter.subject.tree</field>
+        <field name="model">ubi.letter</field>
+        <field name="arch" type = "xml">
+            <tree string = "Ubi Letter">
+                <field name="received_date"/>
+                <field name="registered_date"/>
+                <field name="register_number"/>
+                <field name="card_number"/>
+                <field name="letter_number"/>
+                <field name="letter_type_id"/>
+                <field name="letter_subject_id"/>
+                <field name="letter_template_id"/>
+                <field name="letter_total_num"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <field name="department_id"/>
+                <field name="is_local"/>
+                <field name="must_return"/>
+                <field name="return_date"/>
+            </tree>
+        </field>
+    </record>
+    <record id="ubi_letter_incoming_form_view" model="ir.ui.view">
+        <field name="name">ubi.letter.subject.form</field>
+        <field name="model">ubi.letter</field>
+        <field name="arch" type="xml">
+            <form string="Ubi Letter">
+                <header>
+                    <field name="receiving_state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <notebook>
+                        <page string="Үндсэн">
+                            <group>
+                                <group string="Үндсэн мэдээлэл">
+                                    <field name="letter_subject_id"/>
+                                    <field name="received_date" invisible="1"/>
+                                    <field name="letter_date"/>
+                                    <field name="letter_number"/>
+                                    <field name="letter_type_id"/>
+                                    <field name="letter_total_num"/>
+                                    <field name="desc" widget="text"/>
+                                </group>
+
+                                <group string="Хаанаас хэнд">
+                                    <field name="partner_id"/>
+                                    <field name="department_id"/>
+                                    <field name="user_id" />
+                                </group>
+                                <group>
+
+                                    <field name="is_local"/>
+                                    <field name="must_return"/>
+                                    <field name="is_head_company"/>
+                                    <field name="return_date"/>
+
+                                </group>
+                                <group string="Бүртгэлийн мэдээлэл">
+                                    <field name="register_number"/>
+                                    <field name="card_number"/>
+                                    <field name="registered_date" />
+                                </group>
+
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+        
+
+    <record id="ubi_action_incoming_letter" model = "ir.actions.act_window">
+        <field name="name">Ирсэн бичиг</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ubi.letter</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('ubisol_letters.ubi_letter_incoming_tree_view')},),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('ubisol_letters.ubi_letter_incoming_form_view')})]"/>
+        <field name="context">{}</field>
+        <field name="domain">[]</field>
+        <field name="help" type = "html">
+            <p>action_incoming_letter</p>
+        </field>
+
+    </record>
+</odoo>
