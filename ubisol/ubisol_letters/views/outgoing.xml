@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
+
     <!--going-->
     <record id="ubi_letter_going_tree_view" model="ir.ui.view">
         <field name="name">ubi.letter.subject.tree</field>

@@ -412,9 +412,10 @@ class UbiLetter(models.Model):
         print(result.status_code)
         print(result.content)
         mytree = ET.fromstring(result.content)
-        data = ''.join(mytree.itertext())
-        print(data)
-        return data
+        find = (mytree.findall(
+            './/{https://dev.docx.gov.mn/document/dto}data'))
+        print(find)
+        return ((mytree.findall("./")))
 
     def letter_send_function(self):
         selected_ids = self.env.context.get('active_ids', [])
