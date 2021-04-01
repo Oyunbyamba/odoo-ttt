@@ -48,6 +48,8 @@
                             <field name="department_id" string='Хаанаас'/>
                             <field name="is_local" string='Дотоод бичиг'/>
                             <field name="must_return" string='Хариутай эсэх'/>
+                            <field name="must_return_date" attrs="{'invisible': [('must_return','!=',True)]}"/>
+
                         </group>
 
                         <group string="Хавсралт">
