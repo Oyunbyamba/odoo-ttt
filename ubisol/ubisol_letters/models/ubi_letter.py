@@ -27,7 +27,6 @@ class UbiLetter(models.Model):
     draft_user_id = fields.Many2one('res.users', groups="base.group_user")
     confirm_user_id = fields.Many2one('res.users', groups="base.group_user")
     validate_user_id = fields.Many2one('res.users', groups="base.group_user")
-    created_user_id = fields.Many2one('res.users', groups="base.group_user")
 
     letter_attachment_id = fields.Many2many('ir.attachment', 'letter_doc_attach', 'letter_id', 'doc_id', string="Хавсралт", copy=False)
 
@@ -48,7 +47,7 @@ class UbiLetter(models.Model):
         string='Хуудасны тоо', help="Хуудасны тоо", groups="base.group_user")
     desc = fields.Char(string='Товч утга', groups="base.group_user")
     must_return_date = fields.Date(
-        string='Хариу ируулэх огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
+        string='Хариу ирүүлэх огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
     received_date = fields.Date(
         string='Хүлээн авсан огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
     registered_date = fields.Datetime(
