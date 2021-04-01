@@ -378,21 +378,16 @@ class UbiLetter(models.Model):
         # result = client.service.call(data)
         # print(result)
 
-        target_url = "https://dev.docx.gov.mn/soap/api"
-        headers = {'Content-type': 'text/xml'}
-        result = requests.post(target_url, data=data.encode(encoding='utf-8'),
-                               headers=headers, verify=False)
-        print(result.status_code)
-        print(result.content)
-        mytree = ET.fromstring(result.content)
-       
-        data = mytree.findall(".//callResponse")
-        print(data)
-        for node in data:
-            print(node)
-
-        return 'done'
-
+        target_url = "https://dev.docx.gov.mn/soap/api" 
+        headers = {'Content-type': 'text/xml'} 
+        result = requests.post(target_url, data=data.encode(encoding='utf-8'), headers=headers, verify=False) 
+        print(result.status_code) 
+        print(result.content) 
+        mytree = ET.fromstring(result.content) 
+        data = ''.join(mytree.itertext()) 
+        print(data) 
+        return data
+        
     def letter_send_function(self):
         _logger.info(self)
 
