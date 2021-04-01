@@ -44,11 +44,11 @@ class UbiLetter(models.Model):
     received_date = fields.Date(
         string='Хүлээн авсан огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
     registered_date = fields.Datetime(
-        string='Бүртгэсэн огноо', default=datetime.now().strftime('%Y-%m-%d %H:%i:%s'), groups="base.group_user")
+        string='Бүртгэсэн огноо', default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), groups="base.group_user")
     decide_date = fields.Date(
         string='Шийдвэрлэх огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
     letter_date = fields.Date(string='Баримтын огноо', groups="base.group_user")
-    processing_datetime = fields.Datetime(string='Явцын огноо', default=datetime.now().strftime('%Y-%m-%d %H:%i:%s'), groups="base.group_user")
+    processing_datetime = fields.Datetime(string='Явцын огноо', default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), groups="base.group_user")
     # partner_ids = fields.Many2many(
     #     'res.partner', string='Хаанаас', groups="base.group_user")
     partner_id = fields.Many2one(
