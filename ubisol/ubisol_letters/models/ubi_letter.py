@@ -17,7 +17,7 @@ _logger = logging.getLogger(__name__)
 class UbiLetter(models.Model):
     _name = "ubi.letter"
     _description = " "
-    _rec_name = 'letter_subject_id'
+    _rec_name = 'letter_number'
 
     def _get_default_note(self):
         result = """"""
@@ -104,10 +104,10 @@ class UbiLetter(models.Model):
         groups="base.group_user",
         default='draft',
         string='Төлөв', store=True, readonly=True, copy=False, tracking=True)
-    going_letter_number = fields.Many2one(
-        'ubi.letter', string='Ирсэн бичгийн хариу', compute='_compute_going_letter_response', groups="base.group_user")
-    coming_letter_number = fields.Many2one(
-        'ubi.letter', string='Явсан бичгийн хариу', compute='_compute_coming_letter_response', groups="base.group_user")
+    going_letters = fields.Many2one(
+        'ubi.letter', string='Ирсэн бичгийн хариу', domain=[('letter_status', '=', 'going')], groups="base.group_user")
+    coming_letters = fields.Many2one(
+        'ubi.letter', string='Явсан бичгийн хариу', domain=[('letter_status', '=', 'coming')], groups="base.group_user")
     
 
     @api.onchange('letter_template_id')
@@ -331,12 +331,9 @@ class UbiLetter(models.Model):
 
     @api.model
     def create(self, vals):
-        vals['letter_status'] = 'going'
-
-        if vals.get('received_date'):
-            vals['letter_status'] = 'coming'
+        if vals.get('letter_status') == 'coming':
             vals['going_state'] = None
-        else:
+        elif vals.get('letter_status') == 'going':
             vals['coming_state'] = None    
 
         letter = super(UbiLetter, self).create(vals)
@@ -419,3 +416,13 @@ class UbiLetter(models.Model):
 
     def action_refuse(self):
         self.write({'coming_state': 'refuse'})
+
+    @api.model
+    def _compute_going_letter_response(self):
+        going_letters = self.env['ubi.letter'].search([('letter_status', '=', 'going')])
+        _logger.info(going_letters)
+        self.going_letters = going_letters
+
+    def _compute_coming_letter_response(self):
+        coming_letters = self.env['ubi.letter'].search([('letter_status', '=', 'coming')])
+        self.coming_letters = coming_letters
