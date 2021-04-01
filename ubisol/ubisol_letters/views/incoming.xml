@@ -68,8 +68,12 @@
                             <field name="letter_attachment_id" widget="many2many_binary"/>
                         </group>
                     </group>
-                    <group>
-                    </group>    
+                    <group string='Явсан бичгийн хариу'>
+                        <field name="coming_letters"/>
+                        <field name="computed_letter_type_id"/>
+                        <field name="computed_letter_subject_id"/>
+                        <field name="computed_letter_desc"/>
+                    </group>   
                     <notebook>
                         <page string="Агуулга">
                             <field name="desc" widget="text"/>
