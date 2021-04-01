@@ -31,7 +31,7 @@ class UbiLetter(models.Model):
 
     letter_attachment_id = fields.Many2many('ir.attachment', 'letter_doc_attach', 'letter_id', 'doc_id', string="Хавсралт", copy=False)
 
-    is_local = fields.Boolean(string='Дотоод бичиг', groups="base.group_user", default=0)
+    is_local = fields.Boolean(string='Дотоод бичиг', groups="base.group_user", default=False)
     letter_status = fields.Selection([
         ('coming', 'Ирсэн'),
         ('going', 'Явсан'),
@@ -48,7 +48,7 @@ class UbiLetter(models.Model):
         string='Хуудасны тоо', help="Хуудасны тоо", groups="base.group_user")
     desc = fields.Char(string='Товч утга', groups="base.group_user")
     must_return_date = fields.Date(
-        string='огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
+        string='Хариу ируулэх огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
     received_date = fields.Date(
         string='Хүлээн авсан огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
     registered_date = fields.Datetime(
@@ -74,8 +74,8 @@ class UbiLetter(models.Model):
     department_id = fields.Many2one(
         'hr.department', string='Хариуцах Хэлтэс', groups="base.group_user")
     user_id = fields.Many2one(
-        'res.users', string='Хэнд', groups="base.group_user")
-
+        'res.users', string='Хэнд')
+    official_person = fields.Char('Албан тушаалтан', groups="base.group_user")
     must_return = fields.Boolean(
         string='Хариу өгөх', default=False, groups="base.group_user")
     is_head_company = fields.Boolean(
@@ -93,8 +93,8 @@ class UbiLetter(models.Model):
         ('refuse', 'Буцаасан'),
         ('draft', 'Ирсэн'),
         ('receive', 'Хүлээн авсан'),
-        ('review', 'Судлаж байгаа'),
         ('transfer', 'Шилжүүлсэн'),
+        ('review', 'Судлаж байгаа'),
         ('validate', 'Шийдвэрлэсэн')],
         groups="base.group_user",
         default='draft',
@@ -335,6 +335,9 @@ class UbiLetter(models.Model):
 
         if vals.get('received_date'):
             vals['letter_status'] = 'coming'
+            vals['return_state'] = None
+        else:
+            vals['receiving_state'] = None    
 
         letter = super(UbiLetter, self).create(vals)
 
@@ -393,6 +396,8 @@ class UbiLetter(models.Model):
 
         return 'done'
 
+    def letter_send_function(self):
+        _logger.info(self)
 
     def action_sent(self):
         self.write({'return_state': 'sent'})

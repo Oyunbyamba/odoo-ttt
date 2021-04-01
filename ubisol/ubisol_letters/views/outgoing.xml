@@ -45,8 +45,9 @@
 
                         <group string="Бүртгэл">
                             <field name="partner_id" string='Хаана'/>
+                            <field name="official_person" string='Хэнд'/>
                             <field name="department_id" string='Хаанаас'/>
-                            <field name="is_local" string='Дотоод бичиг'/>
+                            <field name="is_local" string='Дотоод бичиг'/>  
                             <field name="must_return" string='Хариутай эсэх'/>
                             <field name="must_return_date" attrs="{'invisible': [('must_return','!=',True)]}"/>
 
@@ -89,6 +90,17 @@
                 Add a new document
             </p>
         </field>
-
     </record>
+
+    <record model="ir.actions.server" id="action_letter_send">
+        <field name="name">Илгээх</field>
+        <field name="model_id" ref="model_ubi_letter"/>
+        <field name="binding_model_id" ref="model_ubi_letter" />
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                records.letter_send_function()
+        </field>
+    </record>
+
 </odoo>
