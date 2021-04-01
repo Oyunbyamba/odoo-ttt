@@ -35,8 +35,8 @@
             <form string="Ubi Letter">
                 <header>
                     <button string="Хүлээн авах" name="action_receive" type="object" class="oe_highlight" attrs="{'invisible': [('receiving_state', 'not in', ('draft'))]}"/>
-                    <button string="Судлаж байгаа" name="action_review" type="object" class="oe_highlight" attrs="{'invisible': [('receiving_state', 'not in', ('receive', 'conflict'))]}"/>
-                    <button string="Шилжүүлсэн" name="action_transfer" type="object" class="oe_highlight" attrs="{'invisible': [('receiving_state', 'not in', ('review'))]}"/>
+                    <button string="Шилжүүлсэн" name="action_transfer" type="object" class="oe_highlight" attrs="{'invisible': [('receiving_state', 'not in', ('receive', 'refuse'))]}"/>
+                    <button string="Судлаж байгаа" name="action_review" type="object" class="oe_highlight" attrs="{'invisible': [('receiving_state', 'not in', ('transfer', 'conflict', 'refuse'))]}"/>
                     <button string="Шийдвэрлэсэн" name="action_validate" type="object" class="oe_highlight" attrs="{'invisible': [('receiving_state', 'not in', ('transfer', 'conflict'))]}"/>
                     <button string="Зөрчилтэй" name="action_conflict" type="object" attrs="{'invisible': [('receiving_state', 'in', ('validate', 'transfer', 'refuse', 'conflict'))]}"/>
                     <button string="Буцаасан" name="action_refuse" type="object" attrs="{'invisible': [('receiving_state', 'in', ('validate', 'conflict', 'refuse'))]}"/>
@@ -55,8 +55,9 @@
 
                         <group string="Бүртгэл">
                             <field name="partner_id"/>
-                            <field name="user_id" />
-                            <field name="is_local" string='Дотоод бичиг'/>
+                            <field name='official_person' string='Хэнээс' attrs="{'invisible': ['|', ('receiving_state', 'in', ('draft'))]}"/>
+                            <field name="user_id" attrs="{'invisible': [('receiving_state', 'in', ('draft'))]}"/>
+                            <!-- <field name="is_local" string='Дотоод бичиг'/> -->
                             <field name="is_head_company" string='Дээд газраас ирсэн'/>
                             <field name="must_return" string='Хариутай эсэх'/>
                         </group>
