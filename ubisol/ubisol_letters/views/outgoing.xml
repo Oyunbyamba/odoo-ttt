@@ -66,8 +66,8 @@
 
                         <group string='Ирсэн бичгийн хариу'>
                             <field name="coming_letters"/>
-                            <field name="computed_letter_type_id"/>
-                            <field name="computed_letter_subject_id"/>
+                            <field name="computed_letter_type"/>
+                            <field name="computed_letter_subject"/>
                             <field name="computed_letter_desc"/>
                         </group>
                     </group>
