@@ -111,11 +111,38 @@ class UbiLetter(models.Model):
         'ubi.letter', string='Ирсэн бичгийн хариу', domain=[('letter_status', '=', 'going')], groups="base.group_user")
     coming_letters = fields.Many2one(
         'ubi.letter', string='Явсан бичгийн хариу', domain=[('letter_status', '=', 'coming')], groups="base.group_user")
+    computed_letter_type = fields.Char(string='Баримтын төрөл', compute='_computed_letter_type', groups="base.group_user")
+    computed_letter_subject = fields.Char(string='Баримтын төрөл', compute='_computed_letter_subject', groups="base.group_user")
+    computed_letter_desc = fields.Char(string='Агуулга', compute='_computed_letter_desc', groups="base.group_user")
 
     @api.onchange('letter_template_id')
     def _set_letter_template(self):
         if self.letter_template_text:
             self.custom_letter_template = self.letter_template_text
+
+    @api.onchange('going_letters', 'coming_letters')
+    def _computed_letter_type(self):
+        if self.going_letters:
+            self.follow_id = self.going_letters.id
+            self.computed_letter_type = self.going_letters.letter_type_id.name if self.going_letters.letter_type_id else ''
+        elif self.coming_letters:
+            self.follow_id = self.coming_letters.id
+            self.computed_letter_type = self.coming_letters.letter_type_id.name if self.coming_letters.letter_type_id else ''
+
+    @api.onchange('going_letters', 'coming_letters')
+    def _computed_letter_subject(self):
+        if self.going_letters:
+            self.computed_letter_subject = self.going_letters.letter_subject_id.name if self.going_letters.letter_subject_id else ''
+        elif self.coming_letters:
+            self.computed_letter_subject = self.coming_letters.letter_subject_id.name if self.coming_letters.letter_subject_id else ''
+
+    @api.onchange('going_letters', 'coming_letters')
+    def _computed_letter_desc(self):
+        if self.going_letters:
+            self.computed_letter_desc = self.going_letters.desc
+        elif self.coming_letters:
+            self.computed_letter_desc = self.coming_letters.desc
+
 
     @api.onchange('letter_number')
     def _set_letter_template1(self):
@@ -415,17 +442,6 @@ class UbiLetter(models.Model):
         self.write({'coming_state': 'refuse'})
 
     @api.model
-    def _compute_going_letter_response(self):
-        going_letters = self.env['ubi.letter'].search(
-            [('letter_status', '=', 'going')])
-        _logger.info(going_letters)
-        self.going_letters = going_letters
-
-    def _compute_coming_letter_response(self):
-        coming_letters = self.env['ubi.letter'].search(
-            [('letter_status', '=', 'coming')])
-        self.coming_letters = coming_letters
-
     def prepare_sending(self, ids):
         letters = self.env['ubi.letter'].browse(ids)
         for letter in letters:
