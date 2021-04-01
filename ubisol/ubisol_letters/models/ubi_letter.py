@@ -30,7 +30,7 @@ class UbiLetter(models.Model):
 
     letter_attachment_id = fields.Many2many('ir.attachment', 'letter_doc_attach', 'letter_id', 'doc_id', string="Хавсралт", copy=False)
 
-    is_local = fields.Boolean(string='Дотоод бичиг', groups="base.group_user", default=False)
+    is_local = fields.Boolean(string='Дотоод бичиг', groups="base.group_user", default=0)
     letter_status = fields.Selection([
         ('coming', 'Ирсэн'),
         ('going', 'Явсан'),
@@ -73,8 +73,8 @@ class UbiLetter(models.Model):
     department_id = fields.Many2one(
         'hr.department', string='Хариуцах Хэлтэс', groups="base.group_user")
     user_id = fields.Many2one(
-        'res.users', string='Хэнд')
-    official_person = fields.Char('Албан тушаалтан', groups="base.group_user")
+        'res.users', string='Хэнд', groups="base.group_user")
+
     must_return = fields.Boolean(
         string='Хариу өгөх', default=False, groups="base.group_user")
     is_head_company = fields.Boolean(
@@ -92,8 +92,8 @@ class UbiLetter(models.Model):
         ('refuse', 'Буцаасан'),
         ('draft', 'Ирсэн'),
         ('receive', 'Хүлээн авсан'),
-        ('transfer', 'Шилжүүлсэн'),
         ('review', 'Судлаж байгаа'),
+        ('transfer', 'Шилжүүлсэн'),
         ('validate', 'Шийдвэрлэсэн')],
         groups="base.group_user",
         default='draft',
@@ -385,16 +385,10 @@ class UbiLetter(models.Model):
         print(result.status_code)
         print(result.content)
         mytree = ET.fromstring(result.content)
-       
-        data = mytree.findall(".//callResponse")
-        print(data)
-        for node in data:
-            print(node)
+        print(''.join(mytree.itertext()))
+        data = ''.join(mytree.itertext())
+        return data
 
-        return 'done'
-
-    def letter_send_function(self):
-        _logger.info(self)
 
     def action_sent(self):
         self.write({'going_state': 'sent'})
