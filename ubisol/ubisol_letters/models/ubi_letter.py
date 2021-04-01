@@ -104,6 +104,10 @@ class UbiLetter(models.Model):
         groups="base.group_user",
         default='draft',
         string='Төлөв', store=True, readonly=True, copy=False, tracking=True)
+    outgoing_letter_number = fields.Many2one(
+        'ubi.letter', string='Явсан бичгийн дугаар', compute='', groups="base.group_user")
+
+   
 
     @api.onchange('letter_template_id')
     def _set_letter_template(self):
@@ -383,7 +387,7 @@ class UbiLetter(models.Model):
         print(result.status_code)
         print(result.content)
         mytree = ET.fromstring(result.content)
-        mytree.get_root()
+       
         data = mytree.findall(".//callResponse")
         print(data)
         for node in data:
