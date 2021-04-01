@@ -15,66 +15,69 @@ class UbiLetter(models.Model):
 
     def _get_default_note(self):
         result = ""
-
         return result
-    follow_id = fields.Many2one('ubi.letter', groups="hr.group_hr_user")
-    draft_user_id = fields.Many2one('res.users', groups="hr.group_hr_user")
-    confirm_user_id = fields.Many2one('res.users', groups="hr.group_hr_user")
-    validate_user_id = fields.Many2one('res.users', groups="hr.group_hr_user")
+
+    follow_id = fields.Many2one('ubi.letter', groups="base.group_user")
+    draft_user_id = fields.Many2one('res.users', groups="base.group_user")
+    confirm_user_id = fields.Many2one('res.users', groups="base.group_user")
+    validate_user_id = fields.Many2one('res.users', groups="base.group_user")
+    created_user_id = fields.Many2one('res.users', groups="base.group_user")
+
     letter_attachment_id = fields.Many2many('ir.attachment', 'letter_doc_attach', 'letter_id', 'doc_id', string="Хавсралт", copy=False)
 
-    is_local = fields.Boolean(string='Дотоод бичиг', groups="hr.group_hr_user", default=0)
+    is_local = fields.Boolean(string='Дотоод бичиг', groups="base.group_user", default=0)
     letter_status = fields.Selection([
         ('coming', 'Ирсэн'),
         ('going', 'Явсан'),
         ('planning', 'Төлөвлөлт')],
-        groups="hr.group_hr_user",
+        groups="base.group_user",
         string='Төлөв', store=True, readonly=True, copy=False, tracking=True)
     card_number = fields.Integer(
-        string='Картын дугаар', help="Картын дугаар", groups="hr.group_hr_user")
-    letter_number = fields.Integer(
-        string='Баримтын дугаар', help="Баримтын дугаар", groups="hr.group_hr_user")
+        string='Картын дугаар', help="Картын дугаар", groups="base.group_user")
+    letter_number = fields.Char(
+        string='Баримтын дугаар', help="Баримтын дугаар", groups="base.group_user")
     register_number = fields.Integer(
-        string='Бүртгэлийн дугаар', help="Бүртгэлийн дугаар", groups="hr.group_hr_user")
+        string='Бүртгэлийн дугаар', help="Бүртгэлийн дугаар", groups="base.group_user")
     letter_total_num = fields.Integer(
-        string='Хуудасны тоо', help="Хуудасны тоо", groups="hr.group_hr_user")
-    desc = fields.Char(string='Товч утга', groups="hr.group_hr_user")
+        string='Хуудасны тоо', help="Хуудасны тоо", groups="base.group_user")
+    desc = fields.Char(string='Товч утга', groups="base.group_user")
     received_date = fields.Date(
-        string='Хүлээн авсан огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="hr.group_hr_user")
-    registered_date = fields.Date(
-        string='Бүртгэсэн огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="hr.group_hr_user")
+        string='Хүлээн авсан огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
+    registered_date = fields.Datetime(
+        string='Бүртгэсэн огноо', default=datetime.now().strftime('%Y-%m-%d %H:%i:%s'), groups="base.group_user")
     decide_date = fields.Date(
-        string='Шийдвэрлэх огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="hr.group_hr_user")
-    letter_date = fields.Date(string='Баримтын огноо', groups="hr.group_hr_user")
+        string='Шийдвэрлэх огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
+    letter_date = fields.Date(string='Баримтын огноо', groups="base.group_user")
+    processing_datetime = fields.Datetime(string='Явцын огноо', default=datetime.now().strftime('%Y-%m-%d %H:%i:%s'), groups="base.group_user")
     # partner_ids = fields.Many2many(
-    #     'res.partner', string='Хаанаас', groups="hr.group_hr_user")
+    #     'res.partner', string='Хаанаас', groups="base.group_user")
     partner_id = fields.Many2one(
-        'res.partner', string='Хаанаас', groups="hr.group_hr_user")    
+        'res.partner', string='Хаанаас', groups="base.group_user")    
     letter_type_id = fields.Many2one(
-        'ubi.letter.type', string='Баримтын төрөл', groups="hr.group_hr_user")
+        'ubi.letter.type', string='Баримтын төрөл', groups="base.group_user")
     letter_subject_id = fields.Many2one(
-        'ubi.letter.subject', string='Баримтын тэргүү', groups="hr.group_hr_user")
+        'ubi.letter.subject', string='Баримтын тэргүү', groups="base.group_user")
     letter_template_id = fields.Many2one(
-        'ubi.letter.template', string='Баримтын загвар', groups="hr.group_hr_user")
+        'ubi.letter.template', string='Баримтын загвар', groups="base.group_user")
     letter_template_text = fields.Html(
-        related="letter_template_id.letter_template", groups="hr.group_hr_user")
+        related="letter_template_id.letter_template", groups="base.group_user")
     custom_letter_template = fields.Html(
-        'Custom text', groups="hr.group_hr_user", default=_get_default_note)
+        'Custom text', groups="base.group_user", default=_get_default_note)
     department_id = fields.Many2one(
-        'hr.department', string='Хариуцах Хэлтэс', groups="hr.group_hr_user")
+        'hr.department', string='Хариуцах Хэлтэс', groups="base.group_user")
     user_id = fields.Many2one(
-        'res.users', string='Хэнд', groups="hr.group_hr_user")
+        'res.users', string='Хэнд', groups="base.group_user")
 
     must_return = fields.Boolean(
-        string='Хариу өгөх', default=False, groups="hr.group_hr_user")
+        string='Хариу өгөх', default=False, groups="base.group_user")
     is_head_company = fields.Boolean(
-        string='Дээд газраас ирсэн', default=False, groups="hr.group_hr_user")
+        string='Дээд газраас ирсэн', default=False, groups="base.group_user")
     state = fields.Selection([
         ('draft', 'Боловсруулах'),
         ('confirm', 'Хянах'),
         ('validate1', 'Зөвшөөрсөн'),
         ('validate', 'Баталсан')],
-        groups="hr.group_hr_user",
+        groups="base.group_user",
         default='draft',
         string='Төлөв', store=True, readonly=True, copy=False, tracking=True)
     receiving_state = fields.Selection([
@@ -85,13 +88,13 @@ class UbiLetter(models.Model):
         ('review', 'Судлаж байгаа'),
         ('transfer', 'Шилжүүлсэн'),
         ('validate', 'Шийдвэрлэсэн')],
-        groups="hr.group_hr_user",
+        groups="base.group_user",
         default='draft',
         string='Төлөв', store=True, readonly=True, copy=False, tracking=True)
     return_state = fields.Selection([
         ('draft', 'Бүртгэсэн'),
         ('sent', 'Илгээсэн')],
-        groups="hr.group_hr_user",
+        groups="base.group_user",
         default='draft',
         string='Төлөв', store=True, readonly=True, copy=False, tracking=True)
 
@@ -149,3 +152,25 @@ class UbiLetter(models.Model):
         _logger.info(client)
 
         return 'done'
+
+
+    def action_sent(self):
+        self.write({'return_state': 'sent'})
+
+    def action_receive(self):
+        self.write({'receiving_state': 'receive'})   
+
+    def action_review(self):
+        self.write({'receiving_state': 'review'}) 
+
+    def action_transfer(self):
+        self.write({'receiving_state': 'transfer'})     
+
+    def action_validate(self):
+        self.write({'receiving_state': 'validate'})
+
+    def action_conflict(self):
+        self.write({'receiving_state': 'conflict'})             
+
+    def action_refuse(self):
+        self.write({'receiving_state': 'refuse'})         
