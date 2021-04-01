@@ -30,7 +30,8 @@ class UbiLetter(models.Model):
     letter_attachment_id = fields.Many2many(
         'ir.attachment', 'letter_doc_attach', 'letter_id', 'doc_id', string="Хавсралт", copy=False)
 
-    is_local = fields.Boolean(string='Дотоод бичиг', groups="base.group_user", default=False)
+    is_local = fields.Boolean(string='Дотоод бичиг',
+                              groups="base.group_user", default=False)
     letter_status = fields.Selection([
         ('coming', 'Ирсэн'),
         ('going', 'Явсан'),
@@ -110,7 +111,6 @@ class UbiLetter(models.Model):
         'ubi.letter', string='Ирсэн бичгийн хариу', domain=[('letter_status', '=', 'going')], groups="base.group_user")
     coming_letters = fields.Many2one(
         'ubi.letter', string='Явсан бичгийн хариу', domain=[('letter_status', '=', 'coming')], groups="base.group_user")
-
 
     @api.onchange('letter_template_id')
     def _set_letter_template(self):
@@ -380,7 +380,8 @@ class UbiLetter(models.Model):
 
         target_url = "https://dev.docx.gov.mn/soap/api"
         headers = {'Content-type': 'text/xml'}
-        result = requests.post(target_url, data=data.encode(encoding='utf-8'), headers=headers, verify=False)
+        result = requests.post(target_url, data=data.encode(
+            encoding='utf-8'), headers=headers, verify=False)
         print(result.status_code)
         print(result.content)
         mytree = ET.fromstring(result.content)
@@ -389,7 +390,8 @@ class UbiLetter(models.Model):
         return data
 
     def letter_send_function(self):
-        _logger.info(self)
+        selected_ids = self.env.context.get('active_ids', [])
+        self.prepare_sending(selected_ids)
 
     def action_sent(self):
         self.write({'going_state': 'sent'})
@@ -414,27 +416,29 @@ class UbiLetter(models.Model):
 
     @api.model
     def _compute_going_letter_response(self):
-        going_letters = self.env['ubi.letter'].search([('letter_status', '=', 'going')])
+        going_letters = self.env['ubi.letter'].search(
+            [('letter_status', '=', 'going')])
         _logger.info(going_letters)
         self.going_letters = going_letters
 
     def _compute_coming_letter_response(self):
-        coming_letters = self.env['ubi.letter'].search([('letter_status', '=', 'coming')])
+        coming_letters = self.env['ubi.letter'].search(
+            [('letter_status', '=', 'coming')])
         self.coming_letters = coming_letters
 
     def prepare_sending(self, ids):
-        for id in ids:
-            request_data = self.build_state_doc(id)
+        letters = self.env['ubi.letter'].browse(ids)
+        for letter in letters:
+            request_data = self.build_state_doc(letter)
             self.send_letter(request_data)
 
-    def build_state_doc(self, id):
-        letter = self.env['ubi.letter'].search([('id', '=', id)], limit=1)
+    def build_state_doc(self, letter):
         body = {}
         body['documentDate'] = letter.letter_date
-        body['documentTypeId'] = letter.letter_type_id
-        body['documentNumber'] = letter.letter_number
-        body['documentName'] = letter.letter_subject_id.name
-        body['signName'] = letter.validate_user_id.name
+        body['documentTypeId'] = letter.letter_type_id or ''
+        body['documentNumber'] = letter.letter_number or ''
+        body['documentName'] = letter.letter_subject_id.name or ''
+        body['signName'] = letter.validate_user_id.name or ''
         body['OrgCode'] = letter.partner_id.code_by_state
         body['orgId'] = letter.partner_id.id_by_state
         body['orgName'] = letter.partner_id.name
@@ -447,7 +451,7 @@ class UbiLetter(models.Model):
         body['noOfPages'] = letter.letter_total_num
         body['responseTypeID'] = letter.must_return  # nuhtsul shalgah
         # mistyped asuuh heregtei
-        body['responceDate'] = letter.must_return_date
+        body['responceDate'] = letter.must_return_date or ''
         body['srcDocumentNumber'] = letter.follow_id.letter_number
         body['srcDocumentCode'] = ''
         body['srcDocumentDate'] = letter.follow_id.letter_date
@@ -472,7 +476,7 @@ class UbiLetter(models.Model):
         return file_array
 
     def send_letter(request_data):
-
+        _logger.info(request_data)
         template = """<Envelope xmlns = "http://schemas.xmlsoap.org/soap/envelope/" >
                         <Body>
                             <callRequest xmlns = "https://dev.docx.gov.mn/document/dto">
@@ -485,12 +489,9 @@ class UbiLetter(models.Model):
 
         data = template % (request_data)
 
-        # result = client.service.call(data)
-        # print(result)
-
-        target_url = "https://dev.docx.gov.mn/soap/api"
-        headers = {'Content-type': 'text/xml'}
-        result = requests.post(target_url, data=data.encode(encoding='utf-8'),
-                               headers=headers, verify=False)
-        print(result.status_code)
-        print(result.content)
+        # target_url = "https://dev.docx.gov.mn/soap/api"
+        # headers = {'Content-type': 'text/xml'}
+        # result = requests.post(target_url, data=data.encode(encoding='utf-8'),
+        #                        headers=headers, verify=False)
+        # print(result.status_code)
+        # print(result.content)
