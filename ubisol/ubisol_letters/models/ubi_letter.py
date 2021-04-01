@@ -2,10 +2,9 @@
 import logging
 from odoo import models, fields, api
 from datetime import date, datetime, timedelta, time
-from requests import Session
-from zeep import Client
-from zeep.transports import Transport
 
+import json
+import base64
 import xml.etree.ElementTree as ET
 
 import ssl
@@ -29,9 +28,11 @@ class UbiLetter(models.Model):
     validate_user_id = fields.Many2one('res.users', groups="base.group_user")
     created_user_id = fields.Many2one('res.users', groups="base.group_user")
 
-    letter_attachment_id = fields.Many2many('ir.attachment', 'letter_doc_attach', 'letter_id', 'doc_id', string="Хавсралт", copy=False)
+    letter_attachment_id = fields.Many2many(
+        'ir.attachment', 'letter_doc_attach', 'letter_id', 'doc_id', string="Хавсралт", copy=False)
 
-    is_local = fields.Boolean(string='Дотоод бичиг', groups="base.group_user", default=0)
+    is_local = fields.Boolean(string='Дотоод бичиг',
+                              groups="base.group_user", default=0)
     letter_status = fields.Selection([
         ('coming', 'Ирсэн'),
         ('going', 'Явсан'),
@@ -53,8 +54,10 @@ class UbiLetter(models.Model):
         string='Бүртгэсэн огноо', default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), groups="base.group_user")
     decide_date = fields.Date(
         string='Шийдвэрлэх огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
-    letter_date = fields.Date(string='Баримтын огноо', groups="base.group_user")
-    processing_datetime = fields.Datetime(string='Явцын огноо', default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), groups="base.group_user")
+    letter_date = fields.Date(string='Баримтын огноо',
+                              groups="base.group_user")
+    processing_datetime = fields.Datetime(string='Явцын огноо', default=datetime.now(
+    ).strftime('%Y-%m-%d %H:%M:%S'), groups="base.group_user")
     # partner_ids = fields.Many2many(
     #     'res.partner', string='Хаанаас', groups="base.group_user")
     partner_id = fields.Many2one(
@@ -152,10 +155,6 @@ class UbiLetter(models.Model):
                     "$date", str((datetime.now()).strftime('%Y-%m-%d')))
                 string = self.custom_letter_template
 
-
-
-
-
     @api.onchange('partner_id')
     def _set_letter_template2(self):
         if self.letter_template_id:
@@ -196,7 +195,6 @@ class UbiLetter(models.Model):
                 self.custom_letter_template = string.replace(
                     "$date", str((datetime.now()).strftime('%Y-%m-%d')))
                 string = self.custom_letter_template
-
 
     @api.onchange('draft_user_id')
     def _set_letter_template3(self):
@@ -334,6 +332,9 @@ class UbiLetter(models.Model):
 
         return letter
 
+    def write(self, vals):
+        letter = super(UbiLetter, self).write(vals)
+
     @api.model
     def check_connection_function(self, user):
         # try:
@@ -387,7 +388,6 @@ class UbiLetter(models.Model):
 
         return 'done'
 
-
     def action_sent(self):
         self.write({'return_state': 'sent'})
 
@@ -408,3 +408,76 @@ class UbiLetter(models.Model):
 
     def action_refuse(self):
         self.write({'receiving_state': 'refuse'})
+
+    def prepare_sending(self, ids):
+        for id in ids:
+            request_data = self.build_state_doc(id)
+            self.send_letter(request_data)
+
+    def build_state_doc(self, id):
+        letter = self.env['ubi.letter'].search([('id', '=', id)], limit=1)
+        body = {}
+        body['documentDate'] = letter.letter_date
+        body['documentTypeId'] = letter.letter_type_id
+        body['documentNumber'] = letter.letter_number
+        body['documentName'] = letter.letter_subject_id.name
+        body['signName'] = letter.validate_user_id.name
+        body['OrgCode'] = letter.partner_id.code_by_state
+        body['orgId'] = letter.partner_id.id_by_state
+        body['orgName'] = letter.partner_id.name
+        body['fileList'] = self.prepare_files(letter)
+        # ? shalgaj hariu bichig mun esehiig medne
+        body['isReplyDoc'] = letter.follow_id
+        body['isNeedReply'] = letter.must_return
+        body['createdUserId'] = letter.letter_date
+        body['priorityId'] = 0
+        body['noOfPages'] = letter.letter_total_num
+        body['responseTypeID'] = letter.must_return  # nuhtsul shalgah
+        # mistyped asuuh heregtei
+        body['responceDate'] = letter.must_return_date
+        body['srcDocumentNumber'] = letter.follow_id.letter_number
+        body['srcDocumentCode'] = ''
+        body['srcDocumentDate'] = letter.follow_id.letter_date
+
+        json_data = json.dumps(body)
+        return json_data
+
+    def prepare_files(self, letter):
+
+        files = letter.letter_attachment_id
+        file_array = []
+        for file in files:
+            fileList = {}
+            fileList['name'] = file.name
+            fileList['size'] = file.file_size
+            fileList['type'] = file.mimetype
+            path = file._full_path(file.store_fname)
+            with tools.file_open(path, 'rb') as file_binary:
+                content = file_binary.read()
+                fileList['data'] = base64.b64encode(content)
+            file_array.append(fileList)
+        return file_array
+
+    def send_letter(request_data):
+
+        template = """<Envelope xmlns = "http://schemas.xmlsoap.org/soap/envelope/" >
+                        <Body>
+                            <callRequest xmlns = "https://dev.docx.gov.mn/document/dto">
+                                <token>2mRCiuLX352m6O2lhqMoxPs-fQ5ibZgaqIHRbNSaxCaoiJg7Ugo7nCCQEMKKlgK-XBQBprEqylE3EKmM5fMinLm6PnzAYfIHTi-BcwQXG8l3MHKp30HFjMyfrhfJvqK83o4JhtDxAXyp8TpeRrEhY949ClikAWr-v1cPbQ6Q0N8</token>
+                                <service>post.public.document</service >
+                                <params >%s</params>
+                            </callRequest>
+                        </Body>
+                    </Envelope>"""
+
+        data = template % (request_data)
+
+        # result = client.service.call(data)
+        # print(result)
+
+        target_url = "https://dev.docx.gov.mn/soap/api"
+        headers = {'Content-type': 'text/xml'}
+        result = requests.post(target_url, data=data.encode(encoding='utf-8'),
+                               headers=headers, verify=False)
+        print(result.status_code)
+        print(result.content)
