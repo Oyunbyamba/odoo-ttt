@@ -2,8 +2,14 @@
 import logging
 from odoo import models, fields, api
 from datetime import date, datetime, timedelta, time
-from suds.client import Client
+from requests import Session
+from zeep import Client
+from zeep.transports import Transport
 
+import xml.etree.ElementTree as ET
+
+import ssl
+import requests
 
 _logger = logging.getLogger(__name__)
 
@@ -24,7 +30,8 @@ class UbiLetter(models.Model):
     draft_user_id = fields.Many2one('res.users', groups="hr.group_hr_user")
     validate_user_id = fields.Many2one('res.users', groups="hr.group_hr_user")
     confirm_user_id = fields.Many2one('res.users', groups="hr.group_hr_user")
-    letter_attachment_id = fields.Many2many('ir.attachment', 'letter_doc_attach', 'letter_id', 'doc_id', string="Хавсралт", copy=False)
+    letter_attachment_id = fields.Many2many(
+        'ir.attachment', 'letter_doc_attach', 'letter_id', 'doc_id', string="Хавсралт", copy=False)
 
     is_local = fields.Boolean(string='Дотоод бичиг', groups="hr.group_hr_user")
     letter_status = fields.Selection([
@@ -125,9 +132,70 @@ class UbiLetter(models.Model):
 
     @api.model
     def check_connection_function(self, user):
+        # try:
+        #     _create_unverified_https_context = ssl._create_unverified_context
+        # except AttributeError:
+        #     pass
+        # else:
+        #     ssl._create_default_https_context = _create_unverified_https_context
 
-        client = Client('https://dev.docx.gov.mn/soap/api/api.wsdl')
-        _logger.info("TEST")
-        _logger.info(client)
+        # ssl._create_default_https_context = ssl._create_unverified_context
+        # ssl._create_default_https_context = ssl._create_stdlib_context
+        # session = Session()
+        # session.verify = False  # 'path/to/my/certificate.pem'
+        # transport = Transport(session=session)
+
+        # client = Client(
+        #    'https://dev.docx.gov.mn/soap/api/api.wsdl', transport=transport)
+        # get_list = getattr(client.service, 'get.org/list')
+        # resp = get_list()
+        # print(client)
+
+        # HeaderMessage = client.factory.create('ns0:HeaderMessage')
+
+        # Create a factory and assign the values
+        data = """<Envelope xmlns = "http://schemas.xmlsoap.org/soap/envelope/" >
+                    <Body>
+                        <callRequest xmlns = "https://dev.docx.gov.mn/document/dto">
+                            <token>2mRCiuLX352m6O2lhqMoxPs-fQ5ibZgaqIHRbNSaxCaoiJg7Ugo7nCCQEMKKlgK-XBQBprEqylE3EKmM5fMinLm6PnzAYfIHTi-BcwQXG8l3MHKp30HFjMyfrhfJvqK83o4JhtDxAXyp8TpeRrEhY949ClikAWr-v1cPbQ6Q0N8</token>
+                            <service>get.org/list</service >
+                            <params >{"name": "Таван толгой түлш"}</params>
+
+                        </callRequest>
+                    </Body>
+                </Envelope>"""
+
+        # result = client.service.call(data)
+        # print(result)
+
+        target_url = "https://dev.docx.gov.mn/soap/api"
+        headers = {'Content-type': 'text/xml'}
+        result = requests.post(target_url, data=data.encode(encoding='utf-8'),
+                               headers=headers, verify=False)
+        print(result.status_code)
+        print(result.content)
+        mytree = ET.fromstring(result.content)
+        mytree.get_root()
+        data = mytree.findall(".//callResponse")
+        print(data)
+        for node in data:
+            print(node)
 
         return 'done'
+
+
+# class CustomTransport(HttpAuthenticated):
+
+#     def u2handlers(self):
+
+#         # use handlers from superclass
+#         handlers = HttpAuthenticated.u2handlers(self)
+
+#         # create custom ssl context, e.g.:
+#         ctx = ssl.create_default_context(cafile="/home/odoo/fullchain.pem")
+#         # configure context as needed...
+#         ctx.check_hostname = False
+
+#         # add a https handler using the custom context
+#         handlers.append(HTTPSHandler(context=ctx))
+#         return handlers
