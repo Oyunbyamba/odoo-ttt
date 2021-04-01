@@ -2,7 +2,7 @@
 import logging
 from odoo import models, fields, api
 from datetime import date, datetime, timedelta, time
-from suds.client import Client
+# from suds.client import Client
 
 
 _logger = logging.getLogger(__name__)
@@ -11,22 +11,19 @@ _logger = logging.getLogger(__name__)
 class UbiLetter(models.Model):
     _name = "ubi.letter"
     _description = " "
+    _rec_name = 'letter_subject_id'
 
     def _get_default_note(self):
-        result = """
-            <div>
-                <p class="terms">Payment terms are</p>
-                <ul><li>15% in advance</li><ul/>
-            </div>"""
+        result = ""
 
         return result
     follow_id = fields.Many2one('ubi.letter', groups="hr.group_hr_user")
     draft_user_id = fields.Many2one('res.users', groups="hr.group_hr_user")
-    validate_user_id = fields.Many2one('res.users', groups="hr.group_hr_user")
     confirm_user_id = fields.Many2one('res.users', groups="hr.group_hr_user")
+    validate_user_id = fields.Many2one('res.users', groups="hr.group_hr_user")
     letter_attachment_id = fields.Many2many('ir.attachment', 'letter_doc_attach', 'letter_id', 'doc_id', string="Хавсралт", copy=False)
 
-    is_local = fields.Boolean(string='Дотоод бичиг', groups="hr.group_hr_user")
+    is_local = fields.Boolean(string='Дотоод бичиг', groups="hr.group_hr_user", default=0)
     letter_status = fields.Selection([
         ('coming', 'Ирсэн'),
         ('going', 'Явсан'),
@@ -36,29 +33,29 @@ class UbiLetter(models.Model):
     card_number = fields.Integer(
         string='Картын дугаар', help="Картын дугаар", groups="hr.group_hr_user")
     letter_number = fields.Integer(
-        string='Бичгийн дугаар', help="Бичгийн дугаар", groups="hr.group_hr_user")
+        string='Баримтын дугаар', help="Баримтын дугаар", groups="hr.group_hr_user")
     register_number = fields.Integer(
         string='Бүртгэлийн дугаар', help="Бүртгэлийн дугаар", groups="hr.group_hr_user")
     letter_total_num = fields.Integer(
         string='Хуудасны тоо', help="Хуудасны тоо", groups="hr.group_hr_user")
     desc = fields.Char(string='Товч утга', groups="hr.group_hr_user")
     received_date = fields.Date(
-        string='Хүлээн авсан огноо', groups="hr.group_hr_user")
+        string='Хүлээн авсан огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="hr.group_hr_user")
     registered_date = fields.Date(
-        string='Бүртгэсэн огноо', groups="hr.group_hr_user")
-    return_date = fields.Date(
-        string='Шийдвэрлэх огноо', groups="hr.group_hr_user")
-    letter_date = fields.Date(string='Бичгийн огноо',
-                              groups="hr.group_hr_user")
-
-    partner_id = fields.Many2many(
-        'res.partner', string='Хаанаас', groups="hr.group_hr_user")
+        string='Бүртгэсэн огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="hr.group_hr_user")
+    decide_date = fields.Date(
+        string='Шийдвэрлэх огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="hr.group_hr_user")
+    letter_date = fields.Date(string='Баримтын огноо', groups="hr.group_hr_user")
+    # partner_ids = fields.Many2many(
+    #     'res.partner', string='Хаанаас', groups="hr.group_hr_user")
+    partner_id = fields.Many2one(
+        'res.partner', string='Хаанаас', groups="hr.group_hr_user")    
     letter_type_id = fields.Many2one(
-        'ubi.letter.type', string='Бичгийн төрөл', groups="hr.group_hr_user")
+        'ubi.letter.type', string='Баримтын төрөл', groups="hr.group_hr_user")
     letter_subject_id = fields.Many2one(
-        'ubi.letter.subject', string='Бичгийн тэргүү', groups="hr.group_hr_user")
+        'ubi.letter.subject', string='Баримтын тэргүү', groups="hr.group_hr_user")
     letter_template_id = fields.Many2one(
-        'ubi.letter.template', string='Бичгийн загвар', groups="hr.group_hr_user")
+        'ubi.letter.template', string='Баримтын загвар', groups="hr.group_hr_user")
     letter_template_text = fields.Html(
         related="letter_template_id.letter_template", groups="hr.group_hr_user")
     custom_letter_template = fields.Html(
@@ -74,19 +71,28 @@ class UbiLetter(models.Model):
         string='Дээд газраас ирсэн', default=False, groups="hr.group_hr_user")
     state = fields.Selection([
         ('draft', 'Боловсруулах'),
-        ('validate', 'Хянах'),
+        ('confirm', 'Хянах'),
         ('validate1', 'Зөвшөөрсөн'),
-        ('confirm', 'Баталсан')],
+        ('validate', 'Баталсан')],
         groups="hr.group_hr_user",
         default='draft',
         string='Төлөв', store=True, readonly=True, copy=False, tracking=True)
     receiving_state = fields.Selection([
-        ('receiving', 'receiving')],
+        ('conflict', 'Зөрчилтэй'),
+        ('refuse', 'Буцаасан'),
+        ('draft', 'Ирсэн'),
+        ('receive', 'Хүлээн авсан'),
+        ('review', 'Судлаж байгаа'),
+        ('transfer', 'Шилжүүлсэн'),
+        ('validate', 'Шийдвэрлэсэн')],
         groups="hr.group_hr_user",
+        default='draft',
         string='Төлөв', store=True, readonly=True, copy=False, tracking=True)
     return_state = fields.Selection([
-        ('return', 'return')],
+        ('draft', 'Бүртгэсэн'),
+        ('sent', 'Илгээсэн')],
         groups="hr.group_hr_user",
+        default='draft',
         string='Төлөв', store=True, readonly=True, copy=False, tracking=True)
 
     @api.onchange('letter_template_id')
@@ -108,11 +114,12 @@ class UbiLetter(models.Model):
                     "$number", number_str)
                 print("unen")
             else:
-                self.custom_letter_template = self.letter_template_text
-                string = self.custom_letter_template
-                self.custom_letter_template = string.replace(
-                    "$number", number_str)
-                print("hudal")
+                if self.letter_template_text:
+                    self.custom_letter_template = self.letter_template_text
+                    string = self.custom_letter_template
+                    self.custom_letter_template = string.replace(
+                        "$number", number_str)
+                    print("hudal")
 
     @api.onchange('partner_id')
     def _set_letter_template3(self):
@@ -122,6 +129,17 @@ class UbiLetter(models.Model):
             partner_id_str = str(partner_id)
             self.custom_letter_template = string.replace(
                 "$where", partner_id_str)
+
+    @api.model
+    def create(self, vals):
+        vals['letter_status'] = 'going'
+
+        if vals.get('received_date'):
+            vals['letter_status'] = 'coming'
+            
+        letter = super(UbiLetter, self).create(vals)
+
+        return letter        
 
     @api.model
     def check_connection_function(self, user):
