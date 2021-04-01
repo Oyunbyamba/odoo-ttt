@@ -16,7 +16,7 @@ _logger = logging.getLogger(__name__)
 class UbiLetter(models.Model):
     _name = "ubi.letter"
     _description = " "
-    _rec_name = 'letter_subject_id'
+    _rec_name = 'letter_number'
 
     def _get_default_note(self):
         result = """"""
@@ -26,13 +26,11 @@ class UbiLetter(models.Model):
     draft_user_id = fields.Many2one('res.users', groups="base.group_user")
     confirm_user_id = fields.Many2one('res.users', groups="base.group_user")
     validate_user_id = fields.Many2one('res.users', groups="base.group_user")
-    created_user_id = fields.Many2one('res.users', groups="base.group_user")
 
     letter_attachment_id = fields.Many2many(
         'ir.attachment', 'letter_doc_attach', 'letter_id', 'doc_id', string="Хавсралт", copy=False)
 
-    is_local = fields.Boolean(string='Дотоод бичиг',
-                              groups="base.group_user", default=0)
+    is_local = fields.Boolean(string='Дотоод бичиг', groups="base.group_user", default=False)
     letter_status = fields.Selection([
         ('coming', 'Ирсэн'),
         ('going', 'Явсан'),
@@ -48,6 +46,8 @@ class UbiLetter(models.Model):
     letter_total_num = fields.Integer(
         string='Хуудасны тоо', help="Хуудасны тоо", groups="base.group_user")
     desc = fields.Char(string='Товч утга', groups="base.group_user")
+    must_return_date = fields.Date(
+        string='Хариу ирүүлэх огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
     received_date = fields.Date(
         string='Хүлээн авсан огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
     registered_date = fields.Datetime(
@@ -75,8 +75,8 @@ class UbiLetter(models.Model):
     department_id = fields.Many2one(
         'hr.department', string='Хариуцах Хэлтэс', groups="base.group_user")
     user_id = fields.Many2one(
-        'res.users', string='Хэнд', groups="base.group_user")
-
+        'res.users', string='Хэнд')
+    official_person = fields.Char('Албан тушаалтан', groups="base.group_user")
     must_return = fields.Boolean(
         string='Хариу өгөх', default=False, groups="base.group_user")
     is_head_company = fields.Boolean(
@@ -89,23 +89,28 @@ class UbiLetter(models.Model):
         groups="base.group_user",
         default='draft',
         string='Төлөв', store=True, readonly=True, copy=False, tracking=True)
-    receiving_state = fields.Selection([
+    coming_state = fields.Selection([
         ('conflict', 'Зөрчилтэй'),
         ('refuse', 'Буцаасан'),
         ('draft', 'Ирсэн'),
         ('receive', 'Хүлээн авсан'),
-        ('review', 'Судлаж байгаа'),
         ('transfer', 'Шилжүүлсэн'),
+        ('review', 'Судлаж байгаа'),
         ('validate', 'Шийдвэрлэсэн')],
         groups="base.group_user",
         default='draft',
         string='Төлөв', store=True, readonly=True, copy=False, tracking=True)
-    return_state = fields.Selection([
+    going_state = fields.Selection([
         ('draft', 'Бүртгэсэн'),
         ('sent', 'Илгээсэн')],
         groups="base.group_user",
         default='draft',
         string='Төлөв', store=True, readonly=True, copy=False, tracking=True)
+    going_letters = fields.Many2one(
+        'ubi.letter', string='Ирсэн бичгийн хариу', domain=[('letter_status', '=', 'going')], groups="base.group_user")
+    coming_letters = fields.Many2one(
+        'ubi.letter', string='Явсан бичгийн хариу', domain=[('letter_status', '=', 'coming')], groups="base.group_user")
+
 
     @api.onchange('letter_template_id')
     def _set_letter_template(self):
@@ -323,10 +328,10 @@ class UbiLetter(models.Model):
 
     @api.model
     def create(self, vals):
-        vals['letter_status'] = 'going'
-
-        if vals.get('received_date'):
-            vals['letter_status'] = 'coming'
+        if vals.get('letter_status') == 'coming':
+            vals['going_state'] = None
+        elif vals.get('letter_status') == 'going':
+            vals['coming_state'] = None
 
         letter = super(UbiLetter, self).create(vals)
 
@@ -375,39 +380,47 @@ class UbiLetter(models.Model):
 
         target_url = "https://dev.docx.gov.mn/soap/api"
         headers = {'Content-type': 'text/xml'}
-        result = requests.post(target_url, data=data.encode(encoding='utf-8'),
-                               headers=headers, verify=False)
+        result = requests.post(target_url, data=data.encode(encoding='utf-8'), headers=headers, verify=False)
         print(result.status_code)
         print(result.content)
         mytree = ET.fromstring(result.content)
-        mytree.get_root()
-        data = mytree.findall(".//callResponse")
+        data = ''.join(mytree.itertext())
         print(data)
-        for node in data:
-            print(node)
+        return data
 
-        return 'done'
+    def letter_send_function(self):
+        _logger.info(self)
 
     def action_sent(self):
-        self.write({'return_state': 'sent'})
+        self.write({'going_state': 'sent'})
 
     def action_receive(self):
-        self.write({'receiving_state': 'receive'})
+        self.write({'coming_state': 'receive'})
 
     def action_review(self):
-        self.write({'receiving_state': 'review'})
+        self.write({'coming_state': 'review'})
 
     def action_transfer(self):
-        self.write({'receiving_state': 'transfer'})
+        self.write({'coming_state': 'transfer'})
 
     def action_validate(self):
-        self.write({'receiving_state': 'validate'})
+        self.write({'coming_state': 'validate'})
 
     def action_conflict(self):
-        self.write({'receiving_state': 'conflict'})
+        self.write({'coming_state': 'conflict'})
 
     def action_refuse(self):
-        self.write({'receiving_state': 'refuse'})
+        self.write({'coming_state': 'refuse'})
+
+    @api.model
+    def _compute_going_letter_response(self):
+        going_letters = self.env['ubi.letter'].search([('letter_status', '=', 'going')])
+        _logger.info(going_letters)
+        self.going_letters = going_letters
+
+    def _compute_coming_letter_response(self):
+        coming_letters = self.env['ubi.letter'].search([('letter_status', '=', 'coming')])
+        self.coming_letters = coming_letters
 
     def prepare_sending(self, ids):
         for id in ids:

@@ -7,7 +7,7 @@
         <field name="model">ubi.letter</field>
         <field name="arch" type="xml">
             <tree string="Ubi Letter" import='false' export_xlsx='false'
-                decoration-success="return_state == 'sent'" decoration-info="return_state == 'draft'">
+                decoration-success="going_state == 'sent'" decoration-info="going_state == 'draft'">
                 <field name="letter_subject_id"/>
                 <field name="letter_type_id"/>
                 <field name="letter_number"/>
@@ -16,7 +16,8 @@
                 <field name="partner_id" string='Хаана'/>
                 <field name="department_id" string='Илгээсэн хэлтэс'/>
                 <field name="is_local"/>
-                <field name="return_state" string='Төлөв'/>
+                <field name="letter_status" invisible='1'/>
+                <field name="going_state" string='Төлөв'/>
             </tree>
         </field>
     </record>
@@ -28,8 +29,8 @@
             <form string="Ubi Letter">
                 <header>
                     <button string="Илгээх" name="action_sent" type="object"
-                            attrs="{'invisible': [('return_state', 'not in', ['sent'])]}"/>
-                    <field name="return_state" widget="statusbar"/>
+                            attrs="{'invisible': [('going_state', 'not in', ['sent'])]}"/>
+                    <field name="going_state" widget="statusbar"/>
                 </header>
                 <sheet>
                     <group>
@@ -45,9 +46,12 @@
 
                         <group string="Бүртгэл">
                             <field name="partner_id" string='Хаана'/>
+                            <field name="official_person" string='Хэнд'/>
                             <field name="department_id" string='Хаанаас'/>
-                            <field name="is_local" string='Дотоод бичиг'/>
+                            <field name="is_local" string='Дотоод бичиг'/>  
                             <field name="must_return" string='Хариутай эсэх'/>
+                            <field name="must_return_date" attrs="{'invisible': [('must_return','!=',True)]}"/>
+                            <field name="letter_status" invisible='1'/>
                         </group>
 
                         <group string="Хавсралт">
@@ -58,6 +62,10 @@
                             <field name="draft_user_id" string='Боловсруулсан'/>
                             <field name="confirm_user_id" string='Хянасан'/>
                             <field name="validate_user_id" string='Гарын үсэг зурсан'/>
+                        </group>
+
+                        <group string='Ирсэн бичгийн хариу'>
+                            <field name="coming_letters"/>
                         </group>
                     </group>
 
@@ -80,13 +88,24 @@
         <field name="view_ids" eval="[(5, 0, 0),
                 (0, 0, {'view_mode': 'tree', 'view_id': ref('ubisol_letters.ubi_letter_going_tree_view')}),
                 (0, 0, {'view_mode': 'form', 'view_id': ref('ubisol_letters.ubi_letter_going_form_view')})]"/>
-        <field name="context">{}</field>
+        <field name="context">{'default_letter_status': 'going'}</field>
         <field name="domain">[('letter_status', '=', 'going')]</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Add a new document
             </p>
         </field>
-
     </record>
+
+    <record model="ir.actions.server" id="action_letter_send">
+        <field name="name">Илгээх</field>
+        <field name="model_id" ref="model_ubi_letter"/>
+        <field name="binding_model_id" ref="model_ubi_letter" />
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                records.letter_send_function()
+        </field>
+    </record>
+
 </odoo>

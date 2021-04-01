@@ -13,8 +13,8 @@
         <field name="model">ubi.letter</field>
         <field name="arch" type="xml">
             <tree string="Ubi Letter" import='false' export_xlsx='false'
-                decoration-success="receiving_state == 'validate'" decoration-info="receiving_state == 'receive'"
-                decoration-danger="receiving_state == 'conflict'">
+                decoration-success="coming_state == 'validate'" decoration-info="coming_state == 'receive'"
+                decoration-danger="coming_state == 'conflict'">
                 <field name="letter_subject_id"/>
                 <field name="letter_type_id"/>
                 <field name="letter_number"/>
@@ -23,7 +23,8 @@
                 <field name="partner_id"/>
                 <field name="user_id"/>
                 <field name="is_local"/>
-                <field name="receiving_state" string='Төлөв'/>
+                <field name="letter_status" invisible='1'/>
+                <field name="coming_state" string='Төлөв'/>
             </tree>
         </field>
     </record>
@@ -34,13 +35,13 @@
         <field name="arch" type="xml">
             <form string="Ubi Letter">
                 <header>
-                    <button string="Хүлээн авах" name="action_receive" type="object" class="oe_highlight" attrs="{'invisible': [('receiving_state', 'not in', ('draft'))]}"/>
-                    <button string="Судлаж байгаа" name="action_review" type="object" class="oe_highlight" attrs="{'invisible': [('receiving_state', 'not in', ('receive', 'conflict'))]}"/>
-                    <button string="Шилжүүлсэн" name="action_transfer" type="object" class="oe_highlight" attrs="{'invisible': [('receiving_state', 'not in', ('review'))]}"/>
-                    <button string="Шийдвэрлэсэн" name="action_validate" type="object" class="oe_highlight" attrs="{'invisible': [('receiving_state', 'not in', ('transfer', 'conflict'))]}"/>
-                    <button string="Зөрчилтэй" name="action_conflict" type="object" attrs="{'invisible': [('receiving_state', 'in', ('validate', 'transfer', 'refuse', 'conflict'))]}"/>
-                    <button string="Буцаасан" name="action_refuse" type="object" attrs="{'invisible': [('receiving_state', 'in', ('validate', 'conflict', 'refuse'))]}"/>
-                    <field name="receiving_state" widget="statusbar" statusbar_visible="review,validate"/>
+                    <button string="Хүлээн авах" name="action_receive" type="object" class="oe_highlight" attrs="{'invisible': [('coming_state', 'not in', ('draft'))]}"/>
+                    <button string="Шилжүүлсэн" name="action_transfer" type="object" class="oe_highlight" attrs="{'invisible': [('coming_state', 'not in', ('receive', 'refuse'))]}"/>
+                    <button string="Судлаж байгаа" name="action_review" type="object" class="oe_highlight" attrs="{'invisible': [('coming_state', 'not in', ('transfer', 'conflict', 'refuse'))]}"/>
+                    <button string="Шийдвэрлэсэн" name="action_validate" type="object" class="oe_highlight" attrs="{'invisible': [('coming_state', 'not in', ('transfer', 'conflict'))]}"/>
+                    <button string="Зөрчилтэй" name="action_conflict" type="object" attrs="{'invisible': [('coming_state', 'in', ('validate', 'transfer', 'refuse', 'conflict'))]}"/>
+                    <button string="Буцаасан" name="action_refuse" type="object" attrs="{'invisible': [('coming_state', 'in', ('validate', 'conflict', 'refuse'))]}"/>
+                    <field name="coming_state" widget="statusbar" statusbar_visible="review,validate"/>
                 </header>
                 <sheet>
                     <group>
@@ -55,17 +56,20 @@
 
                         <group string="Бүртгэл">
                             <field name="partner_id"/>
-                            <field name="user_id" />
-                            <field name="is_local" string='Дотоод бичиг'/>
+                            <field name='official_person' string='Хэнээс' attrs="{'invisible': ['|', ('coming_state', 'in', ('draft'))]}"/>
+                            <field name="user_id" attrs="{'invisible': [('coming_state', 'in', ('draft'))]}"/>
                             <field name="is_head_company" string='Дээд газраас ирсэн'/>
                             <field name="must_return" string='Хариутай эсэх'/>
+                            <field name="must_return_date" attrs="{'invisible': [('must_return','!=',True)]}"/>
+                            <field name="letter_status" invisible='1'/>
                         </group>
 
                         <group string="Хавсралт">
                             <field name="letter_attachment_id" widget="many2many_binary"/>
                         </group>
                     </group>
-
+                    <group>
+                    </group>    
                     <notebook>
                         <page string="Агуулга">
                             <field name="desc" widget="text"/>
@@ -85,7 +89,7 @@
         <field name="view_ids" eval="[(5, 0, 0),
                 (0, 0, {'view_mode': 'tree', 'view_id': ref('ubisol_letters.ubi_letter_incoming_tree_view')},),
                 (0, 0, {'view_mode': 'form', 'view_id': ref('ubisol_letters.ubi_letter_incoming_form_view')})]"/>
-        <field name="context">{}</field>
+        <field name="context">{'default_letter_status': 'coming'}</field>
         <field name="domain">[('letter_status', '=', 'coming')]</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
