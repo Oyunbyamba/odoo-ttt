@@ -7,7 +7,7 @@
         <field name="model">ubi.letter</field>
         <field name="arch" type="xml">
             <tree string="Ubi Letter" import='false' export_xlsx='false'
-                decoration-success="return_state == 'sent'" decoration-info="return_state == 'draft'">
+                decoration-success="going_state == 'sent'" decoration-info="going_state == 'draft'">
                 <field name="letter_subject_id"/>
                 <field name="letter_type_id"/>
                 <field name="letter_number"/>
@@ -16,7 +16,7 @@
                 <field name="partner_id" string='Хаана'/>
                 <field name="department_id" string='Илгээсэн хэлтэс'/>
                 <field name="is_local"/>
-                <field name="return_state" string='Төлөв'/>
+                <field name="going_state" string='Төлөв'/>
             </tree>
         </field>
     </record>
@@ -28,8 +28,8 @@
             <form string="Ubi Letter">
                 <header>
                     <button string="Илгээх" name="action_sent" type="object"
-                            attrs="{'invisible': [('return_state', 'not in', ['sent'])]}"/>
-                    <field name="return_state" widget="statusbar"/>
+                            attrs="{'invisible': [('going_state', 'not in', ['sent'])]}"/>
+                    <field name="going_state" widget="statusbar"/>
                 </header>
                 <sheet>
                     <group>

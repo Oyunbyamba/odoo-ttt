@@ -27,7 +27,6 @@ class UbiLetter(models.Model):
     draft_user_id = fields.Many2one('res.users', groups="base.group_user")
     confirm_user_id = fields.Many2one('res.users', groups="base.group_user")
     validate_user_id = fields.Many2one('res.users', groups="base.group_user")
-    created_user_id = fields.Many2one('res.users', groups="base.group_user")
 
     letter_attachment_id = fields.Many2many('ir.attachment', 'letter_doc_attach', 'letter_id', 'doc_id', string="Хавсралт", copy=False)
 
@@ -48,7 +47,7 @@ class UbiLetter(models.Model):
         string='Хуудасны тоо', help="Хуудасны тоо", groups="base.group_user")
     desc = fields.Char(string='Товч утга', groups="base.group_user")
     must_return_date = fields.Date(
-        string='огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
+        string='Хариу ирүүлэх огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
     received_date = fields.Date(
         string='Хүлээн авсан огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
     registered_date = fields.Datetime(
@@ -88,7 +87,7 @@ class UbiLetter(models.Model):
         groups="base.group_user",
         default='draft',
         string='Төлөв', store=True, readonly=True, copy=False, tracking=True)
-    receiving_state = fields.Selection([
+    coming_state = fields.Selection([
         ('conflict', 'Зөрчилтэй'),
         ('refuse', 'Буцаасан'),
         ('draft', 'Ирсэн'),
@@ -99,16 +98,17 @@ class UbiLetter(models.Model):
         groups="base.group_user",
         default='draft',
         string='Төлөв', store=True, readonly=True, copy=False, tracking=True)
-    return_state = fields.Selection([
+    going_state = fields.Selection([
         ('draft', 'Бүртгэсэн'),
         ('sent', 'Илгээсэн')],
         groups="base.group_user",
         default='draft',
         string='Төлөв', store=True, readonly=True, copy=False, tracking=True)
-    outgoing_letter_number = fields.Many2one(
-        'ubi.letter', string='Явсан бичгийн дугаар', compute='', groups="base.group_user")
+    going_letter_number = fields.Many2one(
+        'ubi.letter', string='Ирсэн бичгийн хариу', compute='_compute_going_letter_response', groups="base.group_user")
+    coming_letter_number = fields.Many2one(
+        'ubi.letter', string='Явсан бичгийн хариу', compute='_compute_coming_letter_response', groups="base.group_user")
 
-   
 
     @api.onchange('letter_template_id')
     def _set_letter_template(self):
@@ -391,22 +391,22 @@ class UbiLetter(models.Model):
 
 
     def action_sent(self):
-        self.write({'return_state': 'sent'})
+        self.write({'going_state': 'sent'})
 
     def action_receive(self):
-        self.write({'receiving_state': 'receive'})
+        self.write({'coming_state': 'receive'})
 
     def action_review(self):
-        self.write({'receiving_state': 'review'})
+        self.write({'coming_state': 'review'})
 
     def action_transfer(self):
-        self.write({'receiving_state': 'transfer'})
+        self.write({'coming_state': 'transfer'})
 
     def action_validate(self):
-        self.write({'receiving_state': 'validate'})
+        self.write({'coming_state': 'validate'})
 
     def action_conflict(self):
-        self.write({'receiving_state': 'conflict'})
+        self.write({'coming_state': 'conflict'})
 
     def action_refuse(self):
-        self.write({'receiving_state': 'refuse'})
+        self.write({'coming_state': 'refuse'})
