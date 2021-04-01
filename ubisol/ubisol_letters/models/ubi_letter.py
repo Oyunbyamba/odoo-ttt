@@ -14,7 +14,7 @@ class UbiLetter(models.Model):
     _rec_name = 'letter_subject_id'
 
     def _get_default_note(self):
-        result = ""
+        result = """"""
         return result
 
     follow_id = fields.Many2one('ubi.letter', groups="hr.group_hr_user")
@@ -102,7 +102,7 @@ class UbiLetter(models.Model):
 
     @api.onchange('letter_number')
     def _set_letter_template1(self):
-        if self.custom_letter_template:
+        if self.letter_template_id:
             string = self.custom_letter_template
             number = self.letter_number
             number_str = str(number)
@@ -149,7 +149,7 @@ class UbiLetter(models.Model):
 
     @api.onchange('partner_id')
     def _set_letter_template2(self):
-        if self.custom_letter_template:
+        if self.letter_template_id:
             string = self.custom_letter_template
             partner_id = self.partner_id.name
             partner_id_str = str(partner_id)
@@ -191,7 +191,7 @@ class UbiLetter(models.Model):
 
     @api.onchange('draft_user_id')
     def _set_letter_template3(self):
-        if self.custom_letter_template:
+        if self.letter_template_id:
             string = self.custom_letter_template
             draft_user_id = self.draft_user_id.name
             draft_user_id_str = str(draft_user_id)
@@ -232,7 +232,7 @@ class UbiLetter(models.Model):
     
     @api.onchange('letter_subject_id')
     def _set_letter_template4(self):
-        if self.custom_letter_template:
+        if self.letter_template_id:
             string = self.custom_letter_template
             letter_subject_id = self.letter_subject_id.name
             letter_subject_id_str = str(letter_subject_id)
@@ -274,7 +274,7 @@ class UbiLetter(models.Model):
 
     @api.onchange('letter_total_num')
     def _set_letter_template5(self):
-        if self.custom_letter_template:
+        if self.letter_template_id:
             string = self.custom_letter_template
             letter_total_num = self.letter_total_num
             letter_total_num_str = str(letter_total_num)
