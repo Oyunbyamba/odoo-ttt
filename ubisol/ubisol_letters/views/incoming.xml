@@ -60,6 +60,7 @@
                             <!-- <field name="is_local" string='Дотоод бичиг'/> -->
                             <field name="is_head_company" string='Дээд газраас ирсэн'/>
                             <field name="must_return" string='Хариутай эсэх'/>
+
                         </group>
 
                         <group string="Хавсралт">

@@ -2,8 +2,14 @@
 import logging
 from odoo import models, fields, api
 from datetime import date, datetime, timedelta, time
-# from suds.client import Client
+from requests import Session
+from zeep import Client
+from zeep.transports import Transport
 
+import xml.etree.ElementTree as ET
+
+import ssl
+import requests
 
 _logger = logging.getLogger(__name__)
 
@@ -41,6 +47,8 @@ class UbiLetter(models.Model):
     letter_total_num = fields.Integer(
         string='Хуудасны тоо', help="Хуудасны тоо", groups="base.group_user")
     desc = fields.Char(string='Товч утга', groups="base.group_user")
+    must_return_date = fields.Date(
+        string='огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
     received_date = fields.Date(
         string='Хүлээн авсан огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
     registered_date = fields.Datetime(
@@ -52,7 +60,7 @@ class UbiLetter(models.Model):
     # partner_ids = fields.Many2many(
     #     'res.partner', string='Хаанаас', groups="base.group_user")
     partner_id = fields.Many2one(
-        'res.partner', string='Хаанаас', groups="base.group_user")    
+        'res.partner', string='Хаанаас', groups="base.group_user")
     letter_type_id = fields.Many2one(
         'ubi.letter.type', string='Баримтын төрөл', groups="base.group_user")
     letter_subject_id = fields.Many2one(
@@ -111,7 +119,7 @@ class UbiLetter(models.Model):
             number_str = str(number)
             find0 = string.find("$number")
             asd = str("-1")
-            
+
             if (str(find0) != asd):
                 print(str(find0))
                 self.custom_letter_template = string.replace(
@@ -146,8 +154,8 @@ class UbiLetter(models.Model):
                     "$date", str((datetime.now()).strftime('%Y-%m-%d')))
                 string = self.custom_letter_template
 
-                     
-               
+
+
 
 
     @api.onchange('partner_id')
@@ -215,7 +223,7 @@ class UbiLetter(models.Model):
                 string = self.custom_letter_template
                 if self.letter_number:
                     self.custom_letter_template = string.replace(
-                        "$number", str(self.letter_number))           
+                        "$number", str(self.letter_number))
                     string = self.custom_letter_template
                 if self.partner_id.name:
                     self.custom_letter_template = string.replace(
@@ -232,7 +240,7 @@ class UbiLetter(models.Model):
                 self.custom_letter_template = string.replace(
                     "$date", str((datetime.now()).strftime('%Y-%m-%d')))
                 string = self.custom_letter_template
-    
+
     @api.onchange('letter_subject_id')
     def _set_letter_template4(self):
         if self.letter_template_id:
@@ -323,17 +331,61 @@ class UbiLetter(models.Model):
 
         if vals.get('received_date'):
             vals['letter_status'] = 'coming'
-            
+
         letter = super(UbiLetter, self).create(vals)
 
-        return letter        
+        return letter
 
     @api.model
     def check_connection_function(self, user):
+        # try:
+        #     _create_unverified_https_context = ssl._create_unverified_context
+        # except AttributeError:
+        #     pass
+        # else:
+        #     ssl._create_default_https_context = _create_unverified_https_context
 
-        client = Client('https://dev.docx.gov.mn/soap/api/api.wsdl')
-        _logger.info("TEST")
-        _logger.info(client)
+        # ssl._create_default_https_context = ssl._create_unverified_context
+        # ssl._create_default_https_context = ssl._create_stdlib_context
+        # session = Session()
+        # session.verify = False  # 'path/to/my/certificate.pem'
+        # transport = Transport(session=session)
+
+        # client = Client(
+        #    'https://dev.docx.gov.mn/soap/api/api.wsdl', transport=transport)
+        # get_list = getattr(client.service, 'get.org/list')
+        # resp = get_list()
+        # print(client)
+
+        # HeaderMessage = client.factory.create('ns0:HeaderMessage')
+
+        # Create a factory and assign the values
+        data = """<Envelope xmlns = "http://schemas.xmlsoap.org/soap/envelope/" >
+                    <Body>
+                        <callRequest xmlns = "https://dev.docx.gov.mn/document/dto">
+                            <token>2mRCiuLX352m6O2lhqMoxPs-fQ5ibZgaqIHRbNSaxCaoiJg7Ugo7nCCQEMKKlgK-XBQBprEqylE3EKmM5fMinLm6PnzAYfIHTi-BcwQXG8l3MHKp30HFjMyfrhfJvqK83o4JhtDxAXyp8TpeRrEhY949ClikAWr-v1cPbQ6Q0N8</token>
+                            <service>get.org/list</service >
+                            <params >{"name": "Таван толгой түлш"}</params>
+
+                        </callRequest>
+                    </Body>
+                </Envelope>"""
+
+        # result = client.service.call(data)
+        # print(result)
+
+        target_url = "https://dev.docx.gov.mn/soap/api"
+        headers = {'Content-type': 'text/xml'}
+        result = requests.post(target_url, data=data.encode(encoding='utf-8'),
+                               headers=headers, verify=False)
+        print(result.status_code)
+        print(result.content)
+        mytree = ET.fromstring(result.content)
+        mytree.get_root()
+        data = mytree.findall(".//callResponse")
+        print(data)
+        for node in data:
+            print(node)
 
         return 'done'
 
@@ -342,19 +394,19 @@ class UbiLetter(models.Model):
         self.write({'return_state': 'sent'})
 
     def action_receive(self):
-        self.write({'receiving_state': 'receive'})   
+        self.write({'receiving_state': 'receive'})
 
     def action_review(self):
-        self.write({'receiving_state': 'review'}) 
+        self.write({'receiving_state': 'review'})
 
     def action_transfer(self):
-        self.write({'receiving_state': 'transfer'})     
+        self.write({'receiving_state': 'transfer'})
 
     def action_validate(self):
         self.write({'receiving_state': 'validate'})
 
     def action_conflict(self):
-        self.write({'receiving_state': 'conflict'})             
+        self.write({'receiving_state': 'conflict'})
 
     def action_refuse(self):
-        self.write({'receiving_state': 'refuse'})         
+        self.write({'receiving_state': 'refuse'})
