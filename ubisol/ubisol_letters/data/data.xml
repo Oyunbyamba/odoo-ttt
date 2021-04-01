@@ -13,4 +13,8 @@
         <field name="name">Гомдол</field>
         <field name="code">2</field>
     </record>
+    <record id="ubi_letter_template_data" model="ubi.letter.template">
+        <field name="letter_template_name">Template</field>
+        <field name="letter_template">$terguu &#160; $number &#160; $huudasni_too &#160; $where &#160; $who</field>
+    </record>
 </odoo> 
