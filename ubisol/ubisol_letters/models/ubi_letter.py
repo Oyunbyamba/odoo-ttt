@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import logging
-from odoo import models, fields, api
+from odoo import models, tools, fields, api
 from datetime import date, datetime, timedelta, time
-
+import os
 import json
 import base64
 import xml.etree.ElementTree as ET
@@ -55,7 +55,7 @@ class UbiLetter(models.Model):
         string='Бүртгэсэн огноо', default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), groups="base.group_user")
     decide_date = fields.Date(
         string='Шийдвэрлэх огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
-    letter_date = fields.Date(string='Баримтын огноо',
+    letter_date = fields.Date(string='Баримтын огноо', default=datetime.today(),
                               groups="base.group_user")
     processing_datetime = fields.Datetime(string='Явцын огноо', default=datetime.now(
     ).strftime('%Y-%m-%d %H:%M:%S'), groups="base.group_user")
@@ -450,27 +450,30 @@ class UbiLetter(models.Model):
 
     def build_state_doc(self, letter):
         body = {}
-        body['documentDate'] = letter.letter_date
-        body['documentTypeId'] = letter.letter_type_id or ''
+        body['documentDate'] = datetime.strftime(letter.letter_date, '%Y-%m-%d') if letter.letter_date else ''
+        body['documentTypeId'] = 1 # letter.letter_type_id.id or ''
         body['documentNumber'] = letter.letter_number or ''
         body['documentName'] = letter.letter_subject_id.name or ''
         body['signName'] = letter.validate_user_id.name or ''
-        body['OrgCode'] = letter.partner_id.code_by_state
-        body['orgId'] = letter.partner_id.id_by_state
-        body['orgName'] = letter.partner_id.name
+        # body['OrgCode'] = letter.partner_id.code_by_state
+        body['OrgCode'] = 0
+        # body['orgId'] = letter.partner_id.id_by_state
+        body['orgId'] = 447
+        # body['orgName'] = letter.partner_id.name
+        body['orgName'] = 'Газрын шинэтгэлийн үндэсний хороо'
         body['fileList'] = self.prepare_files(letter)
         # ? shalgaj hariu bichig mun esehiig medne
-        body['isReplyDoc'] = letter.follow_id
+        body['isReplyDoc'] = 0
         body['isNeedReply'] = letter.must_return
-        body['createdUserId'] = letter.letter_date
+        body['createdUserId'] = 5466  #datetime.strftime(letter.letter_date, '%Y-%m-%d') if letter.letter_date else ''
         body['priorityId'] = 0
         body['noOfPages'] = letter.letter_total_num
-        body['responseTypeID'] = letter.must_return  # nuhtsul shalgah
+        body['responseTypeID'] =  1 #letter.must_return  # nuhtsul shalgah
         # mistyped asuuh heregtei
-        body['responceDate'] = letter.must_return_date or ''
-        body['srcDocumentNumber'] = letter.follow_id.letter_number
+        body['responceDate'] = datetime.strftime(letter.must_return_date, '%Y-%m-%d') if letter.must_return_date else ''
+        body['srcDocumentNumber'] = '' #1 #letter.follow_id.letter_number or ''
         body['srcDocumentCode'] = ''
-        body['srcDocumentDate'] = letter.follow_id.letter_date
+        body['srcDocumentDate'] = datetime.strftime(letter.follow_id.letter_date, '%Y-%m-%d') if letter.follow_id and letter.follow_id.letter_date else ''
 
         json_data = json.dumps(body)
         return json_data
@@ -485,13 +488,14 @@ class UbiLetter(models.Model):
             fileList['size'] = file.file_size
             fileList['type'] = file.mimetype
             path = file._full_path(file.store_fname)
-            with tools.file_open(path, 'rb') as file_binary:
-                content = file_binary.read()
-                fileList['data'] = base64.b64encode(content)
+           # with tools.file_open(path, 'rb') as file_binary:
+            #content = file.datas
+            #fileList['data'] = base64.b64encode(content)
+            fileList['data'] = "aGVsbG8="
             file_array.append(fileList)
         return file_array
 
-    def send_letter(request_data):
+    def send_letter(self, request_data):
         _logger.info(request_data)
         template = """<Envelope xmlns = "http://schemas.xmlsoap.org/soap/envelope/" >
                         <Body>
@@ -505,9 +509,11 @@ class UbiLetter(models.Model):
 
         data = template % (request_data)
 
-        # target_url = "https://dev.docx.gov.mn/soap/api"
-        # headers = {'Content-type': 'text/xml'}
-        # result = requests.post(target_url, data=data.encode(encoding='utf-8'),
-        #                        headers=headers, verify=False)
-        # print(result.status_code)
-        # print(result.content)
+        _logger.info(data)
+
+        target_url = "https://dev.docx.gov.mn/soap/api"
+        headers = {'Content-type': 'text/xml'}
+        result = requests.post(target_url, data=data.encode(encoding='utf-8'),
+                               headers=headers, verify=False)
+        print(result.status_code)
+        print(result.content)

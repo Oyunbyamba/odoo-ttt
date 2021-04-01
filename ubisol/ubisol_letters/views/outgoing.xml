@@ -39,7 +39,7 @@
                             <field name="letter_number"/>
                             <field name="letter_type_id"/>
                             <field name="letter_template_id"/>
-                            <field name="registered_date"/>
+                            <field name="letter_date"/>
                             <field name="decide_date" string='Шийдвэрлэх'/>
                             <field name="letter_total_num"/>
                         </group>
