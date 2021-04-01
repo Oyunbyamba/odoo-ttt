@@ -87,7 +87,7 @@ class UbiLetter(models.Model):
         groups="base.group_user",
         default='draft',
         string='Төлөв', store=True, readonly=True, copy=False, tracking=True)
-    receiving_state = fields.Selection([
+    coming_state = fields.Selection([
         ('conflict', 'Зөрчилтэй'),
         ('refuse', 'Буцаасан'),
         ('draft', 'Ирсэн'),
@@ -98,16 +98,17 @@ class UbiLetter(models.Model):
         groups="base.group_user",
         default='draft',
         string='Төлөв', store=True, readonly=True, copy=False, tracking=True)
-    return_state = fields.Selection([
+    going_state = fields.Selection([
         ('draft', 'Бүртгэсэн'),
         ('sent', 'Илгээсэн')],
         groups="base.group_user",
         default='draft',
         string='Төлөв', store=True, readonly=True, copy=False, tracking=True)
-    outgoing_letter_number = fields.Many2one(
-        'ubi.letter', string='Явсан бичгийн дугаар', compute='', groups="base.group_user")
-
-   
+    going_letter_number = fields.Many2one(
+        'ubi.letter', string='Ирсэн бичгийн хариу', compute='_compute_going_letter_response', groups="base.group_user")
+    coming_letter_number = fields.Many2one(
+        'ubi.letter', string='Явсан бичгийн хариу', compute='_compute_coming_letter_response', groups="base.group_user")
+    
 
     @api.onchange('letter_template_id')
     def _set_letter_template(self):
@@ -334,9 +335,9 @@ class UbiLetter(models.Model):
 
         if vals.get('received_date'):
             vals['letter_status'] = 'coming'
-            vals['return_state'] = None
+            vals['going_state'] = None
         else:
-            vals['receiving_state'] = None    
+            vals['coming_state'] = None    
 
         letter = super(UbiLetter, self).create(vals)
 
@@ -399,22 +400,22 @@ class UbiLetter(models.Model):
         _logger.info(self)
 
     def action_sent(self):
-        self.write({'return_state': 'sent'})
+        self.write({'going_state': 'sent'})
 
     def action_receive(self):
-        self.write({'receiving_state': 'receive'})
+        self.write({'coming_state': 'receive'})
 
     def action_review(self):
-        self.write({'receiving_state': 'review'})
+        self.write({'coming_state': 'review'})
 
     def action_transfer(self):
-        self.write({'receiving_state': 'transfer'})
+        self.write({'coming_state': 'transfer'})
 
     def action_validate(self):
-        self.write({'receiving_state': 'validate'})
+        self.write({'coming_state': 'validate'})
 
     def action_conflict(self):
-        self.write({'receiving_state': 'conflict'})
+        self.write({'coming_state': 'conflict'})
 
     def action_refuse(self):
-        self.write({'receiving_state': 'refuse'})
+        self.write({'coming_state': 'refuse'})
