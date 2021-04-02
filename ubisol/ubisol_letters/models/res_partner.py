@@ -14,8 +14,8 @@ class ResPartner(models.Model):
             res['is_company'] = True
         return res
 
-    ubi_letter_org = fields.Boolean('Ubi letter company', default=False)
-    ubi_letter_org_id = fields.Integer('Ubi letter company code')
+    ubi_letter_org = fields.Boolean('Харилцагч байгууллага мөн эсэх', default=False)
+    ubi_letter_org_id = fields.Integer('Харилцагч байгууллагын код')
 
     @api.model
     def create(self, vals):
