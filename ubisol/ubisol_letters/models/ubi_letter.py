@@ -15,9 +15,11 @@ _logger = logging.getLogger(__name__)
 
 class UbiLetter(models.Model):
     _name = "ubi.letter"
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = " "
     _rec_name = 'letter_number'
 
+    
     def _get_default_note(self):
         result = """"""
         return result
@@ -526,3 +528,4 @@ class UbiLetter(models.Model):
                                headers=headers, verify=False)
         print(result.status_code)
         print(result.content)
+    
