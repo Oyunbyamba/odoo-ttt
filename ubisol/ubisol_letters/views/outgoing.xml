@@ -46,9 +46,11 @@
                         </group>
 
                         <group string="Бүртгэл">
-                            <field name="partner_id" string='Хаана'/>
+                            <field name="partner_id" string='Хаана'  
+                                options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="official_person" string='Хэнд'/>
-                            <field name="department_id" string='Хаанаас'/>
+                            <field name="department_id" string='Хаанаас'
+                                options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="is_local" string='Дотоод бичиг'/>  
                             <field name="must_return" string='Хариутай эсэх'/>
                             <field name="must_return_date" attrs="{'invisible': [('must_return','!=',True)]}"/>
@@ -60,13 +62,16 @@
                         </group>
 
                         <group string="Боловсруулсан">
-                            <field name="draft_user_id" string='Боловсруулсан'/>
-                            <field name="confirm_user_id" string='Хянасан'/>
-                            <field name="validate_user_id" string='Гарын үсэг зурсан'/>
+                            <field name="draft_user_id" string='Боловсруулсан'
+                                options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="confirm_user_id" string='Хянасан' 
+                                options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="validate_user_id" string='Гарын үсэг зурсан' 
+                                options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                         </group>
 
                         <group string='Ирсэн бичгийн хариу'>
-                            <field name="coming_letters"/>
+                            <field name="coming_letters" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="computed_letter_type"/>
                             <field name="computed_letter_subject"/>
                             <field name="computed_letter_desc"/>

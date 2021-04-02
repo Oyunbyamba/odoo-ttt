@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_partner_inherit" model="ir.ui.view">
+        <field name="name">res.partner.view.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+         <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="ubi_letter_org_id" string='Байгууллагын дугаар' attrs="{'required': [('ubi_letter_org', '=', True)], 'invisible': [('ubi_letter_org', '!=', True)]}"/>
+                <field name="ubi_letter_org" invisible='1'/>
+            </xpath>
+
+            <xpath expr="//field[@name='company_type']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//notebook/page[@name='sales_purchases']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+         </field>
+     </record>
+
+     <record id="action_res_partner" model="ir.actions.act_window">
+        <field name="name">Харилцагч байгууллага</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">form</field>
+        <field name="context">{'default_ubi_letter_org': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            </p>
+        </field>
+
+    </record>
+
+</odoo>

@@ -59,12 +59,12 @@ class UbiLetter(models.Model):
         string='Шийдвэрлэх огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
     letter_date = fields.Date(string='Баримтын огноо', default=datetime.today(),
                               groups="base.group_user")
-    processing_datetime = fields.Datetime(string='Явцын огноо', default=datetime.now(
-    ).strftime('%Y-%m-%d %H:%M:%S'), groups="base.group_user")
+    processing_datetime = fields.Datetime(string='Явцын огноо', 
+        default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), groups="base.group_user")
     # partner_ids = fields.Many2many(
     #     'res.partner', string='Хаанаас', groups="base.group_user")
     partner_id = fields.Many2one(
-        'res.partner', string='Хаанаас', groups="base.group_user")
+        'res.partner', string='Хаанаас', domain=[('ubi_letter_org', '=', True)], groups="base.group_user")
     letter_type_id = fields.Many2one(
         'ubi.letter.type', string='Баримтын төрөл', groups="base.group_user")
     letter_subject_id = fields.Many2one(

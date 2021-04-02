@@ -55,9 +55,10 @@
                         </group>
 
                         <group string="Бүртгэл">
-                            <field name="partner_id"/>
+                            <field name="partner_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name='official_person' string='Хэнээс' attrs="{'invisible': ['|', ('coming_state', 'in', ('draft'))]}"/>
-                            <field name="user_id" attrs="{'invisible': [('coming_state', 'in', ('draft'))]}"/>
+                            <field name="user_id" attrs="{'invisible': [('coming_state', 'in', ('draft'))]}"  
+                                options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="is_head_company" string='Дээд газраас ирсэн'/>
                             <field name="must_return" string='Хариутай эсэх'/>
                             <field name="must_return_date" attrs="{'invisible': [('must_return','!=',True)]}"/>
@@ -69,7 +70,7 @@
                         </group>
 
                         <group string='Явсан бичгийн хариу'>
-                            <field name="going_letters"/>
+                            <field name="going_letters" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="computed_letter_type"/>
                             <field name="computed_letter_subject"/>
                             <field name="computed_letter_desc"/>
