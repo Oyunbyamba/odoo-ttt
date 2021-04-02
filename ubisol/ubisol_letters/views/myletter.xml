@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <!--myletter-->
+    <template id="assets_backend_ubisol_letters" name="Import letter" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/ubisol_letters/static/src/js/import_letter.js"/>
+        </xpath>
+    </template>
+
+    <record id="ubi_letter_my_tree_view" model="ir.ui.view">
+        <field name="name">ubi.letter.subject.tree</field>
+        <field name="model">ubi.letter</field>
+        <field name="arch" type="xml">
+            <tree string="Ubi Letter" import='false' export_xlsx='false' decoration-success="coming_state == 'validate'" decoration-info="coming_state == 'receive'" decoration-danger="coming_state == 'conflict'">
+                <field name="letter_subject_id"/>
+                <field name="letter_type_id"/>
+                <field name="letter_number"/>
+                <field name="received_date"/>
+                <field name="letter_total_num"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <field name="is_local"/>
+                <field name="letter_status" invisible='1'/>
+                <field name="coming_state" string='Төлөв'/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="ubi_letter_my_form_view" model="ir.ui.view">
+        <field name="name">ubi.letter.subject.form</field>
+        <field name="model">ubi.letter</field>
+        <field name="arch" type="xml">
+            <form string="Ubi Letter">
+                <header>
+                    <button string="Хүлээн авах" name="action_receive" type="object" class="oe_highlight" attrs="{'invisible': [('coming_state', 'not in', ('draft'))]}"/>
+                    <button string="Шилжүүлсэн" name="action_transfer" type="object" class="oe_highlight" attrs="{'invisible': [('coming_state', 'not in', ('receive', 'refuse'))]}"/>
+                    <button string="Судлаж байгаа" name="action_review" type="object" class="oe_highlight" attrs="{'invisible': [('coming_state', 'not in', ('transfer', 'conflict', 'refuse'))]}"/>
+                    <button string="Шийдвэрлэсэн" name="action_validate" type="object" class="oe_highlight" attrs="{'invisible': [('coming_state', 'not in', ('transfer', 'conflict'))]}"/>
+                    <button string="Зөрчилтэй" name="action_conflict" type="object" attrs="{'invisible': [('coming_state', 'in', ('validate', 'transfer', 'refuse', 'conflict'))]}"/>
+                    <button string="Буцаасан" name="action_refuse" type="object" attrs="{'invisible': [('coming_state', 'in', ('validate', 'conflict', 'refuse'))]}"/>
+                    <field name="coming_state" widget="statusbar" statusbar_visible="review,validate"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Үндсэн мэдээлэл">
+                            <field name="letter_subject_id"/>
+                            <field name="letter_number"/>
+                            <field name="letter_type_id"/>
+                            <field name="received_date" string='Хүлээн авсан'/>
+                            <field name="decide_date" string='Шийдвэрлэх'/>
+                            <field name="letter_total_num"/>
+                        </group>
+
+                        <group string="Бүртгэл">
+                            <field name="partner_id"/>
+                            <field name='official_person' string='Хэнээс' attrs="{'invisible': ['|', ('coming_state', 'in', ('draft'))]}"/>
+                            <field name="user_id" attrs="{'invisible': [('coming_state', 'in', ('draft'))]}"/>
+                            <field name="is_head_company" string='Дээд газраас ирсэн'/>
+                            <field name="must_return" string='Хариутай эсэх'/>
+                            <field name="must_return_date" attrs="{'invisible': [('must_return','!=',True)]}"/>
+                            <field name="letter_status" invisible='1'/>
+                        </group>
+
+                        <group string="Хавсралт">
+                            <field name="letter_attachment_id" widget="many2many_binary"/>
+                        </group>
+                    </group>
+                    <group string='Явсан бичгийн хариу'>
+                        <field name="going_letters"/>
+                        <field name="computed_letter_type"/>
+                        <field name="computed_letter_subject"/>
+                        <field name="computed_letter_desc"/>
+                    </group>
+                    <notebook>
+                        <page string="Агуулга">
+                            <field name="desc" widget="text"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="ubi_action_my_letter" model="ir.actions.act_window">
+        <field name="name">Миний бичиг</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ubi.letter</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('ubisol_letters.ubi_letter_my_tree_view')},),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('ubisol_letters.ubi_letter_my_form_view')})]"/>
+        <field name="context">{'default_letter_status': 'coming'}</field>
+        <field name="domain">[('user_id', '=', uid)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add a new document
+            </p>
+        </field>
+
+    </record>
+</odoo>
