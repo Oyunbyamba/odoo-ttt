@@ -58,8 +58,8 @@ class UbiLetter(models.Model):
         string='Шийдвэрлэх огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
     letter_date = fields.Date(string='Баримтын огноо', default=datetime.today(),
                               groups="base.group_user")
-    processing_datetime = fields.Datetime(string='Явцын огноо', 
-        default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), groups="base.group_user")
+    processing_datetime = fields.Datetime(string='Явцын огноо',
+                                          default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), groups="base.group_user")
     # partner_ids = fields.Many2many(
     #     'res.partner', string='Хаанаас', groups="base.group_user")
     partner_id = fields.Many2one(
@@ -539,6 +539,7 @@ class UbiLetter(models.Model):
             for doc in data:
                 already_received = self.env['ubi.letter'].search(
                     [('letter_number', '=', doc['documentNumber']), ('partner_id.orgId', '=', doc['orgId']), ('letter_status', '=', 'coming')], limit=1)
+                # umnu orj irseng shalgah
                 if(already_received):
                     pass
                 else:
