@@ -15,6 +15,7 @@ _logger = logging.getLogger(__name__)
 
 class UbiLetter(models.Model):
     _name = "ubi.letter"
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = " "
     _rec_name = 'letter_number'
 
