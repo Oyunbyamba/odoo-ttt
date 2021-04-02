@@ -1,0 +1,788 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* ubisol_letters
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 13.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-04-02 09:38+0000\n"
+"PO-Revision-Date: 2021-04-02 09:38+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__message_needaction
+msgid "Action Needed"
+msgstr "Үйлдэл шаардсан"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__activity_ids
+msgid "Activities"
+msgstr "Ажилбар"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Ажилбарын тайлбар"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__activity_state
+msgid "Activity State"
+msgstr "Ажилбарын төлөв"
+
+#. module: ubisol_letters
+#: model_terms:ir.actions.act_window,help:ubisol_letters.ubi_action_going_letter
+#: model_terms:ir.actions.act_window,help:ubisol_letters.ubi_action_incoming_letter
+#: model_terms:ir.actions.act_window,help:ubisol_letters.ubi_action_my_letter
+msgid "Add a new document"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__message_attachment_count
+msgid "Attachment Count"
+msgstr "Хавсралтын тоо"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__confirm_user_id
+msgid "Confirm User"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model,name:ubisol_letters.model_res_partner
+msgid "Contact"
+msgstr "Харилцах хаяг"
+
+#. module: ubisol_letters
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.view_partner_tree
+msgid "Contacts"
+msgstr "Харилцагч"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__create_uid
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_document__create_uid
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_subject__create_uid
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_template__create_uid
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_type__create_uid
+msgid "Created by"
+msgstr "Үүсгэсэн этгээд"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__create_date
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_document__create_date
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_subject__create_date
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_template__create_date
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_type__create_date
+msgid "Created on"
+msgstr "Үүсгэсэн огноо"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__custom_letter_template
+msgid "Custom text"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_report_ubisol_letters_letter_detail_report__display_name
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__display_name
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_document__display_name
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_subject__display_name
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_template__display_name
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_type__display_name
+msgid "Display Name"
+msgstr "Дэлгэрэнгүй нэр"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_document__document_id
+msgid "Document"
+msgstr "Баримт"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__draft_user_id
+msgid "Draft User"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model,name:ubisol_letters.model_report_ubisol_letters_letter_detail_report
+msgid "Employee Letter Report"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__follow_id
+msgid "Follow"
+msgstr "Дагах"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__message_follower_ids
+msgid "Followers"
+msgstr "Дагагчид"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__message_channel_ids
+msgid "Followers (Channels)"
+msgstr "Дагагчид (Сувагууд)"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Дагагчид (Харилцагчид)"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_report_ubisol_letters_letter_detail_report__id
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__id
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_document__id
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_subject__id
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_template__id
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_type__id
+msgid "ID"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__activity_exception_icon
+msgid "Icon"
+msgstr "Дүрс"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,help:ubisol_letters.field_ubi_letter__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Ажилбар дээр сануулга гарсныг илэрхийлэх зураг."
+
+#. module: ubisol_letters
+#: model:ir.model.fields,help:ubisol_letters.field_ubi_letter__message_needaction
+#: model:ir.model.fields,help:ubisol_letters.field_ubi_letter__message_unread
+msgid "If checked, new messages require your attention."
+msgstr "Хэрэв сонгогдсон бол, шинэ зурвасууд таны анхаарлыг шаардана."
+
+#. module: ubisol_letters
+#: model:ir.model.fields,help:ubisol_letters.field_ubi_letter__message_has_error
+#: model:ir.model.fields,help:ubisol_letters.field_ubi_letter__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Үүнийг сонговол алдаа үүсэх үед зурвасууд ирнэ."
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__message_is_follower
+msgid "Is Follower"
+msgstr "Дагагч эсэх"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_report_ubisol_letters_letter_detail_report____last_update
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter____last_update
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_document____last_update
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_subject____last_update
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_template____last_update
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_type____last_update
+msgid "Last Modified on"
+msgstr "Сүүлд зассан огноо"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__write_uid
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_document__write_uid
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_subject__write_uid
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_template__write_uid
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_type__write_uid
+msgid "Last Updated by"
+msgstr "Сүүлд зассан этгээд"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__write_date
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_document__write_date
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_subject__write_date
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_template__write_date
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_type__write_date
+msgid "Last Updated on"
+msgstr "Сүүлд зассан огноо"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "Үндсэн хавсралт"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__message_has_error
+msgid "Message Delivery error"
+msgstr "Алдаа үүссэн талаарх зурвас"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__message_ids
+msgid "Messages"
+msgstr "Зурвасууд"
+
+#. module: ubisol_letters
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.view_partner_tree
+msgid "Name"
+msgstr "Нэр"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Дараагийн ажилбарын эцсийн огноо"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__activity_summary
+msgid "Next Activity Summary"
+msgstr "Дараагийн ажилбарын гарчиг"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__activity_type_id
+msgid "Next Activity Type"
+msgstr "Дараагийн ажилбарын төрөл"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Үйлдлийн тоо"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__message_has_error_counter
+msgid "Number of errors"
+msgstr "Алдааны тоо"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,help:ubisol_letters.field_ubi_letter__message_needaction_counter
+msgid "Number of messages which requires an action"
+msgstr "Үйлдэл шаардсан зурвасын тоо"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,help:ubisol_letters.field_ubi_letter__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Алдааны мэдэгдэл бүхий зурвасын тоо"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,help:ubisol_letters.field_ubi_letter__message_unread_counter
+msgid "Number of unread messages"
+msgstr "Уншаагүй зурвасын тоо"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__activity_user_id
+msgid "Responsible User"
+msgstr "Хариуцсан хэрэглэгч"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "SMS илгээлтийн алдаа"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,help:ubisol_letters.field_ubi_letter__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Ажилбаруудын төлөв байдал\n"
+"Хоцорсон: Гүйцэтгэх огноо нь аль хэдий нь өнгөрсөн\n"
+"Өнөөдөр: Өнөөдөр гүйцэтгэх ёстой\n"
+"Төлөвлөгдсөн: Ирээдүйд гүйцэтгэх ажилбарууд"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,help:ubisol_letters.field_ubi_letter__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Бичлэг дээрх асуудал бүхий ажилбарын төрөл"
+
+#. module: ubisol_letters
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_going_form_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_going_tree_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_incoming_form_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_incoming_tree_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_my_form_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_my_tree_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_settings_subject_form
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_settings_subject_tree
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_settings_template_form
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_settings_template_tree
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_settings_type_form
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_settings_type_tree
+msgid "Ubi Letter"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__message_unread
+msgid "Unread Messages"
+msgstr "Уншаагүй зурвас"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__message_unread_counter
+msgid "Unread Messages Counter"
+msgstr "Уншаагүй зурвасын тоолуур"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__validate_user_id
+msgid "Validate User"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__website_message_ids
+msgid "Website Messages"
+msgstr "Вебсайтын зурвас"
+
+#. module: ubisol_letters
+#: model:ir.model.fields,help:ubisol_letters.field_ubi_letter__website_message_ids
+msgid "Website communication history"
+msgstr "Вебсайтын харилцааны түүх"
+
+#. module: ubisol_letters
+#: model_terms:ir.actions.act_window,help:ubisol_letters.ubi_action_planning_letter
+msgid "action_planning_letter"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__computed_letter_desc
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_going_form_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_incoming_form_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_my_form_view
+msgid "Агуулга"
+msgstr ""
+
+#. module: ubisol_letters
+#: model_terms:ir.actions.act_window,help:ubisol_letters.action_settings_letter_template
+#: model:ir.actions.act_window,name:ubisol_letters.action_settings_letter_template
+msgid "Албан бичгийн загвар"
+msgstr ""
+
+#. module: ubisol_letters
+#: model_terms:ir.actions.act_window,help:ubisol_letters.action_settings_letter_subject
+#: model:ir.actions.act_window,name:ubisol_letters.action_settings_letter_subject
+msgid "Албан бичгийн тэргүү"
+msgstr ""
+
+#. module: ubisol_letters
+#: model_terms:ir.actions.act_window,help:ubisol_letters.action_settings_letter_type
+#: model:ir.actions.act_window,name:ubisol_letters.action_settings_letter_type
+msgid "Албан бичгийн төрөл"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.ui.menu,name:ubisol_letters.ubi_letter_root_menu
+msgid "Албан бичиг"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.actions.report,name:ubisol_letters.letter_detail_report_pdf
+msgid "Албан бичиг хэвлэх"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__official_person
+msgid "Албан тушаалтан"
+msgstr ""
+
+#. module: ubisol_letters
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.res_partner_inherit
+msgid "Байгууллагын дугаар"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__letter_number
+#: model:ir.model.fields,help:ubisol_letters.field_ubi_letter__letter_number
+msgid "Баримтын дугаар"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__letter_template_id
+msgid "Баримтын загвар"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__letter_date
+msgid "Баримтын огноо"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__letter_subject_id
+msgid "Баримтын тэргүү"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__computed_letter_subject
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__computed_letter_type
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__letter_type_id
+msgid "Баримтын төрөл"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields.selection,name:ubisol_letters.selection__ubi_letter__state__validate
+msgid "Баталсан"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.ui.menu,name:ubisol_letters.ubi_letter_menu_settings_template
+msgid "Бичгийн загвар"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.ui.menu,name:ubisol_letters.ubi_letter_menu_settings_subject
+msgid "Бичгийн тэргүү"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.ui.menu,name:ubisol_letters.ubi_letter_menu_settings_type
+msgid "Бичгийн төрөл"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.actions.act_window,name:ubisol_letters.ubi_action_planning_letter
+#: model:ir.ui.menu,name:ubisol_letters.ubi_letter_menu3
+msgid "Бичиг төлөвлөлт"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields.selection,name:ubisol_letters.selection__ubi_letter__state__draft
+msgid "Боловсруулах"
+msgstr ""
+
+#. module: ubisol_letters
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_going_form_view
+msgid "Боловсруулсан"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields.selection,name:ubisol_letters.selection__ubi_letter__coming_state__refuse
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_incoming_form_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_my_form_view
+msgid "Буцаасан"
+msgstr ""
+
+#. module: ubisol_letters
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_going_form_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_incoming_form_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_my_form_view
+msgid "Бүртгэл"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__register_number
+#: model:ir.model.fields,help:ubisol_letters.field_ubi_letter__register_number
+msgid "Бүртгэлийн дугаар"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields.selection,name:ubisol_letters.selection__ubi_letter__going_state__draft
+msgid "Бүртгэсэн"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__registered_date
+msgid "Бүртгэсэн огноо"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_subject__name
+msgid "Гарчиг нэр"
+msgstr ""
+
+#. module: ubisol_letters
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_going_form_view
+msgid "Гарын үсэг зурсан"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__is_local
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_going_form_view
+msgid "Дотоод бичиг"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__is_head_company
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_incoming_form_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_my_form_view
+msgid "Дээд газраас ирсэн"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__letter_template_text
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_template__letter_template
+msgid "Загвар"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_template__letter_template_name
+msgid "Загварын нэр "
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields.selection,name:ubisol_letters.selection__ubi_letter__state__validate1
+msgid "Зөвшөөрсөн"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields.selection,name:ubisol_letters.selection__ubi_letter__coming_state__conflict
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_incoming_form_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_my_form_view
+msgid "Зөрчилтэй"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields.selection,name:ubisol_letters.selection__ubi_letter__going_state__sent
+msgid "Илгээсэн"
+msgstr ""
+
+#. module: ubisol_letters
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_going_tree_view
+msgid "Илгээсэн хэлтэс"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.actions.server,name:ubisol_letters.action_letter_send
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_going_form_view
+msgid "Илгээх"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields.selection,name:ubisol_letters.selection__ubi_letter__coming_state__draft
+#: model:ir.model.fields.selection,name:ubisol_letters.selection__ubi_letter__letter_status__coming
+msgid "Ирсэн"
+msgstr ""
+
+#. module: ubisol_letters
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_going_form_view
+msgid "Ирсэн бичгийн хариу"
+msgstr ""
+
+#. module: ubisol_letters
+#. openerp-web
+#: code:addons/ubisol_letters/static/src/js/import_letter.js:0
+#: model:ir.actions.act_window,name:ubisol_letters.ubi_action_incoming_letter
+#: model:ir.ui.menu,name:ubisol_letters.ubi_letter_menu1
+#, python-format
+msgid "Ирсэн бичиг"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__going_letters
+msgid "Ирсэн дугаар"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__card_number
+#: model:ir.model.fields,help:ubisol_letters.field_ubi_letter__card_number
+msgid "Картын дугаар"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_type__code
+msgid "Код"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.actions.act_window,name:ubisol_letters.ubi_action_my_letter
+#: model:ir.ui.menu,name:ubisol_letters.ubi_letter_menu4
+msgid "Миний бичиг"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields.selection,name:ubisol_letters.selection__ubi_letter__coming_state__review
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_incoming_form_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_my_form_view
+msgid "Судлаж байгаа"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_subject__desc
+msgid "Тайлбар"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__desc
+msgid "Товч утга"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.ui.menu,name:ubisol_letters.ubi_letter_menu5
+msgid "Тохиргоо"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__coming_state
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__going_state
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__letter_status
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__state
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_going_tree_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_incoming_tree_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_my_tree_view
+msgid "Төлөв"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields.selection,name:ubisol_letters.selection__ubi_letter__letter_status__planning
+msgid "Төлөвлөлт"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_type__name
+msgid "Төрлийн нэр"
+msgstr ""
+
+#. module: ubisol_letters
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_going_form_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_going_tree_view
+msgid "Хаана"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__partner_id
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_going_form_view
+msgid "Хаанаас"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__letter_attachment_id
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_going_form_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_incoming_form_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_my_form_view
+msgid "Хавсралт"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.actions.act_window,name:ubisol_letters.action_res_partner
+#: model:ir.ui.menu,name:ubisol_letters.ubi_letter_menu_res_partner
+msgid "Харилцагч байгууллага"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_res_partner__ubi_letter_org
+#: model:ir.model.fields,field_description:ubisol_letters.field_res_users__ubi_letter_org
+msgid "Харилцагч байгууллага мөн эсэх"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_res_partner__ubi_letter_org_id
+#: model:ir.model.fields,field_description:ubisol_letters.field_res_users__ubi_letter_org_id
+msgid "Харилцагч байгууллагын код"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__must_return_date
+msgid "Хариу ирүүлэх огноо"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__must_return
+msgid "Хариу өгөх"
+msgstr ""
+
+#. module: ubisol_letters
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_going_form_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_incoming_form_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_my_form_view
+msgid "Хариутай эсэх"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__department_id
+msgid "Хариуцах Хэлтэс"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__letter_total_num
+#: model:ir.model.fields,help:ubisol_letters.field_ubi_letter__letter_total_num
+msgid "Хуудасны тоо"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__user_id
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_going_form_view
+msgid "Хэнд"
+msgstr ""
+
+#. module: ubisol_letters
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_incoming_form_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_my_form_view
+msgid "Хэнээс"
+msgstr ""
+
+#. module: ubisol_letters
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_going_form_view
+msgid "Хянасан"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields.selection,name:ubisol_letters.selection__ubi_letter__state__confirm
+msgid "Хянах"
+msgstr ""
+
+#. module: ubisol_letters
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_incoming_form_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_my_form_view
+msgid "Хүлээн авах"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields.selection,name:ubisol_letters.selection__ubi_letter__coming_state__receive
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_incoming_form_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_my_form_view
+msgid "Хүлээн авсан"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__received_date
+msgid "Хүлээн авсан огноо"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields.selection,name:ubisol_letters.selection__ubi_letter__coming_state__validate
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_incoming_form_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_my_form_view
+msgid "Шийдвэрлэсэн"
+msgstr ""
+
+#. module: ubisol_letters
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_going_form_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_incoming_form_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_my_form_view
+msgid "Шийдвэрлэх"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__decide_date
+msgid "Шийдвэрлэх огноо"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields.selection,name:ubisol_letters.selection__ubi_letter__coming_state__transfer
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_incoming_form_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_my_form_view
+msgid "Шилжүүлсэн"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields.selection,name:ubisol_letters.selection__ubi_letter__letter_status__going
+msgid "Явсан"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__coming_letters
+msgid "Явсан бичгийн дугаар"
+msgstr ""
+
+#. module: ubisol_letters
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_incoming_form_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_my_form_view
+msgid "Явсан бичгийн хариу"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.actions.act_window,name:ubisol_letters.ubi_action_going_letter
+#: model:ir.ui.menu,name:ubisol_letters.ubi_letter_menu2
+msgid "Явсан бичиг"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__processing_datetime
+msgid "Явцын огноо"
+msgstr ""
+
+#. module: ubisol_letters
+#: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter_subject__code
+msgid "код"
+msgstr ""
+
+#. module: ubisol_letters
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_going_form_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_incoming_form_view
+#: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_my_form_view
+msgid "Үндсэн мэдээлэл"
+msgstr ""
