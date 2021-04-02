@@ -12,11 +12,33 @@
       <field name="model">hr.employee</field>
       <field name="inherit_id" ref="hr.view_employee_form"/>
       <field name="arch" type="xml">
+ 
 
+
+       
         <xpath expr="//field[@name='name']" position="replace">
           <field name="surname" placeholder="Эцэг/эх/-ийн нэр" />
           <span> овогтой </span>
           <field name="name" placeholder="Ажилтаны нэр" required="True" />
+        </xpath>
+
+   
+        <xpath expr="///field[@name='leave_manager_id']" position="replace">
+          <field name="leave_manager_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+        </xpath>
+
+        <xpath expr="///field[@name='user_id']"  position="replace">
+          <field name="user_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+        </xpath>
+
+        <xpath expr="///field[@name='department_id']" position="replace">
+          <field name="department_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+        </xpath>
+        <xpath expr="///field[@name='job_id']" position="replace">
+          <field name="job_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+        </xpath>
+        <xpath expr="///field[@name='parent_id']" position="replace">
+          <field name="parent_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
         </xpath>
 
         <xpath expr="//page[@name='personal_information']/group" position="after">
@@ -34,6 +56,7 @@
               </tree>
             </field>
           </group>
+
         </xpath>
 
         <field name="identification_id" position="replace"/>
@@ -169,6 +192,7 @@
             </field>
           </group>
         </xpath>
+        
       </field>
     </record>
 
