@@ -108,9 +108,9 @@ class UbiLetter(models.Model):
         default='draft',
         string='Төлөв', store=True, readonly=True, copy=False, tracking=True)
     going_letters = fields.Many2one(
-        'ubi.letter', string='Ирсэн бичгийн хариу', domain=[('letter_status', '=', 'going')], groups="base.group_user")
+        'ubi.letter', string='Ирсэн дугаар', domain=[('letter_status', '=', 'going')], groups="base.group_user")
     coming_letters = fields.Many2one(
-        'ubi.letter', string='Явсан бичгийн хариу', domain=[('letter_status', '=', 'coming')], groups="base.group_user")
+        'ubi.letter', string='Явсан бичгийн дугаар', domain=[('letter_status', '=', 'coming')], groups="base.group_user")
     computed_letter_type = fields.Char(string='Баримтын төрөл', compute='_computed_letter_type', groups="base.group_user")
     computed_letter_subject = fields.Char(string='Баримтын төрөл', compute='_computed_letter_subject', groups="base.group_user")
     computed_letter_desc = fields.Char(string='Агуулга', compute='_computed_letter_desc', groups="base.group_user")
@@ -122,6 +122,7 @@ class UbiLetter(models.Model):
 
     @api.onchange('going_letters', 'coming_letters')
     def _computed_letter_type(self):
+        self.computed_letter_type = ''
         if self.going_letters:
             self.follow_id = self.going_letters.id
             self.computed_letter_type = self.going_letters.letter_type_id.name if self.going_letters.letter_type_id else ''
@@ -131,6 +132,7 @@ class UbiLetter(models.Model):
 
     @api.onchange('going_letters', 'coming_letters')
     def _computed_letter_subject(self):
+        self.computed_letter_subject = ''
         if self.going_letters:
             self.computed_letter_subject = self.going_letters.letter_subject_id.name if self.going_letters.letter_subject_id else ''
         elif self.coming_letters:
@@ -138,6 +140,7 @@ class UbiLetter(models.Model):
 
     @api.onchange('going_letters', 'coming_letters')
     def _computed_letter_desc(self):
+        self.computed_letter_desc = ''
         if self.going_letters:
             self.computed_letter_desc = self.going_letters.desc
         elif self.coming_letters:

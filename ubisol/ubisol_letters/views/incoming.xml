@@ -69,7 +69,7 @@
                         </group>
                     </group>
                     <group string='Явсан бичгийн хариу'>
-                        <field name="coming_letters"/>
+                        <field name="going_letters"/>
                         <field name="computed_letter_type"/>
                         <field name="computed_letter_subject"/>
                         <field name="computed_letter_desc"/>
