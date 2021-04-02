@@ -40,7 +40,7 @@
                     <button string="Хүлээн авах" name="action_receive" type="object" class="oe_highlight" attrs="{'invisible': [('coming_state', 'not in', ('draft'))]}"/>
                     <button string="Шилжүүлсэн" name="action_transfer" type="object" class="oe_highlight" attrs="{'invisible': [('coming_state', 'not in', ('receive', 'refuse'))]}"/>
                     <button string="Судлаж байгаа" name="action_review" type="object" class="oe_highlight" attrs="{'invisible': [('coming_state', 'not in', ('transfer', 'conflict', 'refuse'))]}"/>
-                    <button string="Шийдвэрлэсэн" name="action_validate" type="object" class="oe_highlight" attrs="{'invisible': [('coming_state', 'not in', ('transfer', 'conflict'))]}"/>
+                    <button string="Шийдвэрлэсэн" name="action_validate" type="object" class="oe_highlight" attrs="{'invisible': [('coming_state', 'not in', ('draft', 'transfer', 'conflict'))]}"/>
                     <button string="Зөрчилтэй" name="action_conflict" type="object" attrs="{'invisible': [('coming_state', 'in', ('validate', 'transfer', 'refuse', 'conflict'))]}"/>
                     <button string="Буцаасан" name="action_refuse" type="object" attrs="{'invisible': [('coming_state', 'in', ('validate', 'conflict', 'refuse'))]}"/>
                     <field name="coming_state" widget="statusbar" statusbar_visible="review,validate"/>
@@ -69,13 +69,14 @@
                         <group string="Хавсралт">
                             <field name="letter_attachment_id" widget="many2many_binary"/>
                         </group>
+
+                        <group string='Явсан бичгийн хариу'>
+                            <field name="going_letters"/>
+                            <field name="computed_letter_type"/>
+                            <field name="computed_letter_subject"/>
+                            <field name="computed_letter_desc"/>
+                        </group>
                     </group>
-                    <group string='Явсан бичгийн хариу'>
-                        <field name="going_letters"/>
-                        <field name="computed_letter_type"/>
-                        <field name="computed_letter_subject"/>
-                        <field name="computed_letter_desc"/>
-                    </group>   
                     <notebook>
                         <page string="Агуулга">
                             <field name="desc" widget="text"/>
