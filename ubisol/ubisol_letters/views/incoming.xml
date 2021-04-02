@@ -14,7 +14,9 @@
         <field name="arch" type="xml">
             <tree string="Ubi Letter" import='false' export_xlsx='false'
                 decoration-success="coming_state == 'validate'" decoration-info="coming_state == 'receive'"
-                decoration-danger="coming_state == 'conflict'">
+                decoration-danger="coming_state == 'conflict'" decoration-primary="coming_state == 'transfer'" 
+                decoration-warning="coming_state == 'refuse'"   decoration-bf="coming_state == 'receive'" decoration-it="coming_state == 'receive'">
+                
                 <field name="letter_subject_id"/>
                 <field name="letter_type_id"/>
                 <field name="letter_number"/>
