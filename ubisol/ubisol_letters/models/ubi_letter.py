@@ -19,7 +19,6 @@ class UbiLetter(models.Model):
     _description = " "
     _rec_name = 'letter_number'
 
-    
     def _get_default_note(self):
         result = """"""
         return result
@@ -113,9 +112,12 @@ class UbiLetter(models.Model):
         'ubi.letter', string='Ирсэн дугаар', domain=[('letter_status', '=', 'going')], groups="base.group_user")
     coming_letters = fields.Many2one(
         'ubi.letter', string='Явсан бичгийн дугаар', domain=[('letter_status', '=', 'coming')], groups="base.group_user")
-    computed_letter_type = fields.Char(string='Баримтын төрөл', compute='_computed_letter_type', groups="base.group_user")
-    computed_letter_subject = fields.Char(string='Баримтын төрөл', compute='_computed_letter_subject', groups="base.group_user")
-    computed_letter_desc = fields.Char(string='Агуулга', compute='_computed_letter_desc', groups="base.group_user")
+    computed_letter_type = fields.Char(
+        string='Баримтын төрөл', compute='_computed_letter_type', groups="base.group_user")
+    computed_letter_subject = fields.Char(
+        string='Баримтын төрөл', compute='_computed_letter_subject', groups="base.group_user")
+    computed_letter_desc = fields.Char(
+        string='Агуулга', compute='_computed_letter_desc', groups="base.group_user")
 
     @api.onchange('letter_template_id')
     def _set_letter_template(self):
@@ -147,7 +149,6 @@ class UbiLetter(models.Model):
             self.computed_letter_desc = self.going_letters.desc
         elif self.coming_letters:
             self.computed_letter_desc = self.coming_letters.desc
-
 
     @api.onchange('letter_number')
     def _set_letter_template1(self):
@@ -372,61 +373,6 @@ class UbiLetter(models.Model):
     def write(self, vals):
         letter = super(UbiLetter, self).write(vals)
 
-    @api.model
-    def check_connection_function(self, user):
-        # try:
-        #     _create_unverified_https_context = ssl._create_unverified_context
-        # except AttributeError:
-        #     pass
-        # else:
-        #     ssl._create_default_https_context = _create_unverified_https_context
-
-        # ssl._create_default_https_context = ssl._create_unverified_context
-        # ssl._create_default_https_context = ssl._create_stdlib_context
-        # session = Session()
-        # session.verify = False  # 'path/to/my/certificate.pem'
-        # transport = Transport(session=session)
-
-        # client = Client(
-        #    'https://dev.docx.gov.mn/soap/api/api.wsdl', transport=transport)
-        # get_list = getattr(client.service, 'get.org/list')
-        # resp = get_list()
-        # print(client)
-
-        # HeaderMessage = client.factory.create('ns0:HeaderMessage')
-
-        # Create a factory and assign the values
-        data = """<Envelope xmlns = "http://schemas.xmlsoap.org/soap/envelope/" >
-                    <Body>
-                        <callRequest xmlns = "https://dev.docx.gov.mn/document/dto">
-                            <token>2mRCiuLX352m6O2lhqMoxPs-fQ5ibZgaqIHRbNSaxCaoiJg7Ugo7nCCQEMKKlgK-XBQBprEqylE3EKmM5fMinLm6PnzAYfIHTi-BcwQXG8l3MHKp30HFjMyfrhfJvqK83o4JhtDxAXyp8TpeRrEhY949ClikAWr-v1cPbQ6Q0N8</token>
-                            <service>get.org/list</service >
-                            <params >{"name": "Таван толгой түлш"}</params>
-
-                        </callRequest>
-                    </Body>
-                </Envelope>"""
-
-        # result = client.service.call(data)
-        # print(result)
-
-        
-        target_url = "https://dev.docx.gov.mn/soap/api"
-        headers = {'Content-type': 'text/xml'}
-        result = requests.post(target_url, data=data.encode(
-            encoding='utf-8'), headers=headers, verify=False)
-        print(result.status_code)
-        print(result.content)
-        mytree = ET.fromstring(result.content)
-        
-        find = (mytree.find(
-            './/{https://dev.docx.gov.mn/document/dto}data'))
-        text_data = find.text
-        text = " ".join(re.findall("[a-zA-Z0-9а-яА-ЯүҮөӨ]+", text_data))
-
-        print(text_data)
-        return (text)
-
     def letter_send_function(self):
         selected_ids = self.env.context.get('active_ids', [])
         self.prepare_sending(selected_ids)
@@ -461,8 +407,9 @@ class UbiLetter(models.Model):
 
     def build_state_doc(self, letter):
         body = {}
-        body['documentDate'] = datetime.strftime(letter.letter_date, '%Y-%m-%d') if letter.letter_date else ''
-        body['documentTypeId'] = 1 # letter.letter_type_id.id or ''
+        body['documentDate'] = datetime.strftime(
+            letter.letter_date, '%Y-%m-%d') if letter.letter_date else ''
+        body['documentTypeId'] = 1  # letter.letter_type_id.id or ''
         body['documentNumber'] = letter.letter_number or ''
         body['documentName'] = letter.letter_subject_id.name or ''
         body['signName'] = letter.validate_user_id.name or ''
@@ -476,15 +423,19 @@ class UbiLetter(models.Model):
         # ? shalgaj hariu bichig mun esehiig medne
         body['isReplyDoc'] = 0
         body['isNeedReply'] = letter.must_return
-        body['createdUserId'] = 5466  #datetime.strftime(letter.letter_date, '%Y-%m-%d') if letter.letter_date else ''
+        # datetime.strftime(letter.letter_date, '%Y-%m-%d') if letter.letter_date else ''
+        body['createdUserId'] = 5466
         body['priorityId'] = 0
         body['noOfPages'] = letter.letter_total_num
-        body['responseTypeID'] =  1 #letter.must_return  # nuhtsul shalgah
+        body['responseTypeID'] = 1  # letter.must_return  # nuhtsul shalgah
         # mistyped asuuh heregtei
-        body['responceDate'] = datetime.strftime(letter.must_return_date, '%Y-%m-%d') if letter.must_return_date else ''
-        body['srcDocumentNumber'] = '' #1 #letter.follow_id.letter_number or ''
+        body['responceDate'] = datetime.strftime(
+            letter.must_return_date, '%Y-%m-%d') if letter.must_return_date else ''
+        # 1 #letter.follow_id.letter_number or ''
+        body['srcDocumentNumber'] = ''
         body['srcDocumentCode'] = ''
-        body['srcDocumentDate'] = datetime.strftime(letter.follow_id.letter_date, '%Y-%m-%d') if letter.follow_id and letter.follow_id.letter_date else ''
+        body['srcDocumentDate'] = datetime.strftime(
+            letter.follow_id.letter_date, '%Y-%m-%d') if letter.follow_id and letter.follow_id.letter_date else ''
 
         json_data = json.dumps(body)
         return json_data
@@ -500,12 +451,13 @@ class UbiLetter(models.Model):
             fileList['type'] = file.mimetype
             path = file._full_path(file.store_fname)
            # with tools.file_open(path, 'rb') as file_binary:
-            #content = file.datas
-            #fileList['data'] = base64.b64encode(content)
+            # content = file.datas
+            # fileList['data'] = base64.b64encode(content)
             fileList['data'] = "aGVsbG8="
             file_array.append(fileList)
         return file_array
 
+    @api.model
     def send_letter(self, request_data):
         _logger.info(request_data)
         template = """<Envelope xmlns = "http://schemas.xmlsoap.org/soap/envelope/" >
@@ -528,4 +480,120 @@ class UbiLetter(models.Model):
                                headers=headers, verify=False)
         print(result.status_code)
         print(result.content)
-    
+
+    @api.model
+    def check_connection_function(self, user):
+
+        # try:
+        #     _create_unverified_https_context = ssl._create_unverified_context
+        # except AttributeError:
+        #     pass
+        # else:
+        #     ssl._create_default_https_context = _create_unverified_https_context
+
+        # ssl._create_default_https_context = ssl._create_unverified_context
+        # ssl._create_default_https_context = ssl._create_stdlib_context
+        # session = Session()
+        # session.verify = False  # 'path/to/my/certificate.pem'
+        # transport = Transport(session=session)
+
+        # client = Client(
+        #    'https://dev.docx.gov.mn/soap/api/api.wsdl', transport=transport)
+        # get_list = getattr(client.service, 'get.org/list')
+        # resp = get_list()
+        # print(client)
+
+        # HeaderMessage = client.factory.create('ns0:HeaderMessage')
+
+        # Create a factory and assign the values
+        data = """<Envelope xmlns = "http://schemas.xmlsoap.org/soap/envelope/" >
+                    <Body>
+                        <callRequest xmlns = "https://dev.docx.gov.mn/document/dto">
+                            <token>2mRCiuLX352m6O2lhqMoxPs-fQ5ibZgaqIHRbNSaxCaoiJg7Ugo7nCCQEMKKlgK-XBQBprEqylE3EKmM5fMinLm6PnzAYfIHTi-BcwQXG8l3MHKp30HFjMyfrhfJvqK83o4JhtDxAXyp8TpeRrEhY949ClikAWr-v1cPbQ6Q0N8</token>
+                            <service>get.document_list/list</service >
+                            <params>{statusId : 1}</params>
+
+                        </callRequest>
+                    </Body>
+                </Envelope>"""
+
+        # result = client.service.call(data)
+        # print(result)
+
+        target_url = "https://dev.docx.gov.mn/soap/api"
+        headers = {'Content-type': 'text/xml'}
+        result = requests.post(target_url, data=data.encode(
+            encoding='utf-8'), headers=headers, verify=False)
+        # print(result.status_code)
+        # print(result.content)
+        mytree = ET.fromstring(result.content)
+
+        status = mytree.find(
+            './/{https://dev.docx.gov.mn/document/dto}responseCode')
+
+        if(status.text.strip() == '200'):
+            find = mytree.find(
+                './/{https://dev.docx.gov.mn/document/dto}data')
+
+            data = json.loads(find.text.strip())
+            for doc in data:
+                already_received = self.env['ubi.letter'].search(
+                    [('letter_number', '=', doc['documentNumber']), ('partner_id.orgId', '=', doc['orgId']), ('letter_status', '=', 'coming')], limit=1)
+                if(already_received):
+                    pass
+                else:
+                    vals = self.prepare_receiving(doc)
+                    self.env['ubi.letter'].create(vals)
+
+        else:
+            print("FALSE")
+
+        return
+
+    def prepare_receiving(self, doc):
+        vals = {}
+
+        vals['letter_date'] = doc['documentDate']
+        vals['letter_type_id'] = doc['documentTypeId'] = 1
+        vals['letter_number'] = doc['documentNumber']
+        vals['letter_subject_id'] = doc['documentName']
+        vals['validate_user_id'] = doc['signName']
+        # body['orgId'] = letter.partner_id.id_by_state
+        vals['orgId'] = doc['orgId']
+        # body['orgName'] = letter.partner_id.name
+        vals['orgName'] = doc['orgName']
+        vals['isReplyDoc'] = body['isReplyDoc']
+        vals['must_return'] = body['isNeedReply']
+        # datetime.strftime(letter.letter_date, '%Y-%m-%d') if letter.letter_date else ''
+        vals['createdUserId'] = body['createdUserId']
+        vals['priorityId'] = body['priorityId']
+
+        # ? shalgaj hariu bichig mun esehiig medne
+
+        vals['letter_total_num'] = doc['noOfPages']
+        # mistyped asuuh heregtei
+        doc['srcDocumentNumber']
+        doc['srcDocumentCode']
+        doc['srcDocumentDate']
+        self.prepare_files(doc['fileList'])
+
+        vals['coming_state'] = 'draft'
+        vals['letter_status'] = 'coming'
+
+        return vals
+
+    def download_files(self, files):
+
+        file_array = []
+        for file in files:
+            fileList = {}
+            fileList['name'] = file.name
+            fileList['size'] = file.file_size
+            fileList['type'] = file.mimetype
+            path = file._full_path(file.store_fname)
+           # with tools.file_open(path, 'rb') as file_binary:
+            # content = file.datas
+            # fileList['data'] = base64.b64encode(content)
+            fileList['data'] = "aGVsbG8="
+            file_array.append(fileList)
+        return file_array
