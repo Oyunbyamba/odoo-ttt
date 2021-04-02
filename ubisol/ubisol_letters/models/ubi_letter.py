@@ -6,7 +6,7 @@ import os
 import json
 import base64
 import xml.etree.ElementTree as ET
-
+import re
 import ssl
 import requests
 
@@ -405,6 +405,7 @@ class UbiLetter(models.Model):
         # result = client.service.call(data)
         # print(result)
 
+        
         target_url = "https://dev.docx.gov.mn/soap/api"
         headers = {'Content-type': 'text/xml'}
         result = requests.post(target_url, data=data.encode(
@@ -412,10 +413,14 @@ class UbiLetter(models.Model):
         print(result.status_code)
         print(result.content)
         mytree = ET.fromstring(result.content)
-        find = (mytree.findall(
+        
+        find = (mytree.find(
             './/{https://dev.docx.gov.mn/document/dto}data'))
-        print(find)
-        return ((mytree.findall("./")))
+        text_data = find.text
+        text = " ".join(re.findall("[a-zA-Z0-9а-яА-ЯүҮөӨ]+", text_data))
+
+        print(text_data)
+        return (text)
 
     def letter_send_function(self):
         selected_ids = self.env.context.get('active_ids', [])
