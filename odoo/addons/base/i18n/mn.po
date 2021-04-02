@@ -6997,7 +6997,7 @@ msgstr ""
 #. module: base
 #: model_terms:ir.ui.view,arch_db:base.view_partner_short_form
 msgid "<b>Company Address:</b>"
-msgstr ""
+msgstr "Байгууллагын хаяг"
 
 #. module: base
 #: model_terms:res.partner,website_description:base.res_partner_10

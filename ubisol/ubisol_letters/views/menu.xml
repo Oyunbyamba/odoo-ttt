@@ -12,5 +12,6 @@
     <menuitem id="ubi_letter_menu_settings_type" name="Бичгийн төрөл" action="action_settings_letter_type" parent="ubi_letter_menu5" sequence="1"/>
     <menuitem id="ubi_letter_menu_settings_subject" name="Бичгийн тэргүү" action="action_settings_letter_subject" parent="ubi_letter_menu5" sequence="2"/>
     <menuitem id="ubi_letter_menu_settings_template" name="Бичгийн загвар" action="action_settings_letter_template" parent="ubi_letter_menu5" sequence="3"/>
+    <menuitem id="ubi_letter_menu_res_partner" name="Харилцагч байгууллага" action="action_res_partner" parent="ubi_letter_menu5" sequence="4"/>
 
 </odoo>
