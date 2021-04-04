@@ -371,6 +371,7 @@ class UbiLetter(models.Model):
         return letter
 
     def write(self, vals):
+        _logger.info(vals)
         letter = super(UbiLetter, self).write(vals)
 
     def letter_send_function(self):
@@ -440,7 +441,7 @@ class UbiLetter(models.Model):
         json_data = json.dumps(body)
         return json_data
 
-    def prepare_files(self, letter):
+    def download_files(self, letter):
 
         files = letter.letter_attachment_id
         file_array = []
@@ -505,7 +506,7 @@ class UbiLetter(models.Model):
 
         # HeaderMessage = client.factory.create('ns0:HeaderMessage')
 
-        # Create a factory and assign the values
+        # # Create a factory and assign the values
         data = """<Envelope xmlns = "http://schemas.xmlsoap.org/soap/envelope/" >
                     <Body>
                         <callRequest xmlns = "https://dev.docx.gov.mn/document/dto">
@@ -545,11 +546,10 @@ class UbiLetter(models.Model):
                 else:
                     vals = self.prepare_receiving(doc)
                     self.env['ubi.letter'].create(vals)
-
         else:
             print("FALSE")
 
-        return
+        return {}
 
     def prepare_receiving(self, doc):
         vals = {}
@@ -576,25 +576,26 @@ class UbiLetter(models.Model):
         doc['srcDocumentNumber']
         doc['srcDocumentCode']
         doc['srcDocumentDate']
-        self.prepare_files(doc['fileList'])
-
+        vals['letter_attachment_id'] = self.download_files(doc['fileList'])
         vals['coming_state'] = 'draft'
         vals['letter_status'] = 'coming'
 
         return vals
 
     def download_files(self, files):
-
-        file_array = []
+        attachment_ids = []
         for file in files:
-            fileList = {}
-            fileList['name'] = file.name
-            fileList['size'] = file.file_size
-            fileList['type'] = file.mimetype
-            path = file._full_path(file.store_fname)
-           # with tools.file_open(path, 'rb') as file_binary:
-            # content = file.datas
-            # fileList['data'] = base64.b64encode(content)
-            fileList['data'] = "aGVsbG8="
-            file_array.append(fileList)
-        return file_array
+            file_url = file['url']
+            file_name = file['name']
+            result = base64.b64encode(requests.get(file_url.strip()).content).replace(b'\n', b'')
+            attachment = self.env['ir.attachment'].create({
+                'name': file_name,
+                'type': 'binary',
+                'datas': result,
+                'res_model': 'ubi.letter'
+            })
+            attachment_ids.append(attachment)
+
+        attachment_ids = [[6, False, attachment_ids]]
+
+        return attachment_ids

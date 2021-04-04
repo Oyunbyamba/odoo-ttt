@@ -2,7 +2,9 @@
     <template xml:space="preserve">
         <t t-extend="ListView.buttons">
             <t t-jquery="button.o_list_button_add" t-operation="after">
-                <button t-if='widget.modelName == "ubi.letter"' type="button" class="btn btn-success fa fa-download o_button_to_call_import_letter">
+                <button t-if='widget.modelName == "ubi.letter"' type="button" class="btn btn-success o_button_to_call_import_letter">
+                <i class="fa fa-download"></i>
+                ТАБС системээс ирсэн бичиг татах
                 </button>
             </t>
         </t>
