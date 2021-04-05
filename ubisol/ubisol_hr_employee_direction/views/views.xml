@@ -78,5 +78,5 @@
 
     <menuitem name="Тушаал" id="menu_hr_employee_direction" parent="hr.menu_hr_employee_payroll"
             action="ubisol_direction_action_window"
-            sequence="100" groups="hr.group_hr_user,hr.group_hr_manager"/>
+            sequence="100" groups="hr.group_hr_user"/>
 </odoo>
