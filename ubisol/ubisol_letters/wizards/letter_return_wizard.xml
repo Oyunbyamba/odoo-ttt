@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<odoo>
+    <record id="act_wizard_letter_return_wizard" model="ir.actions.act_window">
+        <field name="name">Албан бичиг буцаах шалтгаан</field>
+        <field name="res_model">letter.return.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="attendance_report_wizard_form" model="ir.ui.view">
+        <field name="model">letter.return.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="calculate_type"/>
+                </group>
+                <group>
+                    <field name="cancel_reason" />
+                </group>
+                <footer>
+                    <button name="action_compute" type="object" string="Буцаах" class="oe_highlight" />
+                    <button special="cancel" string="Болих" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

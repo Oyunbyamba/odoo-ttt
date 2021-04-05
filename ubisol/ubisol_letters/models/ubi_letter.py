@@ -64,6 +64,9 @@ class UbiLetter(models.Model):
     confirm_user_id = fields.Many2one('res.users', groups="base.group_user")
     validate_user_id = fields.Many2one('res.users', groups="base.group_user")
 
+    to_user = fields.Char(
+        'Хэнд', compute='_compute_to_user', groups='base.group_user')
+
     letter_type_id = fields.Many2one(
         'ubi.letter.type', string='Баримтын төрөл', groups="base.group_user")
     letter_subject_id = fields.Many2one(
@@ -80,12 +83,12 @@ class UbiLetter(models.Model):
     must_return = fields.Boolean(
         string='Хариутай эсэх', default=False, groups="base.group_user")
     is_reply_doc = fields.Boolean(
-        string='Хариу бичсэн эсэх', default=False, groups="base.group_user")    
+        string='Хариу бичсэн эсэх', default=False, groups="base.group_user")
     is_local = fields.Boolean(
         string='Дотоод бичиг', groups="base.group_user", default=False)
     is_head_company = fields.Boolean(
         string='Дээд газраас ирсэн', default=False, groups="base.group_user")
-    tabs_id = fields.Integer('Tabs id', groups="base.group_user")    
+    tabs_id = fields.Integer('Tabs id', groups="base.group_user")
     state = fields.Selection([
         ('draft', 'Боловсруулах'),
         ('confirm', 'Хянах'),
@@ -123,10 +126,14 @@ class UbiLetter(models.Model):
         string='Баримтын төрөл', compute='_computed_letter_subject', groups="base.group_user")
     computed_letter_desc = fields.Char(
         string='Агуулга', compute='_computed_letter_desc', groups="base.group_user")
-    src_document_number = fields.Char(string='Эх бичгийн дугаар', groups="base.group_user")
-    src_document_code = fields.Char(string='Эх бичгийн цахим дугаар', groups="base.group_user")
-    src_document_date = fields.Char(string='Эх бичгийн огноо', groups="base.group_user")
-    priority_id = fields.Integer(string='Нууцлалын зэрэг', size=1, groups="base.group_user")
+    src_document_number = fields.Char(
+        string='Эх бичгийн дугаар', groups="base.group_user")
+    src_document_code = fields.Char(
+        string='Эх бичгийн цахим дугаар', groups="base.group_user")
+    src_document_date = fields.Char(
+        string='Эх бичгийн огноо', groups="base.group_user")
+    priority_id = fields.Integer(
+        string='Нууцлалын зэрэг', size=1, groups="base.group_user")
 
     @api.onchange('letter_template_id')
     def _set_letter_template(self):
@@ -408,12 +415,25 @@ class UbiLetter(models.Model):
     def action_refuse(self):
         self.write({'coming_state': 'refuse'})
 
+    def _compute_to_user(self):
+        for letter in self:
+            to_user = ''
+            if letter.is_local:
+                to_user = letter.user_id
+            else:
+                to_user = letter.official_person
+            letter.to_user = to_user
+
     @api.model
     def prepare_sending(self, ids):
         letters = self.env['ubi.letter'].browse(ids)
         for letter in letters:
-            request_data = self.build_state_doc(letter)
-            self.send_letter(request_data)
+            if letter.going_state == 'draft':
+                request_data = self.build_state_doc(letter)
+                result = self.send_letter(request_data)
+                if result:
+                    letter.write(
+                        {"going_state": "sent", "tabs_id": result['id']})
 
     def build_state_doc(self, letter):
         body = {}
@@ -427,7 +447,7 @@ class UbiLetter(models.Model):
         orgList = []
         for part_id in letter.partner_id:
             partner = {}
-            partner['orgId'] = part_id
+            partner['orgId'] = part_id.ubi_letter_org_id
             orgList.append(partner)
 
         body['orgList'] = orgList
@@ -437,7 +457,7 @@ class UbiLetter(models.Model):
         body['isReplyDoc'] = True if letter.follow_id else False
         body['isNeedReply'] = letter.must_return
         # datetime.strftime(letter.letter_date, '%Y-%m-%d') if letter.letter_date else ''
-        body['priorityId'] = 1
+        body['priorityId'] = letter.priority_id
         body['noOfPages'] = letter.letter_total_num
         body['responseTypeID'] = 1  # letter.must_return  # nuhtsul shalgah
         # mistyped asuuh heregtei
@@ -445,7 +465,7 @@ class UbiLetter(models.Model):
             letter.must_return_date, '%Y-%m-%d') if letter.must_return_date else ''
         # 1 #letter.follow_id.letter_number or ''
         body['srcDocumentNumber'] = letter.follow_id.letter_number if letter.follow_id else ''
-        #body['srcDocumentCode'] = letter.follow_id.tabs_id if letter.follow_id else ''
+        # body['srcDocumentCode'] = letter.follow_id.tabs_id if letter.follow_id else ''
         body['srcDocumentDate'] = datetime.strftime(
             letter.follow_id.letter_date, '%Y-%m-%d') if letter.follow_id and letter.follow_id.letter_date else ''
 
@@ -481,41 +501,26 @@ class UbiLetter(models.Model):
                     </Envelope>"""
 
         data = template % (request_data)
-
-        _logger.info(data)
-
         target_url = "https://dev.docx.gov.mn/soap/api"
         headers = {'Content-type': 'text/xml'}
         result = requests.post(target_url, data=data.encode(encoding='utf-8'),
                                headers=headers, verify=False)
-        print(result.status_code)
-        print(result.content)
+        mytree = ET.fromstring(result.content)
+
+        status = mytree.find(
+            './/{https://dev.docx.gov.mn/document/dto}responseCode')
+        find = mytree.find(
+            './/{https://dev.docx.gov.mn/document/dto}data')
+
+        data = json.loads(find.text.strip())
+        if(status.text.strip() == '200'):
+            return data
+        else:
+            False
 
     @api.model
     def check_connection_function(self, user):
 
-        # try:
-        #     _create_unverified_https_context = ssl._create_unverified_context
-        # except AttributeError:
-        #     pass
-        # else:
-        #     ssl._create_default_https_context = _create_unverified_https_context
-
-        # ssl._create_default_https_context = ssl._create_unverified_context
-        # ssl._create_default_https_context = ssl._create_stdlib_context
-        # session = Session()
-        # session.verify = False  # 'path/to/my/certificate.pem'
-        # transport = Transport(session=session)
-
-        # client = Client(
-        #    'https://dev.docx.gov.mn/soap/api/api.wsdl', transport=transport)
-        # get_list = getattr(client.service, 'get.org/list')
-        # resp = get_list()
-        # print(client)
-
-        # HeaderMessage = client.factory.create('ns0:HeaderMessage')
-
-        # # Create a factory and assign the values
         data = """<Envelope xmlns = "http://schemas.xmlsoap.org/soap/envelope/" >
                     <Body>
                         <callRequest xmlns = "https://dev.docx.gov.mn/document/dto">
@@ -534,8 +539,7 @@ class UbiLetter(models.Model):
         headers = {'Content-type': 'text/xml'}
         result = requests.post(target_url, data=data.encode(
             encoding='utf-8'), headers=headers, verify=False)
-        print(result.status_code)
-        print(result.content)
+
         mytree = ET.fromstring(result.content)
 
         status = mytree.find(
@@ -566,24 +570,25 @@ class UbiLetter(models.Model):
         vals = {}
 
         vals['letter_date'] = doc['documentDate']
+        vals['tabs_id'] = doc['id']
         vals['letter_type_id'] = doc['documentTypeId']
         vals['letter_number'] = doc['documentNumber']
-        vals['letter_subject_id'] = doc['documentName']
-        vals['validate_user_id'] = doc['signName']
+        vals['letter_subject_id'] = self.check_subject(doc['documentName'])
+        vals['official_person'] = doc['signName']
 
         vals['partner_id'] = self.check_partners(doc).id
-        vals['isReplyDoc'] = doc['isReplyDoc']
+        vals['is_reply_doc'] = doc['isReplyDoc']
         vals['must_return'] = doc['isNeedReply']
         # datetime.strftime(letter.letter_date, '%Y-%m-%d') if letter.letter_date else ''
-        vals['priorityId'] = doc['priorityId']
+        vals['priority_id'] = doc['priorityId']
 
         # ? shalgaj hariu bichig mun esehiig medne
 
         vals['letter_total_num'] = doc['noOfPages']
         # mistyped asuuh heregtei
-        doc['srcDocumentNumber']
-        doc['srcDocumentCode']
-        doc['srcDocumentDate']
+        vals['src_document_number'] = doc['srcDocumentNumber']
+        vals['src_document_code'] = doc['srcDocumentCode']
+        vals['src_document_date'] = doc['srcDocumentDate']
         vals['letter_attachment_ids'] = self.download_files(doc['fileList'])
         vals['coming_state'] = 'draft'
         vals['letter_status'] = 'coming'
@@ -603,7 +608,7 @@ class UbiLetter(models.Model):
                 'datas': result,
                 'res_model': 'ubi.letter'
             })
-            attachment_ids.append(attachment)
+            attachment_ids.append(attachment.id)
 
         attachment_ids = [[6, False, attachment_ids]]
 
@@ -618,7 +623,94 @@ class UbiLetter(models.Model):
             vals['ubi_letter_org_id'] = doc['orgId']
             vals['name'] = doc['orgName']
             vals['ubi_letter_org'] = True
+            vals['is_company'] = True
             partner = self.env['res.partner'].create(vals)
         else:
             partner
         return partner
+
+    def check_subject(self, name):
+        subject = self.env['ubi.letter.subject'].search(
+            [('name', 'ilike', name)], limit=1)
+        if not subject:
+            subject = self.env['ubi.letter.subject'].create({"name": name})
+        return subject.id
+
+    @api.model
+    def cancel_sending(self, ids):
+
+        letters = self.env['ubi.letter'].browse(ids)
+        for letter in letters:
+            result = self.cancel_sent(letter)
+            if result:
+                letter.write({"going_state": "cancel"})
+
+    @api.model
+    def return_receiving(self, ids):
+        letters = self.env['ubi.letter'].browse(ids)
+        for letter in letters:
+            result = self.return_received(request_data)
+            if result:
+                letter.write({"coming_state": "refuse"})
+
+    @api.model
+    def cancel_sent(self, letter):
+        # {"id":381,"cancelPerson":"Бат","cancelPosition":"Бичиг хэрэг","cancelComment":"Ирсэн бичгийн материал дутуу учир буцаалаа шүү хахаха"}
+        params = {"id": letter.tabs_id}
+        template = """<Envelope xmlns = "http://schemas.xmlsoap.org/soap/envelope/" >
+                    <Body>
+                        <callRequest xmlns = "https://dev.docx.gov.mn/document/dto">
+                            <token>2mRCiuLX352m6O2lhqMoxPs-fQ5ibZgaqIHRbNSaxCaoiJg7Ugo7nCCQEMKKlgK-XBQBprEqylE3EKmM5fMinLm6PnzAYfIHTi-BcwQXG8l3MHKp30HFjMyfrhfJvqK83o4JhtDxAXyp8TpeRrEhY949ClikAWr-v1cPbQ6Q0N8</token>
+                            <service>post.public.document/delete</service >
+                            <params>%s</params>
+
+                        </callRequest>
+                    </Body>
+                </Envelope>"""
+        data = template % params
+        target_url = "https://dev.docx.gov.mn/soap/api"
+        headers = {'Content-type': 'text/xml'}
+        result = requests.post(target_url, data=data.encode(
+            encoding='utf-8'), headers=headers, verify=False)
+
+        mytree = ET.fromstring(result.content)
+
+        status = mytree.find(
+            './/{https://dev.docx.gov.mn/document/dto}responseCode')
+
+        if(status.text.strip() == '200'):
+            return True
+
+        else:
+            return False
+
+    @api.model
+    def return_received(self, letter):
+        params = {"id": letter.tabs_id, "cancelPerson": "Бат", "cancelPosition": "Бичиг хэрэг",
+                  "cancelComment": "Ирсэн бичгийн материал дутуу учир буцаалаа шүү хахаха"}
+        # {"id":381,"cancelPerson":"Бат","cancelPosition":"Бичиг хэрэг","cancelComment":"Ирсэн бичгийн материал дутуу учир буцаалаа шүү хахаха"}
+        template = """<Envelope xmlns = "http://schemas.xmlsoap.org/soap/envelope/" >
+                    <Body>
+                        <callRequest xmlns = "https://dev.docx.gov.mn/document/dto">
+                            <token>2mRCiuLX352m6O2lhqMoxPs-fQ5ibZgaqIHRbNSaxCaoiJg7Ugo7nCCQEMKKlgK-XBQBprEqylE3EKmM5fMinLm6PnzAYfIHTi-BcwQXG8l3MHKp30HFjMyfrhfJvqK83o4JhtDxAXyp8TpeRrEhY949ClikAWr-v1cPbQ6Q0N8</token>
+                            <service>post.public.document/cancel</service >
+                            <params>{}</params>
+
+                        </callRequest>
+                    </Body>
+                </Envelope>"""
+        data = template % params
+        target_url = "https://dev.docx.gov.mn/soap/api"
+        headers = {'Content-type': 'text/xml'}
+        result = requests.post(target_url, data=data.encode(
+            encoding='utf-8'), headers=headers, verify=False)
+
+        mytree = ET.fromstring(result.content)
+
+        status = mytree.find(
+            './/{https://dev.docx.gov.mn/document/dto}responseCode')
+
+        if(status.text.strip() == '200'):
+            return True
+        else:
+            return False

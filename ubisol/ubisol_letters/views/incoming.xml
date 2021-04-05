@@ -12,18 +12,15 @@
         <field name="name">ubi.letter.subject.tree</field>
         <field name="model">ubi.letter</field>
         <field name="arch" type="xml">
-            <tree string="Ubi Letter" import='false' export_xlsx='false'
-                decoration-success="coming_state == 'validate'" decoration-info="coming_state == 'receive'"
-                decoration-danger="coming_state == 'conflict'" decoration-primary="coming_state == 'transfer'" 
-                decoration-warning="coming_state == 'refuse'"   decoration-bf="coming_state == 'receive'" decoration-it="coming_state == 'receive'">
-                
+            <tree string="Ubi Letter" import='false' export_xlsx='false' decoration-success="coming_state == 'validate'" decoration-info="coming_state == 'receive'" decoration-danger="coming_state == 'conflict'" decoration-primary="coming_state == 'transfer'" decoration-warning="coming_state == 'refuse'" decoration-bf="coming_state == 'receive'" decoration-it="coming_state == 'receive'">
+
                 <field name="letter_subject_id"/>
                 <field name="letter_type_id"/>
                 <field name="letter_number"/>
                 <field name="received_date"/>
                 <field name="letter_total_num"/>
                 <field name="partner_id"/>
-                <field name="user_id"/>
+                <field name="to_user" string='Хэнээс'/>
                 <field name="is_local"/>
                 <field name="letter_status" invisible='1'/>
                 <field name="coming_state" string='Төлөв'/>
@@ -59,8 +56,7 @@
                         <group string="Бүртгэл">
                             <field name="partner_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name='official_person' string='Хэнээс' attrs="{'invisible': ['|', ('coming_state', 'in', ('draft'))]}"/>
-                            <field name="user_id" attrs="{'invisible': [('coming_state', 'in', ('draft'))]}"  
-                                options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="user_id" attrs="{'invisible': [('coming_state', 'in', ('draft'))]}" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="is_head_company" string='Дээд газраас ирсэн'/>
                             <field name="must_return" string='Хариутай эсэх'/>
                             <field name="must_return_date" attrs="{'invisible': [('must_return','!=',True)]}"/>
@@ -91,7 +87,7 @@
             </form>
         </field>
     </record>
-        
+
 
     <record id="ubi_action_incoming_letter" model="ir.actions.act_window">
         <field name="name">Ирсэн бичиг</field>

@@ -7,14 +7,14 @@
         <field name="name">ubi.letter.subject.tree</field>
         <field name="model">ubi.letter</field>
         <field name="arch" type="xml">
-            <tree string="Ubi Letter" import='false' export_xlsx='false'
-                decoration-success="going_state == 'sent'" decoration-info="going_state == 'draft'">
+            <tree string="Ubi Letter" import='false' export_xlsx='false' decoration-success="going_state == 'sent'" decoration-info="going_state == 'draft'">
                 <field name="letter_subject_id"/>
                 <field name="letter_type_id"/>
                 <field name="letter_number"/>
                 <field name="registered_date"/>
                 <field name="letter_total_num"/>
                 <field name="partner_id" string='Хаана'/>
+                <field name="to_user" string='Хэнд'/>
                 <field name="department_id" string='Илгээсэн хэлтэс'/>
                 <field name="is_local"/>
                 <field name="letter_status" invisible='1'/>
@@ -29,8 +29,7 @@
         <field name="arch" type="xml">
             <form string="Ubi Letter">
                 <header>
-                    <button string="Илгээх" name="action_sent" type="object"
-                            attrs="{'invisible': [('going_state', 'not in', ['sent'])]}"/>
+                    <button string="Илгээх" name="action_sent" type="object" attrs="{'invisible': [('going_state', 'not in', ['sent'])]}"/>
                     <field name="going_state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -46,12 +45,10 @@
                         </group>
 
                         <group string="Бүртгэл">
-                            <field name="partner_id" string='Хаана'  
-                                options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="partner_id" string='Хаана' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="official_person" string='Хэнд'/>
-                            <field name="department_id" string='Хаанаас'
-                                options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                            <field name="is_local" string='Дотоод бичиг'/>  
+                            <field name="department_id" string='Хаанаас' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="is_local" string='Дотоод бичиг'/>
                             <field name="must_return" string='Хариутай эсэх'/>
                             <field name="must_return_date" attrs="{'invisible': [('must_return','!=',True)]}"/>
                             <field name="letter_status" invisible='1'/>
@@ -62,12 +59,9 @@
                         </group>
 
                         <group string="Боловсруулсан">
-                            <field name="draft_user_id" string='Боловсруулсан'
-                                options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                            <field name="confirm_user_id" string='Хянасан' 
-                                options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                            <field name="validate_user_id" string='Гарын үсэг зурсан' 
-                                options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="draft_user_id" string='Боловсруулсан' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="confirm_user_id" string='Хянасан' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="validate_user_id" string='Гарын үсэг зурсан' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                         </group>
 
                         <group string='Ирсэн бичгийн хариу'>

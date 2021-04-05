@@ -19,8 +19,10 @@
         'views/settings.xml',
         'views/res_partner.xml',
         'views/menu.xml',
+        'wizards/letter_return_wizard.xml',
         'report/letter_detail.xml',
         'report/report.xml',
+
 
     ],
     'demo': [],
