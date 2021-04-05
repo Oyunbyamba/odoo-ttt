@@ -126,7 +126,7 @@ class UbiLetter(models.Model):
     src_document_number = fields.Char(string='Эх бичгийн дугаар', groups="base.group_user")
     src_document_code = fields.Char(string='Эх бичгийн цахим дугаар', groups="base.group_user")
     src_document_date = fields.Char(string='Эх бичгийн огноо', groups="base.group_user")
-
+    priority_id = fields.Integer(string='Нууцлалын зэрэг', size=1, groups="base.group_user")
 
     @api.onchange('letter_template_id')
     def _set_letter_template(self):
