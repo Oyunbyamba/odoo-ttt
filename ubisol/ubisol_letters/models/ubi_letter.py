@@ -138,6 +138,12 @@ class UbiLetter(models.Model):
                                     ('4', 'Гарт нь'),
                                     ], default='1', string='Нууцлалын зэрэг', groups="base.group_user")
 
+    cancel_user = fields.Many2many(
+        'res.users', string="Ажилтан", help="Ажилтан")
+    cancel_position = fields.Char(string='Товч утга', groups="base.group_user")
+    cancel_comment = fields.Char(string='Товч утга', groups="base.group_user")
+
+
     @api.onchange('letter_template_id')
     def _set_letter_template(self):
         if self.letter_template_text:
@@ -393,6 +399,8 @@ class UbiLetter(models.Model):
         _logger.info(vals)
         letter = super(UbiLetter, self).write(vals)
 
+        return letter
+
     def letter_send_function(self):
         selected_ids = self.env.context.get('active_ids', [])
         self.prepare_sending(selected_ids)
@@ -640,13 +648,18 @@ class UbiLetter(models.Model):
         return subject.id
 
     @api.model
-    def cancel_sending(self, ids):
-
+    def cancel_sending(self, ids, wizard_vals):
         letters = self.env['ubi.letter'].browse(ids)
         for letter in letters:
             result = self.cancel_sent(letter)
             if result:
-                letter.write({"going_state": "cancel"})
+                letter.write({"going_state": 'refuse',
+                    "cancel_comment": wizard_vals.cancel_comment,
+                    "cancel_position": wizard_vals.cancel_position,
+                    "cancel_user": wizard_vals.cancel_user
+                    })
+  
+        return True
 
     @api.model
     def return_receiving(self, ids):

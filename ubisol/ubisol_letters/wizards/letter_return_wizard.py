@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
-
+import logging
 from odoo import models, fields, _
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 import time
 import json
 import io
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, AccessError, RedirectWarning
 from odoo.tools import date_utils
+
+_logger = logging.getLogger(__name__)
 
 
 class LetterReturn(models.TransientModel):
@@ -20,16 +22,11 @@ class LetterReturn(models.TransientModel):
     cancel_comment = fields.Char(string='Товч утга', groups="base.group_user")
 
     def action_compute(self):
-        reports = self.env["hr.attendance.report"].search([])
-        [header, data] = reports.calculate_report(
-            self.start_date, self.end_date, self.calculate_type, self.department_id, self.employee_id)
+        ubi_letter = self.env["ubi.letter"].search([])
+        active_ids = self.env.context.get('active_ids', [])
+        cancel_letter = ubi_letter.cancel_sending(active_ids, self)
+        action = self.env.ref('ubisol_letters.ubi_action_going_letter')
+        if cancel_letter:
+            raise RedirectWarning('Амжилттай буцаалаа.', action.id, _("Тийм"))
 
-        # action = {
-        #   "name": "Ирцийн график",
-        #   "type": "ir.actions.act_window",
-        #   "res_model": "attendance.report.interval",
-        #   "view_mode": "form,tree",
-        #   "target": "new",
-        # }
-        action = {}
-        return action
+        return {}
