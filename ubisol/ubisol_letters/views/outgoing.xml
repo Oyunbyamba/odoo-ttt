@@ -46,6 +46,7 @@
                         </group>
 
                         <group string="Бүртгэл">
+                            <field name="priority_id"/>
                             <field name="partner_id" string='Хаана'  
                                 options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="official_person" string='Хэнд'/>

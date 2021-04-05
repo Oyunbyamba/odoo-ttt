@@ -130,7 +130,7 @@ class UbiLetter(models.Model):
         ('2', 'Нууц'),
         ('3', 'Маш нууц'),
         ('4', 'Гарт нь'),
-        ], groups="base.group_user")
+        ], default='1', string='Нууцлалын зэрэг', groups="base.group_user")
 
     @api.onchange('letter_template_id')
     def _set_letter_template(self):
