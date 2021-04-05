@@ -54,6 +54,7 @@
                         </group>
 
                         <group string="Бүртгэл">
+                            <field name="priority_id"/>
                             <field name="partner_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name='official_person' string='Хэнээс' attrs="{'invisible': ['|', ('coming_state', 'in', ('draft'))]}"/>
                             <field name="user_id" attrs="{'invisible': [('coming_state', 'in', ('draft'))]}" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
