@@ -63,7 +63,7 @@
                         </group>
 
                         <group string="Хавсралт">
-                            <field name="letter_attachment_id" widget="many2many_binary"/>
+                            <field name="letter_attachment_ids" widget="many2many_binary"/>
                         </group>
                     </group>
                     <group string='Явсан бичгийн хариу'>

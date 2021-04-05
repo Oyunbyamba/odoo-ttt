@@ -23,16 +23,9 @@ class UbiLetter(models.Model):
         result = """"""
         return result
 
-    follow_id = fields.Many2one('ubi.letter', groups="base.group_user")
-    draft_user_id = fields.Many2one('res.users', groups="base.group_user")
-    confirm_user_id = fields.Many2one('res.users', groups="base.group_user")
-    validate_user_id = fields.Many2one('res.users', groups="base.group_user")
-
-    letter_attachment_id = fields.Many2many(
+    letter_attachment_ids = fields.Many2many(
         'ir.attachment', 'letter_doc_attach', 'letter_id', 'doc_id', string="Хавсралт", copy=False)
 
-    is_local = fields.Boolean(string='Дотоод бичиг',
-                              groups="base.group_user", default=False)
     letter_status = fields.Selection([
         ('coming', 'Ирсэн'),
         ('going', 'Явсан'),
@@ -64,6 +57,14 @@ class UbiLetter(models.Model):
     #     'res.partner', string='Хаанаас', groups="base.group_user")
     partner_id = fields.Many2one(
         'res.partner', string='Хаанаас', domain=[('ubi_letter_org', '=', True)], groups="base.group_user")
+    user_id = fields.Many2one('res.users', string='Хэнд')
+    official_person = fields.Char('Албан тушаалтан', groups="base.group_user")
+    follow_id = fields.Many2one('ubi.letter', groups="base.group_user")
+    draft_user_id = fields.Many2one('res.users', groups="base.group_user")
+    confirm_user_id = fields.Many2one('res.users', groups="base.group_user")
+    validate_user_id = fields.Many2one('res.users', groups="base.group_user")
+
+
     letter_type_id = fields.Many2one(
         'ubi.letter.type', string='Баримтын төрөл', groups="base.group_user")
     letter_subject_id = fields.Many2one(
@@ -76,11 +77,11 @@ class UbiLetter(models.Model):
         'Custom text', groups="base.group_user", default=_get_default_note)
     department_id = fields.Many2one(
         'hr.department', string='Хариуцах Хэлтэс', groups="base.group_user")
-    user_id = fields.Many2one(
-        'res.users', string='Хэнд')
-    official_person = fields.Char('Албан тушаалтан', groups="base.group_user")
+    
     must_return = fields.Boolean(
         string='Хариу өгөх', default=False, groups="base.group_user")
+    is_local = fields.Boolean(
+        string='Дотоод бичиг', groups="base.group_user", default=False)    
     is_head_company = fields.Boolean(
         string='Дээд газраас ирсэн', default=False, groups="base.group_user")
     state = fields.Selection([
@@ -443,7 +444,7 @@ class UbiLetter(models.Model):
 
     def download_files(self, letter):
 
-        files = letter.letter_attachment_id
+        files = letter.letter_attachment_ids
         file_array = []
         for file in files:
             fileList = {}
@@ -576,7 +577,7 @@ class UbiLetter(models.Model):
         doc['srcDocumentNumber']
         doc['srcDocumentCode']
         doc['srcDocumentDate']
-        vals['letter_attachment_id'] = self.download_files(doc['fileList'])
+        vals['letter_attachment_ids'] = self.download_files(doc['fileList'])
         vals['coming_state'] = 'draft'
         vals['letter_status'] = 'coming'
 

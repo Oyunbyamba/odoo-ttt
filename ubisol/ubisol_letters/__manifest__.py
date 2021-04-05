@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': 'Ubisol Letter',
+    'name': 'ubisol_letter',
     'version': '13.0.1.0.0',
     'category': 'Tools',
     'author': 'Odoo Mates',

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <record id="ubisol_hr_employee_direction_tree_view" model="ir.ui.view">
+        <field name="name">hr.employee.direction.tree</field>
+        <field name="model">hr.employee.direction</field>
+        <field name="arch" type="xml">
+            <tree string='Тушаал'>
+                <field name="name"/>
+                <field name="direction_date"/>
+                <field name="direction_number"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="ubi_letter_incoming_form_view" model="ir.ui.view">
+        <field name="name">hr.employee.direction.form</field>
+        <field name="model">hr.employee.direction</field>
+        <field name="arch" type="xml">
+            <form string="Тушаал">
+                <header>
+                    <button string="Ноорог" name="action_draft" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'in', ('draft'))]}"/>
+                    <button string="Боловсруулсан" name="action_operate" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('draft'))]}"/>
+                    <button string="Хянасан" name="action_confirm" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('operate'))]}"/>
+                    <button string="Зөвшөөрсөн" name="action_validate1" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('confirm'))]}"/>
+                    <button string="Баталсан" name="action_validate" type="object" attrs="{'invisible': [('state', 'not in', ('validate1'))]}"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Үндсэн мэдээлэл">
+                            <field name="name" required="1"/>
+                            <field name="document_type_id" required="1"/>
+                            <field name="direction_number" required="1"/>
+                            <field name="direction_date"/>
+                        </group>
+
+                        <group string="Бүртгэл">
+                            <field name="operate_user_id" attrs="{'invisible': [('state', '!=', 'operate')], 'required': [('state', '=', 'operate')]}"/>
+                            <field name="confirm_user_id" attrs="{'invisible': [('state', '!=', 'confirm')], 'required': [('state', '=', 'confirm')]}"/>
+                            <field name="validate1_user_id" attrs="{'invisible': [('state', '!=', 'validate1')], 'required': [('state', '=', 'validate1')]}"/>
+                            <field name="validate_user_id" attrs="{'invisible': [('state', '!=', 'validate')], 'required': [('state', '=', 'validate')]}"/>
+                        </group>
+
+                        <group string="Хавсралт">
+                            <field name="direction_attachment_ids" widget="many2many_binary"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Агуулга">
+                            <field name="description" widget="text"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>   
+
+    <record id="ubisol_direction_action_window" model="ir.actions.act_window">
+        <field name="name">Тушаал</field>
+        <field name="res_model">hr.employee.direction</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add a new direction
+            </p>
+        </field>
+    </record>
+
+    <menuitem name="Тушаал" id="menu_hr_employee_direction" parent="hr.menu_hr_employee_payroll"
+            action="ubisol_direction_action_window"
+            sequence="100" groups="hr.group_hr_user,hr.group_hr_manager"/>
+</odoo>
