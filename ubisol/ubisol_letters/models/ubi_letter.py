@@ -126,14 +126,17 @@ class UbiLetter(models.Model):
         string='Баримтын төрөл', compute='_computed_letter_subject', groups="base.group_user")
     computed_letter_desc = fields.Char(
         string='Агуулга', compute='_computed_letter_desc', groups="base.group_user")
-    src_document_number = fields.Char(string='Эх бичгийн дугаар', groups="base.group_user")
-    src_document_code = fields.Char(string='Эх бичгийн цахим дугаар', groups="base.group_user")
-    src_document_date = fields.Char(string='Эх бичгийн огноо', groups="base.group_user")
+    src_document_number = fields.Char(
+        string='Эх бичгийн дугаар', groups="base.group_user")
+    src_document_code = fields.Char(
+        string='Эх бичгийн цахим дугаар', groups="base.group_user")
+    src_document_date = fields.Char(
+        string='Эх бичгийн огноо', groups="base.group_user")
     priority_id = fields.Selection([('1', 'Энгийн'),
-        ('2', 'Нууц'),
-        ('3', 'Маш нууц'),
-        ('4', 'Гарт нь'),
-        ], default='1', string='Нууцлалын зэрэг', groups="base.group_user")
+                                    ('2', 'Нууц'),
+                                    ('3', 'Маш нууц'),
+                                    ('4', 'Гарт нь'),
+                                    ], default='1', string='Нууцлалын зэрэг', groups="base.group_user")
 
     @api.onchange('letter_template_id')
     def _set_letter_template(self):
@@ -649,7 +652,7 @@ class UbiLetter(models.Model):
     def return_receiving(self, ids):
         letters = self.env['ubi.letter'].browse(ids)
         for letter in letters:
-            result = self.return_received(request_data)
+            result = self.return_received(letter)
             if result:
                 letter.write({"coming_state": "refuse"})
 
@@ -694,7 +697,7 @@ class UbiLetter(models.Model):
                         <callRequest xmlns = "https://dev.docx.gov.mn/document/dto">
                             <token>2mRCiuLX352m6O2lhqMoxPs-fQ5ibZgaqIHRbNSaxCaoiJg7Ugo7nCCQEMKKlgK-XBQBprEqylE3EKmM5fMinLm6PnzAYfIHTi-BcwQXG8l3MHKp30HFjMyfrhfJvqK83o4JhtDxAXyp8TpeRrEhY949ClikAWr-v1cPbQ6Q0N8</token>
                             <service>post.public.document/cancel</service >
-                            <params>{}</params>
+                            <params>%s</params>
 
                         </callRequest>
                     </Body>
