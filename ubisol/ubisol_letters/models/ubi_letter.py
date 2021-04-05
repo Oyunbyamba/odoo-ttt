@@ -64,7 +64,6 @@ class UbiLetter(models.Model):
     confirm_user_id = fields.Many2one('res.users', groups="base.group_user")
     validate_user_id = fields.Many2one('res.users', groups="base.group_user")
 
-
     letter_type_id = fields.Many2one(
         'ubi.letter.type', string='Баримтын төрөл', groups="base.group_user")
     letter_subject_id = fields.Many2one(
@@ -77,13 +76,13 @@ class UbiLetter(models.Model):
         'Custom text', groups="base.group_user", default=_get_default_note)
     department_id = fields.Many2one(
         'hr.department', string='Хариуцах Хэлтэс', groups="base.group_user")
-    
+
     must_return = fields.Boolean(
         string='Хариутай эсэх', default=False, groups="base.group_user")
     is_reply_doc = fields.Boolean(
         string='Хариу бичсэн эсэх', default=False, groups="base.group_user")    
     is_local = fields.Boolean(
-        string='Дотоод бичиг', groups="base.group_user", default=False)    
+        string='Дотоод бичиг', groups="base.group_user", default=False)
     is_head_company = fields.Boolean(
         string='Дээд газраас ирсэн', default=False, groups="base.group_user")
     tabs_id = fields.Integer('Tabs id', groups="base.group_user")    
@@ -416,38 +415,40 @@ class UbiLetter(models.Model):
         body = {}
         body['documentDate'] = datetime.strftime(
             letter.letter_date, '%Y-%m-%d') if letter.letter_date else ''
-        body['documentTypeId'] = 1  # letter.letter_type_id.id or ''
+        body['documentTypeId'] = letter.letter_type_id.id if letter.letter_type_id.id == 1 else 2
         body['documentNumber'] = letter.letter_number or ''
         body['documentName'] = letter.letter_subject_id.name or ''
         body['signName'] = letter.validate_user_id.name or ''
-        # body['OrgCode'] = letter.partner_id.code_by_state
-        body['OrgCode'] = 0
         # body['orgId'] = letter.partner_id.id_by_state
-        body['orgId'] = 447
+        orgList = []
+        for part_id in letter.partner_id:
+            partner = {}
+            partner['orgId'] = part_id
+            orgList.append(partner)
+
+        body['orgList'] = orgList
         # body['orgName'] = letter.partner_id.name
-        body['orgName'] = 'Газрын шинэтгэлийн үндэсний хороо'
         body['fileList'] = self.prepare_files(letter)
         # ? shalgaj hariu bichig mun esehiig medne
-        body['isReplyDoc'] = 0
+        body['isReplyDoc'] = True if letter.follow_id else False
         body['isNeedReply'] = letter.must_return
         # datetime.strftime(letter.letter_date, '%Y-%m-%d') if letter.letter_date else ''
-        body['createdUserId'] = 5466
-        body['priorityId'] = 0
+        body['priorityId'] = 1
         body['noOfPages'] = letter.letter_total_num
         body['responseTypeID'] = 1  # letter.must_return  # nuhtsul shalgah
         # mistyped asuuh heregtei
-        body['responceDate'] = datetime.strftime(
+        body['responseDate'] = datetime.strftime(
             letter.must_return_date, '%Y-%m-%d') if letter.must_return_date else ''
         # 1 #letter.follow_id.letter_number or ''
-        body['srcDocumentNumber'] = ''
-        body['srcDocumentCode'] = ''
+        body['srcDocumentNumber'] = letter.follow_id.letter_number if letter.follow_id else ''
+        #body['srcDocumentCode'] = letter.follow_id.tabs_id if letter.follow_id else ''
         body['srcDocumentDate'] = datetime.strftime(
             letter.follow_id.letter_date, '%Y-%m-%d') if letter.follow_id and letter.follow_id.letter_date else ''
 
         json_data = json.dumps(body)
         return json_data
 
-    def download_files(self, letter):
+    def prepare_files(self, letter):
 
         files = letter.letter_attachment_ids
         file_array = []
@@ -456,11 +457,9 @@ class UbiLetter(models.Model):
             fileList['name'] = file.name
             fileList['size'] = file.file_size
             fileList['type'] = file.mimetype
-            path = file._full_path(file.store_fname)
-           # with tools.file_open(path, 'rb') as file_binary:
-            # content = file.datas
-            # fileList['data'] = base64.b64encode(content)
-            fileList['data'] = "aGVsbG8="
+
+            fileList['data'] = file.datas.decode()
+            _logger.info(file.datas)
             file_array.append(fileList)
         return file_array
 
@@ -518,7 +517,7 @@ class UbiLetter(models.Model):
                         <callRequest xmlns = "https://dev.docx.gov.mn/document/dto">
                             <token>2mRCiuLX352m6O2lhqMoxPs-fQ5ibZgaqIHRbNSaxCaoiJg7Ugo7nCCQEMKKlgK-XBQBprEqylE3EKmM5fMinLm6PnzAYfIHTi-BcwQXG8l3MHKp30HFjMyfrhfJvqK83o4JhtDxAXyp8TpeRrEhY949ClikAWr-v1cPbQ6Q0N8</token>
                             <service>get.document_list/list</service >
-                            <params>{statusId : 1}</params>
+                            <params>{}</params>
 
                         </callRequest>
                     </Body>
@@ -531,8 +530,8 @@ class UbiLetter(models.Model):
         headers = {'Content-type': 'text/xml'}
         result = requests.post(target_url, data=data.encode(
             encoding='utf-8'), headers=headers, verify=False)
-        # print(result.status_code)
-        # print(result.content)
+        print(result.status_code)
+        print(result.content)
         mytree = ET.fromstring(result.content)
 
         status = mytree.find(
@@ -545,13 +544,15 @@ class UbiLetter(models.Model):
             data = json.loads(find.text.strip())
             for doc in data:
                 already_received = self.env['ubi.letter'].search(
-                    [('letter_number', '=', doc['documentNumber']), ('partner_id.orgId', '=', doc['orgId']), ('letter_status', '=', 'coming')], limit=1)
+                    [('letter_number', '=', doc['documentNumber']), ('partner_id.ubi_letter_org_id', '=', doc['orgId']), ('letter_status', '=', 'coming')], limit=1)
                 # umnu orj irseng shalgah
                 if(already_received):
                     pass
                 else:
                     vals = self.prepare_receiving(doc)
+                    _logger.info(vals)
                     self.env['ubi.letter'].create(vals)
+
         else:
             print("FALSE")
 
@@ -561,19 +562,16 @@ class UbiLetter(models.Model):
         vals = {}
 
         vals['letter_date'] = doc['documentDate']
-        vals['letter_type_id'] = doc['documentTypeId'] = 1
+        vals['letter_type_id'] = doc['documentTypeId']
         vals['letter_number'] = doc['documentNumber']
         vals['letter_subject_id'] = doc['documentName']
         vals['validate_user_id'] = doc['signName']
-        # body['orgId'] = letter.partner_id.id_by_state
-        vals['orgId'] = doc['orgId']
-        # body['orgName'] = letter.partner_id.name
-        vals['orgName'] = doc['orgName']
-        vals['isReplyDoc'] = body['isReplyDoc']
-        vals['must_return'] = body['isNeedReply']
+
+        vals['partner_id'] = self.check_partners(doc).id
+        vals['isReplyDoc'] = doc['isReplyDoc']
+        vals['must_return'] = doc['isNeedReply']
         # datetime.strftime(letter.letter_date, '%Y-%m-%d') if letter.letter_date else ''
-        vals['createdUserId'] = body['createdUserId']
-        vals['priorityId'] = body['priorityId']
+        vals['priorityId'] = doc['priorityId']
 
         # ? shalgaj hariu bichig mun esehiig medne
 
@@ -591,9 +589,10 @@ class UbiLetter(models.Model):
     def download_files(self, files):
         attachment_ids = []
         for file in files:
-            file_url = file['url']
+            file_url = "https://dev.docx.gov.mn"+file['url']
             file_name = file['name']
-            result = base64.b64encode(requests.get(file_url.strip()).content).replace(b'\n', b'')
+            result = base64.b64encode(requests.get(
+                file_url.strip(), verify=False).content).replace(b'\n', b'')
             attachment = self.env['ir.attachment'].create({
                 'name': file_name,
                 'type': 'binary',
@@ -605,3 +604,17 @@ class UbiLetter(models.Model):
         attachment_ids = [[6, False, attachment_ids]]
 
         return attachment_ids
+
+    def check_partners(self, doc):
+
+        partner = self.env['res.partner'].search(
+            [('ubi_letter_org_id', '=', doc['orgId'])], limit=1)
+        if not partner:
+            vals = {}
+            vals['ubi_letter_org_id'] = doc['orgId']
+            vals['name'] = doc['orgName']
+            vals['ubi_letter_org'] = True
+            partner = self.env['res.partner'].create(vals)
+        else:
+            partner
+        return partner
