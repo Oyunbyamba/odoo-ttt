@@ -79,11 +79,14 @@ class UbiLetter(models.Model):
         'hr.department', string='Хариуцах Хэлтэс', groups="base.group_user")
     
     must_return = fields.Boolean(
-        string='Хариу өгөх', default=False, groups="base.group_user")
+        string='Хариутай эсэх', default=False, groups="base.group_user")
+    is_reply_doc = fields.Boolean(
+        string='Хариу бичсэн эсэх', default=False, groups="base.group_user")    
     is_local = fields.Boolean(
         string='Дотоод бичиг', groups="base.group_user", default=False)    
     is_head_company = fields.Boolean(
         string='Дээд газраас ирсэн', default=False, groups="base.group_user")
+    tabs_id = fields.Integer('Tabs id', groups="base.group_user")    
     state = fields.Selection([
         ('draft', 'Боловсруулах'),
         ('confirm', 'Хянах'),
@@ -105,7 +108,9 @@ class UbiLetter(models.Model):
         string='Төлөв', store=True, readonly=True, copy=False, tracking=True)
     going_state = fields.Selection([
         ('draft', 'Бүртгэсэн'),
-        ('sent', 'Илгээсэн')],
+        ('sent', 'Илгээсэн'),
+        ('cancel', 'Цуцлах'),
+        ('refuse', 'Буцаагдсан')],
         groups="base.group_user",
         default='draft',
         string='Төлөв', store=True, readonly=True, copy=False, tracking=True)
