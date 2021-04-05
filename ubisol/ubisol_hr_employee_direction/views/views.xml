@@ -7,8 +7,10 @@
         <field name="arch" type="xml">
             <tree string='Тушаал'>
                 <field name="name"/>
+                <field name="document_type_id"/>
                 <field name="direction_date"/>
                 <field name="direction_number"/>
+                <field name="state"/>
             </tree>
         </field>
     </record>
@@ -18,13 +20,14 @@
         <field name="model">hr.employee.direction</field>
         <field name="arch" type="xml">
             <form string="Тушаал">
+                <field name="can_approve" invisible='1'/>
                 <header>
-                    <button string="Ноорог" name="action_draft" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['refuse'])]}"/>
-                    <button string="Боловсруулах" name="action_operate" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('draft'))]}"/>
-                    <button string="Хянах" name="action_confirm" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('operate'))]}"/>
-                    <button string="Зөвшөөрөх" name="action_validate1" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('confirm'))]}"/>
-                    <button string="Батлах" name="action_validate" type="object" attrs="{'invisible': [('state', 'not in', ('validate1'))]}"/>
-                    <button string="Татгалзах" name="action_refuse" type="object" attrs="{'invisible': [('state', 'in', ['draft', 'refuse'])]}"/>
+                    <button string="Ноорог" name="action_draft" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'not in', ['refuse'])]}"/>
+                    <button string="Боловсруулах" name="action_operate" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'not in', ('draft'))]}"/>
+                    <button string="Хянах" name="action_confirm" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'not in', ('operate'))]}"/>
+                    <button string="Зөвшөөрөх" name="action_validate1" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'not in', ('confirm'))]}"/>
+                    <button string="Батлах" name="action_validate" type="object" attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'not in', ('validate1'))]}"/>
+                    <button string="Татгалзах" name="action_refuse" type="object" attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'in', ['draft', 'refuse'])]}"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,operate,confirm,validate1,validate"/>
                 </header>
                 <sheet>
@@ -34,6 +37,7 @@
                             <field name="document_type_id" required="1"/>
                             <field name="direction_number" required="1"/>
                             <field name="direction_date"/>
+                            <field name="employee_ids" required='1'/>
                         </group>
 
                         <group string="Бүртгэл">
