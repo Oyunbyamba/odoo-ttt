@@ -441,7 +441,7 @@ class UbiLetter(models.Model):
         json_data = json.dumps(body)
         return json_data
 
-    def download_files(self, letter):
+    def prepare_files(self, letter):
 
         files = letter.letter_attachment_id
         file_array = []
@@ -450,11 +450,12 @@ class UbiLetter(models.Model):
             fileList['name'] = file.name
             fileList['size'] = file.file_size
             fileList['type'] = file.mimetype
-            path = file._full_path(file.store_fname)
+            #path = file._full_path(file.store_fname)
            # with tools.file_open(path, 'rb') as file_binary:
             # content = file.datas
             # fileList['data'] = base64.b64encode(content)
-            fileList['data'] = "aGVsbG8="
+            fileList['data'] = file.datas.decode()
+            _logger.info(file.datas)
             file_array.append(fileList)
         return file_array
 
@@ -477,10 +478,10 @@ class UbiLetter(models.Model):
 
         target_url = "https://dev.docx.gov.mn/soap/api"
         headers = {'Content-type': 'text/xml'}
-        result = requests.post(target_url, data=data.encode(encoding='utf-8'),
-                               headers=headers, verify=False)
-        print(result.status_code)
-        print(result.content)
+        # result = requests.post(target_url, data=data.encode(encoding='utf-8'),
+        #                       headers=headers, verify=False)
+        # print(result.status_code)
+        # print(result.content)
 
     @api.model
     def check_connection_function(self, user):
@@ -587,7 +588,8 @@ class UbiLetter(models.Model):
         for file in files:
             file_url = file['url']
             file_name = file['name']
-            result = base64.b64encode(requests.get(file_url.strip()).content).replace(b'\n', b'')
+            result = base64.b64encode(requests.get(
+                file_url.strip()).content).replace(b'\n', b'')
             attachment = self.env['ir.attachment'].create({
                 'name': file_name,
                 'type': 'binary',
