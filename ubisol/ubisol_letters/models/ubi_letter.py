@@ -123,6 +123,10 @@ class UbiLetter(models.Model):
         string='Баримтын төрөл', compute='_computed_letter_subject', groups="base.group_user")
     computed_letter_desc = fields.Char(
         string='Агуулга', compute='_computed_letter_desc', groups="base.group_user")
+    src_document_number = fields.Char(string='Эх бичгийн дугаар', groups="base.group_user")
+    src_document_code = fields.Char(string='Эх бичгийн цахим дугаар', groups="base.group_user")
+    src_document_date = fields.Char(string='Эх бичгийн огноо', groups="base.group_user")
+
 
     @api.onchange('letter_template_id')
     def _set_letter_template(self):
