@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
-from odoo import models, tools, fields, api
+from odoo import models, tools, fields, api, _
 from datetime import date, datetime, timedelta, time
 import os
 import json
@@ -9,6 +9,7 @@ import xml.etree.ElementTree as ET
 import re
 import ssl
 import requests
+from odoo.exceptions import ValidationError, AccessError, RedirectWarning
 
 _logger = logging.getLogger(__name__)
 
@@ -138,11 +139,36 @@ class UbiLetter(models.Model):
                                     ('4', 'Гарт нь'),
                                     ], default='1', string='Нууцлалын зэрэг', groups="base.group_user")
 
-    cancel_user = fields.Many2many(
-        'res.users', string="Ажилтан", help="Ажилтан")
+    cancel_employee = fields.Char(
+        string="Ажилтан", groups="base.group_user", help="Ажилтан")
     cancel_position = fields.Char(string='Товч утга', groups="base.group_user")
     cancel_comment = fields.Char(string='Товч утга', groups="base.group_user")
 
+    def call_return_wizard(self):
+        if len(self.ids) >= 1:
+            return {
+                'type': 'ir.actions.act_window',
+                'name': _('Ирсэн бичиг буцаах'),
+                'res_model': 'letter.return.wizard',
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {'active_ids': self.ids},
+                'views': [[False, 'form']]
+            }
+        return {}
+
+    # def call_cancel_wizard(self):
+    #     if len(self.ids) >= 1:
+    #         return {
+    #             'type': 'ir.actions.act_window',
+    #             'name': _('Явсан бичиг цуцлах'),
+    #             'res_model': 'letter.return.wizard',
+    #             'view_mode': 'form',
+    #             'target': 'new',
+    #             'context': {'active_ids': self.ids},
+    #             'views': [[False, 'form']]
+    #         }
+    #     return {}
 
     @api.onchange('letter_template_id')
     def _set_letter_template(self):
@@ -396,14 +422,9 @@ class UbiLetter(models.Model):
         return letter
 
     def write(self, vals):
-        _logger.info(vals)
         letter = super(UbiLetter, self).write(vals)
 
         return letter
-
-    def letter_send_function(self):
-        selected_ids = self.env.context.get('active_ids', [])
-        self.prepare_sending(selected_ids)
 
     def action_sent(self):
         self.write({'going_state': 'sent'})
@@ -436,8 +457,8 @@ class UbiLetter(models.Model):
             letter.to_user = to_user
 
     @api.model
-    def prepare_sending(self, ids):
-        letters = self.env['ubi.letter'].browse(ids)
+    def prepare_sending(self):
+        letters = self.env['ubi.letter'].browse(self.ids)
         for letter in letters:
             if letter.going_state == 'draft':
                 request_data = self.build_state_doc(letter)
@@ -561,6 +582,7 @@ class UbiLetter(models.Model):
                 './/{https://dev.docx.gov.mn/document/dto}data')
 
             data = json.loads(find.text.strip())
+            count = 0
             for doc in data:
                 already_received = self.env['ubi.letter'].search(
                     [('letter_number', '=', doc['documentNumber']), ('partner_id.ubi_letter_org_id', '=', doc['orgId']), ('letter_status', '=', 'coming')], limit=1)
@@ -571,35 +593,38 @@ class UbiLetter(models.Model):
                     vals = self.prepare_receiving(doc)
                     _logger.info(vals)
                     self.env['ubi.letter'].create(vals)
+                    count += 1
+            return 'Шинээр нийт ' + str(count) + ' бичиг ирсэн байна.'
 
         else:
-            print("FALSE")
+            return 'Албан бичиг татах системтэй холбогдох явцад алдаа гарлаа.'
 
         return {}
 
     def prepare_receiving(self, doc):
         vals = {}
 
-        vals['letter_date'] = doc['documentDate']
-        vals['tabs_id'] = doc['id']
-        vals['letter_type_id'] = doc['documentTypeId']
-        vals['letter_number'] = doc['documentNumber']
-        vals['letter_subject_id'] = self.check_subject(doc['documentName'])
-        vals['official_person'] = doc['signName']
+        vals['letter_date'] = doc['documentDate'] or ''
+        vals['tabs_id'] = doc['id'] or ''
+        vals['letter_type_id'] = doc['documentTypeId'] or ''
+        vals['letter_number'] = doc['documentNumber'] or ''
+        vals['letter_subject_id'] = self.check_subject(
+            doc['documentName']) or ''
+        vals['official_person'] = doc['signName'] or ''
 
-        vals['partner_id'] = self.check_partners(doc).id
-        vals['is_reply_doc'] = doc['isReplyDoc']
-        vals['must_return'] = doc['isNeedReply']
+        vals['partner_id'] = self.check_partners(doc).id or ''
+        vals['is_reply_doc'] = doc['isReplyDoc'] or ''
+        vals['must_return'] = doc['isNeedReply'] or ''
         # datetime.strftime(letter.letter_date, '%Y-%m-%d') if letter.letter_date else ''
-        vals['priority_id'] = doc['priorityId']
+        vals['priority_id'] = doc['priorityId'] or ''
 
         # ? shalgaj hariu bichig mun esehiig medne
 
-        vals['letter_total_num'] = doc['noOfPages']
+        vals['letter_total_num'] = doc['noOfPages'] or ''
         # mistyped asuuh heregtei
-        vals['src_document_number'] = doc['srcDocumentNumber']
-        vals['src_document_code'] = doc['srcDocumentCode']
-        vals['src_document_date'] = doc['srcDocumentDate']
+        vals['src_document_number'] = doc['srcDocumentNumber'] or ''
+        vals['src_document_code'] = doc['srcDocumentCode'] or ''
+        vals['src_document_date'] = doc['srcDocumentDate'] or ''
         vals['letter_attachment_ids'] = self.download_files(doc['fileList'])
         vals['coming_state'] = 'draft'
         vals['letter_status'] = 'coming'
@@ -648,26 +673,36 @@ class UbiLetter(models.Model):
         return subject.id
 
     @api.model
-    def cancel_sending(self, ids, wizard_vals):
-        letters = self.env['ubi.letter'].browse(ids)
-        for letter in letters:
-            result = self.cancel_sent(letter)
-            if result:
-                letter.write({"going_state": 'refuse',
-                    "cancel_comment": wizard_vals.cancel_comment,
-                    "cancel_position": wizard_vals.cancel_position,
-                    "cancel_user": wizard_vals.cancel_user
-                    })
-  
-        return True
+    def cancel_sending(self):
+        if len(self.ids) >= 1:
+            letters = self.env['ubi.letter'].browse(self.ids)
+            for letter in letters:
+                if letter.going_state == 'sent':
+                    result = self.cancel_sent(letter)
+                    if result['status'] == 200:
+                        letter.write({"going_state": 'refuse'})
+                    else:
+                        raise RedirectWarning(
+                            result['data'], [], )
+                        # return self.pool.get('warning').warning(cr, uid, title='Title', message=)
+                        # return {'value': {}, 'warning': {'title': 'warning', 'message': 'Your message'}}
+
+        return
 
     @api.model
-    def return_receiving(self, ids):
+    def return_receiving(self, ids, wizard_vals):
         letters = self.env['ubi.letter'].browse(ids)
         for letter in letters:
-            result = self.return_received(letter)
-            if result:
-                letter.write({"coming_state": "refuse"})
+            if letter.coming_state == 'receive':
+                result = self.return_received(letter)
+                if result:
+                    letter.write({"coming_state": "refuse",
+                                  "cancel_comment": wizard_vals.cancel_comment,
+                                  "cancel_position": wizard_vals.cancel_position,
+                                  "cancel_employee": wizard_vals.cancel_employee.name
+                                  })
+
+        return True
 
     @api.model
     def cancel_sent(self, letter):
@@ -684,21 +719,28 @@ class UbiLetter(models.Model):
                     </Body>
                 </Envelope>"""
         data = template % params
+        _logger.info(data)
         target_url = "https://dev.docx.gov.mn/soap/api"
         headers = {'Content-type': 'text/xml'}
         result = requests.post(target_url, data=data.encode(
             encoding='utf-8'), headers=headers, verify=False)
+        if result.status_code == 200:
 
-        mytree = ET.fromstring(result.content)
+            mytree = ET.fromstring(result.content)
 
-        status = mytree.find(
-            './/{https://dev.docx.gov.mn/document/dto}responseCode')
+            status = mytree.find(
+                './/{https://dev.docx.gov.mn/document/dto}responseCode')
+            find = mytree.find(
+                './/{https://dev.docx.gov.mn/document/dto}responseMessage')
 
-        if(status.text.strip() == '200'):
-            return True
+            data = find.text.strip()
 
+            if(status.text.strip() == '200'):
+                return {'status': 200}
+            else:
+                return {'status': status.text.strip(), 'data': data}
         else:
-            return False
+            return {'status': 'ERROR', 'data': 'Сүлжээний алдаа гарлаа.'}
 
     @api.model
     def return_received(self, letter):
@@ -721,12 +763,18 @@ class UbiLetter(models.Model):
         result = requests.post(target_url, data=data.encode(
             encoding='utf-8'), headers=headers, verify=False)
 
-        mytree = ET.fromstring(result.content)
+        if result.status_code == 200:
 
-        status = mytree.find(
-            './/{https://dev.docx.gov.mn/document/dto}responseCode')
+            mytree = ET.fromstring(result.content)
 
-        if(status.text.strip() == '200'):
-            return True
+            status = mytree.find(
+                './/{https://dev.docx.gov.mn/document/dto}responseCode')
+            find = mytree.find(
+                './/{https://dev.docx.gov.mn/document/dto}responseMessage')
+            data = find.text.strip()
+            if(status.text.strip() == '200'):
+                return {'status': 200}
+            else:
+                return {'status': status.text.strip(), 'data': data}
         else:
-            return False
+            return {'status': 'ERROR', 'data': 'Сүлжээний алдаа гарлаа.'}
