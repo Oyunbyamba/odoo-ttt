@@ -653,13 +653,14 @@ class UbiLetter(models.Model):
     def cancel_sending(self, ids, wizard_vals):
         letters = self.env['ubi.letter'].browse(ids)
         for letter in letters:
-            result = self.cancel_sent(letter)
-            if result:
-                letter.write({"going_state": 'refuse',
-                              "cancel_comment": wizard_vals.cancel_comment,
-                              "cancel_position": wizard_vals.cancel_position,
-                              "cancel_user": wizard_vals.cancel_user
-                              })
+            if letter.going_state == 'sent':
+                result = self.cancel_sent(letter)
+                if result:
+                    letter.write({"going_state": 'refuse',
+                                  "cancel_comment": wizard_vals.cancel_comment,
+                                  "cancel_position": wizard_vals.cancel_position,
+                                  "cancel_user": wizard_vals.cancel_user
+                                  })
 
         return True
 
@@ -667,9 +668,10 @@ class UbiLetter(models.Model):
     def return_receiving(self, ids):
         letters = self.env['ubi.letter'].browse(ids)
         for letter in letters:
-            result = self.return_received(letter)
-            if result:
-                letter.write({"coming_state": "refuse"})
+            if letter.coming_state == 'receive':
+                result = self.return_received(letter)
+                if result:
+                    letter.write({"coming_state": "refuse"})
 
     @api.model
     def cancel_sent(self, letter):
