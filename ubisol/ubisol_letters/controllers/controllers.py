@@ -1,21 +1,16 @@
 # -*- coding: utf-8 -*-
-# from odoo import http
+# -*- coding: utf-8 -*-
+from odoo import http
+from odoo.http import request
 
 
-# class UbisolBaseMenu(http.Controller):
-#     @http.route('/ubisol_base_menu/ubisol_base_menu/', auth='public')
-#     def index(self, **kw):
-#         return "Hello, world"
+# Inherit in your custom class
+class LetterBanner(http.Controller):
 
-#     @http.route('/ubisol_base_menu/ubisol_base_menu/objects/', auth='public')
-#     def list(self, **kw):
-#         return http.request.render('ubisol_base_menu.listing', {
-#             'root': '/ubisol_base_menu/ubisol_base_menu',
-#             'objects': http.request.env['ubisol_base_menu.ubisol_base_menu'].search([]),
-#         })
-
-#     @http.route('/ubisol_base_menu/ubisol_base_menu/objects/<model("ubisol_base_menu.ubisol_base_menu"):obj>/', auth='public')
-#     def object(self, obj, **kw):
-#         return http.request.render('ubisol_base_menu.object', {
-#             'object': obj
-#         })
+    @http.route('/ubisol_letters/letter_banner', auth='user', type='json')
+    def letter_banner(self):
+        return {
+            'html': """
+                    <link href="/ubisol_letters/static/src/css/banner.css" rel="stylesheet">  
+                      """
+        }
