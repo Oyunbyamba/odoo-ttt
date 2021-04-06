@@ -116,7 +116,7 @@
         </field>
     </record>
 
-    <record model="ir.actions.server" id="call_return_wizard_action">
+    <record model="ir.actions.server" id="call_cancel_wizard_action">
         <field name="name">Цуцлах</field>
         <field name="model_id" ref="model_ubi_letter"/>
         <field name="binding_model_id" ref="model_ubi_letter" />
