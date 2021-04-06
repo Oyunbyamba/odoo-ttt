@@ -14,10 +14,9 @@ from odoo.exceptions import ValidationError, AccessError, RedirectWarning
 _logger = logging.getLogger(__name__)
 
 
-class UbiLetter(models.Model):
+class UbiLetter(models.AbstractModel):
     _name = "ubi.letter"
-    _inherit = ['mail.thread', 'mail.activity.mixin']
-    _description = " "
+    _description = " Ubisol Letter"
     _rec_name = 'letter_number'
 
     def _get_default_note(self):
