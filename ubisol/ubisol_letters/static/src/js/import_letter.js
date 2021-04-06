@@ -20,7 +20,7 @@ odoo.define('import_letter.importLetter',function (require) {
             var self = this;
             var user = session.uid;
             rpc.query({
-                model: 'ubi.letter',
+                model: 'ubi.letter.coming',
                 method: 'check_new_letters',
                 args: [user],
             }).then(function (data) {     
