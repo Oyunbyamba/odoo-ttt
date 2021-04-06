@@ -143,7 +143,6 @@ class UbiLetter(models.Model):
     cancel_position = fields.Char(string='Товч утга', groups="base.group_user")
     cancel_comment = fields.Char(string='Товч утга', groups="base.group_user")
 
-
     @api.onchange('letter_template_id')
     def _set_letter_template(self):
         if self.letter_template_text:
@@ -561,6 +560,7 @@ class UbiLetter(models.Model):
                 './/{https://dev.docx.gov.mn/document/dto}data')
 
             data = json.loads(find.text.strip())
+            count = 0
             for doc in data:
                 already_received = self.env['ubi.letter'].search(
                     [('letter_number', '=', doc['documentNumber']), ('partner_id.ubi_letter_org_id', '=', doc['orgId']), ('letter_status', '=', 'coming')], limit=1)
@@ -571,9 +571,11 @@ class UbiLetter(models.Model):
                     vals = self.prepare_receiving(doc)
                     _logger.info(vals)
                     self.env['ubi.letter'].create(vals)
+                    count += 1
+            return 'Шинээр нийт ' + str(count) + ' бичиг ирсэн байна.'
 
         else:
-            print("FALSE")
+            return 'Албан бичиг татах системтэй холбогдох явцад алдаа гарлаа.'
 
         return {}
 
@@ -654,11 +656,11 @@ class UbiLetter(models.Model):
             result = self.cancel_sent(letter)
             if result:
                 letter.write({"going_state": 'refuse',
-                    "cancel_comment": wizard_vals.cancel_comment,
-                    "cancel_position": wizard_vals.cancel_position,
-                    "cancel_user": wizard_vals.cancel_user
-                    })
-  
+                              "cancel_comment": wizard_vals.cancel_comment,
+                              "cancel_position": wizard_vals.cancel_position,
+                              "cancel_user": wizard_vals.cancel_user
+                              })
+
         return True
 
     @api.model

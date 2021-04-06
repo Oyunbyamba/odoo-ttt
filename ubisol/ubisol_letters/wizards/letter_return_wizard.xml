@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <odoo>
     <record id="act_wizard_letter_return_wizard" model="ir.actions.act_window">
-        <field name="name">Албан бичиг буцаах шалтгаан</field>
+        <field name="name">Ирсэн бичиг буцаах</field>
         <field name="res_model">letter.return.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>

@@ -46,8 +46,7 @@
 
                         <group string="Бүртгэл">
                             <field name="priority_id"/>
-                            <field name="partner_id" string='Хаана'
-                                options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="partner_id" string='Хаана' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="official_person" string='Хэнд'/>
                             <field name="department_id" string='Хаанаас' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="is_local" string='Дотоод бичиг'/>
@@ -107,7 +106,7 @@
     </record>
 
     <record model="ir.actions.server" id="action_letter_send">
-        <field name="name">Илгээх</field>
+        <field name="name">ТАБС-аар илгээх</field>
         <field name="model_id" ref="model_ubi_letter"/>
         <field name="binding_model_id" ref="model_ubi_letter" />
         <field name="state">code</field>
