@@ -723,20 +723,23 @@ class UbiLetter(models.Model):
         headers = {'Content-type': 'text/xml'}
         result = requests.post(target_url, data=data.encode(
             encoding='utf-8'), headers=headers, verify=False)
+        if result.status_code == 200:
 
-        mytree = ET.fromstring(result.content)
+            mytree = ET.fromstring(result.content)
 
-        status = mytree.find(
-            './/{https://dev.docx.gov.mn/document/dto}responseCode')
-        find = mytree.find(
-            './/{https://dev.docx.gov.mn/document/dto}responseMessage')
+            status = mytree.find(
+                './/{https://dev.docx.gov.mn/document/dto}responseCode')
+            find = mytree.find(
+                './/{https://dev.docx.gov.mn/document/dto}responseMessage')
 
-        data = find.text.strip()
+            data = find.text.strip()
 
-        if(status.text.strip() == '200'):
-            return {'status': 200}
+            if(status.text.strip() == '200'):
+                return {'status': 200}
+            else:
+                return {'status': status.text.strip(), 'data': data}
         else:
-            return {'status': status.text.strip(), 'data': data}
+            return {'status': 'ERROR', 'data': 'Сүлжээний алдаа гарлаа.'}
 
     @api.model
     def return_received(self, letter):
@@ -759,15 +762,18 @@ class UbiLetter(models.Model):
         result = requests.post(target_url, data=data.encode(
             encoding='utf-8'), headers=headers, verify=False)
 
-        mytree = ET.fromstring(result.content)
+        if result.status_code == 200:
 
-        status = mytree.find(
-            './/{https://dev.docx.gov.mn/document/dto}responseCode')
-        find = mytree.find(
-            './/{https://dev.docx.gov.mn/document/dto}data')
-        data = json.loads(find.text.strip())
+            mytree = ET.fromstring(result.content)
 
-        if(status.text.strip() == '200'):
-            return {'status': 200}
+            status = mytree.find(
+                './/{https://dev.docx.gov.mn/document/dto}responseCode')
+            find = mytree.find(
+                './/{https://dev.docx.gov.mn/document/dto}responseMessage')
+            data = find.text.strip()
+            if(status.text.strip() == '200'):
+                return {'status': 200}
+            else:
+                return {'status': status.text.strip(), 'data': data}
         else:
-            return {'status': status.text.strip(), 'message': data}
+            return {'status': 'ERROR', 'data': 'Сүлжээний алдаа гарлаа.'}
