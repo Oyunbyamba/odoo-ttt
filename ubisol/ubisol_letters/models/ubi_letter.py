@@ -9,6 +9,7 @@ import xml.etree.ElementTree as ET
 import re
 import ssl
 import requests
+from odoo.exceptions import ValidationError, AccessError, RedirectWarning
 
 _logger = logging.getLogger(__name__)
 
@@ -678,9 +679,15 @@ class UbiLetter(models.Model):
             for letter in letters:
                 if letter.going_state == 'sent':
                     result = self.cancel_sent(letter)
-                    if result:
+                    if result['status'] == 200:
                         letter.write({"going_state": 'refuse'})
-        return True
+                    else:
+                        raise RedirectWarning(
+                            result['data'], [], )
+                        # return self.pool.get('warning').warning(cr, uid, title='Title', message=)
+                        # return {'value': {}, 'warning': {'title': 'warning', 'message': 'Your message'}}
+
+        return
 
     @api.model
     def return_receiving(self, ids, wizard_vals):
@@ -722,11 +729,15 @@ class UbiLetter(models.Model):
 
         status = mytree.find(
             './/{https://dev.docx.gov.mn/document/dto}responseCode')
+        find = mytree.find(
+            './/{https://dev.docx.gov.mn/document/dto}responseMessage')
+
+        data = find.text.strip()
 
         if(status.text.strip() == '200'):
-            return True
+            return {'status': 200}
         else:
-            return False
+            return {'status': status.text.strip(), 'data': data}
 
     @api.model
     def return_received(self, letter):
@@ -753,8 +764,11 @@ class UbiLetter(models.Model):
 
         status = mytree.find(
             './/{https://dev.docx.gov.mn/document/dto}responseCode')
+        find = mytree.find(
+            './/{https://dev.docx.gov.mn/document/dto}data')
+        data = json.loads(find.text.strip())
 
         if(status.text.strip() == '200'):
-            return True
+            return {'status': 200}
         else:
-            return False
+            return {'status': status.text.strip(), 'message': data}
