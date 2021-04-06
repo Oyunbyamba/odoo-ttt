@@ -515,13 +515,11 @@ class UbiLetter(models.Model):
             fileList['type'] = file.mimetype
 
             fileList['data'] = file.datas.decode()
-            _logger.info(file.datas)
             file_array.append(fileList)
         return file_array
 
     @api.model
     def send_letter(self, request_data):
-        _logger.info(request_data)
         template = """<Envelope xmlns = "http://schemas.xmlsoap.org/soap/envelope/" >
                         <Body>
                             <callRequest xmlns = "https://dev.docx.gov.mn/document/dto">
@@ -533,10 +531,11 @@ class UbiLetter(models.Model):
                     </Envelope>"""
 
         data = template % (request_data)
+        _logger.info(data)
         target_url = "https://dev.docx.gov.mn/soap/api"
         headers = {'Content-type': 'text/xml'}
         result = requests.post(target_url, data=data.encode(encoding='utf-8'),
-                               headers=headers, verify=False)
+                               headers=headers, verify=False)                      
         mytree = ET.fromstring(result.content)
 
         status = mytree.find(
@@ -551,7 +550,7 @@ class UbiLetter(models.Model):
             False
 
     @api.model
-    def check_connection_function(self, user):
+    def check_new_letters(self, user):
 
         data = """<Envelope xmlns = "http://schemas.xmlsoap.org/soap/envelope/" >
                     <Body>
@@ -604,28 +603,30 @@ class UbiLetter(models.Model):
     def prepare_receiving(self, doc):
         vals = {}
 
-        vals['letter_date'] = doc['documentDate'] or ''
-        vals['tabs_id'] = doc['id'] or ''
-        vals['letter_type_id'] = doc['documentTypeId'] or ''
-        vals['letter_number'] = doc['documentNumber'] or ''
+        _logger.info('prepare_receiving')
+        _logger.info(doc)
+        vals['letter_date'] = doc['documentDate'] if 'documentDate' in doc else datetime.strftime(datetime.today(), '%Y-%m-%d')
+        vals['tabs_id'] = doc['id'] if 'id' in doc else ''
+        vals['letter_type_id'] = doc['documentTypeId'] if 'documentTypeId' in doc else ''
+        vals['letter_number'] = doc['documentNumber'] if 'documentNumber' in doc else ''
         vals['letter_subject_id'] = self.check_subject(
-            doc['documentName']) or ''
-        vals['official_person'] = doc['signName'] or ''
+            doc['documentName']) if 'documentName' in doc else ''
+        vals['official_person'] = doc['signName'] if 'signName' in doc else ''
 
         vals['partner_id'] = self.check_partners(doc).id or ''
-        vals['is_reply_doc'] = doc['isReplyDoc'] or ''
-        vals['must_return'] = doc['isNeedReply'] or ''
+        vals['is_reply_doc'] = doc['isReplyDoc'] if 'isReplyDoc' in doc else ''
+        vals['must_return'] = doc['isNeedReply'] if 'isNeedReply' in doc else ''
         # datetime.strftime(letter.letter_date, '%Y-%m-%d') if letter.letter_date else ''
-        vals['priority_id'] = doc['priorityId'] or ''
+        vals['priority_id'] = str(doc['priorityId']) if 'priorityId' in doc and doc['priorityId'] > 0 else '1'
 
         # ? shalgaj hariu bichig mun esehiig medne
 
-        vals['letter_total_num'] = doc['noOfPages'] or ''
+        vals['letter_total_num'] = doc['noOfPages'] if doc['noOfPages'] else ''
         # mistyped asuuh heregtei
-        vals['src_document_number'] = doc['srcDocumentNumber'] or ''
-        vals['src_document_code'] = doc['srcDocumentCode'] or ''
-        vals['src_document_date'] = doc['srcDocumentDate'] or ''
-        vals['letter_attachment_ids'] = self.download_files(doc['fileList'])
+        vals['src_document_number'] = doc['srcDocumentNumber'] if 'srcDocumentNumber' in doc else ''
+        vals['src_document_code'] = doc['srcDocumentCode'] if 'srcDocumentCode' in doc else ''
+        vals['src_document_date'] = doc['srcDocumentDate'] if 'srcDocumentDate' in doc else ''
+        vals['letter_attachment_ids'] = self.download_files(doc['fileList']) if len(doc['fileList']) > 0 else []
         vals['coming_state'] = 'draft'
         vals['letter_status'] = 'coming'
 
@@ -682,12 +683,11 @@ class UbiLetter(models.Model):
                     if result['status'] == 200:
                         letter.write({"going_state": 'refuse'})
                     else:
-                        raise RedirectWarning(
-                            result['data'], [], )
+                        raise ValidationError(result['data'])
                         # return self.pool.get('warning').warning(cr, uid, title='Title', message=)
                         # return {'value': {}, 'warning': {'title': 'warning', 'message': 'Your message'}}
 
-        return
+        return {}
 
     @api.model
     def return_receiving(self, ids, wizard_vals):
@@ -719,7 +719,6 @@ class UbiLetter(models.Model):
                     </Body>
                 </Envelope>"""
         data = template % params
-        _logger.info(data)
         target_url = "https://dev.docx.gov.mn/soap/api"
         headers = {'Content-type': 'text/xml'}
         result = requests.post(target_url, data=data.encode(

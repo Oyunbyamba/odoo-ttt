@@ -5,6 +5,7 @@ odoo.define('import_letter.importLetter',function (require) {
     var ListController = require('web.ListController');
     var rpc = require('web.rpc');
     var session = require('web.session');
+    var v = require('web.View');   
     var _t = core._t;
 
     var importLetter = ListController.include({
@@ -19,21 +20,12 @@ odoo.define('import_letter.importLetter',function (require) {
             // event.preventDefault();
             var self = this;
             var user = session.uid;
-            console.log('check_connection_function')
             rpc.query({
                 model: 'ubi.letter',
-                method: 'check_connection_function',
+                method: 'check_new_letters',
                 args: [user],
-            }).then(function (data) {
-                alert(data);
-                // self.do_action({
-                //     name: _t('Ирсэн бичиг'),
-                //     type: 'ir.actions.act_window',
-                //     res_model: 'ubi.letter',
-                //     views: [[false, 'list'], [false, 'form']],
-                //     view_mode: "list",
-                //     target: 'current'
-                // });
+            }).then(function (data) {                                                                    
+                v.reload();
             });
 
         },
