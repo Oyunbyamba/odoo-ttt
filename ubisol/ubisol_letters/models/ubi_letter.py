@@ -138,10 +138,10 @@ class UbiLetter(models.Model):
                                     ('4', 'Гарт нь'),
                                     ], default='1', string='Нууцлалын зэрэг', groups="base.group_user")
 
-    cancel_employee = fields.Char(string="Ажилтан", groups="base.group_user", help="Ажилтан")
+    cancel_employee = fields.Char(
+        string="Ажилтан", groups="base.group_user", help="Ажилтан")
     cancel_position = fields.Char(string='Товч утга', groups="base.group_user")
     cancel_comment = fields.Char(string='Товч утга', groups="base.group_user")
-
 
     def call_return_wizard(self):
         if len(self.ids) >= 1:
@@ -456,8 +456,8 @@ class UbiLetter(models.Model):
             letter.to_user = to_user
 
     @api.model
-    def prepare_sending(self, ids):
-        letters = self.env['ubi.letter'].browse(ids)
+    def prepare_sending(self):
+        letters = self.env['ubi.letter'].browse(self.ids)
         for letter in letters:
             if letter.going_state == 'draft':
                 request_data = self.build_state_doc(letter)
@@ -603,26 +603,27 @@ class UbiLetter(models.Model):
     def prepare_receiving(self, doc):
         vals = {}
 
-        vals['letter_date'] = doc['documentDate']
-        vals['tabs_id'] = doc['id']
-        vals['letter_type_id'] = doc['documentTypeId']
-        vals['letter_number'] = doc['documentNumber']
-        vals['letter_subject_id'] = self.check_subject(doc['documentName'])
-        vals['official_person'] = doc['signName']
+        vals['letter_date'] = doc['documentDate'] or ''
+        vals['tabs_id'] = doc['id'] or ''
+        vals['letter_type_id'] = doc['documentTypeId'] or ''
+        vals['letter_number'] = doc['documentNumber'] or ''
+        vals['letter_subject_id'] = self.check_subject(
+            doc['documentName']) or ''
+        vals['official_person'] = doc['signName'] or ''
 
-        vals['partner_id'] = self.check_partners(doc).id
-        vals['is_reply_doc'] = doc['isReplyDoc']
-        vals['must_return'] = doc['isNeedReply']
+        vals['partner_id'] = self.check_partners(doc).id or ''
+        vals['is_reply_doc'] = doc['isReplyDoc'] or ''
+        vals['must_return'] = doc['isNeedReply'] or ''
         # datetime.strftime(letter.letter_date, '%Y-%m-%d') if letter.letter_date else ''
-        vals['priority_id'] = doc['priorityId']
+        vals['priority_id'] = doc['priorityId'] or ''
 
         # ? shalgaj hariu bichig mun esehiig medne
 
-        vals['letter_total_num'] = doc['noOfPages']
+        vals['letter_total_num'] = doc['noOfPages'] or ''
         # mistyped asuuh heregtei
-        vals['src_document_number'] = doc['srcDocumentNumber']
-        vals['src_document_code'] = doc['srcDocumentCode']
-        vals['src_document_date'] = doc['srcDocumentDate']
+        vals['src_document_number'] = doc['srcDocumentNumber'] or ''
+        vals['src_document_code'] = doc['srcDocumentCode'] or ''
+        vals['src_document_date'] = doc['srcDocumentDate'] or ''
         vals['letter_attachment_ids'] = self.download_files(doc['fileList'])
         vals['coming_state'] = 'draft'
         vals['letter_status'] = 'coming'
@@ -689,12 +690,12 @@ class UbiLetter(models.Model):
                 result = self.return_received(letter)
                 if result:
                     letter.write({"coming_state": "refuse",
-                        "cancel_comment": wizard_vals.cancel_comment,
-                        "cancel_position": wizard_vals.cancel_position,
-                        "cancel_employee": wizard_vals.cancel_employee.name
-                        })
+                                  "cancel_comment": wizard_vals.cancel_comment,
+                                  "cancel_position": wizard_vals.cancel_position,
+                                  "cancel_employee": wizard_vals.cancel_employee.name
+                                  })
 
-        return True                
+        return True
 
     @api.model
     def cancel_sent(self, letter):
@@ -711,6 +712,7 @@ class UbiLetter(models.Model):
                     </Body>
                 </Envelope>"""
         data = template % params
+        _logger.info(data)
         target_url = "https://dev.docx.gov.mn/soap/api"
         headers = {'Content-type': 'text/xml'}
         result = requests.post(target_url, data=data.encode(
@@ -723,7 +725,6 @@ class UbiLetter(models.Model):
 
         if(status.text.strip() == '200'):
             return True
-
         else:
             return False
 

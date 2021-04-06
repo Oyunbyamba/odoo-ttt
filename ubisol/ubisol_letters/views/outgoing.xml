@@ -112,7 +112,7 @@
         <field name="state">code</field>
         <field name="code">
             if records:
-                records.letter_send_function()
+                records.prepare_sending()
         </field>
     </record>
 
