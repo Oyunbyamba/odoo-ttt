@@ -5,7 +5,6 @@ odoo.define('import_letter.importLetter',function (require) {
     var ListController = require('web.ListController');
     var rpc = require('web.rpc');
     var session = require('web.session');
-    var v = require('web.View');   
     var _t = core._t;
 
     var importLetter = ListController.include({
@@ -24,8 +23,9 @@ odoo.define('import_letter.importLetter',function (require) {
                 model: 'ubi.letter',
                 method: 'check_new_letters',
                 args: [user],
-            }).then(function (data) {                                                                    
-                v.reload();
+            }).then(function (data) {     
+                alert(data)                                                               
+                window.location.reload();
             });
 
         },

@@ -15,7 +15,6 @@
         'views/outgoing.xml',
         'views/incoming.xml',
         'views/planning.xml',
-        'views/myletter.xml',
         'views/settings.xml',
         'views/res_partner.xml',
         'views/menu.xml',

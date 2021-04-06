@@ -18,7 +18,7 @@ class LetterReturn(models.TransientModel):
 
     cancel_employee = fields.Many2one(
         'hr.employee', string="Ажилтан", help="Ажилтан")
-    cancel_position = fields.Char(string='Товч утга', compute='_compute_employee_job', groups="base.group_user")
+    cancel_position = fields.Char(string='Ажилтаны ажил', compute='_compute_employee_job', groups="base.group_user")
     cancel_comment = fields.Char(string='Товч утга', groups="base.group_user")
 
     @api.onchange('cancel_employee')

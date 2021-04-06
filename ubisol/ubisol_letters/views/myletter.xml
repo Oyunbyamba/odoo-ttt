@@ -21,7 +21,6 @@
                 <field name="partner_id"/>
                 <field name="user_id"/>
                 <field name="is_local"/>
-                <field name="letter_status" invisible='1'/>
                 <field name="coming_state" string='Төлөв'/>
             </tree>
         </field>
@@ -59,7 +58,6 @@
                             <field name="is_head_company" string='Дээд газраас ирсэн'/>
                             <field name="must_return" string='Хариутай эсэх'/>
                             <field name="must_return_date" attrs="{'invisible': [('must_return','!=',True)]}"/>
-                            <field name="letter_status" invisible='1'/>
                         </group>
 
                         <group string="Хавсралт">
@@ -95,7 +93,7 @@
         <field name="view_ids" eval="[(5, 0, 0),
                 (0, 0, {'view_mode': 'tree', 'view_id': ref('ubisol_letters.ubi_letter_my_tree_view')},),
                 (0, 0, {'view_mode': 'form', 'view_id': ref('ubisol_letters.ubi_letter_my_form_view')})]"/>
-        <field name="context">{'default_letter_status': 'coming'}</field>
+        <!-- <field name="context">{'default_letter_status': 'coming'}</field> -->
         <field name="domain">[('user_id', '=', uid)]</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

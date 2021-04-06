@@ -4,10 +4,10 @@
 
     <!--going-->
     <record id="ubi_letter_going_tree_view" model="ir.ui.view">
-        <field name="name">ubi.letter.subject.tree</field>
-        <field name="model">ubi.letter</field>
+        <field name="name">ubi.letter.going.subject.tree</field>
+        <field name="model">ubi.letter.going</field>
         <field name="arch" type="xml">
-            <tree string="Ubi Letter" import='false' export_xlsx='false' decoration-success="going_state == 'sent'" decoration-info="going_state == 'draft'">
+            <tree string="Ubi Letter" import='false' export_xlsx='false' decoration-success="state == 'sent'" decoration-info="state == 'draft'">
                 <field name="letter_subject_id"/>
                 <field name="letter_type_id"/>
                 <field name="letter_number"/>
@@ -17,20 +17,19 @@
                 <field name="to_user" string='Хэнд'/>
                 <field name="department_id" string='Илгээсэн хэлтэс'/>
                 <field name="is_local"/>
-                <field name="letter_status" invisible='1'/>
-                <field name="going_state" string='Төлөв'/>
+                <field name="state" string='Төлөв'/>
             </tree>
         </field>
     </record>
 
     <record id="ubi_letter_going_form_view" model="ir.ui.view">
-        <field name="name">ubi.letter.subject.form</field>
-        <field name="model">ubi.letter</field>
+        <field name="name">ubi.letter.going.subject.form</field>
+        <field name="model">ubi.letter.going</field>
         <field name="arch" type="xml">
             <form string="Ubi Letter">
                 <header>
-                    <button string="Илгээх" name="action_sent" type="object" attrs="{'invisible': [('going_state', 'not in', ['sent'])]}"/>
-                    <field name="going_state" widget="statusbar"/>
+                    <button string="Илгээх" name="action_sent" type="object" attrs="{'invisible': [('state', 'not in', ['sent'])]}"/>
+                    <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
                     <group>
@@ -52,7 +51,6 @@
                             <field name="is_local" string='Дотоод бичиг'/>
                             <field name="must_return" string='Хариутай эсэх'/>
                             <field name="must_return_date" attrs="{'invisible': [('must_return','!=',True)]}"/>
-                            <field name="letter_status" invisible='1'/>
                         </group>
 
                         <group string="Хавсралт">
@@ -91,13 +89,12 @@
     <record id="ubi_action_going_letter" model="ir.actions.act_window">
         <field name="name">Явсан бичиг</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">ubi.letter</field>
+        <field name="res_model">ubi.letter.going</field>
         <field name="view_mode">tree,form</field>
         <field name="view_ids" eval="[(5, 0, 0),
                 (0, 0, {'view_mode': 'tree', 'view_id': ref('ubisol_letters.ubi_letter_going_tree_view')}),
                 (0, 0, {'view_mode': 'form', 'view_id': ref('ubisol_letters.ubi_letter_going_form_view')})]"/>
-        <field name="context">{'default_letter_status': 'going'}</field>
-        <field name="domain">[('letter_status', '=', 'going')]</field>
+        <field name="domain">[]</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Add a new document
@@ -107,8 +104,8 @@
 
     <record model="ir.actions.server" id="action_letter_send">
         <field name="name">ТАБС-аар илгээх</field>
-        <field name="model_id" ref="model_ubi_letter"/>
-        <field name="binding_model_id" ref="model_ubi_letter" />
+        <field name="model_id" ref="model_ubi_letter_going"/>
+        <field name="binding_model_id" ref="model_ubi_letter_going" />
         <field name="state">code</field>
         <field name="code">
             if records:
@@ -118,8 +115,8 @@
 
     <record model="ir.actions.server" id="call_cancel_wizard_action">
         <field name="name">Цуцлах</field>
-        <field name="model_id" ref="model_ubi_letter"/>
-        <field name="binding_model_id" ref="model_ubi_letter" />
+        <field name="model_id" ref="model_ubi_letter_going"/>
+        <field name="binding_model_id" ref="model_ubi_letter_going" />
         <field name="state">code</field>
         <field name="code">
             if records:
