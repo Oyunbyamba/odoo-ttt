@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
-from odoo import models, tools, fields, api
+from odoo import models, tools, fields, api, _
 from datetime import date, datetime, timedelta, time
 import os
 import json
@@ -138,10 +138,36 @@ class UbiLetter(models.Model):
                                     ('4', 'Гарт нь'),
                                     ], default='1', string='Нууцлалын зэрэг', groups="base.group_user")
 
-    cancel_user = fields.Many2many(
-        'res.users', string="Ажилтан", help="Ажилтан")
+    cancel_employee = fields.Char(string="Ажилтан", groups="base.group_user", help="Ажилтан")
     cancel_position = fields.Char(string='Товч утга', groups="base.group_user")
     cancel_comment = fields.Char(string='Товч утга', groups="base.group_user")
+
+
+    def call_return_wizard(self):
+        if len(self.ids) >= 1:
+            return {
+                'type': 'ir.actions.act_window',
+                'name': _('Ирсэн бичиг буцаах'),
+                'res_model': 'letter.return.wizard',
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {'active_ids': self.ids},
+                'views': [[False, 'form']]
+            }
+        return {}
+
+    # def call_cancel_wizard(self):
+    #     if len(self.ids) >= 1:
+    #         return {
+    #             'type': 'ir.actions.act_window',
+    #             'name': _('Явсан бичиг цуцлах'),
+    #             'res_model': 'letter.return.wizard',
+    #             'view_mode': 'form',
+    #             'target': 'new',
+    #             'context': {'active_ids': self.ids},
+    #             'views': [[False, 'form']]
+    #         }
+    #     return {}
 
     @api.onchange('letter_template_id')
     def _set_letter_template(self):
@@ -395,14 +421,9 @@ class UbiLetter(models.Model):
         return letter
 
     def write(self, vals):
-        _logger.info(vals)
         letter = super(UbiLetter, self).write(vals)
 
         return letter
-
-    def letter_send_function(self):
-        selected_ids = self.env.context.get('active_ids', [])
-        self.prepare_sending(selected_ids)
 
     def action_sent(self):
         self.write({'going_state': 'sent'})
@@ -650,28 +671,30 @@ class UbiLetter(models.Model):
         return subject.id
 
     @api.model
-    def cancel_sending(self, ids, wizard_vals):
-        letters = self.env['ubi.letter'].browse(ids)
-        for letter in letters:
-            if letter.going_state == 'sent':
-                result = self.cancel_sent(letter)
-                if result:
-                    letter.write({"going_state": 'refuse',
-                                  "cancel_comment": wizard_vals.cancel_comment,
-                                  "cancel_position": wizard_vals.cancel_position,
-                                  "cancel_user": wizard_vals.cancel_user
-                                  })
-
+    def cancel_sending(self):
+        if len(self.ids) >= 1:
+            letters = self.env['ubi.letter'].browse(self.ids)
+            for letter in letters:
+                if letter.going_state == 'sent':
+                    result = self.cancel_sent(letter)
+                    if result:
+                        letter.write({"going_state": 'refuse'})
         return True
 
     @api.model
-    def return_receiving(self, ids):
+    def return_receiving(self, ids, wizard_vals):
         letters = self.env['ubi.letter'].browse(ids)
         for letter in letters:
             if letter.coming_state == 'receive':
                 result = self.return_received(letter)
                 if result:
-                    letter.write({"coming_state": "refuse"})
+                    letter.write({"coming_state": "refuse",
+                        "cancel_comment": wizard_vals.cancel_comment,
+                        "cancel_position": wizard_vals.cancel_position,
+                        "cancel_employee": wizard_vals.cancel_employee.name
+                        })
+
+        return True                
 
     @api.model
     def cancel_sent(self, letter):

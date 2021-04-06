@@ -1,26 +1,22 @@
 <?xml version="1.0" ?>
 <odoo>
-    <record id="act_wizard_letter_return_wizard" model="ir.actions.act_window">
+    <!-- <record id="act_wizard_letter_return_wizard" model="ir.actions.act_window">
         <field name="name">Ирсэн бичиг буцаах</field>
         <field name="res_model">letter.return.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
         <field name="binding_model_id" ref="ubisol_letters.model_ubi_letter" />
-    </record>
-
+    </record> -->
 
     <record id="attendance_report_wizard_form" model="ir.ui.view">
         <field name="model">letter.return.wizard</field>
         <field name="arch" type="xml">
             <form>
                 <group>
-                    <field name="cancel_position"/>
+                    <field name="cancel_comment" widget="text" required="1"/>
                 </group>
                 <group>
-                    <field name="cancel_comment" required="1"/>
-                </group>
-                <group>
-                    <field name="cancel_user"/>
+                    <field name="cancel_employee" string='Буцаасан ажилтан'/>
                 </group>
                 <footer>
                     <button name="action_compute" type="object" string="Буцаах" class="oe_highlight" />

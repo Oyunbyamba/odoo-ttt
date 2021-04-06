@@ -105,6 +105,17 @@
                 Add a new document
             </p>
         </field>
-
     </record>
+
+    <record model="ir.actions.server" id="call_return_wizard_action">
+        <field name="name">Ирсэн бичиг буцаах</field>
+        <field name="model_id" ref="ubisol_letters.model_ubi_letter"/>
+        <field name="binding_model_id" ref="ubisol_letters.model_ubi_letter" />
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                action = records.call_return_wizard()
+        </field>
+    </record>
+
 </odoo>
