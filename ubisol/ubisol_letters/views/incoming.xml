@@ -26,6 +26,15 @@
                 <field name="to_user" string='Хэнээс'/>
                 <field name="is_local"/>
                 <field name="state" string='Төлөв'/>
+                <button string="" name="action_approve" type="object"
+                    icon="fa-check text-success"
+                    states="confirm"
+                    groups="hr.group_hr_user"/>
+                <button string="Refuse" name="action_refuse" type="object"
+                    icon="fa-ban text-danger"
+                    states="confirm,validate,validate1"
+                    groups="hr.group_hr_user"/>
+                <field name="activity_exception_decoration" widget="activity_exception"/>
             </tree>
         </field>
     </record>

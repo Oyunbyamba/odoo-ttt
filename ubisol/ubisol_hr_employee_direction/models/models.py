@@ -55,9 +55,13 @@ class HrEmployeeDirection(models.Model):
         string='Төлөв', tracking=True)
     document_type_id = fields.Many2one('document.type', string='Тушаалын төрөл', readonly=True,
         states={'draft': [('readonly', False)], 'operate': [('readonly', False)]}, groups="hr.group_hr_user")    
-    employee_ids = fields.Many2many('hr.employee', 'direction_hr_employee_rel', 'direction_id', 'emp_id', 
+    # employee_ids = fields.Many2many('hr.employee', 'direction_hr_employee_rel', 'direction_id', 'emp_id', 
+    #     string='Ажилтан', readonly=True, required=True,
+    #     states={'draft': [('readonly', False)], 'operate': [('readonly', False)]})
+
+    employee_id = fields.Many2one('hr.employee', 
         string='Ажилтан', readonly=True, required=True,
-        states={'draft': [('readonly', False)], 'operate': [('readonly', False)]})
+        states={'draft': [('readonly', False)], 'operate': [('readonly', False)]})    
     user_id = fields.Many2one('res.users', string='Ноорог', default=_get_default_user)
     operate_user_id = fields.Many2one('res.users', string='Боловсруулах', readonly=True,
         states={'draft': [('readonly', False)], 'operate': [('readonly', False)]})
