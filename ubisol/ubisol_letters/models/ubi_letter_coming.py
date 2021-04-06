@@ -9,7 +9,7 @@ import xml.etree.ElementTree as ET
 import re
 import ssl
 import requests
-from odoo.exceptions import ValidationError, AccessError, RedirectWarning
+from odoo.exceptions import ValidationError, AccessError, UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -27,17 +27,25 @@ class UbiLetterComing(models.Model):
         ('refuse', 'Буцаасан'),
         ('draft', 'Ирсэн'),
         ('receive', 'Хүлээн авсан'),
-        ('transfer', 'Шилжүүлсэн'),
         ('review', 'Судлаж байгаа'),
+        ('transfer', 'Шилжүүлсэн'),
         ('validate', 'Шийдвэрлэсэн')],
         groups="base.group_user",
         default='draft',
         string='Ирсэн бичгийн төлөв', store=True, readonly=True, copy=False, tracking=True)
     going_letters = fields.Many2one(
         'ubi.letter.going', string='Явсан бичгийн дугаар', groups="base.group_user")
+    cancel_employee = fields.Char(
+        string="Цуцалсан ажилтан", groups="base.group_user", help="Ажилтан")
+    cancel_position = fields.Char(string='Цуцалсан ажилтны ажил', groups="base.group_user")
+    cancel_comment = fields.Char(string='Цуцалсан утга', groups="base.group_user")
+    # can_approve = fields.Boolean('Can reset', compute='_compute_can_approve', groups="base.group_user")
 
     def call_return_wizard(self):
         if len(self.ids) >= 1:
+            if any(letter.state not in ['receive', 'review', 'transfer'] for letter in self):
+                raise UserError(_('Хүлээн авсан, судлаж байгаа, шилжүүлсэн төлөвтэй баримтыг "Буцаасан" төлөвт оруулах боломжтой.'))
+            
             return {
                 'type': 'ir.actions.act_window',
                 'name': _('Ирсэн бичиг буцаах'),
@@ -76,6 +84,8 @@ class UbiLetterComing(models.Model):
     @api.model
     def create(self, vals):
         letter = super(UbiLetterComing, self).create(vals)
+        if not letter.tabs_id:
+            letter.state = 'receive'
 
         return letter
 
@@ -84,23 +94,28 @@ class UbiLetterComing(models.Model):
 
         return letter
 
-    def action_receive(self):
-        self.write({'coming_state': 'receive'})
+    # def action_receive(self):
+    #     if any(letter.state not in ['draft'] for letter in self):
+    #         raise UserError(_('Зөвхөн ирсэн төлөвтэй баримтыг "Хүлээн авсан" төлөвт оруулах боломжтой.'))
+    #     self.write({'state': 'receive'})
 
     def action_review(self):
-        self.write({'coming_state': 'review'})
+        if any(letter.state not in ['transfer'] for letter in self):
+            raise UserError(_('Зөвхөн шилжүүлсэн төлөвтэй баримтыг "Судлаж байгаа" төлөвт оруулах боломжтой.'))
+        self.write({'state': 'review'})
 
     def action_transfer(self):
-        self.write({'coming_state': 'transfer'})
+        if any(letter.state not in ['receive'] for letter in self):
+            raise UserError(_('Зөвхөн хүлээн авсан төлөвтэй баримтыг "Шилжүүлсэн" төлөвт оруулах боломжтой.'))
+        self.write({'state': 'transfer'})
 
     def action_validate(self):
-        self.write({'coming_state': 'validate'})
+        if any(letter.state not in ['review'] for letter in self):
+            raise UserError(_('Зөвхөн судлаж байгаа төлөвтэй баримтыг "Зөвшөөрсөн" төлөвт оруулах боломжтой.'))
+        self.write({'state': 'validate'})
 
-    def action_conflict(self):
-        self.write({'coming_state': 'conflict'})
+    # def _compute_can_approve(self):
 
-    def action_refuse(self):
-        self.write({'coming_state': 'refuse'})
 
     @api.model
     def check_new_letters(self, user):
@@ -178,7 +193,7 @@ class UbiLetterComing(models.Model):
         vals['src_document_date'] = doc['srcDocumentDate'] if 'srcDocumentDate' in doc else ''
         vals['letter_attachment_ids'] = self.download_files(
             doc['fileList']) if len(doc['fileList']) > 0 else []
-        vals['coming_state'] = 'draft'
+        vals['state'] = 'draft'
 
         return vals
 
@@ -225,18 +240,18 @@ class UbiLetterComing(models.Model):
 
     @api.model
     def return_receiving(self, ids, wizard_vals):
-        letters = self.env['ubi.letter'].browse(ids)
+        letters = self.env['ubi.letter.coming'].browse(ids)
         for letter in letters:
-            if letter.coming_state == 'receive':
+            if letter.state == 'receive':
                 params = {"id": letter.tabs_id, "cancelPerson": wizard_vals.cancel_employee.name, "cancelPosition": wizard_vals.cancel_position,
                           "cancelComment": wizard_vals.cancel_comment}
                 result = self.return_received(params)
                 if result:
-                    letter.write({"coming_state": "refuse",
-                                  "cancel_comment": wizard_vals.cancel_comment,
-                                  "cancel_position": wizard_vals.cancel_position,
-                                  "cancel_employee": wizard_vals.cancel_employee.name
-                                  })
+                    letter.write({"state": "refuse",
+                                "cancel_comment": wizard_vals.cancel_comment,
+                                "cancel_position": wizard_vals.cancel_position,
+                                "cancel_employee": wizard_vals.cancel_employee.name
+                                })
         return True
 
     def return_received(self, params):
@@ -274,15 +289,17 @@ class UbiLetterComing(models.Model):
             return {'status': 'ERROR', 'data': 'Сүлжээний алдаа гарлаа.'}
 
     def letter_receiving(self):
+        if any(letter.state not in ['draft'] for letter in self):
+            raise UserError(_('Зөвхөн ирсэн төлөвтэй баримтыг "Хүлээн авсан" төлөвт оруулах боломжтой.'))
 
-        letters = self.env['ubi.letter'].browse(ids)
+        letters = self.env['ubi.letter.coming'].browse(self.ids)
         for letter in letters:
-            if letter.coming_state == 'draft':
+            if letter.state == 'draft':
                 params = {"id": letter.tabs_id,
                           "receivePerson": "D.Bold", "receivePosition": "Darga"}
                 result = self.letter_received(params)
                 if result:
-                    letter.write({"coming_state": "receive"})
+                    letter.write({"state": "receive"})
         return True
 
     def letter_received(self, params):

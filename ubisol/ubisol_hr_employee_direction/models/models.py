@@ -53,7 +53,7 @@ class HrEmployeeDirection(models.Model):
         ('validate', 'Баталсан')], default='draft', readonly=True,
         states={'draft': [('readonly', False)], 'operate': [('readonly', False)]},
         string='Төлөв', tracking=True)
-    document_type_id = fields.Many2one('document.type', string='Тушаалын төрөл', readonly=True,
+    hr_document_id = fields.Many2one('hr.document', string='Тушаалын загвар', readonly=True,
         states={'draft': [('readonly', False)], 'operate': [('readonly', False)]}, groups="hr.group_hr_user")    
     # employee_ids = fields.Many2many('hr.employee', 'direction_hr_employee_rel', 'direction_id', 'emp_id', 
     #     string='Ажилтан', readonly=True, required=True,

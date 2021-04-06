@@ -9,7 +9,7 @@ import xml.etree.ElementTree as ET
 import re
 import ssl
 import requests
-from odoo.exceptions import ValidationError, AccessError, RedirectWarning
+from odoo.exceptions import ValidationError, AccessError, UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -33,11 +33,7 @@ class UbiLetterGoing(models.Model):
         string='Явсан бичгийн төлөв', store=True, readonly=True, copy=False, tracking=True)
     coming_letters = fields.Many2one(
         'ubi.letter.coming', string='Ирсэн дугаар', groups="base.group_user")    
-    cancel_employee = fields.Char(
-        string="Цуцалсан ажилтан", groups="base.group_user", help="Ажилтан")
-    cancel_position = fields.Char(string='Цуцалсан ажилтны ажил', groups="base.group_user")
-    cancel_comment = fields.Char(string='Цуцалсан утга', groups="base.group_user")
-
+   
 
     @api.onchange('letter_template_id')
     def _set_letter_template(self):
@@ -75,18 +71,22 @@ class UbiLetterGoing(models.Model):
         return letter
 
     def action_sent(self):
-        self.write({'going_state': 'sent'})
+        self.write({'state': 'sent'})
 
-    @api.model
     def prepare_sending(self):
-        letters = self.env['ubi.letter'].browse(self.ids)
+        letters = self.env['ubi.letter.going'].browse(self.ids)
         for letter in letters:
-            if letter.going_state == 'draft':
+            if any(letter.state not in ['draft'] for letter in self):
+                raise UserError(_('Зөвхөн бүртгэсэн төлөвтэй баримтыг "Илгээх" төлөвт оруулах боломжтой.'))
+
+            if letter.state == 'draft':
                 request_data = self.build_state_doc(letter)
                 result = self.send_letter(request_data)
                 if result:
                     letter.write(
-                        {"going_state": "sent", "tabs_id": result['id']})
+                        {"state": "sent", "tabs_id": result['id']})
+
+        return {}
 
     def build_state_doc(self, letter):
         body = {}
@@ -169,15 +169,17 @@ class UbiLetterGoing(models.Model):
         else:
             False
 
-    @api.model
     def cancel_sending(self):
         if len(self.ids) >= 1:
-            letters = self.env['ubi.letter'].browse(self.ids)
+            letters = self.env['ubi.letter.going'].browse(self.ids)
             for letter in letters:
-                if letter.going_state == 'sent':
+                if any(letter.state not in ['sent'] for letter in self):
+                    raise UserError(_('Зөвхөн илгээсэн төлөвтэй баримтыг "Цуцлах" төлөвт оруулах боломжтой.'))
+        
+                if letter.state == 'sent':
                     result = self.cancel_sent(letter)
                     if result['status'] == 200:
-                        letter.write({"going_state": 'refuse'})
+                        letter.write({"state": 'refuse'})
                     else:
                         raise ValidationError(result['data'])
                         # return self.pool.get('warning').warning(cr, uid, title='Title', message=)

@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <tree string='Тушаал'>
                 <field name="name"/>
-                <field name="document_type_id"/>
+                <field name="hr_document_id"/>
                 <field name="direction_date"/>
                 <field name="direction_number"/>
                 <field name="state"/>
@@ -34,10 +34,10 @@
                     <group>
                         <group string="Үндсэн мэдээлэл">
                             <field name="name" required="1"/>
-                            <field name="document_type_id" required="1"/>
+                            <field name="hr_document_id" required="1"/>
                             <field name="direction_number" required="1"/>
                             <field name="direction_date"/>
-                            <field name="employee_ids" required='1'/>
+                            <field name="employee_id" required='1'/>
                         </group>
 
                         <group string="Бүртгэл">

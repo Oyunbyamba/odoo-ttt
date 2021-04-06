@@ -18,6 +18,15 @@
                 <field name="department_id" string='Илгээсэн хэлтэс'/>
                 <field name="is_local"/>
                 <field name="state" string='Төлөв'/>
+                <button string="Илгээх" name="prepare_sending" type="object"
+                    icon="fa-check text-success"
+                    states="draft"
+                    groups="hr.group_hr_manager"/>   
+                <button string="Цуцлах" name="cancel_sending" type="object"
+                    icon="fa-ban text-danger"
+                    states="sent"
+                    groups="hr.group_hr_manager"/>        
+                <field name="activity_exception_decoration" widget="activity_exception"/>
             </tree>
         </field>
     </record>
@@ -34,9 +43,9 @@
                 <sheet>
                     <group>
                         <group string="Үндсэн мэдээлэл">
-                            <field name="letter_subject_id"/>
-                            <field name="letter_number"/>
-                            <field name="letter_type_id"/>
+                            <field name="letter_subject_id" required='1'/>
+                            <field name="letter_number" required='1'/>
+                            <field name="letter_type_id" required='1'/>
                             <field name="letter_template_id"/>
                             <field name="letter_date" required='1'/>
                             <field name="decide_date" string='Шийдвэрлэх'/>
@@ -45,7 +54,7 @@
 
                         <group string="Бүртгэл">
                             <field name="priority_id"/>
-                            <field name="partner_id" string='Хаашаа' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="partner_id" string='Хаашаа' required='1' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="official_person" string='Хэнд'/>
                             <field name="department_id" string='Хаанаас' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="is_local" string='Дотоод бичиг'/>

@@ -27,7 +27,7 @@ class LetterReturn(models.TransientModel):
             self.cancel_position = self.cancel_employee.job_id.name
 
     def action_compute(self):
-        ubi_letter = self.env["ubi.letter"].search([])
+        ubi_letter = self.env["ubi.letter.coming"].search([])
         if self.env.context.get('active_ids'):
             active_ids = self.env.context['active_ids']
             cancel_letter = ubi_letter.return_receiving(active_ids, self)
