@@ -20,7 +20,6 @@ class UbiLetterComing(models.Model):
     _description = " "
     _rec_name = 'letter_number'
 
-
     letter_attachment_ids = fields.Many2many(
         'ir.attachment', 'letter_coming_doc_attach', 'letter_id', 'doc_id', string="Хавсралт", copy=False)
     state = fields.Selection([
@@ -154,7 +153,8 @@ class UbiLetterComing(models.Model):
 
     def prepare_receiving(self, doc):
         vals = {}
-        vals['letter_date'] = doc['documentDate'] if 'documentDate' in doc else datetime.strftime(datetime.today(), '%Y-%m-%d')
+        vals['letter_date'] = doc['documentDate'] if 'documentDate' in doc else datetime.strftime(
+            datetime.today(), '%Y-%m-%d')
         vals['tabs_id'] = doc['id'] if 'id' in doc else ''
         vals['letter_type_id'] = doc['documentTypeId'] if 'documentTypeId' in doc else ''
         vals['letter_number'] = doc['documentNumber'] if 'documentNumber' in doc else ''
@@ -166,7 +166,8 @@ class UbiLetterComing(models.Model):
         vals['is_reply_doc'] = doc['isReplyDoc'] if 'isReplyDoc' in doc else ''
         vals['must_return'] = doc['isNeedReply'] if 'isNeedReply' in doc else ''
         # datetime.strftime(letter.letter_date, '%Y-%m-%d') if letter.letter_date else ''
-        vals['priority_id'] = str(doc['priorityId']) if 'priorityId' in doc and doc['priorityId'] > 0 else '1'
+        vals['priority_id'] = str(
+            doc['priorityId']) if 'priorityId' in doc and doc['priorityId'] > 0 else '1'
 
         # ? shalgaj hariu bichig mun esehiig medne
 
@@ -175,7 +176,8 @@ class UbiLetterComing(models.Model):
         vals['src_document_number'] = doc['srcDocumentNumber'] if 'srcDocumentNumber' in doc else ''
         vals['src_document_code'] = doc['srcDocumentCode'] if 'srcDocumentCode' in doc else ''
         vals['src_document_date'] = doc['srcDocumentDate'] if 'srcDocumentDate' in doc else ''
-        vals['letter_attachment_ids'] = self.download_files(doc['fileList']) if len(doc['fileList']) > 0 else []
+        vals['letter_attachment_ids'] = self.download_files(
+            doc['fileList']) if len(doc['fileList']) > 0 else []
         vals['coming_state'] = 'draft'
 
         return vals
@@ -226,7 +228,9 @@ class UbiLetterComing(models.Model):
         letters = self.env['ubi.letter'].browse(ids)
         for letter in letters:
             if letter.coming_state == 'receive':
-                result = self.return_received(letter)
+                params = {"id": letter.tabs_id, "cancelPerson": wizard_vals.cancel_employee.name, "cancelPosition": wizard_vals.cancel_position,
+                          "cancelComment": wizard_vals.cancel_comment}
+                result = self.return_received(params)
                 if result:
                     letter.write({"coming_state": "refuse",
                                   "cancel_comment": wizard_vals.cancel_comment,
@@ -235,12 +239,8 @@ class UbiLetterComing(models.Model):
                                   })
         return True
 
+    def return_received(self, params):
 
-    @api.model
-    def return_received(self, letter):
-        params = {"id": letter.tabs_id, "cancelPerson": "Бат", "cancelPosition": "Бичиг хэрэг",
-                  "cancelComment": "Ирсэн бичгийн материал дутуу учир буцаалаа шүү хахаха"}
-        # {"id":381,"cancelPerson":"Бат","cancelPosition":"Бичиг хэрэг","cancelComment":"Ирсэн бичгийн материал дутуу учир буцаалаа шүү хахаха"}
         template = """<Envelope xmlns = "http://schemas.xmlsoap.org/soap/envelope/" >
                     <Body>
                         <callRequest xmlns = "https://dev.docx.gov.mn/document/dto">
@@ -248,6 +248,51 @@ class UbiLetterComing(models.Model):
                             <service>post.public.document/cancel</service >
                             <params>%s</params>
 
+                        </callRequest>
+                    </Body>
+                </Envelope>"""
+        data = template % params
+        target_url = "https://dev.docx.gov.mn/soap/api"
+        headers = {'Content-type': 'text/xml'}
+        result = requests.post(target_url, data=data.encode(
+            encoding='utf-8'), headers=headers, verify=False)
+
+        if result.status_code == 200:
+
+            mytree = ET.fromstring(result.content)
+
+            status = mytree.find(
+                './/{https://dev.docx.gov.mn/document/dto}responseCode')
+            find = mytree.find(
+                './/{https://dev.docx.gov.mn/document/dto}responseMessage')
+            data = find.text.strip()
+            if(status.text.strip() == '200'):
+                return {'status': 200}
+            else:
+                return {'status': status.text.strip(), 'data': data}
+        else:
+            return {'status': 'ERROR', 'data': 'Сүлжээний алдаа гарлаа.'}
+
+    def letter_receiving(self):
+
+        letters = self.env['ubi.letter'].browse(ids)
+        for letter in letters:
+            if letter.coming_state == 'draft':
+                params = {"id": letter.tabs_id,
+                          "receivePerson": "D.Bold", "receivePosition": "Darga"}
+                result = self.letter_received(params)
+                if result:
+                    letter.write({"coming_state": "receive"})
+        return True
+
+    def letter_received(self, params):
+
+        template = """<Envelope xmlns = "http://schemas.xmlsoap.org/soap/envelope/" >
+                    <Body>
+                        <callRequest xmlns = "https://dev.docx.gov.mn/document/dto">
+                            <token>2mRCiuLX352m6O2lhqMoxPs-fQ5ibZgaqIHRbNSaxCaoiJg7Ugo7nCCQEMKKlgK-XBQBprEqylE3EKmM5fMinLm6PnzAYfIHTi-BcwQXG8l3MHKp30HFjMyfrhfJvqK83o4JhtDxAXyp8TpeRrEhY949ClikAWr-v1cPbQ6Q0N8</token>
+                            <service>post.public.document/receive</service >
+                            <params>%s</params>
                         </callRequest>
                     </Body>
                 </Envelope>"""
