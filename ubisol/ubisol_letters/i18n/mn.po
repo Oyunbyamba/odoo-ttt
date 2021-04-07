@@ -297,7 +297,7 @@ msgstr "Бичлэг дээрх асуудал бүхий ажилбарын т�
 #: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_settings_type_form
 #: model_terms:ir.ui.view,arch_db:ubisol_letters.ubi_letter_settings_type_tree
 msgid "Ubi Letter"
-msgstr ""
+msgstr "Баримт бичиг"
 
 #. module: ubisol_letters
 #: model:ir.model.fields,field_description:ubisol_letters.field_ubi_letter__message_unread

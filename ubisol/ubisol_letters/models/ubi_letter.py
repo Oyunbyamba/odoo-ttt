@@ -109,7 +109,7 @@ class UbiLetter(models.AbstractModel):
         for letter in self:
             to_user = ''
             if letter.is_local:
-                to_user = letter.user_id
+                to_user = letter.user_id.name
             else:
                 to_user = letter.official_person
             letter.to_user = to_user

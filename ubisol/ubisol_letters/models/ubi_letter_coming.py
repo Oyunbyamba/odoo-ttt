@@ -17,8 +17,9 @@ _logger = logging.getLogger(__name__)
 class UbiLetterComing(models.Model):
     _name = "ubi.letter.coming"
     _inherit = ['ubi.letter', 'mail.thread', 'mail.activity.mixin']
-    _description = " "
+    _description = " Ирсэн бичиг"
     _rec_name = 'letter_number'
+    _mail_post_access = 'read'
 
     follow_id = fields.Many2one('ubi.letter.going', groups="base.group_user")
     letter_attachment_ids = fields.Many2many(
@@ -46,7 +47,7 @@ class UbiLetterComing(models.Model):
 
     def call_return_wizard(self):
         if len(self.ids) >= 1:
-            if any(letter.state not in ['receive', 'review', 'transfer'] for letter in self):
+            if any(letter.state not in ['receive', 'review', 'transfer'] or letter.is_local not in [False] for letter in self):
                 raise UserError(
                     _('Хүлээн авсан, судлаж байгаа, шилжүүлсэн төлөвтэй баримтыг "Буцаасан" төлөвт оруулах боломжтой.'))
 
@@ -95,6 +96,7 @@ class UbiLetterComing(models.Model):
         letter = super(UbiLetterComing, self).create(vals)
         if not letter.tabs_id:
             letter.state = 'receive'
+            letter.receive_user_id = self.env.user
 
         return letter
 
@@ -103,23 +105,48 @@ class UbiLetterComing(models.Model):
 
         return letter
 
-    def action_review(self):
-        if any(letter.state not in ['transfer'] for letter in self):
-            raise UserError(
-                _('Зөвхөн шилжүүлсэн төлөвтэй баримтыг "Судлаж байгаа" төлөвт оруулах боломжтой.'))
-        self.write({'state': 'review'})
 
-    def action_transfer(self):
+    # ------------------------------------------------------------
+    # Activity methods
+    # ------------------------------------------------------------
+
+    # def _get_responsible_for_approval(self):
+    #     self.ensure_one()
+    #     responsible = self.env['res.users'].browse(SUPERUSER_ID)
+
+    #     if self.validation_type == 'manager' or (self.validation_type == 'both' and self.state == 'confirm'):
+    #         if self.employee_id.leave_manager_id:
+    #             responsible = self.employee_id.leave_manager_id
+    #         elif self.employee_id.parent_id.user_id:
+    #             responsible = self.employee_id.parent_id.user_id
+    #     elif self.validation_type == 'hr' or (self.validation_type == 'both' and self.state == 'validate1'):
+    #         if self.holiday_status_id.responsible_id:
+    #             responsible = self.holiday_status_id.responsible_id
+
+    #     return responsible
+
+    def action_review(self):
         if any(letter.state not in ['receive'] for letter in self):
             raise UserError(
-                _('Зөвхөн хүлээн авсан төлөвтэй баримтыг "Шилжүүлсэн" төлөвт оруулах боломжтой.'))
-        self.write({'state': 'transfer'})
+                _('Зөвхөн хүлээн авсан төлөвтэй баримтыг "Судлаж байгаа" төлөвт оруулах боломжтой.'))
+        self.write({'state': 'review'})
+        return True
 
-    def action_validate(self):
+    def action_transfer(self):
         if any(letter.state not in ['review'] for letter in self):
             raise UserError(
-                _('Зөвхөн судлаж байгаа төлөвтэй баримтыг "Зөвшөөрсөн" төлөвт оруулах боломжтой.'))
+                _('Зөвхөн судлаж байгаа төлөвтэй баримтыг "Шилжүүлсэн" төлөвт оруулах боломжтой.'))
+        self.write({'state': 'transfer'})
+        self.user_id.notify_info(message='Таньд 1 шинэ бичиг шилжиж ирлээ.')
+        self.activity_update()
+        return True
+
+    def action_validate(self):
+        if any(letter.state not in ['transfer', 'review', 'receive'] for letter in self):
+            raise UserError(
+                _('Зөвхөн хүлээн авсан, шилжүүлсэн төлөвтэй баримтыг "Зөвшөөрсөн" төлөвт оруулах боломжтой.'))
         self.write({'state': 'validate'})
+        return True
 
     # def _compute_can_approve(self):
 
@@ -182,7 +209,7 @@ class UbiLetterComing(models.Model):
         vals['letter_subject_id'] = self.check_subject(
             doc['documentName']) if 'documentName' in doc else ''
         vals['official_person'] = doc['signName'] if 'signName' in doc else ''
-        vals['draft_user_id'] = self.env.user
+        vals['draft_user_id'] = self.env.user.id
         vals['partner_id'] = self.check_partners(doc).id or ''
         vals['is_reply_doc'] = doc['isReplyDoc'] if 'isReplyDoc' in doc else ''
         vals['must_return'] = doc['isNeedReply'] if 'isNeedReply' in doc else ''
@@ -281,9 +308,7 @@ class UbiLetterComing(models.Model):
         result = requests.post(target_url, data=data.encode(
             encoding='utf-8'), headers=headers, verify=False)
 
-        _logger.info(data)
         if result.status_code == 200:
-
             mytree = ET.fromstring(result.content)
 
             status = mytree.find(
@@ -354,3 +379,39 @@ class UbiLetterComing(models.Model):
                 return {'status': status.text.strip(), 'data': msg.text.strip()}
         else:
             return {'status': 'ERROR', 'data': 'Сүлжээний алдаа гарлаа.'}
+
+
+    def activity_update(self):
+        to_clean, to_do = self.env['ubi.letter.going'], self.env['ubi.letter.going']
+        for letter in self:
+            note = _('%s дугаартай баримтыг %s -нд %s -с шилжүүлсэн.') % (letter.letter_number, fields.Datetime.to_string(letter.processing_datetime), self.env.user.name)
+            # if letter.state == 'draft':
+            #     to_clean |= holiday
+            if letter.state == 'transfer':
+                letter.activity_schedule(
+                    'ubisol_letters.mail_act_letter_coming_transfer',
+                    note=note,
+                    user_id=letter.user_id.id or self.env.user.id)
+            # elif letter.state == 'validate1':
+            #     letter.activity_feedback(['ubisol_letters.mail_act_leave_approval'])
+            #     letter.activity_schedule(
+            #         'ubisol_letters.mail_act_leave_second_approval',
+            #         note=note,
+            #         user_id=letter.sudo()._get_responsible_for_approval().id or self.env.user.id)
+            elif letter.state == 'validate':
+                to_do |= letter
+            # elif letter.state == 'refuse':
+            #     to_clean |= letter
+        # if to_clean:
+        #     to_clean.activity_unlink(['ubisol_letters.mail_act_leave_approval', 'ubisol_letters.mail_act_leave_second_approval'])
+        if to_do:
+            to_do.activity_feedback(['ubisol_letters.mail_act_letter_coming_transfer'])
+
+    ####################################################
+    # Messaging methods
+    ####################################################
+
+    def _track_subtype(self, init_values):
+        if 'state' in init_values and self.state == 'transfer':
+            return self.env.ref('ubisol_letters.mt_transferred')
+        return super(UbiLetterComing, self)._track_subtype(init_values)

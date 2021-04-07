@@ -25,7 +25,15 @@ odoo.define('import_letter.importLetter',function (require) {
                 args: [user],
             }).then(function (data) {     
                 alert(data)                                                               
-                window.location.reload();
+                // window.location.reload();
+                self.do_action({
+                    name: _t('Ирсэн бичиг'),
+                    type: 'ir.actions.act_window',
+                    res_model: 'ubi.letter.coming',
+                    views: [[false, 'list'], [false, 'form']],
+                    view_mode: "list",
+                    target: 'current'
+                });
             });
 
         },

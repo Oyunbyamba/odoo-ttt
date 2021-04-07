@@ -8,10 +8,11 @@
     'license': 'AGPL-3',
     'summary': 'Ubisol Letter',
     'description': 'turshilt',
-    'depends': ['ubisol_hr_employee_upgrade'],
+    'depends': ['ubisol_hr_employee_upgrade', 'web_notify'],
     'data': [
         'security/ir.model.access.csv',
         'data/data.xml',
+        'data/mail_data.xml',
         'views/outgoing.xml',
         'views/incoming.xml',
         'views/planning.xml',

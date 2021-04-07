@@ -17,9 +17,9 @@ _logger = logging.getLogger(__name__)
 class UbiLetterGoing(models.Model):
     _name = "ubi.letter.going"
     _inherit = ['ubi.letter', 'mail.thread', 'mail.activity.mixin']
-    _description = " "
+    _description = " Явсан бичиг"
     _rec_name = 'letter_number'
-
+    _mail_post_access = 'read'
 
     follow_id = fields.Many2one('ubi.letter.coming', groups="base.group_user")
     letter_attachment_ids = fields.Many2many(
