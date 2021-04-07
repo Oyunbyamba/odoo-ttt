@@ -52,8 +52,8 @@ class UbiLetter(models.AbstractModel):
         'Хэнд', compute='_compute_to_user', groups='base.group_user')    
     user_id = fields.Many2one('res.users', string='Хариуцсан ажилтан')
     official_person = fields.Char('Албан тушаалтан', groups="base.group_user")
-    follow_id = fields.Many2one('ubi.letter', groups="base.group_user")
     draft_user_id = fields.Many2one('res.users', groups="base.group_user")
+    receive_user_id = fields.Many2one('res.users', groups="base.group_user")
     confirm_user_id = fields.Many2one('res.users', groups="base.group_user")
     validate_user_id = fields.Many2one('res.users', groups="base.group_user")
 
@@ -75,7 +75,7 @@ class UbiLetter(models.AbstractModel):
     is_reply_doc = fields.Boolean(
         string='Хариу бичсэн эсэх', default=False, groups="base.group_user")
     is_local = fields.Boolean(
-        string='Дотоод бичиг', groups="base.group_user", default=False)
+        string='Дотоод бичиг', groups="base.group_user", default=True)
     is_head_company = fields.Boolean(
         string='Дээд газраас ирсэн', default=False, groups="base.group_user")
     tabs_id = fields.Integer('Tabs id', groups="base.group_user")

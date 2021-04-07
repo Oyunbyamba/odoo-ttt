@@ -21,12 +21,12 @@ class UbiLetterGoing(models.Model):
     _rec_name = 'letter_number'
 
 
+    follow_id = fields.Many2one('ubi.letter.coming', groups="base.group_user")
     letter_attachment_ids = fields.Many2many(
         'ir.attachment', 'letter_going_doc_attach', 'letter_id', 'doc_id', string="Хавсралт", copy=False)
     state = fields.Selection([
         ('draft', 'Бүртгэсэн'),
         ('sent', 'Илгээсэн'),
-        ('cancel', 'Цуцлах'),
         ('refuse', 'Буцаагдсан')],
         groups="base.group_user",
         default='draft',
@@ -82,10 +82,12 @@ class UbiLetterGoing(models.Model):
             if letter.state == 'draft':
                 request_data = self.build_state_doc(letter)
                 result = self.send_letter(request_data)
-                if result:
+                if result['status'] == '200':
+                    data = result['data']
                     letter.write(
-                        {"state": "sent", "tabs_id": result['id']})
-
+                        {"state": "sent", "tabs_id": data['id']})
+                else:
+                    raise UserError(_(result['data']))
         return {}
 
     def build_state_doc(self, letter):
@@ -162,12 +164,14 @@ class UbiLetterGoing(models.Model):
             './/{https://dev.docx.gov.mn/document/dto}responseCode')
         find = mytree.find(
             './/{https://dev.docx.gov.mn/document/dto}data')
+        msg = mytree.find(
+            './/{https://dev.docx.gov.mn/document/dto}responseMessage')
 
-        data = json.loads(find.text.strip())
         if(status.text.strip() == '200'):
-            return data
+            data = json.loads(find.text.strip())
+            return {'status': status.text.strip(), 'data': data}
         else:
-            False
+            return {'status': status.text.strip(), 'data': msg.text.strip()}
 
     def cancel_sending(self):
         if len(self.ids) >= 1:
@@ -178,12 +182,10 @@ class UbiLetterGoing(models.Model):
         
                 if letter.state == 'sent':
                     result = self.cancel_sent(letter)
-                    if result['status'] == 200:
+                    if result['status'] == '200':
                         letter.write({"state": 'refuse'})
                     else:
-                        raise ValidationError(result['data'])
-                        # return self.pool.get('warning').warning(cr, uid, title='Title', message=)
-                        # return {'value': {}, 'warning': {'title': 'warning', 'message': 'Your message'}}
+                        raise UserError(_(result['data']))
 
         return {}
 
@@ -213,13 +215,13 @@ class UbiLetterGoing(models.Model):
             status = mytree.find(
                 './/{https://dev.docx.gov.mn/document/dto}responseCode')
             find = mytree.find(
+                './/{https://dev.docx.gov.mn/document/dto}data')    
+            msg = mytree.find(
                 './/{https://dev.docx.gov.mn/document/dto}responseMessage')
 
-            data = find.text.strip()
-
             if(status.text.strip() == '200'):
-                return {'status': 200}
+                return {'status': status.text.strip(), 'data': []}
             else:
-                return {'status': status.text.strip(), 'data': data}
+                return {'status': status.text.strip(), 'data': msg.text.strip()}
         else:
             return {'status': 'ERROR', 'data': 'Сүлжээний алдаа гарлаа.'}

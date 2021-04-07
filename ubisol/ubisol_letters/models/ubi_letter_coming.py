@@ -20,13 +20,14 @@ class UbiLetterComing(models.Model):
     _description = " "
     _rec_name = 'letter_number'
 
+    follow_id = fields.Many2one('ubi.letter.going', groups="base.group_user")
     letter_attachment_ids = fields.Many2many(
         'ir.attachment', 'letter_coming_doc_attach', 'letter_id', 'doc_id', string="Хавсралт", copy=False)
     state = fields.Selection([
         ('conflict', 'Зөрчилтэй'),
-        ('refuse', 'Буцаасан'),
         ('draft', 'Ирсэн'),
         ('receive', 'Хүлээн авсан'),
+        ('refuse', 'Буцаасан'),
         ('review', 'Судлаж байгаа'),
         ('transfer', 'Шилжүүлсэн'),
         ('validate', 'Шийдвэрлэсэн')],
@@ -84,6 +85,11 @@ class UbiLetterComing(models.Model):
         if self.going_letters:
             self.computed_letter_desc = self.going_letters.desc
 
+    @api.onchange('department_id')
+    def _manager_department_id(self):
+        if self.department_id:
+            self.user_id = self.department_id.manager_id.user_id if self.department_id.manager_id else ''
+
     @api.model
     def create(self, vals):
         letter = super(UbiLetterComing, self).create(vals)
@@ -96,11 +102,6 @@ class UbiLetterComing(models.Model):
         letter = super(UbiLetterComing, self).write(vals)
 
         return letter
-
-    # def action_receive(self):
-    #     if any(letter.state not in ['draft'] for letter in self):
-    #         raise UserError(_('Зөвхөн ирсэн төлөвтэй баримтыг "Хүлээн авсан" төлөвт оруулах боломжтой.'))
-    #     self.write({'state': 'receive'})
 
     def action_review(self):
         if any(letter.state not in ['transfer'] for letter in self):
@@ -181,7 +182,7 @@ class UbiLetterComing(models.Model):
         vals['letter_subject_id'] = self.check_subject(
             doc['documentName']) if 'documentName' in doc else ''
         vals['official_person'] = doc['signName'] if 'signName' in doc else ''
-
+        vals['draft_user_id'] = self.env.user
         vals['partner_id'] = self.check_partners(doc).id or ''
         vals['is_reply_doc'] = doc['isReplyDoc'] if 'isReplyDoc' in doc else ''
         vals['must_return'] = doc['isNeedReply'] if 'isNeedReply' in doc else ''
@@ -199,6 +200,7 @@ class UbiLetterComing(models.Model):
         vals['letter_attachment_ids'] = self.download_files(
             doc['fileList']) if len(doc['fileList']) > 0 else []
         vals['state'] = 'draft'
+        vals['is_local'] = False
 
         return vals
 
@@ -251,12 +253,14 @@ class UbiLetterComing(models.Model):
                 params = {"id": letter.tabs_id, "cancelPerson": wizard_vals.cancel_employee.name, "cancelPosition": wizard_vals.cancel_position,
                           "cancelComment": wizard_vals.cancel_comment}
                 result = self.return_received(params)
-                if result:
+                if result['status'] == '200':
                     letter.write({"state": "refuse",
                                   "cancel_comment": wizard_vals.cancel_comment,
                                   "cancel_position": wizard_vals.cancel_position,
                                   "cancel_employee": wizard_vals.cancel_employee.name
                                   })
+                else:
+                    raise UserError(_(result['data']))                
         return True
 
     def return_received(self, params):
@@ -277,6 +281,7 @@ class UbiLetterComing(models.Model):
         result = requests.post(target_url, data=data.encode(
             encoding='utf-8'), headers=headers, verify=False)
 
+        _logger.info(data)
         if result.status_code == 200:
 
             mytree = ET.fromstring(result.content)
@@ -284,12 +289,14 @@ class UbiLetterComing(models.Model):
             status = mytree.find(
                 './/{https://dev.docx.gov.mn/document/dto}responseCode')
             find = mytree.find(
+                './/{https://dev.docx.gov.mn/document/dto}data')
+            msg = mytree.find(
                 './/{https://dev.docx.gov.mn/document/dto}responseMessage')
-            data = find.text.strip()
+
             if(status.text.strip() == '200'):
-                return {'status': 200}
+                return {'status': status.text.strip(), 'data': []}
             else:
-                return {'status': status.text.strip(), 'data': data}
+                return {'status': status.text.strip(), 'data': msg.text.strip()}
         else:
             return {'status': 'ERROR', 'data': 'Сүлжээний алдаа гарлаа.'}
 
@@ -301,11 +308,15 @@ class UbiLetterComing(models.Model):
         letters = self.env['ubi.letter.coming'].browse(self.ids)
         for letter in letters:
             if letter.state == 'draft':
+                received_user = self.env.user
                 params = {"id": letter.tabs_id,
-                          "receivePerson": "D.Bold", "receivePosition": "Darga"}
+                        "receivePerson": received_user.employee_id.name if received_user.employee_id else "",
+                        "receivePosition": received_user.employee_id.job_id.name if received_user.employee_id else ""}
                 result = self.letter_received(params)
-                if result:
-                    letter.write({"state": "receive"})
+                if result['status'] == '200':
+                    letter.write({"state": "receive", 'receive_user_id': received_user})
+                else:
+                    raise UserError(_(result['data']))
         return True
 
     def letter_received(self, params):
@@ -320,23 +331,26 @@ class UbiLetterComing(models.Model):
                     </Body>
                 </Envelope>"""
         data = template % params
+        _logger.info(data)
         target_url = "https://dev.docx.gov.mn/soap/api"
         headers = {'Content-type': 'text/xml'}
         result = requests.post(target_url, data=data.encode(
             encoding='utf-8'), headers=headers, verify=False)
 
         if result.status_code == 200:
-
             mytree = ET.fromstring(result.content)
 
             status = mytree.find(
                 './/{https://dev.docx.gov.mn/document/dto}responseCode')
             find = mytree.find(
-                './/{https://dev.docx.gov.mn/document/dto}responseMessage')
-            data = find.text.strip()
+                './/{https://dev.docx.gov.mn/document/dto}data')    
+            msg = mytree.find(
+                './/{https://dev.docx.gov.mn/document/dto}responseMessage')        
+        
             if(status.text.strip() == '200'):
-                return {'status': 200}
-            else:
+                data = json.loads(find.text.strip())
                 return {'status': status.text.strip(), 'data': data}
+            else:
+                return {'status': status.text.strip(), 'data': msg.text.strip()}
         else:
             return {'status': 'ERROR', 'data': 'Сүлжээний алдаа гарлаа.'}
