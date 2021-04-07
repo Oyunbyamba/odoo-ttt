@@ -37,15 +37,18 @@ class UbiLetterComing(models.Model):
         'ubi.letter.going', string='Явсан бичгийн дугаар', groups="base.group_user")
     cancel_employee = fields.Char(
         string="Цуцалсан ажилтан", groups="base.group_user", help="Ажилтан")
-    cancel_position = fields.Char(string='Цуцалсан ажилтны ажил', groups="base.group_user")
-    cancel_comment = fields.Char(string='Цуцалсан утга', groups="base.group_user")
+    cancel_position = fields.Char(
+        string='Цуцалсан ажилтны ажил', groups="base.group_user")
+    cancel_comment = fields.Char(
+        string='Цуцалсан утга', groups="base.group_user")
     # can_approve = fields.Boolean('Can reset', compute='_compute_can_approve', groups="base.group_user")
 
     def call_return_wizard(self):
         if len(self.ids) >= 1:
             if any(letter.state not in ['receive', 'review', 'transfer'] for letter in self):
-                raise UserError(_('Хүлээн авсан, судлаж байгаа, шилжүүлсэн төлөвтэй баримтыг "Буцаасан" төлөвт оруулах боломжтой.'))
-            
+                raise UserError(
+                    _('Хүлээн авсан, судлаж байгаа, шилжүүлсэн төлөвтэй баримтыг "Буцаасан" төлөвт оруулах боломжтой.'))
+
             return {
                 'type': 'ir.actions.act_window',
                 'name': _('Ирсэн бичиг буцаах'),
@@ -101,21 +104,23 @@ class UbiLetterComing(models.Model):
 
     def action_review(self):
         if any(letter.state not in ['transfer'] for letter in self):
-            raise UserError(_('Зөвхөн шилжүүлсэн төлөвтэй баримтыг "Судлаж байгаа" төлөвт оруулах боломжтой.'))
+            raise UserError(
+                _('Зөвхөн шилжүүлсэн төлөвтэй баримтыг "Судлаж байгаа" төлөвт оруулах боломжтой.'))
         self.write({'state': 'review'})
 
     def action_transfer(self):
         if any(letter.state not in ['receive'] for letter in self):
-            raise UserError(_('Зөвхөн хүлээн авсан төлөвтэй баримтыг "Шилжүүлсэн" төлөвт оруулах боломжтой.'))
+            raise UserError(
+                _('Зөвхөн хүлээн авсан төлөвтэй баримтыг "Шилжүүлсэн" төлөвт оруулах боломжтой.'))
         self.write({'state': 'transfer'})
 
     def action_validate(self):
         if any(letter.state not in ['review'] for letter in self):
-            raise UserError(_('Зөвхөн судлаж байгаа төлөвтэй баримтыг "Зөвшөөрсөн" төлөвт оруулах боломжтой.'))
+            raise UserError(
+                _('Зөвхөн судлаж байгаа төлөвтэй баримтыг "Зөвшөөрсөн" төлөвт оруулах боломжтой.'))
         self.write({'state': 'validate'})
 
     # def _compute_can_approve(self):
-
 
     @api.model
     def check_new_letters(self, user):
@@ -150,14 +155,14 @@ class UbiLetterComing(models.Model):
             data = json.loads(find.text.strip())
             count = 0
             for doc in data:
-                already_received = self.env['ubi.letter'].search(
+                already_received = self.env['ubi.letter.coming'].search(
                     [('letter_number', '=', doc['documentNumber']), ('partner_id.ubi_letter_org_id', '=', doc['orgId'])], limit=1)
                 # umnu orj irseng shalgah
                 if(already_received):
                     pass
                 else:
                     vals = self.prepare_receiving(doc)
-                    self.env['ubi.letter'].create(vals)
+                    self.env['ubi.letter.coming'].create(vals)
                     count += 1
             return 'Шинээр нийт ' + str(count) + ' бичиг ирсэн байна.'
 
@@ -208,7 +213,7 @@ class UbiLetterComing(models.Model):
                 'name': file_name,
                 'type': 'binary',
                 'datas': result,
-                'res_model': 'ubi.letter'
+                'res_model': 'ubi.letter.coming'
             })
             attachment_ids.append(attachment.id)
 
@@ -248,10 +253,10 @@ class UbiLetterComing(models.Model):
                 result = self.return_received(params)
                 if result:
                     letter.write({"state": "refuse",
-                                "cancel_comment": wizard_vals.cancel_comment,
-                                "cancel_position": wizard_vals.cancel_position,
-                                "cancel_employee": wizard_vals.cancel_employee.name
-                                })
+                                  "cancel_comment": wizard_vals.cancel_comment,
+                                  "cancel_position": wizard_vals.cancel_position,
+                                  "cancel_employee": wizard_vals.cancel_employee.name
+                                  })
         return True
 
     def return_received(self, params):
@@ -290,7 +295,8 @@ class UbiLetterComing(models.Model):
 
     def letter_receiving(self):
         if any(letter.state not in ['draft'] for letter in self):
-            raise UserError(_('Зөвхөн ирсэн төлөвтэй баримтыг "Хүлээн авсан" төлөвт оруулах боломжтой.'))
+            raise UserError(
+                _('Зөвхөн ирсэн төлөвтэй баримтыг "Хүлээн авсан" төлөвт оруулах боломжтой.'))
 
         letters = self.env['ubi.letter.coming'].browse(self.ids)
         for letter in letters:
