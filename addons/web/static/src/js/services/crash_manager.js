@@ -268,7 +268,7 @@ var CrashManager = AbstractService.extend({
             return;
         }
         var message = error.data ? error.data.message : error.message;
-        var title = _.str.capitalize(error.type) || _t("Something went wrong !");
+        var title = _.str.capitalize(error.type) || _t("Alert");
         return this._displayWarning(message, title, options);
     },
     show_error: function (error) {
