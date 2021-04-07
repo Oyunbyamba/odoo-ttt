@@ -53,7 +53,7 @@
                     </group>
                     <notebook>
                         <page string="Агуулга">
-                            <field name="description" widget="text"/>
+                            <field name="description"/>
                         </page>
                     </notebook>
                 </sheet>
