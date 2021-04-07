@@ -27,7 +27,7 @@ class UbiLetterGoing(models.Model):
     state = fields.Selection([
         ('draft', 'Бүртгэсэн'),
         ('sent', 'Илгээсэн'),
-        ('refuse', 'Буцаагдсан')],
+        ('refuse', 'Цуцласан')],
         groups="base.group_user",
         default='draft',
         string='Явсан бичгийн төлөв', store=True, readonly=True, copy=False, tracking=True)
