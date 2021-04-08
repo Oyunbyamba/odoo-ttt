@@ -97,6 +97,7 @@
         <field name="name">Тушаал</field>
         <field name="res_model">hr.employee.direction</field>
         <field name="view_mode">tree,form,kanban</field>
+        <field name="domain">['|', '|', '|', '|', ('user_id', '=', uid), ('operate_user_id', '=', uid), ('confirm_user_id', '=', uid), ('validate1_user_id', '=', uid), ('validate_user_id', '=', uid)]</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Add a new direction

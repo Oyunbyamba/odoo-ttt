@@ -68,19 +68,15 @@ class HrEmployeeDirection(models.Model):
     employee_id = fields.Many2one('hr.employee', 
         string='Ажилтан', readonly=True, required=True,
         states={'draft': [('readonly', False)], 'operate': [('readonly', False)]})    
-    user_id = fields.Many2one('res.users', string='Ноорог', default=_get_default_user, domain=_user_id_domain)
+    user_id = fields.Many2one('res.users', string='Ноорог', default=_get_default_user)
     operate_user_id = fields.Many2one('res.users', string='Боловсруулах', readonly=True,
-        states={'draft': [('readonly', False)], 'operate': [('readonly', False)]},
-        domain=_operate_user_id_domain)
+        states={'draft': [('readonly', False)], 'operate': [('readonly', False)]})
     confirm_user_id = fields.Many2one('res.users', string='Хянах', readonly=True,
-        states={'draft': [('readonly', False)], 'operate': [('readonly', False)]},
-        domain=_confirm_user_id_domain)
+        states={'draft': [('readonly', False)], 'operate': [('readonly', False)]})
     validate1_user_id = fields.Many2one('res.users', string='Зөвшөөрөх', readonly=True,
-        states={'draft': [('readonly', False)], 'operate': [('readonly', False)]},
-        domain=_validate1_user_id_domain)
+        states={'draft': [('readonly', False)], 'operate': [('readonly', False)]})
     validate_user_id = fields.Many2one('res.users', string='Батлах', readonly=True,
-        states={'draft': [('readonly', False)], 'operate': [('readonly', False)]},
-        domain=_validate_user_id_domain)
+        states={'draft': [('readonly', False)], 'operate': [('readonly', False)]})
     can_approve = fields.Boolean('Can Approve', compute='_compute_can_approve')
     next_step_user = fields.Many2one('res.users', compute='_compute_next_step_user')
 
