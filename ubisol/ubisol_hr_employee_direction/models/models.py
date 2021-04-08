@@ -9,43 +9,49 @@ _logger = logging.getLogger(__name__)
 class HrEmployeeDirection(models.Model):
     _name = 'hr.employee.direction'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _description = 'hr_employee_direction'
+    _description = 'Тушаал'
 
     def _get_default_user(self):
         return self.env.user
 
-    def _compute_can_approve(self):
-        # if self.env.is_superuser():
-        #     return
-        # current_employee = self.env.user.employee_id
+    def _user_id_domain(self):
+        if self.user_has_groups('hr.group_hr_manager'):
+            return []
+        return [('user_id', '=', self.env.user.id)]     
 
-        current_user = self.env.user
-        is_officer = self.env.user.has_group('hr.group_hr_user')
-        is_manager = self.env.user.has_group('hr.group_hr_manager')
-        can_approve = False
-        if not is_manager:
-            if self.state == 'draft' and current_user == self.operate_user_id:
-                can_approve = True
-            elif self.state == 'operate' and current_user == self.confirm_user_id:
-                can_approve = True
-            elif self.state == 'confirm' and current_user == self.validate1_user_id:
-                can_approve = True
-            elif self.state == 'validate1' and current_user == self.validate_user_id:
-                can_approve = True
-        else:
-            can_approve = True        
-        self.can_approve = can_approve
+    def _operate_user_id_domain(self):
+        # if self.user_has_groups('hr_contract.group_hr_contract_manager') or self.user_has_groups('hr_holidays.group_hr_holidays_manager'):
+        if self.user_has_groups('hr.group_hr_manager'):
+            return []
+        # if self.user_has_groups('hr_holidays.group_hr_holidays_responsible'):
+        #     return [('leave_manager_id', '=', self.env.user.id)]
+        return [('operate_user_id', '=', self.env.user.id)] 
+
+    def _confirm_user_id_domain(self):
+        if self.user_has_groups('hr.group_hr_manager'):
+            return []
+        return [('confirm_user_id', '=', self.env.user.id)]                           
+
+    def _validate1_user_id_domain(self):
+        if self.user_has_groups('hr.group_hr_manager'):
+            return []
+        return [('validate1_user_id', '=', self.env.user.id)]   
+
+    def _validate_user_id_domain(self):
+        if self.user_has_groups('hr.group_hr_manager'):
+            return []
+        return [('validate_user_id', '=', self.env.user.id)]                
 
     name = fields.Char('Толгой', readonly=True, states={'draft': [('readonly', False)], 'operate': [('readonly', False)]})
     description = fields.Html('Их бие', readonly=True, states={'draft': [('readonly', False)], 'operate': [('readonly', False)]})
     direction_date = fields.Date('Тушаалын огноо', default=datetime.now().strftime('%Y-%m-%d'), readonly=True,
         states={'draft': [('readonly', False)], 'operate': [('readonly', False)]})
-    direction_number = fields.Integer('Тушаалын дугаар', readonly=True, states={'draft': [('readonly', False)], 'operate': [('readonly', False)]})
+    direction_number = fields.Char('Тушаалын дугаар', readonly=True, states={'draft': [('readonly', False)], 'operate': [('readonly', False)]})
     direction_attachment_ids = fields.Many2many(
         'ir.attachment', 'direction_doc_attach', 'direction_id', 'doc_id', string="Хавсралт", readonly=True,
         states={'draft': [('readonly', False)], 'operate': [('readonly', False)]}, copy=False)
     state = fields.Selection([
-        ('draft', 'Илгээх'),
+        ('draft', 'Ноорог'),
         ('refuse', 'Татгалзсан'),
         ('operate', 'Боловсруулсан'),
         ('confirm', 'Хянасан'),
@@ -62,87 +68,21 @@ class HrEmployeeDirection(models.Model):
     employee_id = fields.Many2one('hr.employee', 
         string='Ажилтан', readonly=True, required=True,
         states={'draft': [('readonly', False)], 'operate': [('readonly', False)]})    
-    user_id = fields.Many2one('res.users', string='Ноорог', default=_get_default_user)
+    user_id = fields.Many2one('res.users', string='Ноорог', default=_get_default_user, domain=_user_id_domain)
     operate_user_id = fields.Many2one('res.users', string='Боловсруулах', readonly=True,
-        states={'draft': [('readonly', False)], 'operate': [('readonly', False)]})
+        states={'draft': [('readonly', False)], 'operate': [('readonly', False)]},
+        domain=_operate_user_id_domain)
     confirm_user_id = fields.Many2one('res.users', string='Хянах', readonly=True,
-        states={'draft': [('readonly', False)], 'operate': [('readonly', False)]})
+        states={'draft': [('readonly', False)], 'operate': [('readonly', False)]},
+        domain=_confirm_user_id_domain)
     validate1_user_id = fields.Many2one('res.users', string='Зөвшөөрөх', readonly=True,
-        states={'draft': [('readonly', False)], 'operate': [('readonly', False)]})
+        states={'draft': [('readonly', False)], 'operate': [('readonly', False)]},
+        domain=_validate1_user_id_domain)
     validate_user_id = fields.Many2one('res.users', string='Батлах', readonly=True,
-        states={'draft': [('readonly', False)], 'operate': [('readonly', False)]})
+        states={'draft': [('readonly', False)], 'operate': [('readonly', False)]},
+        domain=_validate_user_id_domain)
     can_approve = fields.Boolean('Can Approve', compute='_compute_can_approve')
-
-
-    
-
-    def action_draft(self):
-        if any(direction.state not in ['refuse'] for direction in self):
-            raise UserError(_('Direction state must be "To Approve" in order to be reset to draft.'))
-        self.write({
-            'state': 'draft',
-            'operate_user_id': False,
-            'validate1_user_id': False,
-            'validate_user_id': False,
-            'confirm_user_id': False,
-        })
-        # self.activity_update()
-        return True
-
-    def action_operate(self):
-        if self.filtered(lambda direction: direction.state != 'draft'):
-            raise UserError(_('Time off request must be in Draft state ("To Operate") in order to confirm it.'))
-        self.write({'state': 'operate'})
-
-        return True
-
-    def action_confirm(self):
-        if self.filtered(lambda direction: direction.state != 'operate'):
-            raise UserError(_('Time off request must be in Draft state ("To Submit") in order to confirm it.'))
-        self.write({'state': 'confirm'})
-
-        #     # Automatic validation should be done in sudo, because user might not have the rights to do it by himself
-        #     holidays.sudo().action_validate()
-
-        # self.activity_update()
-        return True
-
-    def action_validate1(self):
-        if any(direction.state != 'confirm' for direction in self):
-            raise UserError(_('Direction must be confirmed ("To Approve") in order to approve it.'))
-        self.write({'state': 'validate1'})
-
-        # Post a second message, more verbose than the tracking message
-        for direction in self.filtered(lambda direction: direction.validate1_user_id):
-            direction.message_post(
-                body=_('Your %s planned on %s has been accepted' %
-                       (direction.hr_document_id.name, direction.direction_date)),
-                partner_ids=direction.validate1_user_id.partner_id.ids)
-
-        return True
-
-    def action_validate(self):
-        current_employee = self.env.user.employee_id
-        if any(direction.state not in ['confirm', 'validate1'] for direction in self):
-            raise UserError(_('Time off request must be confirmed in order to approve it.'))
-
-        self.write({'state': 'validate'})
-        # self.filtered(lambda holiday: holiday.validation_type == 'both').write({'second_approver_id': current_employee.id})
-        # self.filtered(lambda holiday: holiday.validation_type != 'both').write({'first_approver_id': current_employee.id})
-    
-        return True
-
-    def action_refuse(self):
-        current_employee = self.env.user.employee_id
-        if any(direction.state not in ['operate', 'confirm', 'validate', 'validate1'] for direction in self):
-            raise UserError(_('Direction must be confirmed or validated in order to refuse it.'))
-
-        self.write({'state': 'refuse'})
-        # validated_holidays = self.filtered(lambda hol: hol.state == 'validate1')
-        # validated_holidays.write({'state': 'refuse', 'first_approver_id': current_employee.id})
-        # (self - validated_holidays).write({'state': 'refuse', 'second_approver_id': current_employee.id})
-    
-        return True
+    next_step_user = fields.Many2one('res.users', compute='_compute_next_step_user')
 
     @api.onchange('hr_document_id')
     def _set_letter_template(self):
@@ -332,6 +272,172 @@ class HrEmployeeDirection(models.Model):
                     self.description = string.replace(
                         "$position", str(self.employee_id.job_title))
                     string = self.description
-             
-                            
+                        
 
+    @api.onchange('operate_user_id', 'confirm_user_id', 'validate1_user_id', 'validate_user_id')
+    def _compute_next_step_user(self):
+        if self.state == 'draft' and self.operate_user_id:
+            self.next_step_user = self.operate_user_id
+        elif self.state == 'operate' and self.confirm_user_id:
+            self.next_step_user = self.confirm_user_id
+        elif self.state == 'confirm' and self.validate1_user_id:
+            self.next_step_user = self.validate1_user_id
+        elif self.state == 'validate1' and self.validate_user_id:
+            self.next_step_user = self.validate_user_id            
+
+
+    def _compute_can_approve(self):
+        current_user = self.env.user
+        is_officer = self.env.user.has_group('hr.group_hr_user')
+        is_manager = self.env.user.has_group('hr.group_hr_manager')
+        can_approve = False
+        if not is_manager:
+            if self.state == 'draft' and current_user == self.operate_user_id:
+                can_approve = True
+            elif self.state == 'operate' and current_user == self.confirm_user_id:
+                can_approve = True
+            elif self.state == 'confirm' and current_user == self.validate1_user_id:
+                can_approve = True
+            elif self.state == 'validate1' and current_user == self.validate_user_id:
+                can_approve = True
+        else:
+            can_approve = True        
+        self.can_approve = can_approve
+
+
+    @api.model 
+    def create(self, vals):
+        direction = super(HrEmployeeDirection, self).create(vals)
+        if vals.get('operate_user_id') or vals.get('confirm_user_id') or vals.get('validate1_user_id') or vals.get('validate_user_id'):
+            direction.next_step_user.notify_info(message='Таньд 1 тушаал шилжиж ирлээ.')
+            direction.activity_update()
+
+        return direction
+
+    def write(self, vals):
+        direction = super(HrEmployeeDirection, self).write(vals)
+        if vals.get('operate_user_id') or vals.get('confirm_user_id') or vals.get('validate1_user_id') or vals.get('validate_user_id'):
+            self.next_step_user.notify_info(message='Таньд 1 тушаал шилжиж ирлээ.')
+            self.activity_update()
+
+        return direction
+
+    # ------------------------------------------------------------
+    # Activity methods
+    # ------------------------------------------------------------
+
+    def action_draft(self):
+        if any(direction.state not in ['refuse'] for direction in self):
+            raise UserError(_('Зөвхөн татгалзсан төлөвтэй тушаалыг "Ноорог" төлөвт оруулах боломжтой.'))
+        self.write({
+            'state': 'draft',
+            'operate_user_id': False,
+            'validate1_user_id': False,
+            'validate_user_id': False,
+            'confirm_user_id': False,
+        })
+
+        self.activity_feedback(['ubisol_hr_employee_direction.mail_act_direction_refuse'])
+        # self.activity_update()
+        return True
+
+    def action_operate(self):
+        if self.filtered(lambda direction: direction.state != 'draft'):
+            raise UserError(_('Зөвхөн ноорог төлөвтэй тушаалыг "Боловсруулсан" төлөвт оруулах боломжтой.'))
+        self.write({'state': 'operate'})
+
+        self.activity_feedback(['ubisol_hr_employee_direction.mail_act_direction_processing'])
+        return True
+
+    def action_confirm(self):
+        if self.filtered(lambda direction: direction.state != 'operate'):
+            raise UserError(_('Зөвхөн боловсруулсан төлөвтэй тушаалыг "Хянасан" төлөвт оруулах боломжтой.'))
+        self.write({'state': 'confirm'})
+
+        self.activity_feedback(['ubisol_hr_employee_direction.mail_act_direction_confirm'])
+        return True
+
+    def action_validate1(self):
+        if any(direction.state != 'confirm' for direction in self):
+            raise UserError(_('Зөвхөн хянасан төлөвтэй тушаалыг "Зөвшөөрсөн" төлөвт оруулах боломжтой.'))
+        self.write({'state': 'validate1'})
+        self.activity_feedback(['ubisol_hr_employee_direction.mail_act_direction_validate1'])
+        # Post a second message, more verbose than the tracking message
+        # for direction in self.filtered(lambda direction: direction.validate1_user_id):
+            # direction.message_post(
+            #     body=_('Your %s planned on %s has been accepted' %
+            #            (direction.hr_document_id.name, direction.direction_date)),
+            #     partner_ids=direction.validate1_user_id.partner_id.ids)
+
+        return True
+
+    def action_validate(self):
+        current_employee = self.env.user.employee_id
+        if any(direction.state not in ['confirm', 'validate1'] for direction in self):
+            raise UserError(_('Зөвхөн зөвшөөрсөн төлөвтэй тушаалыг "Баталсан" төлөвт оруулах боломжтой.'))
+        
+        self.write({'state': 'validate'})
+        self.activity_feedback(['ubisol_hr_employee_direction.mail_act_direction_validate'])  
+        return True
+
+    def action_refuse(self):
+        current_employee = self.env.user.employee_id
+        if any(direction.state not in ['operate', 'confirm', 'validate', 'validate1'] for direction in self):
+            raise UserError(_('Тушаалыг "Татгалзсан" төлөвт оруулах боломжгүй төлөвт байна.'))
+        self.write({'state': 'refuse'})
+        self.activity_update()
+        self.user_id.notify_info(message=self.direction_number + ' дугаартай тушаалыг татгалзсан байна.')
+        return True
+
+
+    def activity_update(self):
+        to_clean, to_do = self.env['hr.employee.direction'], self.env['hr.employee.direction']
+        
+        for direction in self:
+            if direction.state == 'draft':
+                next_state = 'Боловсруулсан'
+                format_name = 'ubisol_hr_employee_direction.mail_act_direction_processing'
+            elif direction.state == 'operate':
+                next_state = 'Хянасан'
+                format_name = 'ubisol_hr_employee_direction.mail_act_direction_confirm'
+                to_do |= direction
+            elif direction.state == 'confirm':
+                next_state = 'Зөвшөөрсөн'
+                format_name = 'ubisol_hr_employee_direction.mail_act_direction_validate1'
+                to_do |= direction
+            elif direction.state == 'validate1':
+                next_state = 'Баталсан'
+                format_name = 'ubisol_hr_employee_direction.mail_act_direction_validate'
+                to_do |= direction
+            elif direction.state == 'refuse':
+                format_name = 'ubisol_hr_employee_direction.mail_act_direction_refuse'
+                user_name = self.env.user.employee_id.name if self.env.user.employee_id else self.env.user.name
+                note = _("%s дугаартай тушаалыг %s -с 'Татгалзсан' төлөвт оруулсан байна.") % (direction.direction_number, user_name)    
+                direction.activity_schedule(
+                    format_name,
+                    note=note,
+                    user_id=self.user_id.id or self.env.user.id)
+
+                return True
+
+            user_name = self.next_step_user.employee_id.name if self.next_step_user.employee_id else self.next_step_user.name
+            note = _("%s дугаартай тушаал %s -р '%s' төлөвт шилжүүлэгдэхээр хүлээгдэж байна.") % (direction.direction_number, user_name, next_state)    
+            direction.activity_schedule(
+                format_name,
+                note=note,
+                user_id=self.next_step_user.id or self.env.user.id)
+
+        # if to_clean:
+        #     to_clean.activity_unlink(['ubisol_letters.mail_act_leave_approval', 'ubisol_letters.mail_act_leave_second_approval'])
+        # if to_do:
+        #     to_do.activity_feedback(['ubisol_hr_employee_direction.mail_act_direction_processing'])    
+        return True
+
+    ####################################################
+    # Messaging methods
+    ####################################################
+
+    # def _track_subtype(self, init_values):
+    #     if 'state' in init_values and self.state == 'transfer':
+    #         return self.env.ref('ubisol_hr_employee_direction.mt_transferred')
+    #     return super(HrEmployeeDirection, self)._track_subtype(init_values)    

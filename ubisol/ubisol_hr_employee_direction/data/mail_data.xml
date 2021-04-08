@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Leave specific activities -->
+        <record id="mail_act_direction_processing" model="mail.activity.type">
+            <field name="name">Тушаал боловсруулсан</field>
+            <field name="icon">fa-sun-o</field>
+            <field name="res_model_id" ref="ubisol_hr_employee_direction.model_hr_employee_direction"/>
+        </record>
+        <record id="mail_act_direction_confirm" model="mail.activity.type">
+            <field name="name">Тушаал хянасан</field>
+            <field name="icon">fa-sun-o</field>
+            <field name="res_model_id" ref="ubisol_hr_employee_direction.model_hr_employee_direction"/>
+        </record>
+        <record id="mail_act_direction_validate1" model="mail.activity.type">
+            <field name="name">Тушаал зөвшөөрсөн</field>
+            <field name="icon">fa-sun-o</field>
+            <field name="res_model_id" ref="ubisol_hr_employee_direction.model_hr_employee_direction"/>
+        </record>
+        <record id="mail_act_direction_validate" model="mail.activity.type">
+            <field name="name">Тушаал баталсан</field>
+            <field name="icon">fa-sun-o</field>
+            <field name="res_model_id" ref="ubisol_hr_employee_direction.model_hr_employee_direction"/>
+        </record>
+        <record id="mail_act_direction_refuse" model="mail.activity.type">
+            <field name="name">Тушаал татгалзсан</field>
+            <field name="icon">fa-ban</field>
+            <field name="res_model_id" ref="ubisol_hr_employee_direction.model_hr_employee_direction"/>
+        </record>
+
+        <!-- Letter-related subtypes for messaging / Chatter -->
+        <record id="mt_transferred" model="mail.message.subtype">
+            <field name="name">Тушаал</field>
+            <field name="res_model">hr.employee.direction</field>
+            <field name="default" eval="True"/>
+            <field name="description">Тушаал шилжүүлсэн</field>
+        </record>
+
+    </data>
+</odoo>

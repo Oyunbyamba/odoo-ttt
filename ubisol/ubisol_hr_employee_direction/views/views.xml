@@ -6,10 +6,11 @@
         <field name="model">hr.employee.direction</field>
         <field name="arch" type="xml">
             <tree string='Тушаал'>
+                <field name="employee_id"/>
                 <field name="name"/>
+                <field name="direction_number"/>
                 <field name="hr_document_id"/>
                 <field name="direction_date"/>
-                <field name="direction_number"/>
                 <field name="state"/>
             </tree>
         </field>
@@ -60,6 +61,7 @@
                 <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers"/>
                     <field name="message_ids" widget="mail_thread"/>
+                    <field name="activity_ids" widget="mail_activity"/>
                 </div>
             </form>
         </field>
@@ -69,6 +71,7 @@
         <field name="name">Тушаал</field>
         <field name="res_model">hr.employee.direction</field>
         <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Add a new direction

@@ -317,6 +317,7 @@ class UbiLetterComing(models.Model):
                 './/{https://dev.docx.gov.mn/document/dto}data')
             msg = mytree.find(
                 './/{https://dev.docx.gov.mn/document/dto}responseMessage')
+            _logger.info(data)
 
             if(status.text.strip() == '200'):
                 return {'status': status.text.strip(), 'data': []}
