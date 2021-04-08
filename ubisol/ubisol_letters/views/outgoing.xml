@@ -1,7 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
+<record id="ubi_letter_going_kanban_view" model="ir.ui.view">
+    <field name="name">ubi.letter.going.kanban</field>
+    <field name="model">ubi.letter.going</field>
+    <field name="arch" type="xml">
+        <kanban class="o_kanban_mobile">
 
+            <templates>
+                <t t-name="kanban-box">
+                    <div t-attf-class="oe_kanban_card oe_kanban_global_click" style="background-color: #FEFEFE; font-style:Arial; line-height: 0.7; padding-top:10px;" >
+                        <div class="row">
+                            <div t-attf-class="col-12 #{!selection_mode ? 'text-left' : ''}">
+                                
+                                    <p><strong><field name="letter_subject_id"/></strong></p>
+                                    <p>Төлөв: <field name="state" string='Төлөв'/></p>
+                                    <p>Баримтын дугаар: <field name="letter_number"/></p>
+                                    <p>Бүртгэсэн огноо: <field name="registered_date"/></p>                                    
+                              
+                            </div>
+                        </div>                       
+                    </div>
+                  
+                </t>
+            </templates>
+        </kanban>
+    </field>
+</record>
     <!--going-->
     <record id="ubi_letter_going_tree_view" model="ir.ui.view">
         <field name="name">ubi.letter.going.subject.tree</field>
@@ -110,9 +135,9 @@
         <field name="name">Явсан бичиг</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">ubi.letter.going</field>
-        <field name="view_mode">tree,form</field>
         <field name="view_ids" eval="[(5, 0, 0),
                 (0, 0, {'view_mode': 'tree', 'view_id': ref('ubisol_letters.ubi_letter_going_tree_view')}),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('ubisol_letters.ubi_letter_going_kanban_view')}),
                 (0, 0, {'view_mode': 'form', 'view_id': ref('ubisol_letters.ubi_letter_going_form_view')})]"/>
         <field name="domain">[]</field>
         <field name="help" type="html">

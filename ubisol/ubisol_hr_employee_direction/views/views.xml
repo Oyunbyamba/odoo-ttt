@@ -1,6 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
+    <record id="hr_employee_direction_kanban_view" model="ir.ui.view">
+        <field name="name">hr.employee.direction.kanban</field>
+        <field name="model">hr.employee.direction</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click" style="background-color: #FEFEFE; font-style:Arial; line-height: 0.7; padding-top:10px;" >
+                            <div class="row">
+                                <div t-attf-class="col-12 #{!selection_mode ? 'text-left' : ''}">
+                                    
+                                        <p><strong><field name="name"/></strong></p>
+                                        <p>Төлөв: <field name="state" string='Төлөв'/></p>
+                                        <p>Тушаалын дугаар: <field name="direction_number"/></p>
+                                        <p>Тушаалын огноо: <field name="direction_date"/></p>                                    
+                                
+                                </div>
+                            </div>                       
+                        </div>
+                    
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
     <record id="ubisol_hr_employee_direction_tree_view" model="ir.ui.view">
         <field name="name">hr.employee.direction.tree</field>
         <field name="model">hr.employee.direction</field>
@@ -68,7 +94,7 @@
     <record id="ubisol_direction_action_window" model="ir.actions.act_window">
         <field name="name">Тушаал</field>
         <field name="res_model">hr.employee.direction</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree,form,kanban</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Add a new direction
