@@ -22,10 +22,9 @@
                 <field name="letter_type_id"/>
                 <field name="letter_number"/>
                 <field name="received_date"/>
-                <field name="letter_date"/>
                 <field name="letter_total_num"/>
-                <field name="partner_id" string='Илгээсэн байгууллага'/>
-                <field name="official_person" string='Хэнээс'/>
+                <field name="partner_id"/>
+                <field name="to_user" string='Хэнээс'/>
                 <field name="is_local"/>
                 <field name="state" string='Төлөв'/>
                 <button string="Хүлээн авах" name="letter_receiving" type="object"
@@ -52,45 +51,48 @@
             <form string="Ubi Letter">
                 <header>
                     <button string="Хүлээн авах" name="letter_receiving" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('draft'))]}"/>
-                    <button string="Судлаж байгаа" name="action_review" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('is_local', '=', True), ('state', 'not in', ('receive', 'conflict'))]}"/>
-                    <button string="Шилжүүлсэн" name="action_transfer" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('is_local', '=', True), ('state', 'not in', ('review'))]}"/>
-                    <button string="Шийдвэрлэсэн" name="action_validate" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('transfer', 'conflict', 'receive'))]}"/>
+                    <button string="Судлаж байгаа" name="action_review" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('draft', 'conflict'))]}"/>
+                    <button string="Шилжүүлсэн" name="action_transfer" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('review'))]}"/>
+                    <button string="Шийдвэрлэсэн" name="action_validate" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('transfer', 'conflict', 'review'))]}"/>
                     <!-- <button string="Зөрчилтэй" name="action_conflict" type="object" attrs="{'invisible': [('state', 'in', ('validate', 'transfer', 'refuse', 'conflict'))]}"/> -->
-                    <button string="Буцаасан" name="call_return_wizard" type="object" attrs="{'invisible': ['|', ('is_local', '=', True), ('state', 'in', ('validate', 'conflict', 'refuse'))]}"/>
+                    <button string="Буцаасан" name="call_return_wizard" type="object" attrs="{'invisible': [('state', 'in', ('validate', 'conflict', 'refuse'))]}"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,receive,transfer,review,validate"/>
                 </header>
                 <sheet>
                     <group>
                         <group string="Үндсэн мэдээлэл">
                             <field name="tabs_id" invisible='1'/>
-                            <field name="is_local" invisible='1'/>
-                            <field name="letter_subject_id" required='1' attrs="{'readonly': [('tabs_id', '>', 0)]}"/>
-                            <field name="letter_number" required='1' attrs="{'readonly': [('tabs_id', '>', 0)]}"/>
-                            <field name="letter_type_id" required='1' attrs="{'readonly': [('tabs_id', '>', 0)]}"/>
-                            <field name="letter_date" string='Албан бичгийн огноо' attrs="{'readonly': [('tabs_id', '>', 0)]}"/>
-                            <field name="received_date" string='Хүлээн авсан огноо'/>
-                            <field name="letter_total_num" attrs="{'readonly': [('tabs_id', '>', 0)]}"/>
+                            <field name="letter_subject_id" required='1' attrs="{'readonly': [('tabs_id', '!=', False)]}"/>
+                            <field name="letter_number" required='1' attrs="{'readonly': [('tabs_id', '!=', False)]}"/>
+                            <field name="letter_type_id" required='1' attrs="{'readonly': [('tabs_id', '!=', False)]}"/>
+                            <field name="letter_date" string='Бичгийн огноо' attrs="{'readonly': [('tabs_id', '!=', False)]}"/>                            <field name="letter_total_num" attrs="{'readonly': [('tabs_id', '!=', False)]}"/>
+                           
                         </group>
 
-                        <group string="Бүртгэл">
-                            <field name="priority_id" attrs="{'readonly': [('tabs_id', '>', 0)]}"/>
+                        <group string="Нэмэлт">
                             <field name="partner_id" string="Илгээсэн байгууллага" 
                                 options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" 
-                                attrs="{'readonly': ['|', ('state', '!=', 'draft'), ('tabs_id', '>', 0)]}" required='1'/>
+                                attrs="{'readonly': ['|', ('state', '!=', 'draft'), ('tabs_id', '!=', False)]}" required='1'/>
                             <field name='official_person' string='Хэнээс' 
-                                attrs="{'readonly': [('tabs_id', '>', 0)]}"/>
+                                attrs="{'readonly': [('tabs_id', '!=', False)]}"/>
                             <field name="department_id" string='Хүлээн авах нэгж' 
-                                attrs="{'invisible': [('state', 'in', ['draft', 'receive'])]}" 
+                                attrs="{'invisible': [('state', 'in', ('draft'))]}" 
                                 options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="user_id" string='Хэнд' 
-                                attrs="{'invisible': [('state', 'in', ['draft', 'receive'])],
-                                        'required': [('state', 'in', ('review'))]}"
+                                attrs="{'invisible': [('state', 'in', ('draft'))]}" 
                                 options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                           
+                        </group>
+                        <group>
+                            <field name="priority_id" attrs="{'readonly': [('tabs_id', '!=', False)]}"/>
                             <field name="is_head_company" string='Дээд газраас ирсэн'/>
                             <field name="must_return" string='Хариутай эсэх'/>
                             <field name="must_return_date" attrs="{'invisible': [('must_return','!=',True)]}"/>
                         </group>
-
+                        <group string="Бүртгэл">
+                            <field name="receive_user_id" string='Хүлээн авсан'/>
+                            <field name="received_date"/>
+                        </group>
                         <group string="Хавсралт">
                             <field name="letter_attachment_ids" widget="many2many_binary" required='1'/>
                         </group>
@@ -104,14 +106,13 @@
                     </group>
                     <notebook>
                         <page string="Агуулга">
-                            <field name="desc" widget="text" attrs="{'readonly': [('tabs_id', '>', 0)]}"/>
+                            <field name="desc" widget="text" attrs="{'readonly': [('tabs_id', '!=', False)]}"/>
                         </page>
                     </notebook>
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers"/>
                     <field name="message_ids" widget="mail_thread"/>
-                    <field name="activity_ids" widget="mail_activity"/>
                 </div>
             </form>
         </field>
