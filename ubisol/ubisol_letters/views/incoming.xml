@@ -7,38 +7,36 @@
             <script type="text/javascript" src="/ubisol_letters/static/src/js/import_letter.js"/>
         </xpath>
     </template>
+
     <record id="ubi_letter_incoming_kanban_view" model="ir.ui.view">
         <field name="name">ubi.letter.coming.kanban</field>
         <field name="model">ubi.letter.coming</field>
         <field name="arch" type="xml">
             <kanban class="o_kanban_mobile">
-
                 <templates>
                     <t t-name="kanban-box">
                         <div t-attf-class="oe_kanban_card oe_kanban_global_click" style="background-color: #FEFEFE; font-style:Arial; line-height: 0.7; padding-top:10px; padding-right:0px; " >
                             <div class="row">
-                                <div t-attf-class="col-12 #{!selection_mode ? 'text-left' : ''}">
-                                    
-                                        <p><strong><field name="letter_subject_id"/></strong></p>
-                                        <p>Төлөв: <field name="state" string='Төлөв'/></p>
-                                        <p>Баримтын дугаар: <field name="letter_number"/></p>
-                                        <p>Хүлээн авсан огноо: <field name="received_date"/></p>                                    
-                                
+                                <div t-attf-class="col-12 #{!selection_mode ? 'text-left' : ''}">        
+                                    <p><strong><field name="letter_subject_id"/></strong></p>
+                                    <p>Төлөв: <field name="state" string='Төлөв'/></p>
+                                    <p>Баримтын дугаар: <field name="letter_number"/></p>
+                                    <p>Хүлээн авсан огноо: <field name="received_date"/></p>                                    
                                 </div>
                             </div>                       
                         </div>
-                    
                     </t>
                 </templates>
             </kanban>
         </field>
     </record>
+
     <record id="ubi_letter_incoming_tree_view" model="ir.ui.view">
         <field name="name">ubi.letter.coming.subject.tree</field>
         <field name="model">ubi.letter.coming</field>
         <field name="arch" type="xml">
             <tree banner_route="/ubisol_letters/letter_banner" 
-                string="Ubi Letter" import='false' export_xlsx='false'
+                string="Ubi Letter" default_order='id desc' import='false' export_xlsx='false'
                  decoration-success="state == 'validate'" decoration-info="state == 'receive'" 
                  decoration-primary="state == 'transfer'" 
                  decoration-warning="state == 'draft'" 
@@ -90,7 +88,8 @@
                             <field name="letter_subject_id" required='1' attrs="{'readonly': [('tabs_id', '!=', False)]}"/>
                             <field name="letter_number" required='1' attrs="{'readonly': [('tabs_id', '!=', False)]}"/>
                             <field name="letter_type_id" required='1' attrs="{'readonly': [('tabs_id', '!=', False)]}"/>
-                            <field name="letter_date" string='Бичгийн огноо' attrs="{'readonly': [('tabs_id', '!=', False)]}"/>                            <field name="letter_total_num" attrs="{'readonly': [('tabs_id', '!=', False)]}"/>
+                            <field name="letter_date" string='Бичгийн огноо' attrs="{'readonly': [('tabs_id', '!=', False)]}"/>                            
+                            <field name="letter_total_num" attrs="{'readonly': [('tabs_id', '!=', False)]}"/>
                            
                         </group>
 
@@ -106,17 +105,18 @@
                             <field name="user_id" string='Хэнд' 
                                 attrs="{'invisible': [('state', 'in', ('draft'))]}" 
                                 options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                           
                         </group>
+
                         <group>
                             <field name="priority_id" attrs="{'readonly': [('tabs_id', '!=', False)]}"/>
                             <field name="is_head_company" string='Дээд газраас ирсэн'/>
                             <field name="must_return" string='Хариутай эсэх'/>
                             <field name="must_return_date" attrs="{'invisible': [('must_return','!=',True)]}"/>
                         </group>
+                        
                         <group string="Бүртгэл">
-                            <field name="receive_user_id" string='Хүлээн авсан'/>
-                            <field name="received_date"/>
+                            <field name="receive_user_id" string='Хүлээн авсан' readonly='1'/>
+                            <field name="received_date" readonly='1'/>
                         </group>
                         <group string="Хавсралт">
                             <field name="letter_attachment_ids" widget="many2many_binary" required='1'/>
