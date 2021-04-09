@@ -13,10 +13,10 @@
                             <div class="row">
                                 <div t-attf-class="col-12 #{!selection_mode ? 'text-left' : ''}">
                                     
-                                        <p><strong><field name="name"/></strong></p>
-                                        <p>Төлөв: <field name="state" string='Төлөв'/></p>
-                                        <p>Тушаалын дугаар: <field name="direction_number"/></p>
-                                        <p>Тушаалын огноо: <field name="direction_date"/></p>                                    
+                                    <p><strong><field name="name"/></strong></p>
+                                    <p>Төлөв: <field name="state" string='Төлөв'/></p>
+                                    <p>Тушаалын дугаар: <field name="direction_number"/></p>
+                                    <p>Тушаалын огноо: <field name="direction_date"/></p>                                    
                                 
                                 </div>
                             </div>                       
@@ -27,17 +27,34 @@
             </kanban>
         </field>
     </record>
+
     <record id="ubisol_hr_employee_direction_tree_view" model="ir.ui.view">
         <field name="name">hr.employee.direction.tree</field>
         <field name="model">hr.employee.direction</field>
         <field name="arch" type="xml">
-            <tree string='Тушаал'>
+            <tree string='Тушаал' import='false' export_xlsx='false' default_order='id desc'
+                decoration-success="state == 'validate'"
+                decoration-warning="state == 'draft'" 
+                decoration-danger="state == 'refuse'">
                 <field name="employee_id"/>
                 <field name="name"/>
                 <field name="direction_number"/>
                 <field name="hr_document_id"/>
                 <field name="direction_date"/>
                 <field name="state"/>
+                <button string="Ноорог" name="action_draft" type="object"
+                    icon="fa-edit text-info"
+                    states="refuse"
+                    groups="hr.group_hr_manager"/>
+                <button string="Батлах" name="action_validate" type="object"
+                    icon="fa-check text-success"
+                    states="validate1"
+                    groups="hr.group_hr_manager"/>   
+                <button string="Татгалзах" name="action_refuse" type="object"
+                    icon="fa-ban text-danger"
+                    states="operate,confirm,validate1,validate"
+                    groups="hr.group_hr_manager"/>        
+                <field name="activity_exception_decoration" widget="activity_exception"/>
             </tree>
         </field>
     </record>
@@ -93,10 +110,42 @@
         </field>
     </record>   
 
+    <record id="view_employee_direction_filter" model="ir.ui.view">
+        <field name="name">hr.employee.direction.search</field>
+        <field name="model">hr.employee.direction</field>
+        <field name="arch" type="xml">
+            <search string="Search">
+                <field name="employee_id" string="Ажилтан"/>
+                <field name="name" string="Толгой"/>
+                <field name="direction_number" string="Тушаалын дугаар"/>
+                
+                <filter name="last_month_direction_date" string="Өнгөрсөн сар - тушаалын огноо" 
+                    domain="[('direction_date', '>=', (context_today()-relativedelta(months=1)).strftime('%Y-%m-01')),
+                    ('direction_date', '&lt;', context_today().strftime('%Y-%m-01'))]"/>          
+                <filter name="this_month_direction_date" string="Энэ сар - тушаалын огноо" 
+                    domain="[('direction_date', '>=', context_today().strftime('%Y-%m-01')),
+                    ('direction_date', '&lt;', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
+
+                <filter string="Ноорог" name="state" domain="[('state', '=', 'draft')]"/>
+                <filter string="Боловсруулсан" name="state" domain="[('state', '=', 'operate')]"/>
+                <filter string="Хянасан" name="state" domain="[('state', '=', 'confirm')]"/>
+                <filter string="Зөвшөөрсөн" name="state" domain="[('state', '=', 'validate1')]"/>
+                <filter string="Баталсан" name="state" domain="[('state', '=', 'validate')]"/>
+                <filter string="Татгалзсан" name="state" domain="[('state', '=', 'refuse')]"/>
+
+                <group expand="0" string="Group By">
+                    <filter name="state" string="Төлөв" domain="[]" context="{'group_by': 'state'}"/>
+                    <filter name="hr_document_id" string="Тушаалын загвар" domain="[]" context="{'group_by': 'hr_document_id'}"/>                
+                </group>
+            </search>
+        </field>
+    </record>
+
     <record id="ubisol_direction_action_window" model="ir.actions.act_window">
         <field name="name">Тушаал</field>
         <field name="res_model">hr.employee.direction</field>
         <field name="view_mode">tree,form,kanban</field>
+        <field name="context">{'search_default_this_month_direction_date':1}</field> 
         <field name="domain">['|', '|', '|', '|', ('user_id', '=', uid), ('operate_user_id', '=', uid), ('confirm_user_id', '=', uid), ('validate1_user_id', '=', uid), ('validate_user_id', '=', uid)]</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
@@ -108,4 +157,27 @@
     <menuitem name="Тушаал" id="menu_hr_employee_direction" parent="hr.menu_hr_employee_payroll"
             action="ubisol_direction_action_window"
             sequence="100" groups="hr.group_hr_user"/>
+
+    <record model="ir.actions.server" id="direction_validate_action">
+        <field name="name">Батлах</field>
+        <field name="model_id" ref="model_hr_employee_direction"/>
+        <field name="binding_model_id" ref="model_hr_employee_direction" />
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                action = records.action_validate()
+        </field>
+    </record>
+
+    <record model="ir.actions.server" id="direction_cancel_action">
+        <field name="name">Цуцлах</field>
+        <field name="model_id" ref="model_hr_employee_direction"/>
+        <field name="binding_model_id" ref="model_hr_employee_direction" />
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                action = records.action_refuse()
+        </field>
+    </record>
+
 </odoo>
