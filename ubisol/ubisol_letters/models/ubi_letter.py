@@ -115,18 +115,18 @@ class UbiLetter(models.AbstractModel):
                 to_user = letter.official_person
             letter.to_user = to_user
 
-    # @api.onchange('letter_number')
-    # def _set_letter_template1(self):
-        # if self.letter_template_text:
-            # template_text = self.letter_template_text
-            # soup = BeautifulSoup(template_text, 'html.parser')
-            # match = soup.find('span', {'id': 'letter_number'})
-            # _logger.info(str(match))
-            # clean = re.compile('<.*?>')
-            # clean = re.sub(clean, '', str(match))
-            # _logger.info(str(clean))
-            # _logger.info(self.letter_number)
-            # self.letter_template_text = template_text.replace(str(clean), self.letter_number)
+    @api.onchange('letter_number')
+    def _set_letter_template1(self):
+        if self.letter_template_text:
+            template_text = self.letter_template_text
+            soup = BeautifulSoup(template_text, 'html.parser')
+            match = soup.find('span', {'id': 'letter_number'})
+            _logger.info(str(match))
+            clean = re.compile('<.*?>')
+            clean = re.sub(clean, '', str(match))
+            _logger.info(str(clean))
+            _logger.info(self.letter_number)
+            self.letter_template_text = template_text.replace(str(clean), self.letter_number)
 
             # number_str = str(number)
             # find0 = string.find("$number")

@@ -275,7 +275,7 @@ class BiometricMachine(models.Model):
                     isError = True
                 if len(attendances) > 0:
                     _logger.info('TOTAL_ATT')
-                    s_logger.info(len(attendances))
+                    _logger.info(len(attendances))
                     for attendance in attendances:
                         row = [attendance.user_id, attendance.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
                                attendance.status, attendance.punch, 0, 0]

@@ -9,7 +9,7 @@ _logger = logging.getLogger(__name__)
 # Inherit in your custom class
 class UbisolLetters(http.Controller):
 
-    @http.route('/docs/new_letter', auth='public', csrf=False, cors='*')
+    @http.route('/docs/new_letter', auth='public', cors='*', csrf=False)
     def new_letter(self, **rec):
         _logger.info('new_letter')
         _logger.info(rec)
@@ -21,7 +21,7 @@ class UbisolLetters(http.Controller):
             
         return "{'success': True}"            
 
-    @http.route('/docs/sent_letter_received', auth='public', csrf=False, cors='*')
+    @http.route('/docs/sent_letter_received', auth='public', cors='*', csrf=False)
     def receive_letter(self, **rec):
         _logger.info('sent_letter_received')
         _logger.info(rec)
@@ -33,8 +33,8 @@ class UbisolLetters(http.Controller):
         return "{'success': True}"     
 
 
-    @http.route('/docs/received_letter_returned', auth='public', csrf=False, cors='*')
-    def receive_letter(self, **rec):
+    @http.route('/docs/received_letter_returned', auth='public', cors='*', csrf=False)
+    def return_letter(self, **rec):
         _logger.info('received_letter_returned')
         _logger.info(rec)
         if(rec['doc_id'] and rec['org_id']):
