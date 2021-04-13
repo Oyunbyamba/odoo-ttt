@@ -27,6 +27,7 @@ class UbiLetterGoing(models.Model):
     state = fields.Selection([
         ('draft', 'Бүртгэсэн'),
         ('sent', 'Илгээсэн'),
+        ('received', 'Хүлээн авсан'),
         ('refuse', 'Цуцласан')],
         groups="base.group_user",
         default='draft',

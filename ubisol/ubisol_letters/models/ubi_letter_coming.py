@@ -151,7 +151,7 @@ class UbiLetterComing(models.Model):
     # def _compute_can_approve(self):
 
     @api.model
-    def check_new_letters(self, user):
+    def check_new_letters(self, user={}):
         data = """<Envelope xmlns = "http://schemas.xmlsoap.org/soap/envelope/" >
                     <Body>
                         <callRequest xmlns = "https://dev.docx.gov.mn/document/dto">
@@ -292,16 +292,15 @@ class UbiLetterComing(models.Model):
 
     def return_received(self, params):
 
-        template = """<Envelope xmlns = "http://schemas.xmlsoap.org/soap/envelope/" >
-                    <Body>
-                        <callRequest xmlns = "https://dev.docx.gov.mn/document/dto">
-                            <token>2mRCiuLX352m6O2lhqMoxPs-fQ5ibZgaqIHRbNSaxCaoiJg7Ugo7nCCQEMKKlgK-XBQBprEqylE3EKmM5fMinLm6PnzAYfIHTi-BcwQXG8l3MHKp30HFjMyfrhfJvqK83o4JhtDxAXyp8TpeRrEhY949ClikAWr-v1cPbQ6Q0N8</token>
-                            <service>post.public.document/cancel</service >
-                            <params>%s</params>
-
-                        </callRequest>
-                    </Body>
-                </Envelope>"""
+        template = """<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
+                        <Body>
+                            <callRequest xmlns="https://dev.docx.gov.mn/document/dto">
+                                <token>lrBkkTxrwgrd72nW1JD7LUZqiRAM4ityEEZz4riJhxWlpmgTWYMvcgCtw</token>
+                                <service>post.public.document/receive</service>
+                                <params>{"id":391, "statusId": 5, "statusPerson":"D.Bold", "statusPosition":"Darga", "statusComment":"Ирсэн бичгийн материал дутуу учир буцаалаа шүү" }</params>
+                            </callRequest>
+                        </Body>
+                        </Envelope>"""
         data = template % params
         target_url = "https://dev.docx.gov.mn/soap/api"
         headers = {'Content-type': 'text/xml'}
@@ -336,8 +335,10 @@ class UbiLetterComing(models.Model):
             if letter.state == 'draft':
                 received_user = self.env.user
                 params = {"id": letter.tabs_id,
-                        "receivePerson": received_user.employee_id.name if received_user.employee_id else "",
-                        "receivePosition": received_user.employee_id.job_id.name if received_user.employee_id else ""}
+                        "statusId": 6, 
+                        "statusPerson": received_user.employee_id.name if received_user.employee_id else "",
+                        "statusPosition": received_user.employee_id.job_id.name if received_user.employee_id else "",
+                        "statusComment": ""}
                 result = self.letter_received(params)
                 if result['status'] == '200':
                     letter.write({"state": "receive", 'receive_user_id': received_user})
@@ -347,15 +348,15 @@ class UbiLetterComing(models.Model):
 
     def letter_received(self, params):
 
-        template = """<Envelope xmlns = "http://schemas.xmlsoap.org/soap/envelope/" >
-                    <Body>
-                        <callRequest xmlns = "https://dev.docx.gov.mn/document/dto">
-                            <token>2mRCiuLX352m6O2lhqMoxPs-fQ5ibZgaqIHRbNSaxCaoiJg7Ugo7nCCQEMKKlgK-XBQBprEqylE3EKmM5fMinLm6PnzAYfIHTi-BcwQXG8l3MHKp30HFjMyfrhfJvqK83o4JhtDxAXyp8TpeRrEhY949ClikAWr-v1cPbQ6Q0N8</token>
-                            <service>post.public.document/receive</service >
-                            <params>%s</params>
-                        </callRequest>
-                    </Body>
-                </Envelope>"""
+        template = """<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
+                        <Body>
+                            <callRequest xmlns="https://dev.docx.gov.mn/document/dto">
+                                <token>2mRCiuLX352m6O2lhqMoxPs-fQ5ibZgaqIHRbNSaxCaoiJg7Ugo7nCCQEMKKlgK-XBQBprEqylE3EKmM5fMinLm6PnzAYfIHTi-BcwQXG8l3MHKp30HFjMyfrhfJvqK83o4JhtDxAXyp8TpeRrEhY949ClikAWr-v1cPbQ6Q0N8</token>
+                                    <service>post.public.document/receive</service>
+                                <params>%s</params>
+                            </callRequest>
+                        </Body>
+                    </Envelope>"""
         data = template % params
         _logger.info(data)
         target_url = "https://dev.docx.gov.mn/soap/api"
