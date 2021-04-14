@@ -20,9 +20,6 @@ class UbiLetter(models.AbstractModel):
     _description = " Ubisol Letter"
     _rec_name = 'letter_number'
 
-    def _get_default_note(self):
-        result = """"""
-        return result
 
     card_number = fields.Integer(
         string='Картын дугаар', help="Картын дугаар", groups="base.group_user")
@@ -62,12 +59,7 @@ class UbiLetter(models.AbstractModel):
         'ubi.letter.type', string='Баримтын төрөл', groups="base.group_user")
     letter_subject_id = fields.Many2one(
         'ubi.letter.subject', string='Баримтын тэргүү', groups="base.group_user")
-    letter_template_id = fields.Many2one(
-        'ubi.letter.template', string='Баримтын загвар', groups="base.group_user")
-    letter_template_text = fields.Html(
-        related="letter_template_id.letter_template", groups="base.group_user")
-    custom_letter_template = fields.Html(
-        'Custom text', groups="base.group_user", default=_get_default_note)
+    
     department_id = fields.Many2one(
         'hr.department', string='Хариуцах Хэлтэс', groups="base.group_user")
 
@@ -115,219 +107,216 @@ class UbiLetter(models.AbstractModel):
                 to_user = letter.official_person
             letter.to_user = to_user
 
-    @api.onchange('letter_number')
-    def _set_letter_template1(self):
-        if self.letter_template_text:
-            template_text = self.letter_template_text
-            soup = BeautifulSoup(template_text, 'html.parser')
-            match = soup.find('span', {'id': 'letter_number'})
-            _logger.info(str(match))
-            clean = re.compile('<.*?>')
-            clean = re.sub(clean, '', str(match))
-            _logger.info(str(clean))
-            _logger.info(self.letter_number)
-            self.letter_template_text = template_text.replace(str(clean), self.letter_number)
+    # @api.onchange('letter_number')
+    # def _set_letter_template1(self):
+    #     if self.custom_letter_template:
+    #         template_text = self.custom_letter_template
+    #         soup = BeautifulSoup(template_text, 'html.parser')
+    #         match = soup.find('span', {'id': 'letter_number'})
+    #         clean = re.compile('<.*?>')
+    #         clean = re.sub(clean, '', str(match))
+    #         self.custom_letter_template = template_text.replace(str(clean), str(self.letter_number))
 
-            # number_str = str(number)
-            # find0 = string.find("$number")
-            # asd = str("-1")
+    #         # number_str = str(number)
+    #         # find0 = string.find("$number")
+    #         # asd = str("-1")
 
-            # if (str(find0) != asd):
-            #     print(str(find0))
-            #     self.custom_letter_template = string.replace(
-            #         "$number", number_str)
-            #     string = self.custom_letter_template
-            #     self.custom_letter_template = string.replace(
-            #         "$date", str((datetime.now()).strftime('%Y-%m-%d')))
-            #     string = self.custom_letter_template
-            # else:
-            #     self.custom_letter_template = self.letter_template_text
-            #     string = self.custom_letter_template
-            #     self.custom_letter_template = string.replace(
-            #         "$number", number_str)
-            #     string = self.custom_letter_template
-            #     if self.partner_id.name:
-            #         self.custom_letter_template = string.replace(
-            #             "$where", str(self.partner_id.name))
-            #         string = self.custom_letter_template
-            #     if self.draft_user_id:
-            #         self.custom_letter_template = string.replace(
-            #             "$who", str(self.draft_user_id.name))
-            #         string = self.custom_letter_template
-            #     if self.letter_subject_id.name:
-            #         self.custom_letter_template = string.replace(
-            #             "$terguu", str(self.letter_subject_id.name))
-            #         string = self.custom_letter_template
-            #     if self.letter_total_num:
-            #         self.custom_letter_template = string.replace(
-            #             "$huudasni_too", str(self.letter_total_num))
-            #         string = self.custom_letter_template
-            #     self.custom_letter_template = string.replace(
-            #         "$date", str((datetime.now()).strftime('%Y-%m-%d')))
-            #     string = self.custom_letter_template
+    #         # if (str(find0) != asd):
+    #         #     print(str(find0))
+    #         #     self.custom_letter_template = string.replace(
+    #         #         "$number", number_str)
+    #         #     string = self.custom_letter_template
+    #         #     self.custom_letter_template = string.replace(
+    #         #         "$date", str((datetime.now()).strftime('%Y-%m-%d')))
+    #         #     string = self.custom_letter_template
+    #         # else:
+    #         #     self.custom_letter_template = self.letter_template_text
+    #         #     string = self.custom_letter_template
+    #         #     self.custom_letter_template = string.replace(
+    #         #         "$number", number_str)
+    #         #     string = self.custom_letter_template
+    #         #     if self.partner_id.name:
+    #         #         self.custom_letter_template = string.replace(
+    #         #             "$where", str(self.partner_id.name))
+    #         #         string = self.custom_letter_template
+    #         #     if self.draft_user_id:
+    #         #         self.custom_letter_template = string.replace(
+    #         #             "$who", str(self.draft_user_id.name))
+    #         #         string = self.custom_letter_template
+    #         #     if self.letter_subject_id.name:
+    #         #         self.custom_letter_template = string.replace(
+    #         #             "$terguu", str(self.letter_subject_id.name))
+    #         #         string = self.custom_letter_template
+    #         #     if self.letter_total_num:
+    #         #         self.custom_letter_template = string.replace(
+    #         #             "$huudasni_too", str(self.letter_total_num))
+    #         #         string = self.custom_letter_template
+    #         #     self.custom_letter_template = string.replace(
+    #         #         "$date", str((datetime.now()).strftime('%Y-%m-%d')))
+    #         #     string = self.custom_letter_template
 
-    @api.onchange('partner_id')
-    def _set_letter_template2(self):
-        if self.letter_template_id:
-            string = self.custom_letter_template
-            partner_id = self.partner_id.name
-            partner_id_str = str(partner_id)
-            find0 = string.find("$where")
-            asd = str("-1")
-            if (str(find0) != asd):
-                self.custom_letter_template = string.replace(
-                    "$where", partner_id_str)
-                string = self.custom_letter_template
-                self.custom_letter_template = string.replace(
-                    "$date", str((datetime.now()).strftime('%Y-%m-%d')))
-                string = self.custom_letter_template
-            else:
-                self.custom_letter_template = self.letter_template_text
-                string = self.custom_letter_template
-                self.custom_letter_template = string.replace(
-                    "$where", str(self.partner_id.name))
-                string = self.custom_letter_template
-                if self.letter_number:
-                    self.custom_letter_template = string.replace(
-                        "$number", str(self.letter_number))
-                    string = self.custom_letter_template
-                if self.draft_user_id:
-                    self.custom_letter_template = string.replace(
-                        "$who", str(self.draft_user_id.name))
-                    string = self.custom_letter_template
-                if self.letter_subject_id.name:
-                    self.custom_letter_template = string.replace(
-                        "$terguu", str(self.letter_subject_id.name))
-                    string = self.custom_letter_template
-                if self.letter_total_num:
-                    self.custom_letter_template = string.replace(
-                        "$huudasni_too", str(self.letter_total_num))
-                    string = self.custom_letter_template
-                self.custom_letter_template = string.replace(
-                    "$date", str((datetime.now()).strftime('%Y-%m-%d')))
-                string = self.custom_letter_template
+    # @api.onchange('partner_id')
+    # def _set_letter_template2(self):
+    #     if self.letter_template_id:
+    #         string = self.custom_letter_template
+    #         partner_id = self.partner_id.name
+    #         partner_id_str = str(partner_id)
+    #         find0 = string.find("$where")
+    #         asd = str("-1")
+    #         if (str(find0) != asd):
+    #             self.custom_letter_template = string.replace(
+    #                 "$where", partner_id_str)
+    #             string = self.custom_letter_template
+    #             self.custom_letter_template = string.replace(
+    #                 "$date", str((datetime.now()).strftime('%Y-%m-%d')))
+    #             string = self.custom_letter_template
+    #         else:
+    #             self.custom_letter_template = self.letter_template_text
+    #             string = self.custom_letter_template
+    #             self.custom_letter_template = string.replace(
+    #                 "$where", str(self.partner_id.name))
+    #             string = self.custom_letter_template
+    #             if self.letter_number:
+    #                 self.custom_letter_template = string.replace(
+    #                     "$number", str(self.letter_number))
+    #                 string = self.custom_letter_template
+    #             if self.draft_user_id:
+    #                 self.custom_letter_template = string.replace(
+    #                     "$who", str(self.draft_user_id.name))
+    #                 string = self.custom_letter_template
+    #             if self.letter_subject_id.name:
+    #                 self.custom_letter_template = string.replace(
+    #                     "$terguu", str(self.letter_subject_id.name))
+    #                 string = self.custom_letter_template
+    #             if self.letter_total_num:
+    #                 self.custom_letter_template = string.replace(
+    #                     "$huudasni_too", str(self.letter_total_num))
+    #                 string = self.custom_letter_template
+    #             self.custom_letter_template = string.replace(
+    #                 "$date", str((datetime.now()).strftime('%Y-%m-%d')))
+    #             string = self.custom_letter_template
 
-    @api.onchange('draft_user_id')
-    def _set_letter_template3(self):
-        if self.letter_template_id:
-            string = self.custom_letter_template
-            draft_user_id = self.draft_user_id.name
-            draft_user_id_str = str(draft_user_id)
-            find0 = string.find("$who")
-            asd = str("-1")
-            if (str(find0) != asd):
-                self.custom_letter_template = string.replace(
-                    "$who", draft_user_id_str)
-                string = self.custom_letter_template
-                self.custom_letter_template = string.replace(
-                    "$date", str((datetime.now()).strftime('%Y-%m-%d')))
-                string = self.custom_letter_template
-            else:
-                self.custom_letter_template = self.letter_template_text
-                string = self.custom_letter_template
-                self.custom_letter_template = string.replace(
-                    "$who", draft_user_id_str)
-                string = self.custom_letter_template
-                if self.letter_number:
-                    self.custom_letter_template = string.replace(
-                        "$number", str(self.letter_number))
-                    string = self.custom_letter_template
-                if self.partner_id.name:
-                    self.custom_letter_template = string.replace(
-                        "$where", str(self.partner_id.name))
-                    string = self.custom_letter_template
-                if self.letter_subject_id.name:
-                    self.custom_letter_template = string.replace(
-                        "$terguu", str(self.letter_subject_id.name))
-                    string = self.custom_letter_template
-                if self.letter_total_num:
-                    self.custom_letter_template = string.replace(
-                        "$huudasni_too", str(self.letter_total_num))
-                    string = self.custom_letter_template
-                self.custom_letter_template = string.replace(
-                    "$date", str((datetime.now()).strftime('%Y-%m-%d')))
-                string = self.custom_letter_template
+    # @api.onchange('draft_user_id')
+    # def _set_letter_template3(self):
+    #     if self.letter_template_id:
+    #         string = self.custom_letter_template
+    #         draft_user_id = self.draft_user_id.name
+    #         draft_user_id_str = str(draft_user_id)
+    #         find0 = string.find("$who")
+    #         asd = str("-1")
+    #         if (str(find0) != asd):
+    #             self.custom_letter_template = string.replace(
+    #                 "$who", draft_user_id_str)
+    #             string = self.custom_letter_template
+    #             self.custom_letter_template = string.replace(
+    #                 "$date", str((datetime.now()).strftime('%Y-%m-%d')))
+    #             string = self.custom_letter_template
+    #         else:
+    #             self.custom_letter_template = self.letter_template_text
+    #             string = self.custom_letter_template
+    #             self.custom_letter_template = string.replace(
+    #                 "$who", draft_user_id_str)
+    #             string = self.custom_letter_template
+    #             if self.letter_number:
+    #                 self.custom_letter_template = string.replace(
+    #                     "$number", str(self.letter_number))
+    #                 string = self.custom_letter_template
+    #             if self.partner_id.name:
+    #                 self.custom_letter_template = string.replace(
+    #                     "$where", str(self.partner_id.name))
+    #                 string = self.custom_letter_template
+    #             if self.letter_subject_id.name:
+    #                 self.custom_letter_template = string.replace(
+    #                     "$terguu", str(self.letter_subject_id.name))
+    #                 string = self.custom_letter_template
+    #             if self.letter_total_num:
+    #                 self.custom_letter_template = string.replace(
+    #                     "$huudasni_too", str(self.letter_total_num))
+    #                 string = self.custom_letter_template
+    #             self.custom_letter_template = string.replace(
+    #                 "$date", str((datetime.now()).strftime('%Y-%m-%d')))
+    #             string = self.custom_letter_template
 
-    @api.onchange('letter_subject_id')
-    def _set_letter_template4(self):
-        if self.letter_template_id:
-            string = self.custom_letter_template
-            letter_subject_id = self.letter_subject_id.name
-            letter_subject_id_str = str(letter_subject_id)
-            find0 = string.find("$terguu")
-            asd = str("-1")
-            if (str(find0) != asd):
-                self.custom_letter_template = string.replace(
-                    "$terguu", letter_subject_id_str)
-                string = self.custom_letter_template
-                self.custom_letter_template = string.replace(
-                    "$date", str((datetime.now()).strftime('%Y-%m-%d')))
-                string = self.custom_letter_template
-            else:
-                self.custom_letter_template = self.letter_template_text
-                string = self.custom_letter_template
-                self.custom_letter_template = string.replace(
-                    "$terguu", letter_subject_id_str)
-                string = self.custom_letter_template
+    # @api.onchange('letter_subject_id')
+    # def _set_letter_template4(self):
+    #     if self.letter_template_id:
+    #         string = self.custom_letter_template
+    #         letter_subject_id = self.letter_subject_id.name
+    #         letter_subject_id_str = str(letter_subject_id)
+    #         find0 = string.find("$terguu")
+    #         asd = str("-1")
+    #         if (str(find0) != asd):
+    #             self.custom_letter_template = string.replace(
+    #                 "$terguu", letter_subject_id_str)
+    #             string = self.custom_letter_template
+    #             self.custom_letter_template = string.replace(
+    #                 "$date", str((datetime.now()).strftime('%Y-%m-%d')))
+    #             string = self.custom_letter_template
+    #         else:
+    #             self.custom_letter_template = self.letter_template_text
+    #             string = self.custom_letter_template
+    #             self.custom_letter_template = string.replace(
+    #                 "$terguu", letter_subject_id_str)
+    #             string = self.custom_letter_template
 
-                if self.letter_number:
-                    self.custom_letter_template = string.replace(
-                        "$number", str(self.letter_number))
-                    string = self.custom_letter_template
-                if self.partner_id.name:
-                    self.custom_letter_template = string.replace(
-                        "$where", str(self.partner_id.name))
-                    string = self.custom_letter_template
-                if self.draft_user_id:
-                    self.custom_letter_template = string.replace(
-                        "$who", str(self.draft_user_id.name))
-                    string = self.custom_letter_template
-                if self.letter_total_num:
-                    self.custom_letter_template = string.replace(
-                        "$huudasni_too", str(self.letter_total_num))
-                    string = self.custom_letter_template
-                self.custom_letter_template = string.replace(
-                    "$date", str((datetime.now()).strftime('%Y-%m-%d')))
-                string = self.custom_letter_template
+    #             if self.letter_number:
+    #                 self.custom_letter_template = string.replace(
+    #                     "$number", str(self.letter_number))
+    #                 string = self.custom_letter_template
+    #             if self.partner_id.name:
+    #                 self.custom_letter_template = string.replace(
+    #                     "$where", str(self.partner_id.name))
+    #                 string = self.custom_letter_template
+    #             if self.draft_user_id:
+    #                 self.custom_letter_template = string.replace(
+    #                     "$who", str(self.draft_user_id.name))
+    #                 string = self.custom_letter_template
+    #             if self.letter_total_num:
+    #                 self.custom_letter_template = string.replace(
+    #                     "$huudasni_too", str(self.letter_total_num))
+    #                 string = self.custom_letter_template
+    #             self.custom_letter_template = string.replace(
+    #                 "$date", str((datetime.now()).strftime('%Y-%m-%d')))
+    #             string = self.custom_letter_template
 
-    @api.onchange('letter_total_num')
-    def _set_letter_template5(self):
-        if self.letter_template_id:
-            string = self.custom_letter_template
-            letter_total_num = self.letter_total_num
-            letter_total_num_str = str(letter_total_num)
-            find0 = string.find("$huudasni_too")
-            asd = str("-1")
-            if (str(find0) != asd):
-                self.custom_letter_template = string.replace(
-                    "$huudasni_too", letter_total_num_str)
-                string = self.custom_letter_template
-                self.custom_letter_template = string.replace(
-                    "$date", str((datetime.now()).strftime('%Y-%m-%d')))
-                string = self.custom_letter_template
-            else:
-                self.custom_letter_template = self.letter_template_text
-                string = self.custom_letter_template
-                self.custom_letter_template = string.replace(
-                    "$huudasni_too", letter_total_num_str)
-                string = self.custom_letter_template
+    # @api.onchange('letter_total_num')
+    # def _set_letter_template5(self):
+    #     if self.letter_template_id:
+    #         string = self.custom_letter_template
+    #         letter_total_num = self.letter_total_num
+    #         letter_total_num_str = str(letter_total_num)
+    #         find0 = string.find("$huudasni_too")
+    #         asd = str("-1")
+    #         if (str(find0) != asd):
+    #             self.custom_letter_template = string.replace(
+    #                 "$huudasni_too", letter_total_num_str)
+    #             string = self.custom_letter_template
+    #             self.custom_letter_template = string.replace(
+    #                 "$date", str((datetime.now()).strftime('%Y-%m-%d')))
+    #             string = self.custom_letter_template
+    #         else:
+    #             self.custom_letter_template = self.letter_template_text
+    #             string = self.custom_letter_template
+    #             self.custom_letter_template = string.replace(
+    #                 "$huudasni_too", letter_total_num_str)
+    #             string = self.custom_letter_template
 
-                if self.letter_number:
-                    self.custom_letter_template = string.replace(
-                        "$number", str(self.letter_number))
-                    string = self.custom_letter_template
-                if self.partner_id.name:
-                    self.custom_letter_template = string.replace(
-                        "$where", str(self.partner_id.name))
-                    string = self.custom_letter_template
-                if self.draft_user_id:
-                    self.custom_letter_template = string.replace(
-                        "$who", str(self.draft_user_id.name))
-                    string = self.custom_letter_template
-                if self.letter_subject_id.name:
-                    self.custom_letter_template = string.replace(
-                        "$terguu", str(self.letter_subject_id.name))
-                    string = self.custom_letter_template
-                self.custom_letter_template = string.replace(
-                    "$date", str((datetime.now()).strftime('%Y-%m-%d')))
-                string = self.custom_letter_template
+    #             if self.letter_number:
+    #                 self.custom_letter_template = string.replace(
+    #                     "$number", str(self.letter_number))
+    #                 string = self.custom_letter_template
+    #             if self.partner_id.name:
+    #                 self.custom_letter_template = string.replace(
+    #                     "$where", str(self.partner_id.name))
+    #                 string = self.custom_letter_template
+    #             if self.draft_user_id:
+    #                 self.custom_letter_template = string.replace(
+    #                     "$who", str(self.draft_user_id.name))
+    #                 string = self.custom_letter_template
+    #             if self.letter_subject_id.name:
+    #                 self.custom_letter_template = string.replace(
+    #                     "$terguu", str(self.letter_subject_id.name))
+    #                 string = self.custom_letter_template
+    #             self.custom_letter_template = string.replace(
+    #                 "$date", str((datetime.now()).strftime('%Y-%m-%d')))
+    #             string = self.custom_letter_template

@@ -12,9 +12,11 @@ class letterDetailPdf(models.AbstractModel):
 
     @api.model
     def _get_report_values(self, docids, data=None):
-        employees = self.env['ubi.letter'].browse(docids)
+        docs = self.env['ubi.letter.going'].browse(docids)
+        employee = self.env.user.employee_id
         now_date = (datetime.now()).strftime('%Y-%m-%d')
         return {
                 'now_date': now_date,
-                'docs': employees,
+                'docs': docs,
+                'employee': employee
             }

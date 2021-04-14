@@ -3,7 +3,10 @@
     <template id="letter_print_header">
         <div t-attf-class="header">
         </div>
-        <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+        <div t-attf-class="article o_report_layout_standard" 
+                t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" 
+                t-att-data-oe-lang="o and o.env.context.get('lang')">
+
             <t t-raw="0"/>
         </div>
     </template>
@@ -25,12 +28,13 @@
     </record>
 
     <report
-            id="letter_detail_report_pdf"
-            model="ubi.letter" 
-            string="Албан бичиг хэвлэх"
-            report_type="qweb-pdf"
-            name="ubisol_letters.letter_detail_report"
-            file="ubisol_letters.letter_detail_report"
-            paperformat="ubisol_letters.letter_paperformat"
-        />
+        id="letter_detail_report_pdf"
+        model="ubi.letter.going" 
+        string="Албан бичиг хэвлэх"
+        report_type="qweb-html"
+        name="ubisol_letters.letter_detail_report"
+        file="ubisol_letters.letter_detail_report"
+        paperformat="ubisol_letters.letter_paperformat"
+    />
+    
 </odoo>

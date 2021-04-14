@@ -1,25 +1,29 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-    <template id="letter_detail_pdf">
+    <template id="letter_detail_report">
         <t t-call="web.html_container">
             <t t-set="company" t-value="env.company"/>
-                <t t-call="ubisol_letters.letter_print_header" t-lang="mn_MN">
-                    <div class="col-12 page">
-                        <t t-raw="doc.custom_letter_template"/>
-                        
-                       
-
-                    </div>
-                </t>
             
-        </t>
-    </template>
-    <template id ="letter_detail_report">
-        <t t-call="web.html_container">
-            <t t-foreach="docs" t-as="doc">
-                <t t-call="ubisol_letters.letter_detail_pdf"/>
+                    <t t-call="ubisol_letters.letter_print_header" t-lang="mn_MN">
+                        <div class="col-12 page" style="font-size: 16px !important; line-height: 135%; padding-top:260px;">
+                            <div class="text-center">"<t t-esc="employee.surname"/>"-д</div>
+                                <hr style="border-top: 1px solid white;"/>
+                                <hr style="border-top: 1px solid white;"/>
 
-            </t>
+                            <div>
+                                &#160; &#160; &#160; &#160; &#160; <t t-raw="letter_template_text"/>
+                            </div>    
+
+                            <div>
+                                <hr style="border-top: 1px solid white;"/>
+                                <hr style="border-top: 1px solid white;"/>
+                                <hr style="border-top: 1px solid white;"/>
+                                <span>Баталсан: </span> /  /
+                            </div>
+                        </div>
+                    </t>
+                
         </t>
     </template>
+
 </odoo>

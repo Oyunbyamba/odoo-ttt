@@ -74,6 +74,7 @@
         <field name="arch" type="xml">
             <tree string="Ubi Letter">
                 <field name="letter_template_name"/>
+                <field name="paper_size"/>
                 <field name="letter_template"/>
             </tree>
         </field>
@@ -87,6 +88,7 @@
                 <sheet>
                     <group>
                         <field name="letter_template_name"/>
+                        <field name="paper_size"/>
                         <field name="letter_template"/>
                     </group>
                 </sheet>

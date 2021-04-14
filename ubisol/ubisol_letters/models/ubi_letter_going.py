@@ -21,6 +21,7 @@ class UbiLetterGoing(models.Model):
     _rec_name = 'letter_number'
     _mail_post_access = 'read'
 
+
     follow_id = fields.Many2one('ubi.letter.coming', groups="base.group_user")
     letter_attachment_ids = fields.Many2many(
         'ir.attachment', 'letter_going_doc_attach', 'letter_id', 'doc_id', string="Хавсралт", copy=False)
@@ -34,12 +35,24 @@ class UbiLetterGoing(models.Model):
         string='Явсан бичгийн төлөв', store=True, readonly=True, copy=False, tracking=True)
     coming_letters = fields.Many2one(
         'ubi.letter.coming', string='Ирсэн дугаар', groups="base.group_user")    
-   
+    letter_template_id = fields.Many2one(
+        'ubi.letter.template', string='Баримтын загвар', groups="base.group_user")
+    letter_template_text = fields.Html(
+        'Агуулга', groups="base.group_user")    
+    custom_letter_template = fields.Html(
+        'Template', compute='_compute_letter_template', groups="base.group_user")
+        
 
     @api.onchange('letter_template_id')
-    def _set_letter_template(self):
-        if self.letter_template_text:
-            self.custom_letter_template = self.letter_template_text
+    def _compute_letter_template(self):
+        if self.letter_template_id:
+            report = self.env['ir.actions.report']._get_report_from_name('ubisol_letters.letter_detail_report')
+            employee = self.env.user.employee_id
+            docids = None
+            
+            data = {'letter_template_text': self.letter_template_text, 'employee': employee}
+            html = report.render_qweb_html(docids, data=data)[0]
+            self.custom_letter_template = html
 
     @api.onchange('coming_letters')
     def _computed_letter_type(self):

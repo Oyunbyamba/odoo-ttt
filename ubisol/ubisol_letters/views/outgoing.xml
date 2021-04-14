@@ -12,10 +12,10 @@
                         <div t-attf-class="oe_kanban_card oe_kanban_global_click" style="background-color: #FEFEFE; font-style:Arial; line-height: 0.7; padding-top:10px;" >
                             <div class="row">
                                 <div t-attf-class="col-12 #{!selection_mode ? 'text-left' : ''}">
-                                        <p><strong><field name="letter_subject_id"/></strong></p>
-                                        <p>Төлөв: <field name="state" string='Төлөв'/></p>
-                                        <p>Баримтын дугаар: <field name="letter_number"/></p>
-                                        <p>Бүртгэсэн огноо: <field name="registered_date"/></p>                                   
+                                    <p><strong><field name="letter_subject_id"/></strong></p>
+                                    <p>Төлөв: <field name="state" string='Төлөв'/></p>
+                                    <p>Баримтын дугаар: <field name="letter_number"/></p>
+                                    <p>Бүртгэсэн огноо: <field name="registered_date"/></p>                                   
                                 </div>
                             </div>                       
                         </div>
@@ -110,14 +110,18 @@
                         <group string="Хавсралт">
                             <field name="letter_attachment_ids" widget="many2many_binary" required='1'/>
                         </group>
-                    </group>
 
+                        <group>
+                            <field name="letter_template_text" widget="html"/>
+                        </group>
+                    </group>
                     <notebook>
-                        <page string="Агуулга">
+                        <page string="Харах">
                             <field name="custom_letter_template" widget="html"/>
                         </page>
                     </notebook>
                 </sheet>
+
                 <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers"/>
                     <field name="message_ids" widget="mail_thread"/>
