@@ -4,24 +4,44 @@
         <t t-call="web.html_container">
             <t t-set="company" t-value="env.company"/>
             
-                    <t t-call="ubisol_letters.letter_print_header" t-lang="mn_MN">
-                        <div class="col-12 page" style="font-size: 16px !important; line-height: 135%; padding-top:260px;">
-                            <div class="text-center">"<t t-esc="employee.surname"/>"-д</div>
-                                <hr style="border-top: 1px solid white;"/>
-                                <hr style="border-top: 1px solid white;"/>
+            <t t-call="ubisol_letters.letter_print_header" t-lang="mn_MN">
+                <div style="font-size: 10px !important;">
+                    <div align="center"> 
+                        <img t-if="employee.company_id.logo" 
+                            t-att-src="image_data_uri(employee.company_id.logo)" 
+                            style="max-height:55pt;max-width:90%" 
+                            alt="Company Logo"/> 
+                    </div>
+                    <div align="center" style='font-weight:600;margin-top:5px;font-size:14px'> ТАВАН ТОЛГОЙ ТҮЛШ </div>
+                    <div align="center" style='margin-bottom:10px;font-size:11px'> ХЯЗГААРЛАГДМАЛ ХАРИУЦЛАГАТАЙ КОМПАНИ </div>
+                    <div align="center">Монгол улс, Улаанбаатар хот, </div>
+                    <div align="center">Чингэлтэй дүүрэг, 1-р хороо, Жигжиджавын гудамж 8, </div>
+                    <div align="center">"Эрдэнэс тавантолгой" ХК-ийн Б байр 121 тоот </div>
+                    <div align="center">Утас:(976)-70119410 </div>
+                    <div align="center">И-мэйл: info@ttt.mn </div>
+                    <div style='margin-bottom:10px' align="center">Вэб: www.tavantolgoitulsh.mn </div>
 
-                            <div>
-                                &#160; &#160; &#160; &#160; &#160; <t t-raw="letter_template_text"/>
-                            </div>    
+                    <div class="col-12 row">
+                        <div align="right" class="col-5"><span id='letter_number'>$letter_number</span></div>
+                        <div align="center" class="col-2">№</div>
+                        <div align="left" class="col-5">123</div>
+                    </div>
+                    <div class="col-12 row">
+                        <div align="right" class="col-5">танай <span id='letter_number'>$letter_number</span></div>
+                        <div align="center" class="col-2">-ны №</div>
+                        <div align="left" class="col-5">465</div>
+                    </div>
+                    <div class="col-12" align="center"> <span id='terguu'>$terguu</span> </div>
 
-                            <div>
-                                <hr style="border-top: 1px solid white;"/>
-                                <hr style="border-top: 1px solid white;"/>
-                                <hr style="border-top: 1px solid white;"/>
-                                <span>Баталсан: </span> /  /
-                            </div>
-                        </div>
-                    </t>
+                    <div class="col-12" style="font-size: 16px !important; line-height: 135%; padding-top: 40px;">
+                        <div class="text-center">
+                            <t t-raw="letter_template_text"/>
+                            <t t-esc="employee.name"/>
+                        </div>   
+                    </div>
+                </div>
+                
+            </t>
                 
         </t>
     </template>

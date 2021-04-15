@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <template id="letter_print_header">
-        <div t-attf-class="header">
-        </div>
+        
         <div t-attf-class="article o_report_layout_standard" 
                 t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" 
                 t-att-data-oe-lang="o and o.env.context.get('lang')">
 
-            <t t-raw="0"/>
         </div>
     </template>
 
     <record id="letter_paperformat" model="report.paperformat">
-        <field name="name">Mongolian A4</field>
+        <field name="name">Mongolian A5</field>
         <field name="default" eval="True"/>
         <field name="format">custom</field>
         <field name="page_height">210</field>
@@ -22,6 +20,22 @@
         <field name="margin_bottom">20</field>
         <field name="margin_left">30</field>
         <field name="margin_right">15</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="paperformat_mn" model="report.paperformat">
+        <field name="name">Mongolian A4</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">15</field>
+        <field name="margin_bottom">15</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
         <field name="header_line" eval="False"/>
         <field name="header_spacing">0</field>
         <field name="dpi">90</field>

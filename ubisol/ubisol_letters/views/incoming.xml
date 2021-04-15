@@ -85,20 +85,20 @@
                     <group>
                         <group string="Үндсэн мэдээлэл">
                             <field name="tabs_id" invisible='1'/>
-                            <field name="letter_subject_id" required='1' attrs="{'readonly': [('tabs_id', '!=', False)]}"/>
-                            <field name="letter_number" required='1' attrs="{'readonly': [('tabs_id', '!=', False)]}"/>
-                            <field name="letter_type_id" required='1' attrs="{'readonly': [('tabs_id', '!=', False)]}"/>
-                            <field name="letter_date" string='Бичгийн огноо' attrs="{'readonly': [('tabs_id', '!=', False)]}"/>                            
-                            <field name="letter_total_num" attrs="{'readonly': [('tabs_id', '!=', False)]}"/>
+                            <field name="letter_subject_id" required='1' attrs="{'readonly': [('tabs_id', '!=', 0)]}"/>
+                            <field name="letter_number" required='1' attrs="{'readonly': [('tabs_id', '!=', 0)]}"/>
+                            <field name="letter_type_id" required='1' attrs="{'readonly': [('tabs_id', '!=', 0)]}"/>
+                            <field name="letter_date" string='Бичгийн огноо' attrs="{'readonly': [('tabs_id', '!=', 0)]}"/>                            
+                            <field name="letter_total_num" attrs="{'readonly': [('tabs_id', '!=', 0)]}"/>
                            
                         </group>
 
                         <group string="Нэмэлт">
                             <field name="partner_id" string="Илгээсэн байгууллага" 
                                 options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" 
-                                attrs="{'readonly': ['|', ('state', '!=', 'draft'), ('tabs_id', '!=', False)]}" required='1'/>
+                                attrs="{'readonly': ['|', ('state', '!=', 'draft'), ('tabs_id', '!=', 0)]}" required='1'/>
                             <field name='official_person' string='Хэнээс' 
-                                attrs="{'readonly': [('tabs_id', '!=', False)]}"/>
+                                attrs="{'readonly': [('tabs_id', '!=', 0)]}"/>
                             <field name="department_id" string='Хүлээн авах нэгж' 
                                 attrs="{'invisible': [('state', 'in', ('draft'))]}" 
                                 options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
@@ -108,7 +108,7 @@
                         </group>
 
                         <group>
-                            <field name="priority_id" attrs="{'readonly': [('tabs_id', '!=', False)]}"/>
+                            <field name="priority_id" attrs="{'readonly': [('tabs_id', '!=', 0)]}"/>
                             <field name="is_head_company" string='Дээд газраас ирсэн'/>
                             <field name="must_return" string='Хариутай эсэх'/>
                             <field name="must_return_date" attrs="{'invisible': [('must_return','!=',True)]}"/>
@@ -131,7 +131,7 @@
                     </group>
                     <notebook>
                         <page string="Агуулга">
-                            <field name="desc" widget="text" attrs="{'readonly': [('tabs_id', '!=', False)]}"/>
+                            <field name="desc" widget="text" attrs="{'readonly': [('tabs_id', '!=', 0)]}"/>
                         </page>
                     </notebook>
                 </sheet>

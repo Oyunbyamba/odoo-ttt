@@ -40,8 +40,10 @@ class UbiLetterGoing(models.Model):
     letter_template_text = fields.Html(
         'Агуулга', groups="base.group_user")    
     custom_letter_template = fields.Html(
-        'Template', compute='_compute_letter_template', groups="base.group_user")
+        'Template', compute='_compute_letter_template', inverse='_set_custom_template', groups="base.group_user")
         
+    def _set_custom_template(self):
+        self.custom_letter_template = self.custom_letter_template
 
     @api.onchange('letter_template_id')
     def _compute_letter_template(self):
