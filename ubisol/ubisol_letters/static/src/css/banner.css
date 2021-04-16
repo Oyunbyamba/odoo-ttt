@@ -1,0 +1,20 @@
+.docs-container {
+  width: 100%;
+  text-align: center;
+}
+
+.docs {
+  width: 20%;
+  height: 60px;
+  color: #fff;
+  text-align: center;
+  display: inline-block;
+}
+
+.docs-warning {
+  background-color: #ff9966;
+}
+
+.docs-success {
+  background-color: #339900;
+}

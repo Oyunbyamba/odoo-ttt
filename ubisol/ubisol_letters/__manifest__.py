@@ -29,6 +29,7 @@
     'qweb': [
         'static/src/xml/import_letter.xml'
     ],
+    'css': ['static/src/css/banner.css'],
     'installable': True,
     'application': True,
     'auto_install': False,
