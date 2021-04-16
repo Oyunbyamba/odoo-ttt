@@ -162,7 +162,7 @@
         <div class="docs-container">
             <div class="docs docs-warning">
                 <i class="fa fa-envelope-open" style="color:white;font-size: 25px;"/>
-                <span>
+                <span class="docs-digit">
                     <t t-esc="total_incoming_day"/>
                 </span>
                 <br/>
@@ -170,7 +170,7 @@
             </div>
             <div class="docs docs-success">
                 <i class="fa fa-envelope-open" style="color:white;font-size: 25px;"/>
-                <span>
+                <span class="docs-digit">
                     <t t-esc="total_incoming_month"/>
                 </span>
                 <br/>
@@ -178,7 +178,7 @@
             </div>
             <div class="docs docs-warning">
                 <i class="fa fa-envelope" style="color:white;font-size: 25px;"/>
-                <span>
+                <span class="docs-digit">
                     <t t-esc="total_sending_day"/>
                 </span>
                 <br/>
@@ -186,7 +186,7 @@
             </div>
             <div class="docs docs-success">
                 <i class="fa fa-envelope" style="color:white;font-size: 25px;"/>
-                <span>
+                <span class="docs-digit">
                     <t t-esc="total_sending_month"/>
                 </span>
                 <br/>

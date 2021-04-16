@@ -1,6 +1,8 @@
 .docs-container {
   width: 100%;
   text-align: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .docs {
@@ -9,6 +11,7 @@
   color: #fff;
   text-align: center;
   display: inline-block;
+  padding-top: 10px;
 }
 
 .docs-warning {
@@ -17,4 +20,8 @@
 
 .docs-success {
   background-color: #339900;
+}
+
+.docs-digit {
+  padding-left: 10px;
 }
