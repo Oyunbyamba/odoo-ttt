@@ -53,7 +53,12 @@ class UbiLetterGoing(models.Model):
         template_text = self.custom_letter_template
         soup = BeautifulSoup(template_text, 'html.parser')
         match = soup.find('span', {'id': key_word})
+        _logger.info('match.contents')
+        _logger.info(match.contents)
         match.string = val
+        # match.contents = val
+
+        # _logger.info(match)
         self.custom_letter_template = soup
 
     @api.onchange('letter_template_id')
@@ -71,11 +76,11 @@ class UbiLetterGoing(models.Model):
             data = {'letter_template_text': self.letter_template_text, 'employee': employee}
             html = report.render_qweb_html(docids, data=data)[0]
             self.custom_letter_template = html     
-            if self.letter_number:
-                self.replace_template_text('letter_number', self.letter_number)
+            # if self.letter_number:
+            #     self.replace_template_text('letter_number', self.letter_number)
 
-            if self.letter_subject_id:
-                self.replace_template_text('subject', self.letter_subject_id.name)
+            # if self.letter_subject_id:
+            #     self.replace_template_text('subject', self.letter_subject_id.name)
 
 
     @api.onchange('letter_number')
