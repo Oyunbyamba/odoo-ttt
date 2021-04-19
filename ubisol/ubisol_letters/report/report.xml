@@ -21,16 +21,17 @@
 
                 <div class="col-12 row">
                     <div align="right" class="col-5">
-                        <span id='letter_number'>$letter_number</span>
+                        <span id='letter_number'></span>
                     </div>
                     <div align="center" class="col-2">№</div>
-                    <div align="left" class="col-5">123</div>
+                    <div align="left" class="col-5"></div>
                 </div>
                 <div class="col-12 row">
-                    <div align="right" class="col-5">танай                        <span id='letter_number'>$letter_number</span>
+                    <div align="right" class="col-5">танай                       
+                    <span id='letter_number'></span>
                     </div>
                     <div align="center" class="col-2">-ны №</div>
-                    <div align="left" class="col-5">465</div>
+                    <div align="left" class="col-5"></div>
                 </div>
                 <div class="col-12" align="center"> <span id='subject'>$terguu</span> </div>
 
@@ -62,16 +63,17 @@
 
                     <div class="col-12 row">
                         <div align="right" class="col-5">
-                            <span id='letter_number'>$letter_number</span>
+                            <span id='letter_number'></span>
                         </div>
                         <div align="center" class="col-2"> №</div>
-                        <div align="left" class="col-5">123</div>
+                        <div align="left" class="col-5"></div>
                     </div>
                     <div class="col-12 row">
-                        <div align="right" class="col-5">танай                            <span id='letter_number'>$letter_number</span>
+                        <div align="right" class="col-5">танай                            
+                        <span id='letter_number'></span>
                         </div>
                         <div align="center" class="col-2"> -ны №</div>
-                        <div align="left" class="col-5">465</div>
+                        <div align="left" class="col-5"></div>
                     </div>
                     <div class="col-12" align="center"> <span id='subject'>$terguu</span> </div>
                 </div>
@@ -119,19 +121,19 @@
     </record>
 
     <report id="letter_detail_report_a5_pdf" 
-    model="ubi.letter.going" 
-    string="Албан бичиг хэвлэх" 
-    menu='False'
-    report_type="qweb-html" 
-    name="ubisol_letters.letter_detail_report_a5" 
-    file="ubisol_letters.letter_detail_report_a5" />
+        model="ubi.letter.going" 
+        string="Албан бичиг хэвлэх" 
+        menu='False'
+        report_type="qweb-html" 
+        name="ubisol_letters.letter_detail_report_a5" 
+        file="ubisol_letters.letter_detail_report_a5" />
 
     <report id="letter_detail_report_a4_pdf" 
-    model="ubi.letter.going" 
-    string="Албан бичиг хэвлэх a4" 
-    menu='False'
-    report_type="qweb-html" 
-    name="ubisol_letters.letter_detail_report_a4" 
-    file="ubisol_letters.letter_detail_report_a4" />
+        model="ubi.letter.going" 
+        string="Албан бичиг хэвлэх a4" 
+        menu='False'
+        report_type="qweb-html" 
+        name="ubisol_letters.letter_detail_report_a4" 
+        file="ubisol_letters.letter_detail_report_a4" />
 
 </odoo>

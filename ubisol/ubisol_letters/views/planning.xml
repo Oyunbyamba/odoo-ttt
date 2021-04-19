@@ -7,8 +7,6 @@
         <field name="model">ubi.letter.going</field>
         <field name="arch" type="xml">
             <tree string="Ubi Letter" default_order='id desc' import='false' export_xlsx='false' 
-                    decoration-success="state == 'sent'" 
-                    decoration-danger="state == 'refuse'" 
                     decoration-info="state == 'draft'">
                 <field name="letter_subject_id"/>
                 <field name="letter_type_id"/>
@@ -29,9 +27,14 @@
         <field name="arch" type="xml">
             <form string="Ubi Letter">
                 <header>
-                    <field name="state" widget="statusbar"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft"/>
                 </header>
                 <sheet>
+                    <div name="button_box" class="oe_button_box">
+                        <button class="oe_stat_button" name="print_report"
+                                    string="Хэвлэх" type="object"
+                                    icon="fa-file-text-o"/>
+                    </div>
                     <group>
                         <group string="Үндсэн мэдээлэл">
                             <field name="letter_subject_id" required='1'/>
@@ -79,9 +82,7 @@
                         </page>
                     </notebook>
                 </sheet>
-                <footer>
-                    <button name="print_report" string="Print" type="object" class="btn-primary"/>
-                </footer>
+                
                 <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers"/>
                     <field name="message_ids" widget="mail_thread"/>
@@ -99,7 +100,7 @@
                 (0, 0, {'view_mode': 'tree', 'view_id': ref('ubisol_letters.ubi_letter_planning_tree_view')}),
                 (0, 0, {'view_mode': 'form', 'view_id': ref('ubisol_letters.ubi_letter_planning_form_view')})]"/>
         <field name="view_mode">tree,form</field>
-        <field name="domain">[]</field>
+        <field name="domain">[('state', '=', 'draft')]</field>
         <field name="help" type="html">
             <p> Add a new document</p>
         </field>

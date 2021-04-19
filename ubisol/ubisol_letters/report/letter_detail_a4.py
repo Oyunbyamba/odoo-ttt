@@ -12,6 +12,7 @@ class letterDetailPdf(models.AbstractModel):
 
     @api.model
     def _get_report_values(self, docids, data=None):
+        letter_template_text = ''
         if data and data.get('letter_template_text'): 
             letter_template_text = data.get('letter_template_text')
         if docids:    
