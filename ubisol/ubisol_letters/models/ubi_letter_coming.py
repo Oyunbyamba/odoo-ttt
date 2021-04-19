@@ -62,10 +62,10 @@ class UbiLetterComing(models.Model):
             }
         return {}
 
-    @api.onchange('letter_template_id')
-    def _set_letter_template(self):
-        if self.letter_template_text:
-            self.custom_letter_template = self.letter_template_text
+    # @api.onchange('letter_template_id')
+    # def _set_letter_template(self):
+    #     if self.letter_template_text:
+    #         self.custom_letter_template = self.letter_template_text
 
     @api.onchange('going_letters')
     def _computed_letter_type(self):

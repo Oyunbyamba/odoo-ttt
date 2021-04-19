@@ -2,15 +2,14 @@
 <odoo>
     <template id="letter_detail_report_a5">
         <t t-call="web.html_container" >            
-            <t t-foreach="employee" t-as="e">
+            
                 <t  t-call="ubisol_letters.letter_print_a5" t-lang="mn_MN">
                     <div style="font-size: 16px !important; line-height: 135%; padding-top: 100px;">
                         <div class="text-center">
-                            <t t-esc="e.name"/>
+                            <span id='letter_template_text'><t t-esc="letter_template_text"/></span>
                         </div>   
                     </div>
                 </t>
-            </t>
         </t>
     </template>
 
