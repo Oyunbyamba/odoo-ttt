@@ -1,12 +1,6 @@
 <?xml version="1.0" ?>
 <odoo>
-    <!-- <record id="act_wizard_letter_return_wizard" model="ir.actions.act_window">
-        <field name="name">Ирсэн бичиг буцаах</field>
-        <field name="res_model">letter.return.wizard</field>
-        <field name="view_mode">form</field>
-        <field name="target">new</field>
-        <field name="binding_model_id" ref="ubisol_letters.model_ubi_letter" />
-    </record> -->
+
 
     <record id="attendance_report_wizard_form" model="ir.ui.view">
         <field name="model">letter.return.wizard</field>

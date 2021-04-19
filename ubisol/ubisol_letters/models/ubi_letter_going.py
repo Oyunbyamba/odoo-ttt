@@ -22,7 +22,6 @@ class UbiLetterGoing(models.Model):
     _rec_name = 'letter_number'
     _mail_post_access = 'read'
 
-
     follow_id = fields.Many2one('ubi.letter.coming', groups="base.group_user")
     letter_attachment_ids = fields.Many2many(
         'ir.attachment', 'letter_going_doc_attach', 'letter_id', 'doc_id', string="Хавсралт", copy=False)
@@ -35,16 +34,16 @@ class UbiLetterGoing(models.Model):
         default='draft',
         string='Явсан бичгийн төлөв', store=True, readonly=True, copy=False, tracking=True)
     send_date = fields.Date(
-        string='Илгээсэн огноо', groups="base.group_user")    
+        string='Илгээсэн огноо', groups="base.group_user")
     coming_letters = fields.Many2one(
-        'ubi.letter.coming', string='Ирсэн дугаар', groups="base.group_user")    
+        'ubi.letter.coming', string='Ирсэн дугаар', groups="base.group_user")
     letter_template_id = fields.Many2one(
         'ubi.letter.template', string='Баримтын загвар', groups="base.group_user")
     letter_template_text = fields.Html(
-        'Агуулга', groups="base.group_user")    
+        'Агуулга', groups="base.group_user")
     custom_letter_template = fields.Html('Template', groups="base.group_user")
     paper_size = fields.Selection('Paper size', related="letter_template_id.paper_size")
-        
+
     def _set_custom_template(self):
         if self.custom_letter_template:
             self.custom_letter_template = self.custom_letter_template
@@ -66,14 +65,17 @@ class UbiLetterGoing(models.Model):
         self.custom_letter_template = ''
         if self.letter_template_id:
             if self.letter_template_id.paper_size == 'a4':
-                report = self.env['ir.actions.report']._get_report_from_name('ubisol_letters.letter_detail_report_a4')
+                report = self.env['ir.actions.report']._get_report_from_name(
+                    'ubisol_letters.letter_detail_report_a4')
             elif self.letter_template_id.paper_size == 'a5':
-                report = self.env['ir.actions.report']._get_report_from_name('ubisol_letters.letter_detail_report_a5')
-            
+                report = self.env['ir.actions.report']._get_report_from_name(
+                    'ubisol_letters.letter_detail_report_a5')
+
             employee = self.env.user.employee_id
             docids = None
-            
-            data = {'letter_template_text': self.letter_template_text, 'employee': employee}
+
+            data = {'letter_template_text': self.letter_template_text,
+                    'employee': employee}
             html = report.render_qweb_html(docids, data=data)[0]
             self.custom_letter_template = html     
             # if self.letter_number:
@@ -128,6 +130,24 @@ class UbiLetterGoing(models.Model):
 
         return letter
 
+    def print_report(self):
+
+        docs = self.env['ubi.letter.going'].browse([1])
+        employee = self.env.user.employee_id
+        now_date = (datetime.now()).strftime('%Y-%m-%d')
+
+        _logger.info(employee.name)
+        report = self.env.ref('ubisol_letters.letter_detail_report_a5_pdf')
+        report.paperformat_id = self.env.ref(
+            'ubisol_letters.paperformat_mn')
+
+        data = {
+            'now_date': now_date,
+            'docs': docs,
+            'employee': employee[0]
+        }
+        return report.report_action(self, data=data)
+
     def action_sent(self):
         self.write({'state': 'sent'})
 
@@ -135,7 +155,8 @@ class UbiLetterGoing(models.Model):
         letters = self.env['ubi.letter.going'].browse(self.ids)
         for letter in letters:
             if any(letter.state not in ['draft'] for letter in self):
-                raise UserError(_('Зөвхөн бүртгэсэн төлөвтэй баримтыг "Илгээх" төлөвт оруулах боломжтой.'))
+                raise UserError(
+                    _('Зөвхөн бүртгэсэн төлөвтэй баримтыг "Илгээх" төлөвт оруулах боломжтой.'))
 
             if letter.state == 'draft':
                 request_data = self.build_state_doc(letter)
@@ -215,7 +236,7 @@ class UbiLetterGoing(models.Model):
         target_url = "https://dev.docx.gov.mn/soap/api"
         headers = {'Content-type': 'text/xml'}
         result = requests.post(target_url, data=data.encode(encoding='utf-8'),
-                               headers=headers, verify=False)                      
+                               headers=headers, verify=False)
         mytree = ET.fromstring(result.content)
 
         status = mytree.find(
@@ -236,8 +257,9 @@ class UbiLetterGoing(models.Model):
             letters = self.env['ubi.letter.going'].browse(self.ids)
             for letter in letters:
                 if any(letter.state not in ['sent'] for letter in self):
-                    raise UserError(_('Зөвхөн илгээсэн төлөвтэй баримтыг "Цуцлах" төлөвт оруулах боломжтой.'))
-        
+                    raise UserError(
+                        _('Зөвхөн илгээсэн төлөвтэй баримтыг "Цуцлах" төлөвт оруулах боломжтой.'))
+
                 if letter.state == 'sent':
                     result = self.cancel_sent(letter)
                     if result['status'] == '200':
@@ -273,7 +295,7 @@ class UbiLetterGoing(models.Model):
             status = mytree.find(
                 './/{https://dev.docx.gov.mn/document/dto}responseCode')
             find = mytree.find(
-                './/{https://dev.docx.gov.mn/document/dto}data')    
+                './/{https://dev.docx.gov.mn/document/dto}data')
             msg = mytree.find(
                 './/{https://dev.docx.gov.mn/document/dto}responseMessage')
 
