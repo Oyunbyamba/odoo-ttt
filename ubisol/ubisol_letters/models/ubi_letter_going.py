@@ -9,6 +9,7 @@ import xml.etree.ElementTree as ET
 import re
 import ssl
 import requests
+from bs4 import BeautifulSoup
 from odoo.exceptions import ValidationError, AccessError, UserError
 
 _logger = logging.getLogger(__name__)
@@ -32,22 +33,27 @@ class UbiLetterGoing(models.Model):
         groups="base.group_user",
         default='draft',
         string='Явсан бичгийн төлөв', store=True, readonly=True, copy=False, tracking=True)
-    sent_date = fields.Date(
-        string='Илгээсэн огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
+    send_date = fields.Date(
+        string='Илгээсэн огноо', groups="base.group_user")
     coming_letters = fields.Many2one(
         'ubi.letter.coming', string='Ирсэн дугаар', groups="base.group_user")
     letter_template_id = fields.Many2one(
         'ubi.letter.template', string='Баримтын загвар', groups="base.group_user")
     letter_template_text = fields.Html(
         'Агуулга', groups="base.group_user")
-    custom_letter_template = fields.Html(
-        'Template', compute='_compute_letter_template', inverse='_set_custom_template', groups="base.group_user")
-    paper_size = fields.Selection(
-        'Paper size', related="letter_template_id.paper_size")
+    custom_letter_template = fields.Html('Template', groups="base.group_user")
+    paper_size = fields.Selection('Paper size', related="letter_template_id.paper_size")
 
     def _set_custom_template(self):
         if self.custom_letter_template:
             self.custom_letter_template = self.custom_letter_template
+
+    def replace_template_text(self, key_word, val):
+        template_text = self.custom_letter_template
+        soup = BeautifulSoup(template_text, 'html.parser')
+        match = soup.find('span', {'id': key_word})
+        match.string = val
+        self.custom_letter_template = soup
 
     @api.onchange('letter_template_id')
     def _compute_letter_template(self):
@@ -67,6 +73,27 @@ class UbiLetterGoing(models.Model):
                     'employee': employee}
             html = report.render_qweb_html(docids, data=data)[0]
             self.custom_letter_template = html
+            if self.letter_number:
+                self.replace_template_text('letter_number', self.letter_number)
+
+            if self.letter_subject_id:
+                self.replace_template_text('subject', self.letter_subject_id.name)
+
+
+    @api.onchange('letter_number')
+    def _compute_letter_template1(self):
+        if self.letter_template_id and self.letter_number:
+            self.replace_template_text('letter_number', self.letter_number)
+
+    @api.onchange('letter_subject_id')
+    def _compute_letter_template2(self):
+        if self.letter_template_id and self.letter_subject_id:
+            self.replace_template_text('subject', self.letter_subject_id.name)
+
+    @api.onchange('letter_template_text')
+    def _compute_letter_template3(self):
+        if self.letter_template_id and self.letter_template_text:
+            self.replace_template_text('letter_template_text', self.letter_template_text)
 
     @api.onchange('coming_letters')
     def _computed_letter_type(self):
@@ -132,7 +159,7 @@ class UbiLetterGoing(models.Model):
                 if result['status'] == '200':
                     data = result['data']
                     letter.write(
-                        {"state": "sent", "tabs_id": data['id']})
+                        {"state": "sent", "tabs_id": data['id'], "send_date": datetime.today().strftime('%Y-%m-%d')})
                 else:
                     raise UserError(_(result['data']))
         return {}

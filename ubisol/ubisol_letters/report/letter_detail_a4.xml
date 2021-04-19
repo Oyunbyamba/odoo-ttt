@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
     <template id="letter_detail_report_a4">
-        <t t-call="web.html_container">
+        <t t-call="web.html_container" >
             <t t-call="ubisol_letters.letter_print_a4" t-lang="mn_MN">
 
                 <div style="font-size: 16px !important; line-height: 135%; padding-top: 100px;">
                     <div class="text-center">
-
+                        <span id='letter_template_text'><t t-esc="letter.letter_template_text"/></span>
                     </div>
                 </div>
             </t>
-
         </t>
     </template>
 

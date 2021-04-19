@@ -51,10 +51,10 @@ class UbisolLetters(http.Controller):
         total_incoming_day = request.env['ubi.letter.coming'].search_count([('create_date', '=', datetime.now().strftime('%Y-%m-%d'))])
 
         total_sending_month = request.env['ubi.letter.going'].search_count([('state', '=', 'sent'), 
-                ('sent_date', '>=', datetime.now().strftime('%Y-%m-01')),
-                ('sent_date', '<', (datetime.now() + relativedelta(months=1)).strftime('%Y-%m-01'))])
+                ('send_date', '>=', datetime.now().strftime('%Y-%m-01')),
+                ('send_date', '<', (datetime.now() + relativedelta(months=1)).strftime('%Y-%m-01'))])
         total_sending_day = request.env['ubi.letter.going'].search_count([('state', '=', 'sent'), 
-                ('sent_date', '=', datetime.now().strftime('%Y-%m-%d'))])
+                ('send_date', '=', datetime.now().strftime('%Y-%m-%d'))])
 
         return {'html': request.env.ref('ubisol_letters.docs_incoming_dashboard_panel').render({
             'total_incoming_day': total_incoming_day,
