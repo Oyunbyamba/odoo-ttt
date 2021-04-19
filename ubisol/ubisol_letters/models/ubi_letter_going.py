@@ -27,6 +27,7 @@ class UbiLetterGoing(models.Model):
         'ir.attachment', 'letter_going_doc_attach', 'letter_id', 'doc_id', string="Хавсралт", copy=False)
     state = fields.Selection([
         ('draft', 'Бүртгэсэн'),
+        ('expected', 'Хүлээгдэж буй'),
         ('sent', 'Илгээсэн'),
         ('received', 'Хүлээн авсан'),
         ('refuse', 'Цуцласан')],
@@ -144,11 +145,11 @@ class UbiLetterGoing(models.Model):
     def prepare_sending(self):
         letters = self.env['ubi.letter.going'].browse(self.ids)
         for letter in letters:
-            if any(letter.state not in ['draft'] for letter in self):
+            if any(letter.state not in ['expected'] for letter in self):
                 raise UserError(
-                    _('Зөвхөн бүртгэсэн төлөвтэй баримтыг "Илгээх" төлөвт оруулах боломжтой.'))
+                    _('Зөвхөн хүлээгдэж буй төлөвтэй баримтыг "Илгээх" төлөвт оруулах боломжтой.'))
 
-            if letter.state == 'draft':
+            if letter.state == 'expected':
                 request_data = self.build_state_doc(letter)
                 result = self.send_letter(request_data)
                 if result['status'] == '200':

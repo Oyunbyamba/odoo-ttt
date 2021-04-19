@@ -2,16 +2,108 @@
 
 <odoo>
     <!-- planning -->
+    <record id="ubi_letter_planning_tree_view" model="ir.ui.view">
+        <field name="name">ubi.letter.going.subject.tree</field>
+        <field name="model">ubi.letter.going</field>
+        <field name="arch" type="xml">
+            <tree string="Ubi Letter" default_order='id desc' import='false' export_xlsx='false' 
+                    decoration-success="state == 'sent'" 
+                    decoration-danger="state == 'refuse'" 
+                    decoration-info="state == 'draft'">
+                <field name="letter_subject_id"/>
+                <field name="letter_type_id"/>
+                <field name="letter_number"/>
+                <field name="registered_date"/>
+                <field name="letter_total_num"/>
+                <field name="partner_id" string='Хаана'/>
+                <field name="to_user" string='Хэнд'/>
+                <field name="is_local"/>
+                <field name="state" string='Төлөв'/>
+            </tree>
+        </field>
+    </record>
   
+    <record id="ubi_letter_planning_form_view" model="ir.ui.view">
+        <field name="name">ubi.letter.going.subject.form</field>
+        <field name="model">ubi.letter.going</field>
+        <field name="arch" type="xml">
+            <form string="Ubi Letter">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Үндсэн мэдээлэл">
+                            <field name="letter_subject_id" required='1'/>
+                            <field name="letter_number" required='1'/>
+                            <field name="letter_type_id" required='1'/>
+                            <field name="letter_template_id"/>
+                            <field name="letter_date" required='1'/>
+                            <field name="letter_total_num"/>
+
+                        </group>
+
+                        <group string="Нэмэлт">
+                            <field name="draft_user_id" string='Боловсруулсан' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="confirm_user_id" string='Хянасан' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="validate_user_id" string='Гарын үсэг зурсан' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="partner_id" string='Хаашаа' required='1'/>
+                            <field name="official_person" string='Хэнд'/>
+                            <field name="department_id" string='Хаанаас' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                        </group>
+
+                        <group>
+                            <field name="priority_id"/>
+                            <field name="is_local" string='Дотоод бичиг'/>
+                            <field name="must_return" string='Хариутай эсэх'/>
+                            <field name="must_return_date" attrs="{'invisible': [('must_return','!=',True)]}"/>
+                        </group>
+
+                        <group string='Ирсэн бичгийн хариу'>
+                            <field name="coming_letters" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="computed_letter_type" attrs="{'invisible': [('coming_letters', '=', False)]}"/>
+                            <field name="computed_letter_subject" attrs="{'invisible': [('coming_letters', '=', False)]}"/>
+                        </group>
+
+                        <group string="Хавсралт">
+                            <field name="letter_attachment_ids" widget="many2many_binary" required='1'/>
+                        </group>
+
+                        <group>
+                            <field name="letter_template_text" widget="html"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Харагдац">
+                            <field name="custom_letter_template" widget="html"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <footer>
+                    <button name="print_report" string="Print" type="object" class="btn-primary"/>
+                </footer>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+
     <record id="ubi_action_planning_letter" model="ir.actions.act_window">
         <field name="name">Бичиг төлөвлөлт</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="res_model">ubi.letter</field>
+        <field name="res_model">ubi.letter.going</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('ubisol_letters.ubi_letter_planning_tree_view')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('ubisol_letters.ubi_letter_planning_form_view')})]"/>
         <field name="view_mode">tree,form</field>
-        <field name="context">{}</field>
         <field name="domain">[]</field>
         <field name="help" type="html">
-            <p>action_planning_letter</p>
+            <p> Add a new document</p>
         </field>
     </record>
+
+
 </odoo>

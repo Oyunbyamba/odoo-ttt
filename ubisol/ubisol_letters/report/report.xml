@@ -118,8 +118,20 @@
         <field name="dpi">90</field>
     </record>
 
-    <report id="letter_detail_report_a5_pdf" model="ubi.letter.going" string="Албан бичиг хэвлэх" report_type="qweb-html" name="ubisol_letters.letter_detail_report_a5" file="ubisol_letters.letter_detail_report_a5" />
+    <report id="letter_detail_report_a5_pdf" 
+    model="ubi.letter.going" 
+    string="Албан бичиг хэвлэх" 
+    menu='False'
+    report_type="qweb-html" 
+    name="ubisol_letters.letter_detail_report_a5" 
+    file="ubisol_letters.letter_detail_report_a5" />
 
-    <report id="letter_detail_report_a4_pdf" model="ubi.letter.going" string="Албан бичиг хэвлэх a4" report_type="qweb-html" name="ubisol_letters.letter_detail_report_a4" file="ubisol_letters.letter_detail_report_a4" />
+    <report id="letter_detail_report_a4_pdf" 
+    model="ubi.letter.going" 
+    string="Албан бичиг хэвлэх a4" 
+    menu='False'
+    report_type="qweb-html" 
+    name="ubisol_letters.letter_detail_report_a4" 
+    file="ubisol_letters.letter_detail_report_a4" />
 
 </odoo>
