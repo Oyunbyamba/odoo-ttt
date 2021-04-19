@@ -3,11 +3,7 @@
     <template id="letter_print_a5">
         <div t-attf-class="header">
             <div style="font-size: 10px !important;">
-                <div align="center"> 
-                    <img t-if="employee.company_id.logo" 
-                        t-att-src="image_data_uri(employee.company_id.logo)" 
-                        style="max-height:55pt;max-width:90%" 
-                        alt="Company Logo"/> 
+                <div align="center">
                 </div>
                 <div align="center" style='font-weight:600;margin-top:5px;font-size:14px'> ТАВАН ТОЛГОЙ ТҮЛШ </div>
                 <div align="center" style='margin-bottom:10px;font-size:11px'> ХЯЗГААРЛАГДМАЛ ХАРИУЦЛАГАТАЙ КОМПАНИ </div>
@@ -19,17 +15,22 @@
                 <div style='margin-bottom:10px' align="center">Вэб: www.tavantolgoitulsh.mn </div>
 
                 <div class="col-12 row">
-                    <div align="right" class="col-5"><span id='letter_number'>$letter_number</span></div>
+                    <div align="right" class="col-5">
+                        <span id='letter_number'>$letter_number</span>
+                    </div>
                     <div align="center" class="col-2">№</div>
                     <div align="left" class="col-5">123</div>
                 </div>
                 <div class="col-12 row">
-                    <div align="right" class="col-5">танай <span id='letter_number'>$letter_number</span></div>
+                    <div align="right" class="col-5">танай                        <span id='letter_number'>$letter_number</span>
+                    </div>
                     <div align="center" class="col-2">-ны №</div>
                     <div align="left" class="col-5">465</div>
                 </div>
-                <div class="col-12" align="center"> <span id='terguu'>$terguu</span> </div>
-
+                <div class="col-12" align="center">
+                    <span id='terguu'>$terguu</span>
+                </div>
+                <t t-esc="employee.name"/>
             </div>
 
             <t t-raw="0"/>
@@ -40,11 +41,7 @@
         <div t-attf-class="header">
             <div class='col-12' style="font-size: 10px !important;">
                 <div class='col-7'>
-                    <div align="center"> 
-                        <img t-if="employee.company_id.logo" 
-                            t-att-src="image_data_uri(employee.company_id.logo)" 
-                            style="max-height:50pt;max-width:90%" 
-                            alt="Company Logo"/> 
+                    <div align="center">
                     </div>
                     <div align="center" style='font-weight:600;margin-top:5px;font-size:14px'> ТАВАН ТОЛГОЙ ТҮЛШ </div>
                     <div align="center" style='margin-bottom:10px;font-size:11px'> ХЯЗГААРЛАГДМАЛ ХАРИУЦЛАГАТАЙ КОМПАНИ </div>
@@ -56,18 +53,25 @@
                     <div style='margin-bottom:10px' align="center">Вэб: www.tavantolgoitulsh.mn </div>
 
                     <div class="col-12 row">
-                        <div align="right" class="col-5"><span id='letter_number'>$letter_number</span></div>
+                        <div align="right" class="col-5">
+                            <span id='letter_number'>$letter_number</span>
+                        </div>
                         <div align="center" class="col-2"> №</div>
                         <div align="left" class="col-5">123</div>
                     </div>
                     <div class="col-12 row">
-                        <div align="right" class="col-5">танай <span id='letter_number'>$letter_number</span></div>
+                        <div align="right" class="col-5">танай                            <span id='letter_number'>$letter_number</span>
+                        </div>
                         <div align="center" class="col-2"> -ны №</div>
                         <div align="left" class="col-5">465</div>
                     </div>
-                    <div class="col-12" align="center"> <span id='terguu'>$terguu</span> </div>
+                    <div class="col-12" align="center">
+                        <span id='terguu'>$terguu</span>
+                    </div>
+                    <t t-esc="employee.name"/>
                 </div>
             </div>
+
 
             <t t-raw="0"/>
         </div>
@@ -105,22 +109,8 @@
         <field name="dpi">90</field>
     </record>
 
-    <report
-        id="letter_detail_report_a5_pdf"
-        model="ubi.letter.going" 
-        string="Албан бичиг хэвлэх"
-        report_type="qweb-html"
-        name="ubisol_letters.letter_detail_report_a5"
-        file="ubisol_letters.letter_detail_report_a5"
-    />
-    
-    <report
-        id="letter_detail_report_a4_pdf"
-        model="ubi.letter.going" 
-        string="Албан бичиг хэвлэх a4"
-        report_type="qweb-html"
-        name="ubisol_letters.letter_detail_report_a4"
-        file="ubisol_letters.letter_detail_report_a4"
-    />
+    <report id="letter_detail_report_a5_pdf" model="ubi.letter.going" string="Албан бичиг хэвлэх" report_type="qweb-html" name="ubisol_letters.letter_detail_report_a5" file="ubisol_letters.letter_detail_report_a5" />
+
+    <report id="letter_detail_report_a4_pdf" model="ubi.letter.going" string="Албан бичиг хэвлэх a4" report_type="qweb-html" name="ubisol_letters.letter_detail_report_a4" file="ubisol_letters.letter_detail_report_a4" />
 
 </odoo>
