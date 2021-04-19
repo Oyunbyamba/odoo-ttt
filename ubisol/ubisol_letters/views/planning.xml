@@ -27,7 +27,7 @@
         <field name="arch" type="xml">
             <form string="Ubi Letter">
                 <header>
-                    <field name="state" widget="statusbar" statusbar_visible="draft"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,validate1,validate"/>
                 </header>
                 <sheet>
                     <div name="button_box" class="oe_button_box">

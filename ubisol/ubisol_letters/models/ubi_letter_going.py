@@ -27,6 +27,9 @@ class UbiLetterGoing(models.Model):
         'ir.attachment', 'letter_going_doc_attach', 'letter_id', 'doc_id', string="Хавсралт", copy=False)
     state = fields.Selection([
         ('draft', 'Бүртгэсэн'),
+        ('confirm', 'Хянасан'),
+        ('validate1', 'Зөвшөөрсөн'),
+        ('validate', 'Баталсан'),
         ('expected', 'Хүлээгдэж буй'),
         ('sent', 'Илгээсэн'),
         ('received', 'Хүлээн авсан'),
