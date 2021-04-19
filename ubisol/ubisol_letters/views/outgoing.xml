@@ -168,4 +168,12 @@
         </field>
     </record>
 
+    <record id="print_letter_definition" model="ir.actions.report">
+        <field name="name">Бичиг хэвлэх</field>
+        <field name="model">model_ubi_letter_going</field>
+        <field name="binding_model_id" ref="model_ubi_letter_going" />
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">ubisol_letters.letter_detail_report_a4</field>
+    </record>
+
 </odoo>

@@ -110,10 +110,8 @@
         model="ubi.letter.going" 
         string="Албан бичиг хэвлэх"
         report_type="qweb-html"
-        menu="False"
         name="ubisol_letters.letter_detail_report_a5"
         file="ubisol_letters.letter_detail_report_a5"
-        paperformat="ubisol_letters.letter_paperformat"
     />
     
     <report
@@ -123,7 +121,6 @@
         report_type="qweb-html"
         name="ubisol_letters.letter_detail_report_a4"
         file="ubisol_letters.letter_detail_report_a4"
-        paperformat="ubisol_letters.paperformat_mn"
     />
 
 </odoo>

@@ -46,10 +46,12 @@ class UbiLetterGoing(models.Model):
     paper_size = fields.Selection('Paper size', related="letter_template_id.paper_size")
         
     def _set_custom_template(self):
-        self.custom_letter_template = self.custom_letter_template
+        if self.custom_letter_template:
+            self.custom_letter_template = self.custom_letter_template
 
     @api.onchange('letter_template_id')
     def _compute_letter_template(self):
+        self.custom_letter_template = ''
         if self.letter_template_id:
             if self.letter_template_id.paper_size == 'a4':
                 report = self.env['ir.actions.report']._get_report_from_name('ubisol_letters.letter_detail_report_a4')
@@ -61,7 +63,7 @@ class UbiLetterGoing(models.Model):
             
             data = {'letter_template_text': self.letter_template_text, 'employee': employee}
             html = report.render_qweb_html(docids, data=data)[0]
-            self.custom_letter_template = html
+            self.custom_letter_template = html            
 
     @api.onchange('coming_letters')
     def _computed_letter_type(self):
