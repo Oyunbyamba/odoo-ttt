@@ -113,7 +113,7 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Харах">
+                        <page string="Харагдац">
                             <field name="custom_letter_template" widget="html"/>
                         </page>
                     </notebook>

@@ -6,7 +6,7 @@
 
                 <div style="font-size: 16px !important; line-height: 135%; padding-top: 100px;">
                     <div class="text-center">
-                        <span id='letter_template_text'><t t-esc="letter.letter_template_text"/></span>
+                        <div id='letter_template_text'><t t-raw="letter_template_text"/></div>
                     </div>
                 </div>
             </t>

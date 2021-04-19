@@ -52,8 +52,6 @@ class UbiLetterGoing(models.Model):
         template_text = self.custom_letter_template
         soup = BeautifulSoup(template_text, 'html.parser')
         match = soup.find('span', {'id': key_word})
-        _logger.info('match.contents')
-        _logger.info(match.contents)
         match.string = val
         # match.contents = val
 
@@ -71,18 +69,14 @@ class UbiLetterGoing(models.Model):
                 report = self.env['ir.actions.report']._get_report_from_name(
                     'ubisol_letters.letter_detail_report_a5')
 
-            employee = self.env.user.employee_id
-            docids = None
-
-            data = {'letter_template_text': self.letter_template_text,
-                    'employee': employee}
-            html = report.render_qweb_html(docids, data=data)[0]
+            data = {'letter_template_text': self.letter_template_text}
+            html = report.render_qweb_html(self.id, data=data)[0]
             self.custom_letter_template = html     
-            # if self.letter_number:
-            #     self.replace_template_text('letter_number', self.letter_number)
+            if self.letter_number:
+                self.replace_template_text('letter_number', self.letter_number)
 
-            # if self.letter_subject_id:
-            #     self.replace_template_text('subject', self.letter_subject_id.name)
+            if self.letter_subject_id:
+                self.replace_template_text('subject', self.letter_subject_id.name)
 
 
     @api.onchange('letter_number')
@@ -97,8 +91,17 @@ class UbiLetterGoing(models.Model):
 
     @api.onchange('letter_template_text')
     def _compute_letter_template3(self):
-        if self.letter_template_id and self.letter_template_text:
-            self.replace_template_text('letter_template_text', self.letter_template_text)
+        if self.letter_template_id:
+            if self.letter_template_id.paper_size == 'a4':
+                report = self.env['ir.actions.report']._get_report_from_name(
+                    'ubisol_letters.letter_detail_report_a4')
+            elif self.letter_template_id.paper_size == 'a5':
+                report = self.env['ir.actions.report']._get_report_from_name(
+                    'ubisol_letters.letter_detail_report_a5')
+
+            data = {'letter_template_text': self.letter_template_text}
+            html = report.render_qweb_html(self.id, data=data)[0]
+            self.custom_letter_template = html 
 
     @api.onchange('coming_letters')
     def _computed_letter_type(self):
@@ -131,22 +134,9 @@ class UbiLetterGoing(models.Model):
         return letter
 
     def print_report(self):
-
-        docs = self.env['ubi.letter.going'].browse([1])
-        employee = self.env.user.employee_id
-        now_date = (datetime.now()).strftime('%Y-%m-%d')
-
-        _logger.info(employee.name)
-        report = self.env.ref('ubisol_letters.letter_detail_report_a5_pdf')
-        report.paperformat_id = self.env.ref(
-            'ubisol_letters.paperformat_mn')
-
-        data = {
-            'now_date': now_date,
-            'docs': docs,
-            'employee': employee[0]
-        }
-        return report.report_action(self, data=data)
+        if self.ids:
+            report = self.env.ref('ubisol_letters.letter_detail_report_a5_pdf')
+            return report.report_action(self.ids)
 
     def action_sent(self):
         self.write({'state': 'sent'})

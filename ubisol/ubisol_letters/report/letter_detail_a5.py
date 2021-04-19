@@ -12,17 +12,17 @@ class letterDetailPdf(models.AbstractModel):
 
     @api.model
     def _get_report_values(self, docids, data=None):
-        docs = self.env['ubi.letter.going'].browse(docids)
+        if data and data.get('letter_template_text'): 
+            letter_template_text = data.get('letter_template_text')
+        if docids:    
+            docs = self.env['ubi.letter.going'].browse(docids)
+            letter_template_text = docs.letter_template_text
+  
         employee = self.env.user.employee_id
         now_date = (datetime.now()).strftime('%Y-%m-%d')
 
-        _logger.info('report a5')
-        _logger.info(self)
-        _logger.info(docids)
-        _logger.info(data)
-        _logger.info(employee)
         return {
                 'now_date': now_date,
-                'docs': docs,
+                'letter_template_text': letter_template_text,
                 'employee': employee
             }

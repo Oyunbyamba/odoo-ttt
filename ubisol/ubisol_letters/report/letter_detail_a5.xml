@@ -6,7 +6,7 @@
                 <t  t-call="ubisol_letters.letter_print_a5" t-lang="mn_MN">
                     <div style="font-size: 16px !important; line-height: 135%; padding-top: 100px;">
                         <div class="text-center">
-                            <span id='letter_template_text'><t t-esc="letter_template_text"/></span>
+                            <span id='letter_template_text'><t t-raw="letter_template_text"/></span>
                         </div>
                     </div>
                 </t>
