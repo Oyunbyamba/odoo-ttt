@@ -9,8 +9,6 @@
             <t t-raw="0"/>
         </div>
 
-        <div t-attf-class="footer o_standard_footer o_company_#{company.id}_layout">
-        </div>
     </template>
 
     <template id="employee_print_header">
@@ -30,7 +28,7 @@
         <field name="page_height">210</field>
         <field name="page_width">148</field>
         <field name="orientation">Portrait</field>
-        <field name="margin_top">20</field>
+        <field name="margin_top">10</field>
         <field name="margin_bottom">20</field>
         <field name="margin_left">30</field>
         <field name="margin_right">15</field>

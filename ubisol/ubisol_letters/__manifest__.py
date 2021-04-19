@@ -20,7 +20,8 @@
         'views/res_partner.xml',
         'views/menu.xml',
         'wizards/letter_return_wizard.xml',
-        'report/letter_detail.xml',
+        'report/letter_detail_a4.xml',
+        'report/letter_detail_a5.xml',
         'report/report.xml',
 
 

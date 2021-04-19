@@ -73,7 +73,6 @@
                             <field name="letter_type_id" required='1'/>
                             <field name="letter_template_id"/>
                             <field name="letter_date" required='1'/>
-                            <field name="decide_date" string='Шийдвэрлэх' invisible='1'/>
                             <field name="letter_total_num"/>
 
                         </group>
@@ -82,7 +81,7 @@
                             <field name="draft_user_id" string='Боловсруулсан' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="confirm_user_id" string='Хянасан' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="validate_user_id" string='Гарын үсэг зурсан' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                            <field name="partner_id" string='Хаашаа' required='1' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="partner_id" string='Хаашаа' required='1'/>
                             <field name="official_person" string='Хэнд'/>
                             <field name="department_id" string='Хаанаас' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                         </group>

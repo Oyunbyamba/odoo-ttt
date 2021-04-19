@@ -36,8 +36,6 @@ class UbiLetter(models.AbstractModel):
         string='Хүлээн авсан огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
     registered_date = fields.Datetime(
         string='Бүртгэсэн огноо', default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), groups="base.group_user")
-    decide_date = fields.Date(
-        string='Шийдвэрлэх огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
     letter_date = fields.Date(string='Баримтын огноо', default=datetime.today(),
                               groups="base.group_user")
     processing_datetime = fields.Datetime(string='Явцын огноо',

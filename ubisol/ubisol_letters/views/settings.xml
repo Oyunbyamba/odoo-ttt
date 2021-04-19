@@ -88,7 +88,7 @@
                 <sheet>
                     <group>
                         <field name="letter_template_name"/>
-                        <field name="paper_size"/>
+                        <field name="paper_size" required='1'/>
                         <field name="letter_template"/>
                     </group>
                 </sheet>

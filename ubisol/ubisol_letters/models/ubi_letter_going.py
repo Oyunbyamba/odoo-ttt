@@ -33,6 +33,8 @@ class UbiLetterGoing(models.Model):
         groups="base.group_user",
         default='draft',
         string='Явсан бичгийн төлөв', store=True, readonly=True, copy=False, tracking=True)
+    sent_date = fields.Date(
+        string='Илгээсэн огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")    
     coming_letters = fields.Many2one(
         'ubi.letter.coming', string='Ирсэн дугаар', groups="base.group_user")    
     letter_template_id = fields.Many2one(
@@ -41,6 +43,7 @@ class UbiLetterGoing(models.Model):
         'Агуулга', groups="base.group_user")    
     custom_letter_template = fields.Html(
         'Template', compute='_compute_letter_template', inverse='_set_custom_template', groups="base.group_user")
+    paper_size = fields.Selection('Paper size', related="letter_template_id.paper_size")
         
     def _set_custom_template(self):
         self.custom_letter_template = self.custom_letter_template
@@ -48,7 +51,11 @@ class UbiLetterGoing(models.Model):
     @api.onchange('letter_template_id')
     def _compute_letter_template(self):
         if self.letter_template_id:
-            report = self.env['ir.actions.report']._get_report_from_name('ubisol_letters.letter_detail_report')
+            if self.letter_template_id.paper_size == 'a4':
+                report = self.env['ir.actions.report']._get_report_from_name('ubisol_letters.letter_detail_report_a4')
+            elif self.letter_template_id.paper_size == 'a5':
+                report = self.env['ir.actions.report']._get_report_from_name('ubisol_letters.letter_detail_report_a5')
+            
             employee = self.env.user.employee_id
             docids = None
             
