@@ -105,7 +105,6 @@ class UbiLetterComing(models.Model):
 
         return letter
 
-
     # ------------------------------------------------------------
     # Activity methods
     # ------------------------------------------------------------
@@ -154,7 +153,7 @@ class UbiLetterComing(models.Model):
     def check_new_letters(self, user={}):
         data = """<Envelope xmlns = "http://schemas.xmlsoap.org/soap/envelope/" >
                     <Body>
-                        <callRequest xmlns = "https://dev.docx.gov.mn/document/dto">
+                        <callRequest xmlns = "https://docx.gov.mn/document/dto">
                             <token>2mRCiuLX352m6O2lhqMoxPs-fQ5ibZgaqIHRbNSaxCaoiJg7Ugo7nCCQEMKKlgK-XBQBprEqylE3EKmM5fMinLm6PnzAYfIHTi-BcwQXG8l3MHKp30HFjMyfrhfJvqK83o4JhtDxAXyp8TpeRrEhY949ClikAWr-v1cPbQ6Q0N8</token>
                             <service>get.document_list/list</service >
                             <params>{}</params>
@@ -166,7 +165,7 @@ class UbiLetterComing(models.Model):
         # result = client.service.call(data)
         # print(result)
 
-        target_url = "https://dev.docx.gov.mn/soap/api"
+        target_url = "https://docx.gov.mn/soap/api"
         headers = {'Content-type': 'text/xml'}
         result = requests.post(target_url, data=data.encode(
             encoding='utf-8'), headers=headers, verify=False)
@@ -174,17 +173,17 @@ class UbiLetterComing(models.Model):
         mytree = ET.fromstring(result.content)
 
         status = mytree.find(
-            './/{https://dev.docx.gov.mn/document/dto}responseCode')
+            './/{https://docx.gov.mn/document/dto}responseCode')
 
         if(status.text.strip() == '200'):
             find = mytree.find(
-                './/{https://dev.docx.gov.mn/document/dto}data')
+                './/{https://docx.gov.mn/document/dto}data')
 
             data = json.loads(find.text.strip())
             count = 0
             for doc in data:
                 already_received = self.env['ubi.letter.coming'].search(
-                    [('letter_number', '=', doc['documentNumber']), ('partner_id.ubi_letter_org_id', '=', doc['orgId'])], limit=1)
+                    [('tabs_id', '=', doc['id']), ('partner_id.ubi_letter_org_id', '=', doc['orgId'])], limit=1)
                 # umnu orj irseng shalgah
                 if(already_received):
                     pass
@@ -234,7 +233,7 @@ class UbiLetterComing(models.Model):
     def download_files(self, files):
         attachment_ids = []
         for file in files:
-            file_url = "https://dev.docx.gov.mn"+file['url']
+            file_url = "https://docx.gov.mn"+file['url']
             file_name = file['name']
             result = base64.b64encode(requests.get(
                 file_url.strip(), verify=False).content).replace(b'\n', b'')
@@ -287,22 +286,22 @@ class UbiLetterComing(models.Model):
                                   "cancel_employee": wizard_vals.cancel_employee.name
                                   })
                 else:
-                    raise UserError(_(result['data']))                
+                    raise UserError(_(result['data']))
         return True
 
     def return_received(self, params):
 
         template = """<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
                         <Body>
-                            <callRequest xmlns="https://dev.docx.gov.mn/document/dto">
-                                <token>lrBkkTxrwgrd72nW1JD7LUZqiRAM4ityEEZz4riJhxWlpmgTWYMvcgCtw</token>
+                            <callRequest xmlns="https://docx.gov.mn/document/dto">
+                                <token>2mRCiuLX352m6O2lhqMoxPs-fQ5ibZgaqIHRbNSaxCaoiJg7Ugo7nCCQEMKKlgK-XBQBprEqylE3EKmM5fMinLm6PnzAYfIHTi-BcwQXG8l3MHKp30HFjMyfrhfJvqK83o4JhtDxAXyp8TpeRrEhY949ClikAWr-v1cPbQ6Q0N8</token>
                                 <service>post.public.document/receive</service>
-                                <params>{"id":391, "statusId": 5, "statusPerson":"D.Bold", "statusPosition":"Darga", "statusComment":"Ирсэн бичгийн материал дутуу учир буцаалаа шүү" }</params>
+                                <params>%s</params>
                             </callRequest>
                         </Body>
                         </Envelope>"""
         data = template % params
-        target_url = "https://dev.docx.gov.mn/soap/api"
+        target_url = "https://docx.gov.mn/soap/api"
         headers = {'Content-type': 'text/xml'}
         result = requests.post(target_url, data=data.encode(
             encoding='utf-8'), headers=headers, verify=False)
@@ -311,11 +310,11 @@ class UbiLetterComing(models.Model):
             mytree = ET.fromstring(result.content)
 
             status = mytree.find(
-                './/{https://dev.docx.gov.mn/document/dto}responseCode')
+                './/{https://docx.gov.mn/document/dto}responseCode')
             find = mytree.find(
-                './/{https://dev.docx.gov.mn/document/dto}data')
+                './/{https://docx.gov.mn/document/dto}data')
             msg = mytree.find(
-                './/{https://dev.docx.gov.mn/document/dto}responseMessage')
+                './/{https://docx.gov.mn/document/dto}responseMessage')
             _logger.info(data)
 
             if(status.text.strip() == '200'):
@@ -335,13 +334,14 @@ class UbiLetterComing(models.Model):
             if letter.state == 'draft':
                 received_user = self.env.user
                 params = {"id": letter.tabs_id,
-                        "statusId": 6, 
-                        "statusPerson": received_user.employee_id.name if received_user.employee_id else "",
-                        "statusPosition": received_user.employee_id.job_id.name if received_user.employee_id else "",
-                        "statusComment": ""}
+                          "statusId": 6,
+                          "statusPerson": received_user.employee_id.name if received_user.employee_id else "",
+                          "statusPosition": received_user.employee_id.job_id.name if received_user.employee_id else "",
+                          "statusComment": ""}
                 result = self.letter_received(params)
                 if result['status'] == '200':
-                    letter.write({"state": "receive", 'receive_user_id': received_user})
+                    letter.write(
+                        {"state": "receive", 'receive_user_id': received_user})
                 else:
                     raise UserError(_(result['data']))
         return True
@@ -350,7 +350,7 @@ class UbiLetterComing(models.Model):
 
         template = """<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
                         <Body>
-                            <callRequest xmlns="https://dev.docx.gov.mn/document/dto">
+                            <callRequest xmlns="https://docx.gov.mn/document/dto">
                                 <token>2mRCiuLX352m6O2lhqMoxPs-fQ5ibZgaqIHRbNSaxCaoiJg7Ugo7nCCQEMKKlgK-XBQBprEqylE3EKmM5fMinLm6PnzAYfIHTi-BcwQXG8l3MHKp30HFjMyfrhfJvqK83o4JhtDxAXyp8TpeRrEhY949ClikAWr-v1cPbQ6Q0N8</token>
                                     <service>post.public.document/receive</service>
                                 <params>%s</params>
@@ -359,7 +359,7 @@ class UbiLetterComing(models.Model):
                     </Envelope>"""
         data = template % params
         _logger.info(data)
-        target_url = "https://dev.docx.gov.mn/soap/api"
+        target_url = "https://docx.gov.mn/soap/api"
         headers = {'Content-type': 'text/xml'}
         result = requests.post(target_url, data=data.encode(
             encoding='utf-8'), headers=headers, verify=False)
@@ -368,12 +368,12 @@ class UbiLetterComing(models.Model):
             mytree = ET.fromstring(result.content)
 
             status = mytree.find(
-                './/{https://dev.docx.gov.mn/document/dto}responseCode')
+                './/{https://docx.gov.mn/document/dto}responseCode')
             find = mytree.find(
-                './/{https://dev.docx.gov.mn/document/dto}data')    
+                './/{https://docx.gov.mn/document/dto}data')
             msg = mytree.find(
-                './/{https://dev.docx.gov.mn/document/dto}responseMessage')        
-        
+                './/{https://docx.gov.mn/document/dto}responseMessage')
+
             if(status.text.strip() == '200'):
                 data = json.loads(find.text.strip())
                 return {'status': status.text.strip(), 'data': data}
@@ -382,11 +382,11 @@ class UbiLetterComing(models.Model):
         else:
             return {'status': 'ERROR', 'data': 'Сүлжээний алдаа гарлаа.'}
 
-
     def activity_update(self):
         to_clean, to_do = self.env['ubi.letter.going'], self.env['ubi.letter.going']
         for letter in self:
-            note = _('%s дугаартай баримтыг %s -нд %s -с шилжүүлсэн.') % (letter.letter_number, fields.Datetime.to_string(letter.processing_datetime), self.env.user.name)
+            note = _('%s дугаартай баримтыг %s -нд %s -с шилжүүлсэн.') % (letter.letter_number,
+                                                                          fields.Datetime.to_string(letter.processing_datetime), self.env.user.name)
             # if letter.state == 'draft':
             #     to_clean |= holiday
             if letter.state == 'transfer':
@@ -407,7 +407,8 @@ class UbiLetterComing(models.Model):
         # if to_clean:
         #     to_clean.activity_unlink(['ubisol_letters.mail_act_leave_approval', 'ubisol_letters.mail_act_leave_second_approval'])
         if to_do:
-            to_do.activity_feedback(['ubisol_letters.mail_act_letter_coming_transfer'])
+            to_do.activity_feedback(
+                ['ubisol_letters.mail_act_letter_coming_transfer'])
 
     ####################################################
     # Messaging methods

@@ -46,7 +46,8 @@ class UbiLetterGoing(models.Model):
     letter_template_text = fields.Html(
         'Агуулга', groups="base.group_user")
     custom_letter_template = fields.Html('Template', groups="base.group_user")
-    paper_size = fields.Selection('Paper size', related="letter_template_id.paper_size")
+    paper_size = fields.Selection(
+        'Paper size', related="letter_template_id.paper_size")
 
     def _set_custom_template(self):
         if self.custom_letter_template:
@@ -75,13 +76,13 @@ class UbiLetterGoing(models.Model):
 
             data = {'letter_template_text': self.letter_template_text}
             html = report.render_qweb_html(self.id, data=data)[0]
-            self.custom_letter_template = html     
+            self.custom_letter_template = html
             if self.letter_number:
                 self.replace_template_text('letter_number', self.letter_number)
 
             if self.letter_subject_id:
-                self.replace_template_text('subject', self.letter_subject_id.name)
-
+                self.replace_template_text(
+                    'subject', self.letter_subject_id.name)
 
     @api.onchange('letter_number')
     def _compute_letter_template1(self):
@@ -105,7 +106,7 @@ class UbiLetterGoing(models.Model):
 
             data = {'letter_template_text': self.letter_template_text}
             html = report.render_qweb_html(self.id, data=data)[0]
-            self.custom_letter_template = html 
+            self.custom_letter_template = html
 
     @api.onchange('coming_letters')
     def _computed_letter_type(self):
@@ -218,7 +219,7 @@ class UbiLetterGoing(models.Model):
     def send_letter(self, request_data):
         template = """<Envelope xmlns = "http://schemas.xmlsoap.org/soap/envelope/" >
                         <Body>
-                            <callRequest xmlns = "https://dev.docx.gov.mn/document/dto">
+                            <callRequest xmlns = "https://docx.gov.mn/document/dto">
                                 <token>2mRCiuLX352m6O2lhqMoxPs-fQ5ibZgaqIHRbNSaxCaoiJg7Ugo7nCCQEMKKlgK-XBQBprEqylE3EKmM5fMinLm6PnzAYfIHTi-BcwQXG8l3MHKp30HFjMyfrhfJvqK83o4JhtDxAXyp8TpeRrEhY949ClikAWr-v1cPbQ6Q0N8</token>
                                 <service>post.public.document</service >
                                 <params >%s</params>
@@ -227,7 +228,7 @@ class UbiLetterGoing(models.Model):
                     </Envelope>"""
 
         data = template % (request_data)
-        target_url = "https://dev.docx.gov.mn/soap/api"
+        target_url = "https://docx.gov.mn/soap/api"
         headers = {'Content-type': 'text/xml'}
         result = requests.post(target_url, data=data.encode(encoding='utf-8'),
                                headers=headers, verify=False)
@@ -269,7 +270,7 @@ class UbiLetterGoing(models.Model):
         params = {"id": letter.tabs_id}
         template = """<Envelope xmlns = "http://schemas.xmlsoap.org/soap/envelope/" >
                     <Body>
-                        <callRequest xmlns = "https://dev.docx.gov.mn/document/dto">
+                        <callRequest xmlns = "https://docx.gov.mn/document/dto">
                             <token>2mRCiuLX352m6O2lhqMoxPs-fQ5ibZgaqIHRbNSaxCaoiJg7Ugo7nCCQEMKKlgK-XBQBprEqylE3EKmM5fMinLm6PnzAYfIHTi-BcwQXG8l3MHKp30HFjMyfrhfJvqK83o4JhtDxAXyp8TpeRrEhY949ClikAWr-v1cPbQ6Q0N8</token>
                             <service>post.public.document/delete</service >
                             <params>%s</params>
@@ -278,7 +279,7 @@ class UbiLetterGoing(models.Model):
                     </Body>
                 </Envelope>"""
         data = template % params
-        target_url = "https://dev.docx.gov.mn/soap/api"
+        target_url = "https://docx.gov.mn/soap/api"
         headers = {'Content-type': 'text/xml'}
         result = requests.post(target_url, data=data.encode(
             encoding='utf-8'), headers=headers, verify=False)
