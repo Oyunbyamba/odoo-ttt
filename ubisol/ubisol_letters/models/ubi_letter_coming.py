@@ -170,29 +170,33 @@ class UbiLetterComing(models.Model):
         result = requests.post(target_url, data=data.encode(
             encoding='utf-8'), headers=headers, verify=False)
 
-        mytree = ET.fromstring(result.content)
+        if result.status_code == 200:
 
-        status = mytree.find(
-            './/{https://docx.gov.mn/document/dto}responseCode')
+            mytree = ET.fromstring(result.content)
 
-        if(status.text.strip() == '200'):
-            find = mytree.find(
-                './/{https://docx.gov.mn/document/dto}data')
+            status = mytree.find(
+                './/{https://docx.gov.mn/document/dto}responseCode')
 
-            data = json.loads(find.text.strip())
-            count = 0
-            for doc in data:
-                already_received = self.env['ubi.letter.coming'].search(
-                    [('tabs_id', '=', doc['id']), ('partner_id.ubi_letter_org_id', '=', doc['orgId'])], limit=1)
-                # umnu orj irseng shalgah
-                if(already_received):
-                    pass
-                else:
-                    vals = self.prepare_receiving(doc)
-                    self.env['ubi.letter.coming'].create(vals)
-                    count += 1
-            return 'Шинээр нийт ' + str(count) + ' бичиг ирсэн байна.'
+            if(status.text.strip() == '200'):
+                find = mytree.find(
+                    './/{https://docx.gov.mn/document/dto}data')
 
+                data = json.loads(find.text.strip())
+                count = 0
+                for doc in data:
+                    already_received = self.env['ubi.letter.coming'].search(
+                        [('tabs_id', '=', doc['id']), ('partner_id.ubi_letter_org_id', '=', doc['orgId'])], limit=1)
+                    # umnu orj irseng shalgah
+                    if(already_received):
+                        pass
+                    else:
+                        vals = self.prepare_receiving(doc)
+                        self.env['ubi.letter.coming'].create(vals)
+                        count += 1
+                return 'Шинээр нийт ' + str(count) + ' бичиг ирсэн байна.'
+
+            else:
+                return 'Албан бичиг татах системтэй холбогдох явцад алдаа гарлаа.'
         else:
             return 'Албан бичиг татах системтэй холбогдох явцад алдаа гарлаа.'
 
