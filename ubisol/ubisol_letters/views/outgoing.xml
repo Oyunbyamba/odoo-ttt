@@ -1,36 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
-    <record id="ubi_letter_going_kanban_view" model="ir.ui.view">
-        <field name="name">ubi.letter.going.kanban</field>
-        <field name="model">ubi.letter.going</field>
-        <field name="arch" type="xml">
-            <kanban class="o_kanban_mobile">
 
-                <templates>
-                    <t t-name="kanban-box">
-                        <div t-attf-class="oe_kanban_card oe_kanban_global_click" style="background-color: #FEFEFE; font-style:Arial; line-height: 0.7; padding-top:10px;">
-                            <div class="row">
-                                <div t-attf-class="col-12 #{!selection_mode ? 'text-left' : ''}">
-                                    <p>
-                                        <strong>
-                                            <field name="letter_subject_id"/>
-                                        </strong>
-                                    </p>
-                                    <p>Төлөв:                                        <field name="state" string='Төлөв'/>
-                                    </p>
-                                    <p>Баримтын дугаар:                                        <field name="letter_number"/>
-                                    </p>
-                                    <p>Бүртгэсэн огноо:                                        <field name="registered_date"/>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </t>
-                </templates>
-            </kanban>
-        </field>
-    </record>
 
     <record id="ubi_letter_going_tree_view" model="ir.ui.view">
         <field name="name">ubi.letter.going.subject.tree</field>
@@ -73,8 +44,8 @@
                         </group>
 
                         <group string="Нэмэлт">
-                            <field name="draft_user_id" string='Боловсруулсан' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                            <field name="confirm_user_id" string='Хянасан' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="confirm_user_id" string='Боловсруулсан' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="validate1_user_id" string='Хянасан' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="validate_user_id" string='Гарын үсэг зурсан' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="partner_id" string='Хаашаа' required='1'/>
                             <field name="official_person" string='Хэнд'/>

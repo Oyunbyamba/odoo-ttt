@@ -1,6 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
+    <record id="ubi_letter_going_kanban_view" model="ir.ui.view">
+        <field name="name">ubi.letter.going.kanban</field>
+        <field name="model">ubi.letter.going</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click" style="background-color: #FEFEFE; font-style:Arial; line-height: 0.7; padding-top:10px;">
+                            <div class="row">
+                                <div t-attf-class="col-12 #{!selection_mode ? 'text-left' : ''}">
+                                    <p>
+                                        <strong>
+                                            <field name="letter_subject_id"/>
+                                        </strong>
+                                    </p>
+                                    <p>Төлөв:                                        <field name="state" string='Төлөв'/>
+                                    </p>
+                                    <p>Баримтын дугаар:                                        <field name="letter_number"/>
+                                    </p>
+                                    <p>Бүртгэсэн огноо:                                        <field name="registered_date"/>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
     <!-- planning -->
     <record id="ubi_letter_planning_tree_view" model="ir.ui.view">
         <field name="name">ubi.letter.going.subject.tree</field>
@@ -26,7 +57,17 @@
         <field name="model">ubi.letter.going</field>
         <field name="arch" type="xml">
             <form string="Ubi Letter">
+                <field name="can_approve" invisible='1'/>
                 <header>
+                    <button string="Ноорог" name="action_draft" type="object" class="oe_highlight"
+                        attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'in', 'draft')]}"/>
+                    <button string="Хянах" name="action_confirm" type="object" class="oe_highlight" 
+                        attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'not in', ('draft'))]}"/>
+                    <button string="Зөвшөөрөх" name="action_validate1" type="object" class="oe_highlight" 
+                        attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'not in', ('confirm'))]}"/>
+                    <button string="Батлах" name="action_validate" type="object" 
+                        attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'not in', ('validate1'))]}"/>
+                    
                     <field name="state" widget="statusbar" statusbar_visible="draft,confirm,validate1,validate"/>
                 </header>
                 <sheet>
@@ -47,9 +88,21 @@
                         </group>
 
                         <group string="Нэмэлт">
-                            <field name="draft_user_id" string='Боловсруулсан' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                            <field name="confirm_user_id" string='Хянасан' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                            <field name="validate_user_id" string='Гарын үсэг зурсан' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="confirm_user_id" string='Хянасан' 
+                                attrs="{'readonly': [('state', '!=', 'draft')], 'required': [('state', '=', 'draft')]}"
+                                options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="validate1_user_id" string='Зөвшөөрсөн' 
+                                attrs="{
+                                    'invisible': [('state', '=', 'draft')], 
+                                    'readonly': [('state', '!=', 'confirm')], 
+                                    'required': [('state', '=', 'confirm')]}"
+                                options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="validate_user_id" string='Гарын үсэг зурсан' 
+                                attrs="{
+                                    'invisible': [('state', 'in', ['draft', 'confirm'])], 
+                                    'readonly': [('state', '!=', 'validate1')], 
+                                    'required': [('state', '=', 'validate1')]}"
+                                options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="partner_id" string='Хаашаа' required='1'/>
                             <field name="official_person" string='Хэнд'/>
                             <field name="department_id" string='Хаанаас' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
@@ -86,6 +139,7 @@
                 <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers"/>
                     <field name="message_ids" widget="mail_thread"/>
+                    <field name="activity_ids" widget="mail_activity"/>
                 </div>
             </form>
         </field>
@@ -100,9 +154,11 @@
                 (0, 0, {'view_mode': 'tree', 'view_id': ref('ubisol_letters.ubi_letter_planning_tree_view')}),
                 (0, 0, {'view_mode': 'form', 'view_id': ref('ubisol_letters.ubi_letter_planning_form_view')})]"/>
         <field name="view_mode">tree,form</field>
-        <field name="domain">[('state', '=', 'draft')]</field>
+        <field name="domain">[('state', '=', ('draft','confirm','validate1','validate'))]</field>
         <field name="help" type="html">
-            <p> Add a new document</p>
+            <p class="o_view_nocontent_smiling_face">
+                Add a new document
+            </p>
         </field>
     </record>
 

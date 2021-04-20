@@ -18,7 +18,7 @@ _logger = logging.getLogger(__name__)
 class UbiLetterGoing(models.Model):
     _name = "ubi.letter.going"
     _inherit = ['ubi.letter', 'mail.thread', 'mail.activity.mixin']
-    _description = " Явсан бичиг"
+    _description = " Албан бичиг"
     _rec_name = 'letter_number'
     _mail_post_access = 'read'
 
@@ -48,6 +48,8 @@ class UbiLetterGoing(models.Model):
     custom_letter_template = fields.Html('Template', groups="base.group_user")
     paper_size = fields.Selection(
         'Paper size', related="letter_template_id.paper_size")
+    next_step_user = fields.Many2one('res.users', compute='_compute_next_step_user')
+    can_approve = fields.Boolean('Can Approve', compute='_compute_can_approve')
 
     def _set_custom_template(self):
         if self.custom_letter_template:
@@ -58,9 +60,6 @@ class UbiLetterGoing(models.Model):
         soup = BeautifulSoup(template_text, 'html.parser')
         match = soup.find('span', {'id': key_word})
         match.string = val
-        # match.contents = val
-
-        # _logger.info(match)
         self.custom_letter_template = soup
 
     @api.onchange('letter_template_id')
@@ -127,24 +126,52 @@ class UbiLetterGoing(models.Model):
         if self.coming_letters:
             self.computed_letter_desc = self.coming_letters.desc
 
+    @api.onchange('confirm_user_id', 'validate1_user_id', 'validate_user_id')
+    def _compute_next_step_user(self):
+        if self.state == 'draft' and self.confirm_user_id:
+            self.next_step_user = self.confirm_user_id
+        elif self.state == 'confirm' and self.validate1_user_id:
+            self.next_step_user = self.validate1_user_id
+        elif self.state == 'validate1' and self.validate_user_id:
+            self.next_step_user = self.validate_user_id            
+
     @api.model
     def create(self, vals):
         letter = super(UbiLetterGoing, self).create(vals)
+        if vals.get('confirm_user_id'):
+            self.next_step_user.notify_info(message='Таньд 1 тушаал шилжиж ирлээ.')
+            self.activity_update()
 
         return letter
 
     def write(self, vals):
         letter = super(UbiLetterGoing, self).write(vals)
+        if vals.get('confirm_user_id') or vals.get('validate1_user_id') or vals.get('validate_user_id'):
+            self.next_step_user.notify_info(message='Таньд 1 тушаал шилжиж ирлээ.')
+            self.activity_update()
 
         return letter
+
+    def _compute_can_approve(self):
+        current_user = self.env.user
+        is_officer = self.env.user.has_group('hr.group_hr_user')
+        is_manager = self.env.user.has_group('hr.group_hr_manager')
+        can_approve = False
+        if not is_manager:
+            if self.state == 'draft' and current_user == self.confirm_user_id:
+                can_approve = True
+            elif self.state == 'confirm' and current_user == self.validate1_user_id:
+                can_approve = True
+            elif self.state == 'validate1' and current_user == self.validate_user_id:
+                can_approve = True
+        else:
+            can_approve = True        
+        self.can_approve = can_approve
 
     def print_report(self):
         if self.ids:
             report = self.env.ref('ubisol_letters.letter_detail_report_a5_pdf')
             return report.report_action(self.ids)
-
-    def action_sent(self):
-        self.write({'state': 'sent'})
 
     def prepare_sending(self):
         letters = self.env['ubi.letter.going'].browse(self.ids)
@@ -300,3 +327,81 @@ class UbiLetterGoing(models.Model):
                 return {'status': status.text.strip(), 'data': msg.text.strip()}
         else:
             return {'status': 'ERROR', 'data': 'Сүлжээний алдаа гарлаа.'}
+
+
+    # ------------------------------------------------------------
+    # Activity methods
+    # ------------------------------------------------------------
+
+    def action_sent(self):
+        self.write({'state': 'sent'})
+
+    def action_draft(self):
+        if any(letter.state not in ['confirm', 'validate1', 'validate'] for letter in self):
+            raise UserError(_('"Ноорог" төлөвт оруулах боломжгүй байна.'))
+        self.write({
+            'state': 'draft',
+            'confirm_user_id': False,
+            'validate1_user_id': False,
+            'validate_user_id': False
+        })
+
+        return True
+
+    def action_confirm(self):
+        if self.filtered(lambda letter: letter.state != 'draft'):
+            raise UserError(_('Зөвхөн ноорог төлөвтэй албан бичгийг "Боловсруулсан" төлөвт оруулах боломжтой.'))
+        self.write({'state': 'confirm'})
+
+        self.activity_feedback(['ubisol_letters.mail_act_letter_confirm'])
+        return True
+
+    def action_validate1(self):
+        if any(letter.state != 'confirm' for letter in self):
+            raise UserError(_('Зөвхөн боловсруулсан төлөвтэй тушаалыг "Зөвшөөрсөн" төлөвт оруулах боломжтой.'))
+        self.write({'state': 'validate1'})
+
+        self.activity_feedback(['ubisol_letters.mail_act_letter_validate1'])
+        # Post a second message, more verbose than the tracking message
+        # for direction in self.filtered(lambda direction: direction.validate1_user_id):
+            # direction.message_post(
+            #     body=_('Your %s planned on %s has been accepted' %
+            #            (direction.hr_document_id.name, direction.direction_date)),
+            #     partner_ids=direction.validate1_user_id.partner_id.ids)
+
+        return True
+
+    def action_validate(self):
+        if any(letter.state not in ['validate1'] for letter in self):
+            raise UserError(_('Зөвхөн зөвшөөрсөн төлөвтэй тушаалыг "Баталсан" төлөвт оруулах боломжтой.'))
+        
+        self.write({'state': 'validate'})
+        self.activity_feedback(['ubisol_letters.mail_act_letter_validate'])  
+        return True
+
+
+    def activity_update(self):
+        to_clean, to_do = self.env['ubi.letter.going'], self.env['ubi.letter.going']
+        
+        for letter in self:
+            if letter.state == 'draft':
+                next_state = 'Хянасан'
+                format_name = 'ubisol_letters.mail_act_letter_confirm'
+                to_do |= letter
+            elif letter.state == 'confirm':
+                next_state = 'Зөвшөөрсөн'
+                format_name = 'ubisol_letters.mail_act_letter_validate1'
+                to_do |= letter
+            elif letter.state == 'validate1':
+                next_state = 'Баталсан'
+                format_name = 'ubisol_letters.mail_act_letter_validate'
+                to_do |= letter
+
+            user_name = self.next_step_user.employee_id.name if self.next_step_user.employee_id else self.next_step_user.name
+            note = _("%s дугаартай албан бичиг %s -р '%s' төлөвт шилжүүлэгдэхээр хүлээгдэж байна.") % (letter.letter_number, user_name, next_state)    
+            letter.activity_schedule(
+                format_name,
+                note=note,
+                user_id=self.next_step_user.id or self.env.user.id)
+
+        return True
