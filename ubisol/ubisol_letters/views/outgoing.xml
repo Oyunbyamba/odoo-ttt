@@ -2,7 +2,6 @@
 
 <odoo>
 
-
     <record id="ubi_letter_going_tree_view" model="ir.ui.view">
         <field name="name">ubi.letter.going.subject.tree</field>
         <field name="model">ubi.letter.going</field>

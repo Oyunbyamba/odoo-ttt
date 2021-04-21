@@ -169,8 +169,12 @@ class UbiLetterGoing(models.Model):
         self.can_approve = can_approve
 
     def print_report(self):
-        if self.ids:
-            report = self.env.ref('ubisol_letters.letter_detail_report_a5_pdf')
+        if self.letter_template_id:
+            if self.letter_template_id.paper_size == 'a4':
+                report = self.env.ref('ubisol_letters.letter_detail_report_a4_pdf')
+            elif self.letter_template_id.paper_size == 'a5':
+                report = self.env.ref('ubisol_letters.letter_detail_report_a5_pdf')
+            
             return report.report_action(self.ids)
 
     def prepare_sending(self):
@@ -358,27 +362,28 @@ class UbiLetterGoing(models.Model):
 
     def action_validate1(self):
         if any(letter.state != 'confirm' for letter in self):
-            raise UserError(_('Зөвхөн боловсруулсан төлөвтэй тушаалыг "Зөвшөөрсөн" төлөвт оруулах боломжтой.'))
+            raise UserError(_('Зөвхөн боловсруулсан төлөвтэй албан бичгийг "Зөвшөөрсөн" төлөвт оруулах боломжтой.'))
         self.write({'state': 'validate1'})
 
         self.activity_feedback(['ubisol_letters.mail_act_letter_validate1'])
-        # Post a second message, more verbose than the tracking message
-        # for direction in self.filtered(lambda direction: direction.validate1_user_id):
-            # direction.message_post(
-            #     body=_('Your %s planned on %s has been accepted' %
-            #            (direction.hr_document_id.name, direction.direction_date)),
-            #     partner_ids=direction.validate1_user_id.partner_id.ids)
 
         return True
 
     def action_validate(self):
         if any(letter.state not in ['validate1'] for letter in self):
-            raise UserError(_('Зөвхөн зөвшөөрсөн төлөвтэй тушаалыг "Баталсан" төлөвт оруулах боломжтой.'))
+            raise UserError(_('Зөвхөн зөвшөөрсөн төлөвтэй албан бичгийг "Баталсан" төлөвт оруулах боломжтой.'))
         
         self.write({'state': 'validate'})
         self.activity_feedback(['ubisol_letters.mail_act_letter_validate'])  
         return True
 
+    def action_expected(self):
+        if any(letter.state not in ['validate'] for letter in self):
+            raise UserError(_('Зөвхөн баталсан төлөвтэй албан бичгийг "Хүлээгдэж буй" төлөвт оруулах боломжтой.'))
+        
+        self.write({'state': 'expected'})
+        self.activity_feedback(['ubisol_letters.mail_act_letter_expected'])  
+        return True
 
     def activity_update(self):
         to_clean, to_do = self.env['ubi.letter.going'], self.env['ubi.letter.going']

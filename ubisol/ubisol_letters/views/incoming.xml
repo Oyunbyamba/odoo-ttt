@@ -62,7 +62,7 @@
 
     <record id="ubi_letter_incoming_form_view" model="ir.ui.view">
         <field name="name">ubi.letter.coming.subject.form</field>
-        <field name="model">ubi.letter.coming</field>
+        <field name="model">ubi.letter.coming</field>   
         <field name="arch" type="xml">
             <form string="Ubi Letter">
                 <header>
