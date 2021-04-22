@@ -44,11 +44,12 @@ class UbiLetter(models.AbstractModel):
     #     'res.partner', string='Хаанаас', groups="base.group_user")
     partner_id = fields.Many2one(
         'res.partner', string='Хаанаас', domain=[('ubi_letter_org', '=', True)], groups="base.group_user")
-    to_user = fields.Char(
-        'Хэнд', compute='_compute_to_user', groups='base.group_user')    
+    department_id = fields.Many2one(
+        'hr.department', string='Хариуцах Хэлтэс', groups="base.group_user")
+
+    to_user = fields.Char('Хэнд', compute='_compute_to_user', groups='base.group_user')    
     user_id = fields.Many2one('res.users', string='Хариуцсан ажилтан')
     official_person = fields.Char('Албан тушаалтан', groups="base.group_user")
-    
     receive_user_id = fields.Many2one('res.users', groups="base.group_user")
     confirm_user_id = fields.Many2one('res.users', groups="base.group_user")
     validate1_user_id = fields.Many2one('res.users', groups="base.group_user")
@@ -58,9 +59,6 @@ class UbiLetter(models.AbstractModel):
         'ubi.letter.type', string='Баримтын төрөл', groups="base.group_user")
     letter_subject_id = fields.Many2one(
         'ubi.letter.subject', string='Баримтын тэргүү', groups="base.group_user")
-    
-    department_id = fields.Many2one(
-        'hr.department', string='Хариуцах Хэлтэс', groups="base.group_user")
 
     must_return = fields.Boolean(
         string='Хариутай эсэх', default=False, groups="base.group_user")

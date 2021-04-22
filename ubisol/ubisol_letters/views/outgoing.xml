@@ -29,8 +29,9 @@
         <field name="arch" type="xml">
             <form string="Ubi Letter">
                 <header>
-                    <button string="Илгээх" name="prepare_sending" type="object" attrs="{'invisible': [('state', 'not in', ['sent'])]}"/>
-                    <field name="state" widget="statusbar" statusbar_visible="expected,sent,received,refuse"/>
+                    <button string="Цуцлах" name="cancel_sending" type="object" attrs="{'invisible': [('state', 'not in', ['sent'])]}"/>
+                    <button string="Хүлээлэгт оруулах" name="action_" type="object" attrs="{'invisible': [('state', 'not in', ['sent'])]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="expected,sent,received"/>
                 </header>
                 <sheet>
                     <group>
@@ -46,13 +47,15 @@
                             <field name="confirm_user_id" string='Боловсруулсан' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="validate1_user_id" string='Хянасан' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="validate_user_id" string='Гарын үсэг зурсан' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                            <field name="partner_id" string='Хаашаа' required='1'/>
-                            <field name="official_person" string='Хэнд'/>
+                            <field name="partner_id" string='Хаашаа' attrs="{'invisible': ('is_local', '=', True), 'required': ('is_local', '=', False)}"/>
+                            <field name="department_id" string='Хаашаа' attrs="{'invisible': ('is_local', '=', False), 'required': ('is_local', '=', True)}"/>
+                            <field name="official_person" string='Хэнд' attrs="{'invisible': ('is_local', '=', True), 'required': ('is_local', '=', False)}"/>
+                            <field name="user_id" string='Хэнд' attrs="{'invisible': ('is_local', '=', False), 'required': ('is_local', '=', True)}"/>
                         </group>
 
                         <group>
                             <field name="priority_id"/>
-                            <field name="is_local" string='Дотоод бичиг'/>
+                            <field name="is_local" string='Дотоод бичиг' attrs="{'readonly': ('state', '!=', ('expected'))}"/>
                             <field name="must_return" string='Хариутай эсэх'/>
                             <field name="must_return_date" attrs="{'invisible': [('must_return','!=',True)]}"/>
                         </group>

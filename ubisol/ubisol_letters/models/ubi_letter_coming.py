@@ -362,7 +362,7 @@ class UbiLetterComing(models.Model):
                         </Body>
                     </Envelope>"""
         data = template % params
-        _logger.info(data)
+
         target_url = "https://docx.gov.mn/soap/api"
         headers = {'Content-type': 'text/xml'}
         result = requests.post(target_url, data=data.encode(
