@@ -32,8 +32,9 @@ class UbiLetterGoing(models.Model):
         ('validate', 'Баталсан'),
         ('expected', 'Хүлээгдэж буй'),
         ('sent', 'Илгээсэн'),
-        ('received', 'Хүлээн авсан'),
-        ('refuse', 'Цуцласан')],
+        ('refuse', 'Цуцласан'),
+        ('received', 'Хүлээн авсан')
+        ],
         groups="base.group_user",
         default='draft',
         string='Явсан бичгийн төлөв', store=True, readonly=True, copy=False, tracking=True)
@@ -146,7 +147,7 @@ class UbiLetterGoing(models.Model):
 
     def write(self, vals):
         letter = super(UbiLetterGoing, self).write(vals)
-        if vals.get('confirm_user_id') or vals.get('validate1_user_id') or vals.get('validate_user_id'):
+        if vals.get('confirm_user_id') or vals.get('validate1_user_id') or (vals.get('validate_user_id') and self.state != 'expected'):
             self.next_step_user.notify_info(message='Таньд 1 тушаал шилжиж ирлээ.')
             self.activity_update()
 
@@ -183,6 +184,10 @@ class UbiLetterGoing(models.Model):
             if any(letter.state not in ['expected'] for letter in self):
                 raise UserError(
                     _('Зөвхөн хүлээгдэж буй төлөвтэй баримтыг "Илгээх" төлөвт оруулах боломжтой.'))
+
+            if letter.is_local == True:
+                raise UserError(    
+                    _('Зөвхөн гадаад баримтыг "ТАБС-р" илгээх боломжтой.'))
 
             if letter.state == 'expected':
                 request_data = self.build_state_doc(letter)
@@ -338,7 +343,32 @@ class UbiLetterGoing(models.Model):
     # ------------------------------------------------------------
 
     def action_sent(self):
+        if any(letter.state not in ['expected'] for letter in self):
+            raise UserError(_('Зөвхөн хүлээгдэж буй бичгийг "Илгээх" төлөвт оруулах боломжтой.'))
         self.write({'state': 'sent'})
+
+        for letter in self:
+            before_incoming_letter_vals = letter.copy_data({
+                'latter_date': datetime.today().strftime('%Y-%m-%d'),
+                'state': 'draft',
+            })[0]
+
+            before_leave = self.env['hr.leave'].new(before_leave_vals)
+            split_leaves_vals.append(after_leave._convert_to_write(after_leave._cache))
+            split_leaves = self.env['hr.leave'].with_context(
+                        tracking_disable=True,
+                        mail_activity_automation_skip=True,
+                        leave_fast_create=True,
+                        leave_skip_state_check=True
+                    ).create(split_leaves_vals)
+
+        return True
+
+    def action_refuse(self):
+        if any(letter.state in ['received'] for letter in self):
+            raise UserError(_('Хүлээн авсан бичгийг "Цуцлах" төлөвт оруулах боломжгүй байна.'))
+        self.write({'state': 'refuse'})
+        return True
 
     def action_draft(self):
         if any(letter.state not in ['confirm', 'validate1', 'validate'] for letter in self):
@@ -349,7 +379,6 @@ class UbiLetterGoing(models.Model):
             'validate1_user_id': False,
             'validate_user_id': False
         })
-
         return True
 
     def action_confirm(self):
@@ -378,12 +407,13 @@ class UbiLetterGoing(models.Model):
         return True
 
     def action_expected(self):
-        if any(letter.state not in ['validate'] for letter in self):
+        if any(letter.state not in ['validate','refuse'] for letter in self):
             raise UserError(_('Зөвхөн баталсан төлөвтэй албан бичгийг "Хүлээгдэж буй" төлөвт оруулах боломжтой.'))
         
         self.write({'state': 'expected'})
         self.activity_feedback(['ubisol_letters.mail_act_letter_expected'])  
         return True
+
 
     def activity_update(self):
         to_clean, to_do = self.env['ubi.letter.going'], self.env['ubi.letter.going']

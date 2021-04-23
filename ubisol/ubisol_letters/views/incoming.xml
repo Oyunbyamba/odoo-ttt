@@ -81,7 +81,7 @@
                             <field name="letter_subject_id" required='1' attrs="{'readonly': [('tabs_id', '!=', 0)]}"/>
                             <field name="letter_number" required='1' attrs="{'readonly': [('tabs_id', '!=', 0)]}"/>
                             <field name="letter_type_id" required='1' attrs="{'readonly': [('tabs_id', '!=', 0)]}"/>
-                            <field name="letter_date" string='Бичгийн огноо' attrs="{'readonly': [('tabs_id', '!=', 0)]}"/>
+                            <field name="letter_date" string='Баримтын огноо' attrs="{'readonly': [('tabs_id', '!=', 0)]}"/>
                             <field name="letter_total_num" attrs="{'readonly': [('tabs_id', '!=', 0)]}"/>
 
                         </group>
@@ -97,7 +97,7 @@
                             <field name="priority_id" attrs="{'readonly': [('tabs_id', '!=', 0)]}"/>
                             <field name="is_head_company" string='Дээд газраас ирсэн'/>
                             <field name="must_return" string='Хариутай эсэх'/>
-                            <field name="must_return_date" attrs="{'invisible': [('must_return','!=',True)]}"/>
+                            <field name="must_return_date" string='Хариу илгээх огноо' attrs="{'invisible': [('must_return','!=',True)]}"/>
                         </group>
 
                         <group string="Бүртгэл">

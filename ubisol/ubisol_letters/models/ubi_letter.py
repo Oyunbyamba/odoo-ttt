@@ -33,7 +33,7 @@ class UbiLetter(models.AbstractModel):
     must_return_date = fields.Date(
         string='Хариу ирүүлэх огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
     received_date = fields.Date(
-        string='Хүлээн авсан огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
+        string='Хүлээн авсан огноо', groups="base.group_user")
     registered_date = fields.Datetime(
         string='Бүртгэсэн огноо', default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), groups="base.group_user")
     letter_date = fields.Date(string='Баримтын огноо', default=datetime.today(),
@@ -48,7 +48,10 @@ class UbiLetter(models.AbstractModel):
         'hr.department', string='Хариуцах Хэлтэс', groups="base.group_user")
 
     to_user = fields.Char('Хэнд', compute='_compute_to_user', groups='base.group_user')    
-    user_id = fields.Many2one('res.users', string='Хариуцсан ажилтан')
+    
+    responsible_employee_id = fields.Many2one('hr.employee', string='Хэнд')
+    request_employee_id = fields.Many2one('hr.employee', string='Хүсэлт илгээсэн ажилтан')
+
     official_person = fields.Char('Албан тушаалтан', groups="base.group_user")
     receive_user_id = fields.Many2one('res.users', groups="base.group_user")
     confirm_user_id = fields.Many2one('res.users', groups="base.group_user")
@@ -91,7 +94,7 @@ class UbiLetter(models.AbstractModel):
         for letter in self:
             to_user = ''
             if letter.is_local:
-                to_user = letter.user_id.name
+                to_user = letter.responsible_employee_id.name
             else:
                 to_user = letter.official_person
             letter.to_user = to_user

@@ -97,6 +97,7 @@ class UbiLetterComing(models.Model):
         if not letter.tabs_id:
             letter.state = 'receive'
             letter.receive_user_id = self.env.user
+            letter.received_date = datetime.today().strftime('%Y-%m-%d')
 
         return letter
 
@@ -345,7 +346,10 @@ class UbiLetterComing(models.Model):
                 result = self.letter_received(params)
                 if result['status'] == '200':
                     letter.write(
-                        {"state": "receive", 'receive_user_id': received_user})
+                        {"state": "receive", 
+                        'receive_user_id': received_user,
+                        'received_date': datetime.today.strftime('%Y-%m-%d')
+                        })
                 else:
                     raise UserError(_(result['data']))
         return True
@@ -385,6 +389,7 @@ class UbiLetterComing(models.Model):
                 return {'status': status.text.strip(), 'data': msg.text.strip()}
         else:
             return {'status': 'ERROR', 'data': 'Сүлжээний алдаа гарлаа.'}
+
 
     def activity_update(self):
         to_clean, to_do = self.env['ubi.letter.going'], self.env['ubi.letter.going']

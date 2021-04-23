@@ -16,8 +16,14 @@
                 <field name="to_user" string='Хэнд'/>
                 <field name="is_local"/>
                 <field name="state" string='Төлөв'/>
-                <button string="Илгээх" name="prepare_sending" type="object" icon="fa-check text-success" states="expected" groups="hr.group_hr_manager"/>
-                <button string="Цуцлах" name="cancel_sending" type="object" icon="fa-ban text-danger" states="sent" groups="hr.group_hr_manager"/>
+                <button string="Илгээх" name="prepare_sending" type="object" icon="fa-check text-success"
+                    attrs="{'invisible': ['|', ('is_local', '=', True), ('state', 'not in', ('expected'))]}" groups="hr.group_hr_manager"/>
+                <button string="Илгээх" name="action_sent" type="object" icon="fa-check text-success"
+                    attrs="{'invisible': ['|', ('is_local', '=', False), ('state', 'not in', ('expected'))]}" groups="hr.group_hr_manager"/>
+                <button string="Цуцлах" name="cancel_sending" type="object" icon="fa-ban text-danger"
+                    attrs="{'invisible': ['|', ('is_local', '=', True), ('state', 'not in', ('sent'))]}" groups="hr.group_hr_manager"/>
+                <button string="Цуцлах" name="action_refuse" type="object" icon="fa-ban text-danger"
+                    attrs="{'invisible': ['|', ('is_local', '=', False), ('state', 'not in', ('sent'))]}"  groups="hr.group_hr_manager"/>
                 <field name="activity_exception_decoration" widget="activity_exception"/>
             </tree>
         </field>
@@ -29,8 +35,12 @@
         <field name="arch" type="xml">
             <form string="Ubi Letter">
                 <header>
-                    <button string="Цуцлах" name="cancel_sending" type="object" attrs="{'invisible': [('state', 'not in', ['sent'])]}"/>
-                    <button string="Хүлээлэгт оруулах" name="action_" type="object" attrs="{'invisible': [('state', 'not in', ['sent'])]}"/>
+                    <button string="Цуцлах" name="cancel_sending" type="object" 
+                        attrs="{'invisible': ['|', ('state', 'not in', ['sent']), ('is_local', '=', True)]}"/>
+                    <button string="Цуцлах" name="action_refuse" type="object" 
+                        attrs="{'invisible': ['|', ('state', 'not in', ['sent']), ('is_local', '=', False)]}"/>
+                    <button string="Хүлээлэгт оруулах" name="action_expected" type="object" attrs="{'invisible': [('state', 'not in', ['refuse'])]}"/>
+                    <button string="Илгээх" name="action_sent" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['expected'])]}"/>
                     <field name="state" widget="statusbar" statusbar_visible="expected,sent,received"/>
                 </header>
                 <sheet>
@@ -44,18 +54,19 @@
                         </group>
 
                         <group string="Нэмэлт">
-                            <field name="confirm_user_id" string='Боловсруулсан' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                            <field name="validate1_user_id" string='Хянасан' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <!-- <field name="confirm_user_id" string='Боловсруулсан' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="validate1_user_id" string='Хянасан' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/> -->
                             <field name="validate_user_id" string='Гарын үсэг зурсан' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                            <field name="partner_id" string='Хаашаа' attrs="{'invisible': ('is_local', '=', True), 'required': ('is_local', '=', False)}"/>
-                            <field name="department_id" string='Хаашаа' attrs="{'invisible': ('is_local', '=', False), 'required': ('is_local', '=', True)}"/>
-                            <field name="official_person" string='Хэнд' attrs="{'invisible': ('is_local', '=', True), 'required': ('is_local', '=', False)}"/>
-                            <field name="user_id" string='Хэнд' attrs="{'invisible': ('is_local', '=', False), 'required': ('is_local', '=', True)}"/>
+                            <field name="responsible_employee_id" required='1'/>
+                            <field name="request_employee_id" attrs="{'invisible': [('is_local', '=', False)], 'required': [('is_local', '=', True)]}"/>
+                            <field name="official_person" string='Хэнд' attrs="{'invisible': [('is_local', '=', True)], 'required': [('is_local', '=', False)]}"/>
+                            <field name="partner_id" string='Хаашаа' attrs="{'invisible': [('is_local', '=', True)], 'required': [('is_local', '=', False)]}"/>
+                            <!-- <field name="department_id" string='Хаашаа' attrs="{'invisible': [('is_local', '=', False)], 'required': [('is_local', '=', True)]}"/> -->
                         </group>
 
                         <group>
                             <field name="priority_id"/>
-                            <field name="is_local" string='Дотоод бичиг' attrs="{'readonly': ('state', '!=', ('expected'))}"/>
+                            <field name="is_local" string='Дотоод бичиг' attrs="{'readonly': [('state', '!=', ('expected'))]}"/>
                             <field name="must_return" string='Хариутай эсэх'/>
                             <field name="must_return_date" attrs="{'invisible': [('must_return','!=',True)]}"/>
                         </group>
@@ -109,7 +120,7 @@
         </field>
     </record>
 
-    <record model="ir.actions.server" id="call_cancel_wizard_action">
+    <!-- <record model="ir.actions.server" id="call_cancel_wizard_action">
         <field name="name">Цуцлах</field>
         <field name="model_id" ref="model_ubi_letter_going"/>
         <field name="binding_model_id" ref="model_ubi_letter_going" />
@@ -118,6 +129,6 @@
             if records:
                 action = records.cancel_sending()
         </field>
-    </record>
+    </record> -->
 
 </odoo>
