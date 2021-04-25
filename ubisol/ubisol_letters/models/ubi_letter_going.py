@@ -22,7 +22,7 @@ class UbiLetterGoing(models.Model):
     _rec_name = 'letter_number'
     _mail_post_access = 'read'
 
-    follow_id = fields.Many2one('ubi.letter.coming', groups="base.group_user")
+    follow_id = fields.Many2one('ubi.letter.coming', string='Ирсэн бичгийн хариу', groups="base.group_user")
     letter_attachment_ids = fields.Many2many(
         'ir.attachment', 'letter_going_doc_attach', 'letter_id', 'doc_id', string="Хавсралт", copy=False)
     state = fields.Selection([
@@ -40,8 +40,7 @@ class UbiLetterGoing(models.Model):
         string='Явсан бичгийн төлөв', store=True, readonly=True, copy=False, tracking=True)
     send_date = fields.Date(
         string='Илгээсэн огноо', groups="base.group_user")
-    coming_letters = fields.Many2one(
-        'ubi.letter.coming', string='Ирсэн дугаар', groups="base.group_user")
+    
     letter_template_id = fields.Many2one(
         'ubi.letter.template', string='Баримтын загвар', groups="base.group_user")
     letter_template_text = fields.Html(
@@ -51,6 +50,7 @@ class UbiLetterGoing(models.Model):
         'Paper size', related="letter_template_id.paper_size")
     next_step_user = fields.Many2one('res.users', compute='_compute_next_step_user')
     can_approve = fields.Boolean('Can Approve', compute='_compute_can_approve')
+
 
     def _set_custom_template(self):
         if self.custom_letter_template:
@@ -108,24 +108,24 @@ class UbiLetterGoing(models.Model):
             html = report.render_qweb_html(self.id, data=data)[0]
             self.custom_letter_template = html
 
-    @api.onchange('coming_letters')
+    @api.onchange('follow_id')
     def _computed_letter_type(self):
         self.computed_letter_type = ''
-        if self.coming_letters:
-            self.follow_id = self.coming_letters.id
-            self.computed_letter_type = self.coming_letters.letter_type_id.name if self.coming_letters.letter_type_id else ''
+        if self.follow_id:
+            self.follow_id = self.follow_id.id
+            self.computed_letter_type = self.follow_id.letter_type_id.name if self.follow_id.letter_type_id else ''
 
-    @api.onchange('coming_letters')
+    @api.onchange('follow_id')
     def _computed_letter_subject(self):
         self.computed_letter_subject = ''
-        if self.coming_letters:
-            self.computed_letter_subject = self.coming_letters.letter_subject_id.name if self.coming_letters.letter_subject_id else ''
+        if self.follow_id:
+            self.computed_letter_subject = self.follow_id.letter_subject_id.name if self.follow_id.letter_subject_id else ''
 
-    @api.onchange('coming_letters')
+    @api.onchange('follow_id')
     def _computed_letter_desc(self):
         self.computed_letter_desc = ''
-        if self.coming_letters:
-            self.computed_letter_desc = self.coming_letters.desc
+        if self.follow_id:
+            self.computed_letter_desc = self.follow_id.desc
 
     @api.onchange('confirm_user_id', 'validate1_user_id', 'validate_user_id')
     def _compute_next_step_user(self):
@@ -348,19 +348,19 @@ class UbiLetterGoing(models.Model):
         self.write({'state': 'sent'})
 
         for letter in self:
-            before_incoming_letter_vals = letter.copy_data({
-                'latter_date': datetime.today().strftime('%Y-%m-%d'),
+            before_letter_vals = letter.copy_data({
+                'letter_date': datetime.today().strftime('%Y-%m-%d'),
                 'state': 'draft',
+                'follow_id': letter.id,
+                'desc': letter.letter_template_text
             })[0]
+            del before_letter_vals['send_date']
+            del before_letter_vals['follow_id']
+            del before_letter_vals['letter_template_id']
+            del before_letter_vals['letter_template_text']
+            del before_letter_vals['custom_letter_template']
 
-            before_leave = self.env['hr.leave'].new(before_leave_vals)
-            split_leaves_vals.append(after_leave._convert_to_write(after_leave._cache))
-            split_leaves = self.env['hr.leave'].with_context(
-                        tracking_disable=True,
-                        mail_activity_automation_skip=True,
-                        leave_fast_create=True,
-                        leave_skip_state_check=True
-                    ).create(split_leaves_vals)
+            follow_id = self.env['ubi.letter.coming'].with_context(local_transfer=True).create(before_letter_vals)
 
         return True
 

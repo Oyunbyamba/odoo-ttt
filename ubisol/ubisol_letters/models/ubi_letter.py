@@ -45,7 +45,7 @@ class UbiLetter(models.AbstractModel):
     partner_id = fields.Many2one(
         'res.partner', string='Хаанаас', domain=[('ubi_letter_org', '=', True)], groups="base.group_user")
     department_id = fields.Many2one(
-        'hr.department', string='Хариуцах Хэлтэс', groups="base.group_user")
+        'hr.department', string='Хариуцах Хэлтэс', related='responsible_employee_id.department_id', groups="base.group_user")
 
     to_user = fields.Char('Хэнд', compute='_compute_to_user', groups='base.group_user')    
     

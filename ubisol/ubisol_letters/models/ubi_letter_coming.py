@@ -21,7 +21,7 @@ class UbiLetterComing(models.Model):
     _rec_name = 'letter_number'
     _mail_post_access = 'read'
 
-    follow_id = fields.Many2one('ubi.letter.going', groups="base.group_user")
+    follow_id = fields.Many2one('ubi.letter.going', string='Явсан бичгийн хариу', groups="base.group_user")
     letter_attachment_ids = fields.Many2many(
         'ir.attachment', 'letter_coming_doc_attach', 'letter_id', 'doc_id', string="Хавсралт", copy=False)
     state = fields.Selection([
@@ -35,8 +35,6 @@ class UbiLetterComing(models.Model):
         groups="base.group_user",
         default='draft',
         string='Ирсэн бичгийн төлөв', store=True, readonly=True, copy=False, tracking=True)
-    going_letters = fields.Many2one(
-        'ubi.letter.going', string='Явсан бичгийн дугаар', groups="base.group_user")
     cancel_employee = fields.Char(
         string="Цуцалсан ажилтан", groups="base.group_user", help="Ажилтан")
     cancel_position = fields.Char(
@@ -44,6 +42,46 @@ class UbiLetterComing(models.Model):
     cancel_comment = fields.Char(
         string='Цуцалсан утга', groups="base.group_user")
     # can_approve = fields.Boolean('Can reset', compute='_compute_can_approve', groups="base.group_user")
+
+    @api.onchange('follow_id')
+    def _computed_letter_type(self):
+        self.computed_letter_type = ''
+        if self.follow_id:
+            self.follow_id = self.follow_id.id
+            self.computed_letter_type = self.follow_id.letter_type_id.name if self.follow_id.letter_type_id else ''
+
+    @api.onchange('follow_id')
+    def _computed_letter_subject(self):
+        self.computed_letter_subject = ''
+        if self.follow_id:
+            self.computed_letter_subject = self.follow_id.letter_subject_id.name if self.follow_id.letter_subject_id else ''
+
+    @api.onchange('follow_id')
+    def _computed_letter_desc(self):
+        self.computed_letter_desc = ''
+        if self.follow_id:
+            self.computed_letter_desc = self.follow_id.desc
+
+    @api.onchange('department_id')
+    def _manager_department_id(self):
+        if self.department_id:
+            self.user_id = self.department_id.manager_id.user_id if self.department_id.manager_id else ''
+
+    @api.model
+    def create(self, vals):
+        letter = super(UbiLetterComing, self).create(vals)
+        if letter.is_local == True:
+            if not self._context.get('local_transfer'):
+                letter.state = 'receive' 
+                letter.receive_user_id = self.env.user
+                letter.received_date = datetime.today().strftime('%Y-%m-%d')
+
+        return letter
+
+    def write(self, vals):
+        letter = super(UbiLetterComing, self).write(vals)
+
+        return letter
 
     def call_return_wizard(self):
         if len(self.ids) >= 1:
@@ -61,50 +99,6 @@ class UbiLetterComing(models.Model):
                 'views': [[False, 'form']]
             }
         return {}
-
-    # @api.onchange('letter_template_id')
-    # def _set_letter_template(self):
-    #     if self.letter_template_text:
-    #         self.custom_letter_template = self.letter_template_text
-
-    @api.onchange('going_letters')
-    def _computed_letter_type(self):
-        self.computed_letter_type = ''
-        if self.going_letters:
-            self.follow_id = self.going_letters.id
-            self.computed_letter_type = self.going_letters.letter_type_id.name if self.going_letters.letter_type_id else ''
-
-    @api.onchange('going_letters')
-    def _computed_letter_subject(self):
-        self.computed_letter_subject = ''
-        if self.going_letters:
-            self.computed_letter_subject = self.going_letters.letter_subject_id.name if self.going_letters.letter_subject_id else ''
-
-    @api.onchange('going_letters')
-    def _computed_letter_desc(self):
-        self.computed_letter_desc = ''
-        if self.going_letters:
-            self.computed_letter_desc = self.going_letters.desc
-
-    @api.onchange('department_id')
-    def _manager_department_id(self):
-        if self.department_id:
-            self.user_id = self.department_id.manager_id.user_id if self.department_id.manager_id else ''
-
-    @api.model
-    def create(self, vals):
-        letter = super(UbiLetterComing, self).create(vals)
-        if not letter.tabs_id:
-            letter.state = 'receive'
-            letter.receive_user_id = self.env.user
-            letter.received_date = datetime.today().strftime('%Y-%m-%d')
-
-        return letter
-
-    def write(self, vals):
-        letter = super(UbiLetterComing, self).write(vals)
-
-        return letter
 
     # ------------------------------------------------------------
     # Activity methods
@@ -124,6 +118,13 @@ class UbiLetterComing(models.Model):
     #             responsible = self.holiday_status_id.responsible_id
 
     #     return responsible
+
+    def action_receive(self):
+        if any(letter.state not in ['draft'] for letter in self):
+            raise UserError(
+                _('Зөвхөн ирсэн төлөвтэй баримтыг "Хүлээн авсан" төлөвт оруулах боломжтой.'))
+        self.write({'state': 'receive'})
+        return True
 
     def action_review(self):
         if any(letter.state not in ['receive'] for letter in self):
@@ -148,7 +149,12 @@ class UbiLetterComing(models.Model):
         self.write({'state': 'validate'})
         return True
 
-    # def _compute_can_approve(self):
+    def action_refuse(self):
+        if any(letter.state in ['validate', 'conflict'] for letter in self):
+            raise UserError(
+                _('Зөвхөн шийдвэрлэсэн төлөвтэй баримтыг "Буцаасан" төлөвт оруулах боломжгүй.'))
+        self.write({'state': 'refuse'})
+        return True
 
     @api.model
     def check_new_letters(self, user={}):

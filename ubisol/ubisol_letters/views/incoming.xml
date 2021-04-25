@@ -52,9 +52,11 @@
                 <field name="to_user" string='Хэнээс'/>
                 <field name="is_local"/>
                 <field name="state" string='Төлөв'/>
-                <button string="Хүлээн авах" name="letter_receiving" type="object" icon="fa-download text-success" states="draft" groups="hr.group_hr_manager"/>
+                <button string="Хүлээн авах" name="letter_receiving" type="object" icon="fa-download text-success" attrs="{'invisible': ['|', ('state', 'not in', ('draft')), ('is_local', '=', True)]}" groups="hr.group_hr_manager"/>
+                <button string="Хүлээн авах" name="action_receive" type="object" icon="fa-download text-success" attrs="{'invisible': ['|', ('state', 'not in', ('draft')), ('is_local', '=', False)]}" groups="hr.group_hr_manager"/>
                 <button string="Шийдвэрлэх" name="action_validate" type="object" icon="fa-check text-success" states="review" groups="hr.group_hr_manager"/>
-                <button string="Буцаах" name="call_return_wizard" type="object" icon="fa-ban text-danger" states="receive" groups="hr.group_hr_manager"/>
+                <button string="Буцаах" name="call_return_wizard" type="object" icon="fa-ban text-danger" attrs="{'invisible': ['|', ('state', 'not in', ('receive')), ('is_local', '=', True)]}" groups="hr.group_hr_manager"/>
+                <button string="Буцаах" name="action_refuse" type="object" icon="fa-ban text-danger" attrs="{'invisible': ['|', ('state', 'not in', ('receive')), ('is_local', '=', False)]}" groups="hr.group_hr_manager"/>
                 <field name="activity_exception_decoration" widget="activity_exception"/>
             </tree>
         </field>
@@ -66,12 +68,14 @@
         <field name="arch" type="xml">
             <form string="Ubi Letter">
                 <header>
-                    <button string="Хүлээн авах" name="letter_receiving" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('draft'))]}"/>
+                    <button string="Хүлээн авах" name="letter_receiving" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', 'not in', ('draft')), ('is_local', '=', True)]}"/>
+                    <button string="Хүлээн авах" name="action_receive" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', 'not in', ('draft')), ('is_local', '=', False)]}"/>
                     <button string="Судлаж байгаа" name="action_review" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('draft', 'conflict'))]}"/>
-                    <button string="Шилжүүлсэн" name="action_transfer" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('review'))]}"/>
-                    <button string="Шийдвэрлэсэн" name="action_validate" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('transfer', 'conflict', 'review'))]}"/>
+                    <button string="Шилжүүлэх" name="action_transfer" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('review'))]}"/>
+                    <button string="Шийдвэрлэх" name="action_validate" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('transfer', 'conflict', 'review'))]}"/>
                     <!-- <button string="Зөрчилтэй" name="action_conflict" type="object" attrs="{'invisible': [('state', 'in', ('validate', 'transfer', 'refuse', 'conflict'))]}"/> -->
-                    <button string="Буцаасан" name="call_return_wizard" type="object" attrs="{'invisible': [('state', 'in', ('validate', 'conflict', 'refuse'))]}"/>
+                    <button string="Буцаах" name="call_return_wizard" type="object" attrs="{'invisible': ['|', ('state', 'in', ('validate', 'conflict', 'refuse')), ('is_local', '=', True)]}"/>
+                    <button string="Буцаах" name="action_refuse" type="object" attrs="{'invisible': ['|', ('state', 'in', ('validate', 'conflict', 'refuse')), ('is_local', '=', False)]}"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,receive,transfer,review,validate"/>
                 </header>
                 <sheet>
@@ -83,19 +87,33 @@
                             <field name="letter_type_id" required='1' attrs="{'readonly': [('tabs_id', '!=', 0)]}"/>
                             <field name="letter_date" string='Баримтын огноо' attrs="{'readonly': [('tabs_id', '!=', 0)]}"/>
                             <field name="letter_total_num" attrs="{'readonly': [('tabs_id', '!=', 0)]}"/>
-
                         </group>
 
                         <group string="Нэмэлт">
-                            <field name="partner_id" string="Илгээсэн байгууллага" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'readonly': ['|', ('state', '!=', 'draft'), ('tabs_id', '!=', 0)]}" required='1'/>
-                            <field name='official_person' string='Хэнээс' attrs="{'readonly': [('tabs_id', '!=', 0)]}"/>
-                            <field name="department_id" string='Хүлээн авах нэгж' attrs="{'invisible': [('state', 'in', ('draft'))]}" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                            <field name="user_id" string='Хэнд' attrs="{'invisible': [('state', 'in', ('draft'))]}" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="partner_id" string="Илгээсэн байгууллага" 
+                                options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" 
+                                attrs="{'readonly': ['|', ('state', '!=', 'draft'), ('tabs_id', '!=', 0)],
+                                    'invisible': [('is_local', '=', True)], 
+                                    'required': [('is_local', '=', False)]}" />
+                            <field name="request_employee_id" string='Хэнээс' attrs="{'invisible': [('is_local', '=', False)], 
+                                'required': [('is_local', '=', True)]}"
+                                options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>        
+                            <field name='official_person' string='Хэнд' attrs="{'readonly': [('tabs_id', '!=', 0)],
+                                    'invisible': [('is_local', '=', True)], 
+                                    'required': [('is_local', '=', False)]}"/>
+                            <field name="responsible_employee_id" string='Хэнд' attrs="{'invisible': ['|', ('state', 'in', ('draft')), ('is_local', '=', False)],
+                                    'required': [('is_local', '=', True)]}" 
+                                options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>        
+                            <field name="department_id" string='Хүлээн авах нэгж' attrs="{'invisible': ['|', ('state', 'in', ('draft')), ('is_local', '=', False)]}" 
+                                options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="validate_user_id" string='Гарын үсэг зурсан' attrs="{'invisible': [('is_local', '=', False)], 'required': [('is_local', '=', True)]}"
+                                options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>    
                         </group>
 
                         <group>
                             <field name="priority_id" attrs="{'readonly': [('tabs_id', '!=', 0)]}"/>
                             <field name="is_head_company" string='Дээд газраас ирсэн'/>
+                            <field name="is_local" string='Дотоод бичиг'/>
                             <field name="must_return" string='Хариутай эсэх'/>
                             <field name="must_return_date" string='Хариу илгээх огноо' attrs="{'invisible': [('must_return','!=',True)]}"/>
                         </group>
@@ -109,10 +127,10 @@
                         </group>
 
                         <group string='Явсан бичгийн хариу'>
-                            <field name="going_letters" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                            <field name="computed_letter_type" attrs="{'invisible': [('going_letters', '=', False)]}"/>
-                            <field name="computed_letter_subject" attrs="{'invisible': [('going_letters', '=', False)]}"/>
-                            <!-- <field name="computed_letter_desc" attrs="{'invisible': [('going_letters', '=', False)]}"/> -->
+                            <field name="follow_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="computed_letter_type" attrs="{'invisible': [('follow_id', '=', False)]}"/>
+                            <field name="computed_letter_subject" attrs="{'invisible': [('follow_id', '=', False)]}"/>
+                            <!-- <field name="computed_letter_desc" attrs="{'invisible': [('follow_id', '=', False)]}"/> -->
                         </group>
                     </group>
                     <notebook>

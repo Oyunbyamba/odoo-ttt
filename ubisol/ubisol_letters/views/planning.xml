@@ -118,9 +118,9 @@
                         </group>
 
                         <group string='Ирсэн бичгийн хариу'>
-                            <field name="coming_letters" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                            <field name="computed_letter_type" attrs="{'invisible': [('coming_letters', '=', False)]}"/>
-                            <field name="computed_letter_subject" attrs="{'invisible': [('coming_letters', '=', False)]}"/>
+                            <field name="follow_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="computed_letter_type" attrs="{'invisible': [('follow_id', '=', False)]}"/>
+                            <field name="computed_letter_subject" attrs="{'invisible': [('follow_id', '=', False)]}"/>
                         </group>
 
                         <group string="Хавсралт">
