@@ -81,9 +81,9 @@
                         </group>
 
                         <group string='Ирсэн бичгийн хариу'>
-                            <field name="follow_id" attrs="{'readonly': [('state', '!=', 'expected')]}" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                            <field name="computed_letter_type" attrs="{'invisible': [('follow_id', '=', False)]}"/>
-                            <field name="computed_letter_subject" attrs="{'invisible': [('follow_id', '=', False)]}"/>
+                            <field name="coming_letter" attrs="{'readonly': [('state', '!=', 'expected')]}" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="computed_letter_type" attrs="{'invisible': [('coming_letter', '=', False)]}"/>
+                            <field name="computed_letter_subject" attrs="{'invisible': [('coming_letter', '=', False)]}"/>
                             <!-- <field name="computed_letter_desc"/> -->
                         </group>
 

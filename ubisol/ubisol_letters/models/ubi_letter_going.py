@@ -22,7 +22,7 @@ class UbiLetterGoing(models.Model):
     _rec_name = 'letter_number'
     _mail_post_access = 'read'
 
-    follow_id = fields.Many2one('ubi.letter.coming', string='Ирсэн бичгийн хариу', groups="base.group_user")
+    follow_id = fields.Many2one('ubi.letter.coming', groups="base.group_user")
     letter_attachment_ids = fields.Many2many(
         'ir.attachment', 'letter_going_doc_attach', 'letter_id', 'doc_id', string="Хавсралт", copy=False)
     state = fields.Selection([
@@ -40,7 +40,8 @@ class UbiLetterGoing(models.Model):
         string='Явсан бичгийн төлөв', store=True, readonly=True, copy=False, tracking=True)
     send_date = fields.Date(
         string='Илгээсэн огноо', groups="base.group_user")
-    
+    coming_letter = fields.Many2one(
+        'ubi.letter.coming', string='Ирсэн бичгийн хариу', groups="base.group_user")
     letter_template_id = fields.Many2one(
         'ubi.letter.template', string='Баримтын загвар', groups="base.group_user")
     letter_template_text = fields.Html(
@@ -108,24 +109,23 @@ class UbiLetterGoing(models.Model):
             html = report.render_qweb_html(self.id, data=data)[0]
             self.custom_letter_template = html
 
-    @api.onchange('follow_id')
+    @api.onchange('coming_letter')
     def _computed_letter_type(self):
         self.computed_letter_type = ''
-        if self.follow_id:
-            self.follow_id = self.follow_id.id
-            self.computed_letter_type = self.follow_id.letter_type_id.name if self.follow_id.letter_type_id else ''
+        if self.coming_letter:
+            self.computed_letter_type = self.coming_letter.letter_type_id.name if self.coming_letter.letter_type_id else ''
 
-    @api.onchange('follow_id')
+    @api.onchange('coming_letter')
     def _computed_letter_subject(self):
         self.computed_letter_subject = ''
-        if self.follow_id:
-            self.computed_letter_subject = self.follow_id.letter_subject_id.name if self.follow_id.letter_subject_id else ''
+        if self.coming_letter:
+            self.computed_letter_subject = self.coming_letter.letter_subject_id.name if self.coming_letter.letter_subject_id else ''
 
-    @api.onchange('follow_id')
+    @api.onchange('coming_letter')
     def _computed_letter_desc(self):
         self.computed_letter_desc = ''
-        if self.follow_id:
-            self.computed_letter_desc = self.follow_id.desc
+        if self.coming_letter:
+            self.computed_letter_desc = self.coming_letter.desc
 
     @api.onchange('confirm_user_id', 'validate1_user_id', 'validate_user_id')
     def _compute_next_step_user(self):
@@ -219,7 +219,7 @@ class UbiLetterGoing(models.Model):
         # body['orgName'] = letter.partner_id.name
         body['fileList'] = self.prepare_files(letter)
         # ? shalgaj hariu bichig mun esehiig medne
-        body['isReplyDoc'] = True if letter.follow_id else False
+        body['isReplyDoc'] = True if letter.coming_letter else False
         body['isNeedReply'] = letter.must_return
         # datetime.strftime(letter.letter_date, '%Y-%m-%d') if letter.letter_date else ''
         body['priorityId'] = letter.priority_id
@@ -228,11 +228,11 @@ class UbiLetterGoing(models.Model):
         # mistyped asuuh heregtei
         body['responseDate'] = datetime.strftime(
             letter.must_return_date, '%Y-%m-%d') if letter.must_return_date else ''
-        # 1 #letter.follow_id.letter_number or ''
-        body['srcDocumentNumber'] = letter.follow_id.letter_number if letter.follow_id else ''
-        # body['srcDocumentCode'] = letter.follow_id.tabs_id if letter.follow_id else ''
+        # 1 #letter.coming_letter.letter_number or ''
+        body['srcDocumentNumber'] = letter.coming_letter.letter_number if letter.coming_letter else ''
+        # body['srcDocumentCode'] = letter.coming_letter.tabs_id if letter.coming_letter else ''
         body['srcDocumentDate'] = datetime.strftime(
-            letter.follow_id.letter_date, '%Y-%m-%d') if letter.follow_id and letter.follow_id.letter_date else ''
+            letter.coming_letter.letter_date, '%Y-%m-%d') if letter.coming_letter and letter.coming_letter.letter_date else ''
 
         json_data = json.dumps(body)
         return json_data
@@ -355,12 +355,12 @@ class UbiLetterGoing(models.Model):
                 'desc': letter.letter_template_text
             })[0]
             del before_letter_vals['send_date']
-            del before_letter_vals['follow_id']
+            del before_letter_vals['coming_letter']
             del before_letter_vals['letter_template_id']
             del before_letter_vals['letter_template_text']
             del before_letter_vals['custom_letter_template']
 
-            follow_id = self.env['ubi.letter.coming'].with_context(local_transfer=True).create(before_letter_vals)
+            coming_letter = self.env['ubi.letter.coming'].with_context(local_transfer=True).create(before_letter_vals)
 
         return True
 

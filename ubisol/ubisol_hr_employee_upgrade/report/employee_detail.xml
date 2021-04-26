@@ -13,27 +13,26 @@
                             <div class="col-5" style="width: 46% !important; padding-right: 0; margin-right: 70px;  ">
                                 <img src="/ubisol_hr_employee_upgrade/static/src/img/icon_ttt.png" height="100px" width="110px" style=" margin-top: 0; margin-left: 100px;" alt="Logo"/>
                                 <br/>
-                                <div class="head" style="font-size:22px; font-family: Arial; font-weight:900; padding-top:20px; text-align: center;">ТАВАН ТОЛГОЙ ТҮЛШ ХХК</div>
-                                <div class="head1" style="font-size:18px; font-family: Arial; text-align: center;">Ажилд орохыг хүсэгчийн анкет</div>
+                                <div class="head" style="font-size:22px; font-weight:900; padding-top:20px; text-align: center;"><span>ТАВАН ТОЛГОЙ ТҮЛШ ХХК</span></div>
+                                <div class="head1" style="font-size:18px; text-align: center;"><span>Ажилд орохыг хүсэгчийн анкет</span></div>
                             </div>
                             <div class="col-7" style=" width: 54% !important; margin-top: 0px; padding-top;0; padding-left:0; padding-right:0; ">
 
                                 <div style="z-index:9999;">
-                                    <div class="head3" style=" font-size:14px; text-align:left;  font-family: Arial;  font-weight:900 !important;">Санамж:</div>
-                                    <ul class="tse" style="font-size: 14px; font-family: Arial;  line-height: 1.2; margin-left:10px; padding-left:0;">
-                                        <li>Анкетыг бөглөхдөө өөрийн гараар үнэн зөв бөглөхийг анхаарна уу.</li>
-                                        <li>Та худал мэдээлэл өгөх, хуурамч бичиг баримт бүрдүүлэх тохиолдолд энэ нь эргээд халагдах үндэслэл болон гэдгийг анхаарна уу.</li>
-                                        <li>Компани өргөдлийг хүлээн авснаар ажил горилогчийн өмнө ямар нэгэн үүрэг, хариуцлага хүлээхгүй болохыг анхаарна уу.</li>
-                                        <li>Анкетанд хавсаргасан материалыг буцаан олгохгүй ба бид таны хувийн мэдээллийг өөр зорилгоор ашиглахгүй болно.</li>
+                                    <div class="head3" style=" font-size:14px; text-align:left; font-weight:900 !important;">Санамж:</div>
+                                    <ul class="tse" style="font-size: 14px; line-height: 1.2; margin-left:10px; padding-left:0;">
+                                        <li><span>Анкетыг бөглөхдөө өөрийн гараар үнэн зөв бөглөхийг анхаарна уу.</span></li>
+                                        <li><span>Та худал мэдээлэл өгөх, хуурамч бичиг баримт бүрдүүлэх тохиолдолд энэ нь эргээд халагдах үндэслэл болон гэдгийг анхаарна уу.</span></li>
+                                        <li><span>Компани өргөдлийг хүлээн авснаар ажил горилогчийн өмнө ямар нэгэн үүрэг, хариуцлага хүлээхгүй болохыг анхаарна уу.</span></li>
+                                        <li><span>Анкетанд хавсаргасан материалыг буцаан олгохгүй ба бид таны хувийн мэдээллийг өөр зорилгоор ашиглахгүй болно.</span></li>
                                     </ul>
                                 </div>
                             </div>
 
                         </div>
 
-
                         <br/>
-                        <div name="private_info" style="margin-left: 40px; font-family: Arial;  line-height: 1.8;">
+                        <div name="private_info" style="margin-left: 40px; line-height: 1.8;">
                             <div class="col-12">
                                 <div style="font-size: 18px !important; text-align: left; font-weight:900 !important;"> 1. ҮНДСЭН МЭДЭЭЛЭЛ </div>
                             </div>
@@ -42,8 +41,8 @@
 
                                     <div class="row">
                                         <div class="col-12">
-                                            <span>Таны сонирхож буй ажлын байр:&#160; 1&#160;</span>
-                                            <div class="zai" style="margin-left: 220px">&#160; &#160; &#160; &#160; &#160; &#160; 2 </div>
+                                            <span>Таны сонирхож буй ажлын байр:</span>
+                                            <!-- <div class="zai" style="margin-left: 220px">&#160; &#160; &#160; &#160; &#160; &#160; 2 </div> -->
                                         </div>
                                     </div>
                                     <div class="row">
@@ -57,272 +56,219 @@
                             <div class="col-12 row">
                                 <div class="col-8" style=" margin-left:35px; font-size:18px;">
                                     <div class="row">
-
-                                        <span>1.1 Ургийн овог:&#160; <span t-esc="doc.family_name"/>
-                                        </span>
-
-                                    </div>
-                                    <div class="row">
-
-                                        <span>1.2 Эцэг/эх/-ийн нэр:&#160; <span t-esc="doc.surname"/>
-                                        </span>
-
-                                    </div>
-                                    <div class="row">
-
-                                        <span>1.3 Нэр:&#160; <span t-esc="doc.name"/>
-                                        </span>
-
-                                    </div>
-                                    <div class="row">
-
-                                        <span>1.4 Регистерийн дугаар:&#160; <span t-esc="doc.identification_id"/>
-                                        </span>
-
-                                    </div>
-                                    <div class="row">
-
-                                        <div>1.5 Хүйс: &#160;&#160;&#160;&#160; 
-                                            <t t-if="doc.gender == 'male'">
-                                                <input style="margin-bottom:5px;" type="checkbox" checked="true" />
-&#160;Эрэгтэй &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; 
-                                                <input style="margin-bottom:5px;" type="checkbox"/>
-&#160;Эмэгтэй
-                                            </t>
-                                            <t t-if="doc.gender == 'female'">
-                                                <input style="margin-bottom:5px;" type="checkbox" />
-&#160;Эрэгтэй &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; 
-                                                <input style="margin-bottom:5px;" type="checkbox" checked="true"/>
-&#160;Эмэгтэй
-                                            </t>
+                                        <div class="col-12">
+                                            <span>1.1 Ургийн овог: <span t-esc="doc.family_name"/></span>
                                         </div>
+                                    </div>
 
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <span>1.2 Эцэг/эх/-ийн нэр: <span t-esc="doc.surname"/></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <span>1.3 Нэр: <span t-esc="doc.name"/></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <span>1.4 Регистерийн дугаар: <span t-esc="doc.identification_id"/></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div>1.5 Хүйс: &#160;&#160;&#160;&#160; 
+                                                <t t-if="doc.gender == 'male'">
+                                                    <input style="margin-bottom:5px;" type="checkbox" checked="true" />&#160;Эрэгтэй &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; 
+                                                    <input style="margin-bottom:5px;" type="checkbox"/>&#160;Эмэгтэй
+                                                </t>
+                                                <t t-if="doc.gender == 'female'">
+                                                    <input style="margin-bottom:5px;" type="checkbox" />&#160;Эрэгтэй &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; 
+                                                    <input style="margin-bottom:5px;" type="checkbox" checked="true"/>&#160;Эмэгтэй
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <span>1.6 Төрсөн: <span t-esc="birthday_year"/> он <span t-esc="birthday_month"/> сар <span t-esc="birthday_day"/> өдөр</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <span>1.7 Яс үндэс: <span t-esc="doc.ethnicity.name"/></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-4" style=" float: right;">
+                                    <div style="padding-right: 0; padding-top: 0; margin-left:100px; margin-top: 10px;">
+                                        <img t-if="doc.image_1920" t-att-src="image_data_uri(doc.image_1920)" style="height:150px !important; width:126px !important;" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 row">
+                                <div class="col-12" style=" margin-left:20px; font-size:18px; !important">
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <span>1.8 Нийгмийн гарал: <span t-esc="doc.social_status"/></span>
+                                        </div>
                                     </div>
                                     <div class="row">
-
-                                        <span>1.6 Төрсөн:&#160; <span t-esc="birthday_year"/>
- он &#160;<span t-esc="birthday_month"/>
- сар &#160;<span t-esc="birthday_day"/>
- өдөр</span>
-
-                            </div>
-                            <div class="row">
-                                <span>1.7 Яс үндэс:&#160; <span t-esc="doc.ethnicity.name"/>
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="col-4" style=" float: right;">
-                            <div style="padding-right: 0; padding-top: 0; margin-left:100px; margin-top: 10px;">
-                                <img t-if="doc.image_1920" t-att-src="image_data_uri(doc.image_1920)" style="height:150px !important; width:126px !important;" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 row">
-                        <div class="col-12" style=" margin-left:20px; font-size:18px; !important">
-
-                            <div class="row">
-                                <div class="col-12">
-                                    <span>1.8 Нийгмийн гарал:&#160; <span t-esc="doc.social_status"/>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <span>1.9 Нийгмийн даатгалын дэвтрийн дугаар:&#160; <span t-esc="doc.sinid"/>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <span>1.10 &#160; Өрхийн орлого&#160; <span t-esc="doc.family_income"/>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <span>1.11  &#160;Төрсөн аймаг, хот:&#160; <span t-esc="doc.country_of_birth.name"/>
-&#160; Сум, дүүрэг:&#160; <span t-esc="doc.place_of_birth"/>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <span>1.12  &#160;Оршин суугаа хаяг:&#160; <span t-esc="doc.address_home_id.display_name"/>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div>1.13  &#160;Орон сууц/хашаа байшин/-ы байдал:&#160;
-                                            &#160;&#160;&#160;&#160; 
-                                    <t t-if="doc.home_owner == 'own'">
-                                        <input style="margin-bottom:10px;" type="checkbox" checked="true"/>
-&#160;өөрийн 
-                                            &#160;&#160;&#160;&#160; 
-                                        <input style="margin-bottom:10px;" type="checkbox"/>
-&#160;эцэг, эх 
-                                        <br/>
-                                            &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                            &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                        <input style="margin-bottom:10px;" type="checkbox"/>
-&#160;түрээсийн байр
-                                            &#160;&#160;&#160;&#160;
-                                        <input style="margin-bottom:10px;" type="checkbox"/>
-&#160;Зээл
-                                    </t>
-                                    <t t-if="doc.home_owner == 'loan'">
-                                        <input style="margin-bottom:10px;" type="checkbox" />
-&#160;өөрийн 
-                                            &#160;&#160;&#160;&#160; 
-                                        <input style="margin-bottom:10px;" type="checkbox"/>
-&#160;эцэг, эх 
-                                        <br/>
-                                            &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                            &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                        <input style="margin-bottom:10px;" type="checkbox"/>
-&#160;түрээсийн байр
-                                            &#160;&#160;&#160;&#160;
-                                        <input style="margin-bottom:10px;" type="checkbox" checked="true"/>
-&#160;Зээл
-                                    </t>
-                                    <t t-if="doc.home_owner == 'tenancy'">
-                                        <input style="margin-bottom:10px;" type="checkbox" />
-&#160;өөрийн 
-                                            &#160;&#160;&#160;&#160; 
-                                        <input style="margin-bottom:10px;" type="checkbox" />
-&#160;эцэг, эх 
-                                        <br/>
-                                            &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                            &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                        <input style="margin-bottom:10px;" type="checkbox" checked="true"/>
-&#160;түрээсийн байр
-                                            &#160;&#160;&#160;&#160;
-                                        <input style="margin-bottom:10px;" type="checkbox"/>
-&#160;Зээл
-                                    </t>
-                                    <t t-if="doc.home_owner == 'parent'">
-                                        <input style="margin-bottom:10px;" type="checkbox" />
-&#160;өөрийн 
-                                            &#160;&#160;&#160;&#160; 
-                                        <input style="margin-bottom:10px;" type="checkbox" checked="true"/>
-&#160;эцэг, эх 
-                                        <br/>
-                                            &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                            &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                                        <input style="margin-bottom:10px;" type="checkbox" />
-&#160;түрээсийн байр
-                                            &#160;&#160;&#160;&#160;
-                                        <input style="margin-bottom:10px;" type="checkbox"/>
-&#160;Зээл
-                                    </t>
-                                </div>
+                                        <div class="col-12">
+                                            <span>1.9 Нийгмийн даатгалын дэвтрийн дугаар:&#160; <span t-esc="doc.sinid"/></span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <span>1.10 &#160; Өрхийн орлого&#160; <span t-esc="doc.family_income"/></span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <span>1.11  &#160;Төрсөн аймаг, хот:&#160; <span t-esc="doc.country_of_birth.name"/>&#160; Сум, дүүрэг:&#160; <span t-esc="doc.place_of_birth"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <span>1.12  &#160;Оршин суугаа хаяг:&#160; <span t-esc="doc.address_home_id.display_name"/></span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div>1.13  &#160;Орон сууц/хашаа байшин/-ы байдал:&#160;
+                                                        &#160;&#160;&#160;&#160; 
+                                                <t t-if="doc.home_owner == 'own'">
+                                                    <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;өөрийн 
+                                                        &#160;&#160;&#160;&#160; 
+                                                    <input style="margin-bottom:10px;" type="checkbox"/>&#160;эцэг, эх 
+                                                    <br/>
+                                                        &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                        &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                    <input style="margin-bottom:10px;" type="checkbox"/>&#160;түрээсийн байр
+                                                        &#160;&#160;&#160;&#160;
+                                                    <input style="margin-bottom:10px;" type="checkbox"/>&#160;Зээл
+                                                </t>
+                                                <t t-if="doc.home_owner == 'loan'">
+                                                    <input style="margin-bottom:10px;" type="checkbox" />&#160;өөрийн 
+                                                        &#160;&#160;&#160;&#160; 
+                                                    <input style="margin-bottom:10px;" type="checkbox"/>&#160;эцэг, эх 
+                                                    <br/>
+                                                        &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                        &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                    <input style="margin-bottom:10px;" type="checkbox"/>&#160;түрээсийн байр
+                                                        &#160;&#160;&#160;&#160;
+                                                    <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;Зээл
+                                                </t>
+                                                <t t-if="doc.home_owner == 'tenancy'">
+                                                    <input style="margin-bottom:10px;" type="checkbox" />&#160;өөрийн 
+                                                        &#160;&#160;&#160;&#160; 
+                                                    <input style="margin-bottom:10px;" type="checkbox" />&#160;эцэг, эх 
+                                                    <br/>
+                                                        &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                        &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                    <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;түрээсийн байр
+                                                        &#160;&#160;&#160;&#160;
+                                                    <input style="margin-bottom:10px;" type="checkbox"/>&#160;Зээл
+                                                </t>
+                                                <t t-if="doc.home_owner == 'parent'">
+                                                    <input style="margin-bottom:10px;" type="checkbox" />&#160;өөрийн 
+                                                        &#160;&#160;&#160;&#160; 
+                                                    <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;эцэг, эх 
+                                                    <br/>
+                                                        &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                        &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                                    <input style="margin-bottom:10px;" type="checkbox" />&#160;түрээсийн байр
+                                                        &#160;&#160;&#160;&#160;
+                                                    <input style="margin-bottom:10px;" type="checkbox"/>&#160;Зээл
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <span>1.14  &#160;Холбоо барих дугаар:&#160;
+                                                <span t-if="doc.mobile_phone"> &#160;<span t-esc="doc.mobile_phone"/>
+                                                </span>
+                                                <br/>
+                                                        &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;И-мэйл хаяг: &#160; <span t-esc="doc.work_email"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <span>1.15  &#160;Зайлшгүй шаардлагатай үед холбоо барих:</span>
+                                            <div>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;  Нэр&#160;<span t-esc="doc.emergency_contact"/>
+            
+                                                        &#160; &#160; Утас&#160; <span t-esc="doc.emergency_phone"/>
+            
+                                                        &#160; &#160; Таны юу болох&#160; <span t-esc="doc.emergency_person"/>
+                                    </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <span>1.14  &#160;Холбоо барих дугаар:&#160;
-                                    <span t-if="doc.mobile_phone"> &#160;<span t-esc="doc.mobile_phone"/>
-                                    </span>
-                                    <br/>
-                                              &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;И-мэйл хаяг: &#160; <span t-esc="doc.work_email"/>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <span>1.15  &#160;Зайлшгүй шаардлагатай үед холбоо барих:</span>
-                                <div>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;  Нэр&#160;<span t-esc="doc.emergency_contact"/>
- 
-                                            &#160; &#160; Утас&#160; <span t-esc="doc.emergency_phone"/>
- 
-                                            &#160; &#160; Таны юу болох&#160; <span t-esc="doc.emergency_person"/>
-                        </div>
-                    </div>
-                </div>
                 <div class="row">
                     <div class="col-12">
 
                         <span>1.16  &#160;Та жолооны эрхтэй юу? :&#160; &#160; &#160;
                             <t t-if="doc.driving_classification == ''">
-                                <input style="margin-bottom:10px;" type="checkbox"/>
-&#160;Тийм&#160; &#160; &#160; 
-                                <input style="margin-bottom:10px;" type="checkbox" checked="true"/>
-&#160;Үгүй
+                                <input style="margin-bottom:10px;" type="checkbox"/>&#160;Тийм&#160; &#160; &#160; 
+                                <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;Үгүй
                             </t>
                             <t t-if="doc.driving_classification == 'A' or doc.driving_classification == 'B' or doc.driving_classification == 'C' or doc.driving_classification == 'D' or doc.driving_classification == 'E'">
-                                <input style="margin-bottom:10px;" type="checkbox" checked="true"/>
-&#160;Тийм&#160; &#160; &#160; 
-                                <input style="margin-bottom:10px;" type="checkbox"/>
-&#160;Үгүй
+                                <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;Тийм&#160; &#160; &#160; 
+                                <input style="margin-bottom:10px;" type="checkbox"/>&#160;Үгүй
                             </t>
                         </span>
                         <div>&#160; &#160; &#160; &#160; &#160; Тийм бол хэдэн жил жолоо барьж багаа вэ ?&#160; <span t-esc="doc.years_of_driving"/>
                         </div>
                         <div>&#160; &#160; &#160; &#160; &#160; Ангилал&#160;
                             <t t-if="doc.driving_classification == 'A'">    
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox" checked="true"/>
-&#160;A &#160;
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>
-&#160;B &#160;
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>
-&#160;C &#160;
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>
-&#160;D &#160;
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>
-&#160;E  &#160;
-            </t>
-            <t t-if="doc.driving_classification == 'B'">    
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox" />
-&#160;A &#160;
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox" checked="true"/>
-&#160;B &#160;
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>
-&#160;C &#160;
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>
-&#160;D &#160;
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>
-&#160;E  &#160;
-</t>
-<t t-if="doc.driving_classification == 'C'">    
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox" />
-&#160;A &#160;
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox" />
-&#160;B &#160;
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox" checked="true"/>
-C &#160;
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>
-&#160;D &#160;
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>
-&#160;E  &#160;
-</t>
-<t t-if="doc.driving_classification == 'D'">    
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox" />
-&#160;A &#160;
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>
-&#160;B &#160;
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>
-&#160;C &#160;
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox" checked="true"/>
-&#160;&#160;D &#160;
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>
-&#160;E  &#160;
-</t>
-<t t-if="doc.driving_classification == 'E'">    
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox" />
-&#160;A &#160;
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>
-&#160;B &#160;
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>
-&#160;C &#160;
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>
-&#160;D &#160;
-                                                &#160;   <input style="margin-bottom:10px;" type="checkbox" checked="true"/>
-&#160;E  
-</t>
-</div>
-</div>
-</div>
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;A &#160;
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;B &#160;
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;C &#160;
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;D &#160;
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;E  &#160;
+                            </t>
+                            <t t-if="doc.driving_classification == 'B'">    
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox" />&#160;A &#160;
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;B &#160;
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;C &#160;
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;D &#160;
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;E  &#160;
+                            </t>
+                            <t t-if="doc.driving_classification == 'C'">    
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox" />&#160;A &#160;
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox" />&#160;B &#160;
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox" checked="true"/>C &#160;
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;D &#160;
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;E  &#160;
+                            </t>
+                            <t t-if="doc.driving_classification == 'D'">    
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox" />&#160;A &#160;
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;B &#160;
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;C &#160;
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;&#160;D &#160;
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;E  &#160;
+                            </t>
+                            <t t-if="doc.driving_classification == 'E'">    
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox" />&#160;A &#160;
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;B &#160;
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;C &#160;
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox"/>&#160;D &#160;
+                                                &#160;   <input style="margin-bottom:10px;" type="checkbox" checked="true"/>&#160;E  
+                            </t>
+                        </div>
+                    </div>
+                </div>
 <div class="row">
 <div class="col-12">
 <span>1.17  &#160;Тус компанид садан төрөл ажилладаг:&#160; &#160; &#160; &#160; &#160; 

@@ -70,10 +70,9 @@
                 <header>
                     <button string="Хүлээн авах" name="letter_receiving" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', 'not in', ('draft')), ('is_local', '=', True)]}"/>
                     <button string="Хүлээн авах" name="action_receive" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', 'not in', ('draft')), ('is_local', '=', False)]}"/>
-                    <button string="Судлаж байгаа" name="action_review" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('draft', 'conflict'))]}"/>
+                    <button string="Судлаж байгаа" name="action_review" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('receive', 'conflict'))]}"/>
                     <button string="Шилжүүлэх" name="action_transfer" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('review'))]}"/>
-                    <button string="Шийдвэрлэх" name="action_validate" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('transfer', 'conflict', 'review'))]}"/>
-                    <!-- <button string="Зөрчилтэй" name="action_conflict" type="object" attrs="{'invisible': [('state', 'in', ('validate', 'transfer', 'refuse', 'conflict'))]}"/> -->
+                    <button string="Шийдвэрлэх" name="action_validate" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ('transfer', 'conflict', 'receive'))]}"/>
                     <button string="Буцаах" name="call_return_wizard" type="object" attrs="{'invisible': ['|', ('state', 'in', ('validate', 'conflict', 'refuse')), ('is_local', '=', True)]}"/>
                     <button string="Буцаах" name="action_refuse" type="object" attrs="{'invisible': ['|', ('state', 'in', ('validate', 'conflict', 'refuse')), ('is_local', '=', False)]}"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,receive,transfer,review,validate"/>
@@ -127,10 +126,10 @@
                         </group>
 
                         <group string='Явсан бичгийн хариу'>
-                            <field name="follow_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                            <field name="computed_letter_type" attrs="{'invisible': [('follow_id', '=', False)]}"/>
-                            <field name="computed_letter_subject" attrs="{'invisible': [('follow_id', '=', False)]}"/>
-                            <!-- <field name="computed_letter_desc" attrs="{'invisible': [('follow_id', '=', False)]}"/> -->
+                            <field name="going_letter" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="computed_letter_type" attrs="{'invisible': [('going_letter', '=', False)]}"/>
+                            <field name="computed_letter_subject" attrs="{'invisible': [('going_letter', '=', False)]}"/>
+                            <!-- <field name="computed_letter_desc" attrs="{'invisible': [('going_letter', '=', False)]}"/> -->
                         </group>
                     </group>
                     <notebook>

@@ -59,15 +59,15 @@
             <form string="Ubi Letter">
                 <field name="can_approve" invisible='1'/>
                 <header>
-                    <button string="Ноорог" name="action_draft" type="object" class="oe_highlight"
+                    <button string="Ноорог" name="action_draft" type="object" 
                         attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'in', ('draft','expected'))]}"/>
                     <button string="Хянах" name="action_confirm" type="object" class="oe_highlight" 
                         attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'not in', ('draft'))]}"/>
                     <button string="Зөвшөөрөх" name="action_validate1" type="object" class="oe_highlight" 
                         attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'not in', ('confirm'))]}"/>
-                    <button string="Батлах" name="action_validate" type="object" 
+                    <button string="Батлах" name="action_validate" type="object" class="oe_highlight"
                         attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'not in', ('validate1'))]}"/>
-                    <button string="Хүлээлэгт оруулах" name="action_expected" type="object" 
+                    <button string="Хүлээлэгт оруулах" name="action_expected" type="object" class="oe_highlight"
                         attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'not in', ('validate'))]}"/>
 
                     <field name="state" widget="statusbar" statusbar_visible="draft,confirm,validate1,validate"/>
@@ -86,7 +86,6 @@
                             <field name="letter_template_id"/>
                             <field name="letter_date" required='1'/>
                             <field name="letter_total_num"/>
-
                         </group>
 
                         <group string="Нэмэлт">
@@ -118,9 +117,9 @@
                         </group>
 
                         <group string='Ирсэн бичгийн хариу'>
-                            <field name="follow_id" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                            <field name="computed_letter_type" attrs="{'invisible': [('follow_id', '=', False)]}"/>
-                            <field name="computed_letter_subject" attrs="{'invisible': [('follow_id', '=', False)]}"/>
+                            <field name="coming_letter" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="computed_letter_type" attrs="{'invisible': [('coming_letter', '=', False)]}"/>
+                            <field name="computed_letter_subject" attrs="{'invisible': [('coming_letter', '=', False)]}"/>
                         </group>
 
                         <group string="Хавсралт">

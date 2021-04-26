@@ -251,7 +251,7 @@
             <field name="identification_id" string='Регистр'/>
             <field name="pin" string='Пин'/>
             <field name="mobile_phone" string='Гар утас' class="o_force_ltr"/>
-            <field name="work_email" invisible="1"/>
+            <field name="work_email" string='Ажлын имэйл'/>
             <field name="company_id" groups="base.group_multi_company"/>
             <field name="department_id" class="o_force_ltr"/>
             <field name="job_id"/>

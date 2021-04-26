@@ -2,28 +2,33 @@
 <odoo>
     <data noupdate="1">
         <!-- Letter specific activities -->
+        <record id="mail_act_letter_receive" model="mail.activity.type">
+            <field name="name">Албан бичиг 'Хүлээн авах'</field>
+            <field name="icon">fa-sun-o</field>
+            <field name="res_model_id" ref="ubisol_letters.model_ubi_letter_going"/>
+        </record>
         <record id="mail_act_letter_confirm" model="mail.activity.type">
-            <field name="name">Албан бичиг хянасан</field>
+            <field name="name">Албан бичиг 'Хянах'</field>
             <field name="icon">fa-sun-o</field>
             <field name="res_model_id" ref="ubisol_letters.model_ubi_letter_going"/>
         </record>
         <record id="mail_act_letter_validate1" model="mail.activity.type">
-            <field name="name">Албан бичиг зөвшөөрсөн</field>
+            <field name="name">Албан бичиг 'Зөвшөөрөх'</field>
             <field name="icon">fa-sun-o</field>
             <field name="res_model_id" ref="ubisol_letters.model_ubi_letter_going"/>
         </record>
         <record id="mail_act_letter_validate" model="mail.activity.type">
-            <field name="name">Албан бичиг баталсан</field>
+            <field name="name">Албан бичиг 'Батлах'</field>
             <field name="icon">fa-sun-o</field>
             <field name="res_model_id" ref="ubisol_letters.model_ubi_letter_going"/>
         </record>
         <record id="mail_act_letter_expected" model="mail.activity.type">
-            <field name="name">Албан бичиг хүлээлэгт оруулсан</field>
+            <field name="name">Албан бичиг 'Хүлээлэгт оруулах'</field>
             <field name="icon">fa-sun-o</field>
             <field name="res_model_id" ref="ubisol_letters.model_ubi_letter_going"/>
         </record>
         <record id="mail_act_letter_refuse" model="mail.activity.type">
-            <field name="name">Албан бичиг татгалзсан</field>
+            <field name="name">Албан бичиг 'Татгалзах'</field>
             <field name="icon">fa-ban</field>
             <field name="res_model_id" ref="ubisol_letters.model_ubi_letter_going"/>
         </record>

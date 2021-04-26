@@ -35,6 +35,8 @@ class UbiLetterComing(models.Model):
         groups="base.group_user",
         default='draft',
         string='Ирсэн бичгийн төлөв', store=True, readonly=True, copy=False, tracking=True)
+    going_letter = fields.Many2one(
+        'ubi.letter.going', string='Явсан бичгийн хариу', groups="base.group_user")    
     cancel_employee = fields.Char(
         string="Цуцалсан ажилтан", groups="base.group_user", help="Ажилтан")
     cancel_position = fields.Char(
@@ -43,24 +45,31 @@ class UbiLetterComing(models.Model):
         string='Цуцалсан утга', groups="base.group_user")
     # can_approve = fields.Boolean('Can reset', compute='_compute_can_approve', groups="base.group_user")
 
-    @api.onchange('follow_id')
+    @api.onchange('going_letter')
     def _computed_letter_type(self):
         self.computed_letter_type = ''
-        if self.follow_id:
-            self.follow_id = self.follow_id.id
-            self.computed_letter_type = self.follow_id.letter_type_id.name if self.follow_id.letter_type_id else ''
+        if self.going_letter:
+            self.going_letter = self.going_letter.id
+            self.computed_letter_type = self.going_letter.letter_type_id.name if self.going_letter.letter_type_id else ''
+            category = self.env['ir.module.category'].search([('name', '=', 'Contracts')])
+            category = self.env['ir.module.category'].search([('exclusive', '!=', True)])
+            category1 = self.env['ir.module.category'].browse(39)
+            group_name = self.env['res.groups'].search([('category_id', 'in', category.ids)])
+            _logger.info(category)
+            _logger.info(group_name)
+            _logger.info(group_name.users.ids)
 
-    @api.onchange('follow_id')
+    @api.onchange('going_letter')
     def _computed_letter_subject(self):
         self.computed_letter_subject = ''
-        if self.follow_id:
-            self.computed_letter_subject = self.follow_id.letter_subject_id.name if self.follow_id.letter_subject_id else ''
+        if self.going_letter:
+            self.computed_letter_subject = self.going_letter.letter_subject_id.name if self.going_letter.letter_subject_id else ''
 
-    @api.onchange('follow_id')
+    @api.onchange('going_letter')
     def _computed_letter_desc(self):
         self.computed_letter_desc = ''
-        if self.follow_id:
-            self.computed_letter_desc = self.follow_id.desc
+        if self.going_letter:
+            self.computed_letter_desc = self.going_letter.desc
 
     @api.onchange('department_id')
     def _manager_department_id(self):
@@ -123,7 +132,9 @@ class UbiLetterComing(models.Model):
         if any(letter.state not in ['draft'] for letter in self):
             raise UserError(
                 _('Зөвхөн ирсэн төлөвтэй баримтыг "Хүлээн авсан" төлөвт оруулах боломжтой.'))
-        self.write({'state': 'receive'})
+        self.write({'state': 'receive', 'receive_user_id': self.env.user, 'received_date': datetime.today().strftime('%Y-%m-%d')})
+        # if self.is_local == True:
+
         return True
 
     def action_review(self):
@@ -400,30 +411,29 @@ class UbiLetterComing(models.Model):
     def activity_update(self):
         to_clean, to_do = self.env['ubi.letter.going'], self.env['ubi.letter.going']
         for letter in self:
-            note = _('%s дугаартай баримтыг %s -нд %s -с шилжүүлсэн.') % (letter.letter_number,
-                                                                          fields.Datetime.to_string(letter.processing_datetime), self.env.user.name)
-            # if letter.state == 'draft':
-            #     to_clean |= holiday
-            if letter.state == 'transfer':
-                letter.activity_schedule(
-                    'ubisol_letters.mail_act_letter_coming_transfer',
-                    note=note,
-                    user_id=letter.user_id.id or self.env.user.id)
-            # elif letter.state == 'validate1':
-            #     letter.activity_feedback(['ubisol_letters.mail_act_leave_approval'])
-            #     letter.activity_schedule(
-            #         'ubisol_letters.mail_act_leave_second_approval',
-            #         note=note,
-            #         user_id=letter.sudo()._get_responsible_for_approval().id or self.env.user.id)
-            elif letter.state == 'validate':
+            if letter.state == 'draft':
+                next_state = 'Хүлээн авсан'
+                format_name = 'ubisol_letters.mail_act_letter_receive'
+                flag = self.env['res.users'].has_group('hr_contract.group_hr_contract_manager')
+                _logger.info(flag)
                 to_do |= letter
-            # elif letter.state == 'refuse':
-            #     to_clean |= letter
-        # if to_clean:
-        #     to_clean.activity_unlink(['ubisol_letters.mail_act_leave_approval', 'ubisol_letters.mail_act_leave_second_approval'])
-        if to_do:
-            to_do.activity_feedback(
-                ['ubisol_letters.mail_act_letter_coming_transfer'])
+            elif letter.state == 'receive':
+                next_state = 'Зөвшөөрсөн'
+                format_name = 'ubisol_letters.mail_act_letter_validate1'
+                to_do |= letter
+            elif letter.state == 'review':
+                next_state = 'Шилжүүлсэн'
+                format_name = 'ubisol_letters.mail_act_letter_validate'
+                to_do |= letter
+
+            user_name = self.next_step_user.employee_id.name if self.next_step_user.employee_id else self.next_step_user.name
+            note = _("%s дугаартай албан бичиг '%s' төлөвт шилжүүлэгдэхээр хүлээгдэж байна.") % (letter.letter_number, user_name, next_state)    
+            letter.activity_schedule(
+                format_name,
+                note=note,
+                user_id=self.next_step_user.id or self.env.user.id)
+
+        return True
 
     ####################################################
     # Messaging methods
