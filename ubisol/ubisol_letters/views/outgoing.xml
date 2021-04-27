@@ -20,9 +20,9 @@
                     attrs="{'invisible': ['|', ('is_local', '=', True), ('state', 'not in', ('expected'))]}" groups="hr.group_hr_manager"/>
                 <button string="Илгээх" name="action_sent" type="object" icon="fa-check text-success"
                     attrs="{'invisible': ['|', ('is_local', '=', False), ('state', 'not in', ('expected'))]}" groups="hr.group_hr_manager"/>
-                <button string="Цуцлах" name="cancel_sending" type="object" icon="fa-ban text-danger"
+                <button string="Буцаах" name="cancel_sending" type="object" icon="fa-ban text-danger"
                     attrs="{'invisible': ['|', ('is_local', '=', True), ('state', 'not in', ('sent'))]}" groups="hr.group_hr_manager"/>
-                <button string="Цуцлах" name="action_refuse" type="object" icon="fa-ban text-danger"
+                <button string="Буцаах" name="action_refuse" type="object" icon="fa-ban text-danger"
                     attrs="{'invisible': ['|', ('is_local', '=', False), ('state', 'not in', ('sent'))]}"  groups="hr.group_hr_manager"/>
                 <field name="activity_exception_decoration" widget="activity_exception"/>
             </tree>
@@ -35,13 +35,13 @@
         <field name="arch" type="xml">
             <form string="Ubi Letter">
                 <header>
-                    <button string="Цуцлах" name="cancel_sending" type="object" 
+                    <button string="Буцаах" name="cancel_sending" type="object" 
                         attrs="{'invisible': ['|', ('state', 'not in', ['sent']), ('is_local', '=', True)]}"/>
-                    <button string="Цуцлах" name="action_refuse" type="object" 
+                    <button string="Буцаах" name="action_refuse" type="object" 
                         attrs="{'invisible': ['|', ('state', 'not in', ['sent']), ('is_local', '=', False)]}"/>
                     <button string="Хүлээлэгт оруулах" name="action_expected" type="object" attrs="{'invisible': [('state', 'not in', ['refuse'])]}"/>
                     <button string="Илгээх" name="action_sent" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['expected'])]}"/>
-                    <field name="state" widget="statusbar" statusbar_visible="expected,sent,received"/>
+                    <field name="state" widget="statusbar" statusbar_visible="expected,sent,receive,validate"/>
                 </header>
                 <sheet>
                     <group>
@@ -80,15 +80,20 @@
                             <field name="must_return_date" attrs="{'invisible': [('must_return','!=',True)], 'readonly': [('state', '!=', 'expected')]}"/>
                         </group>
 
+                        <group string="Илгээсэн">
+                            <field name="user_id" string='Илгээсэн' readonly='1'/>
+                            <field name="send_date" readonly='1'/>
+                        </group>           
+
+                        <group string="Хавсралт">
+                            <field name="letter_attachment_ids" widget="many2many_binary" required='1' attrs="{'readonly': [('state', '!=', 'expected')]}"/>
+                        </group>
+
                         <group string='Ирсэн бичгийн хариу'>
                             <field name="coming_letter" attrs="{'readonly': [('state', '!=', 'expected')]}" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="computed_letter_type" attrs="{'invisible': [('coming_letter', '=', False)]}"/>
                             <field name="computed_letter_subject" attrs="{'invisible': [('coming_letter', '=', False)]}"/>
                             <!-- <field name="computed_letter_desc"/> -->
-                        </group>
-
-                        <group string="Хавсралт">
-                            <field name="letter_attachment_ids" widget="many2many_binary" required='1' attrs="{'readonly': [('state', '!=', 'expected')]}"/>
                         </group>
                     </group>
                 </sheet>
@@ -111,7 +116,7 @@
                 (0, 0, {'view_mode': 'kanban', 'view_id': ref('ubisol_letters.ubi_letter_going_kanban_view')}),
                 (0, 0, {'view_mode': 'form', 'view_id': ref('ubisol_letters.ubi_letter_going_form_view')})]"/>
         <field name="context">{'default_state': 'expected'}</field>
-        <field name="domain">[('state', 'in', ('expected','sent','received','refuse'))]</field>
+        <field name="domain">[('state', 'in', ('expected','sent','receive','refuse'))]</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Add a new document

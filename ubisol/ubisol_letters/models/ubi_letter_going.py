@@ -29,11 +29,11 @@ class UbiLetterGoing(models.Model):
         ('draft', 'Бүртгэсэн'),
         ('confirm', 'Хянасан'),
         ('validate1', 'Зөвшөөрсөн'),
-        ('validate', 'Баталсан'),
         ('expected', 'Хүлээгдэж буй'),
         ('sent', 'Илгээсэн'),
-        ('refuse', 'Цуцласан'),
-        ('received', 'Хүлээн авсан')
+        ('refuse', 'Буцаасан'),
+        ('receive', 'Хүлээн авсан'),
+        ('validate', 'Баталсан')
         ],
         groups="base.group_user",
         default='draft',
@@ -143,6 +143,11 @@ class UbiLetterGoing(models.Model):
             self.next_step_user.notify_info(message='Таньд 1 тушаал шилжиж ирлээ.')
             self.activity_update()
 
+        if letter.request_employee_id:
+            self.add_follower(letter.request_employee_id)
+        if letter.responsible_employee_id:
+            self.add_follower(letter.responsible_employee_id)
+
         return letter
 
     def write(self, vals):
@@ -150,6 +155,11 @@ class UbiLetterGoing(models.Model):
         if vals.get('confirm_user_id') or vals.get('validate1_user_id') or (vals.get('validate_user_id') and self.state != 'expected'):
             self.next_step_user.notify_info(message='Таньд 1 тушаал шилжиж ирлээ.')
             self.activity_update()
+            
+        if self.request_employee_id:
+            self.add_follower(self.request_employee_id)
+        if self.responsible_employee_id:
+            self.add_follower(self.responsible_employee_id)
 
         return letter
 
@@ -195,7 +205,7 @@ class UbiLetterGoing(models.Model):
                 if result['status'] == '200':
                     data = result['data']
                     letter.write(
-                        {"state": "sent", "tabs_id": data['id'], "send_date": datetime.today().strftime('%Y-%m-%d')})
+                        {"state": "sent", "tabs_id": data['id'], "send_date": datetime.today().strftime('%Y-%m-%d'), "user_id": self.env.user.id})
                 else:
                     raise UserError(_(result['data']))
         return {}
@@ -345,7 +355,7 @@ class UbiLetterGoing(models.Model):
     def action_sent(self):
         if any(letter.state not in ['expected'] for letter in self):
             raise UserError(_('Зөвхөн хүлээгдэж буй бичгийг "Илгээх" төлөвт оруулах боломжтой.'))
-        self.write({'state': 'sent'})
+        self.write({'state': 'sent', "send_date": datetime.today().strftime('%Y-%m-%d'), "user_id": self.env.user.id})
 
         for letter in self:
             before_letter_vals = letter.copy_data({
@@ -365,8 +375,8 @@ class UbiLetterGoing(models.Model):
         return True
 
     def action_refuse(self):
-        if any(letter.state in ['received'] for letter in self):
-            raise UserError(_('Хүлээн авсан бичгийг "Цуцлах" төлөвт оруулах боломжгүй байна.'))
+        if any(letter.state in ['receive'] for letter in self):
+            raise UserError(_('Хүлээн авсан бичгийг "Буцаах" төлөвт оруулах боломжгүй байна.'))
         self.write({'state': 'refuse'})
         return True
 
@@ -440,3 +450,26 @@ class UbiLetterGoing(models.Model):
                 user_id=self.next_step_user.id or self.env.user.id)
 
         return True
+
+    ####################################################
+    # Messaging methods
+    ####################################################
+
+    def _track_subtype(self, init_values):
+        if 'state' in init_values and self.state == 'transfer':
+            return self.env.ref('ubisol_letters.mt_transferred')
+        return super(UbiLetterGoing, self)._track_subtype(init_values)
+
+    def add_follower(self, employee_id):
+        employee = self.env['hr.employee'].browse(employee_id.id)
+        if employee.user_id:
+            self.message_subscribe(partner_ids=employee.user_id.partner_id.ids)
+
+    def message_subscribe(self, partner_ids=None, channel_ids=None, subtype_ids=None):
+        # due to record rule can not allow to add follower and mention on validated leave so subscribe through sudo
+        if self.state in ['validate', 'validate1']:
+            self.check_access_rights('read')
+            self.check_access_rule('read')
+            return super(UbiLetterGoing, self.sudo()).message_subscribe(partner_ids=partner_ids, channel_ids=channel_ids, subtype_ids=subtype_ids)
+        return super(UbiLetterGoing, self).message_subscribe(partner_ids=partner_ids, channel_ids=channel_ids, subtype_ids=subtype_ids)
+            

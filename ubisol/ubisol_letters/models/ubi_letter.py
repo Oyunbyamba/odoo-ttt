@@ -53,7 +53,7 @@ class UbiLetter(models.AbstractModel):
     request_employee_id = fields.Many2one('hr.employee', string='Хүсэлт илгээсэн ажилтан')
 
     official_person = fields.Char('Албан тушаалтан', groups="base.group_user")
-    receive_user_id = fields.Many2one('res.users', groups="base.group_user")
+    user_id = fields.Many2one('res.users', groups="base.group_user")
     confirm_user_id = fields.Many2one('res.users', groups="base.group_user")
     validate1_user_id = fields.Many2one('res.users', groups="base.group_user")
     validate_user_id = fields.Many2one('res.users', groups="base.group_user")

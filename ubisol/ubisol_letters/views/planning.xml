@@ -60,7 +60,7 @@
                 <field name="can_approve" invisible='1'/>
                 <header>
                     <button string="Ноорог" name="action_draft" type="object" 
-                        attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'in', ('draft','expected'))]}"/>
+                        attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'in', ('draft','expected','confirm'))]}"/>
                     <button string="Хянах" name="action_confirm" type="object" class="oe_highlight" 
                         attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'not in', ('draft'))]}"/>
                     <button string="Зөвшөөрөх" name="action_validate1" type="object" class="oe_highlight" 
@@ -80,17 +80,33 @@
                     </div>
                     <group>
                         <group string="Үндсэн мэдээлэл">
-                            <field name="letter_subject_id" required='1'/>
-                            <field name="letter_number" required='1'/>
-                            <field name="letter_type_id" required='1'/>
-                            <field name="letter_template_id"/>
-                            <field name="letter_date" required='1'/>
-                            <field name="letter_total_num"/>
+                            <field name="letter_subject_id" required='1' attrs="{'readonly': [('state', 'in', ('validate','validate1','expected'))]}"/>
+                            <field name="letter_number" required='1' attrs="{'readonly': [('state', 'in', ('validate','validate1','expected'))]}"/>
+                            <field name="letter_type_id" required='1' attrs="{'readonly': [('state', 'in', ('validate','validate1','expected'))]}"/>
+                            <field name="letter_template_id" attrs="{'readonly': [('state', 'in', ('validate','validate1','expected'))]}"/>
+                            <field name="letter_date" required='1' attrs="{'readonly': [('state', 'in', ('validate','validate1','expected'))]}"/>
+                            <field name="letter_total_num" attrs="{'readonly': [('state', 'in', ('validate','validate1','expected'))]}"/>
                         </group>
 
                         <group string="Нэмэлт">
+                            <field name="request_employee_id" attrs="{'invisible': [('is_local', '=', False)], 
+                                'required': [('is_local', '=', True)],
+                                'readonly': [('state', 'in', ('validate','validate1','expected'))]}"
+                                options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            <field name="responsible_employee_id" attrs="{'invisible': [('is_local', '=', False)], 
+                                'required': [('is_local', '=', True)],
+                                'readonly': [('state', 'in', ('validate','validate1','expected'))] }"
+                                options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>    
+                            <field name="department_id" string='Хэлтэс' attrs="{'invisible': [('is_local', '=', False)]}"/>                            
+                            <field name="official_person" string='Хэнд' attrs="{'invisible': [('is_local', '=', True)], 
+                                'required': [('is_local', '=', False)],
+                                'readonly': [('state', 'in', ('validate','validate1','expected'))]}"/>
+                            <field name="partner_id" string='Хаашаа' attrs="{'invisible': [('is_local', '=', True)], 
+                                'required': [('is_local', '=', False)],
+                                'readonly': [('state', 'in', ('validate','validate1','expected'))]}"/>
+
                             <field name="confirm_user_id" string='Хянасан' 
-                                attrs="{'readonly': [('state', '!=', 'draft')], 'required': [('state', '=', 'draft')]}"
+                                attrs="{'readonly': [('state', 'in', ('validate','validate1','expected'))], 'required': [('state', '=', 'draft')]}"
                                 options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="validate1_user_id" string='Зөвшөөрсөн' 
                                 attrs="{
@@ -104,35 +120,33 @@
                                     'readonly': [('state', '!=', 'validate1')], 
                                     'required': [('state', '=', 'validate1')]}"
                                 options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                            <field name="partner_id" string='Хаашаа' required='1'/>
-                            <field name="official_person" string='Хэнд'/>
-                            <field name="department_id" string='Хаанаас' options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                            
                         </group>
 
                         <group>
-                            <field name="priority_id"/>
-                            <field name="is_local" string='Дотоод бичиг'/>
-                            <field name="must_return" string='Хариутай эсэх'/>
-                            <field name="must_return_date" attrs="{'invisible': [('must_return','!=',True)]}"/>
+                            <field name="priority_id" attrs="{'readonly': [('state', 'in', ('validate','validate1','expected'))]}"/>
+                            <field name="is_local" string='Дотоод бичиг' attrs="{'readonly': [('state', 'in', ('validate','validate1','expected'))]}"/>
+                            <field name="must_return" string='Хариутай эсэх' attrs="{'readonly': [('state', 'in', ('validate','validate1','expected'))]}"/>
+                            <field name="must_return_date" attrs="{'invisible': [('must_return','!=',True)], 'readonly': [('state', 'in', ('validate','validate1','expected'))]}"/>
                         </group>
 
                         <group string='Ирсэн бичгийн хариу'>
-                            <field name="coming_letter" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
-                            <field name="computed_letter_type" attrs="{'invisible': [('coming_letter', '=', False)]}"/>
-                            <field name="computed_letter_subject" attrs="{'invisible': [('coming_letter', '=', False)]}"/>
+                            <field name="coming_letter" options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'readonly': [('state', 'in', ('validate','validate1','expected'))]}"/>
+                            <field name="computed_letter_type" attrs="{'invisible': [('coming_letter', '=', False)], 'readonly': [('state', 'in', ('validate','validate1','expected'))]}"/>
+                            <field name="computed_letter_subject" attrs="{'invisible': [('coming_letter', '=', False)], 'readonly': [('state', 'in', ('validate','validate1','expected'))]}"/>
                         </group>
 
                         <group string="Хавсралт">
-                            <field name="letter_attachment_ids" widget="many2many_binary" required='1'/>
+                            <field name="letter_attachment_ids" widget="many2many_binary" required='1' attrs="{'readonly': [('state', 'in', ('validate','validate1','expected'))]}"/>
                         </group>
 
                         <group>
-                            <field name="letter_template_text" widget="html"/>
+                            <field name="letter_template_text" widget="html" attrs="{'readonly': [('state', 'in', ('validate','validate1','expected'))]}"/>
                         </group>
                     </group>
                     <notebook>
                         <page string="Харагдац">
-                            <field name="custom_letter_template" widget="html"/>
+                            <field name="custom_letter_template" widget="html" readonly='1'/>
                         </page>
                     </notebook>
                 </sheet>

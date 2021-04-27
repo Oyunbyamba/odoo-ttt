@@ -32,6 +32,11 @@
             <field name="icon">fa-ban</field>
             <field name="res_model_id" ref="ubisol_letters.model_ubi_letter_going"/>
         </record>
+        <record id="mail_act_letter_transfer" model="mail.activity.type">
+            <field name="name">Албан бичиг шилжүүлсэн</field>
+            <field name="icon">fa-sun-o</field>
+            <field name="res_model_id" ref="ubisol_letters.model_ubi_letter_going"/>
+        </record>
 
         <!-- Letter-related subtypes for messaging / Chatter -->
         <record id="mt_transferred" model="mail.message.subtype">

@@ -51,14 +51,8 @@ class UbiLetterComing(models.Model):
         if self.going_letter:
             self.going_letter = self.going_letter.id
             self.computed_letter_type = self.going_letter.letter_type_id.name if self.going_letter.letter_type_id else ''
-            category = self.env['ir.module.category'].search([('name', '=', 'Contracts')])
-            category = self.env['ir.module.category'].search([('exclusive', '!=', True)])
-            category1 = self.env['ir.module.category'].browse(39)
-            group_name = self.env['res.groups'].search([('category_id', 'in', category.ids)])
-            _logger.info(category)
-            _logger.info(group_name)
-            _logger.info(group_name.users.ids)
-
+            # category = self.env['ir.module.category'].search([('name', '=', 'Contracts')])
+           
     @api.onchange('going_letter')
     def _computed_letter_subject(self):
         self.computed_letter_subject = ''
@@ -82,14 +76,24 @@ class UbiLetterComing(models.Model):
         if letter.is_local == True:
             if not self._context.get('local_transfer'):
                 letter.state = 'receive' 
-                letter.receive_user_id = self.env.user
+                letter.user_id = self.env.user
                 letter.received_date = datetime.today().strftime('%Y-%m-%d')
+
+        if letter.request_employee_id:
+            self.add_follower(letter.request_employee_id)
+        if letter.responsible_employee_id:
+            self.add_follower(letter.responsible_employee_id) 
+
+        self.activity_update()
 
         return letter
 
     def write(self, vals):
         letter = super(UbiLetterComing, self).write(vals)
-
+        if self.request_employee_id:
+            self.add_follower(self.request_employee_id)
+        if self.responsible_employee_id:
+            self.add_follower(self.responsible_employee_id)    
         return letter
 
     def call_return_wizard(self):
@@ -112,60 +116,6 @@ class UbiLetterComing(models.Model):
     # ------------------------------------------------------------
     # Activity methods
     # ------------------------------------------------------------
-
-    # def _get_responsible_for_approval(self):
-    #     self.ensure_one()
-    #     responsible = self.env['res.users'].browse(SUPERUSER_ID)
-
-    #     if self.validation_type == 'manager' or (self.validation_type == 'both' and self.state == 'confirm'):
-    #         if self.employee_id.leave_manager_id:
-    #             responsible = self.employee_id.leave_manager_id
-    #         elif self.employee_id.parent_id.user_id:
-    #             responsible = self.employee_id.parent_id.user_id
-    #     elif self.validation_type == 'hr' or (self.validation_type == 'both' and self.state == 'validate1'):
-    #         if self.holiday_status_id.responsible_id:
-    #             responsible = self.holiday_status_id.responsible_id
-
-    #     return responsible
-
-    def action_receive(self):
-        if any(letter.state not in ['draft'] for letter in self):
-            raise UserError(
-                _('Зөвхөн ирсэн төлөвтэй баримтыг "Хүлээн авсан" төлөвт оруулах боломжтой.'))
-        self.write({'state': 'receive', 'receive_user_id': self.env.user, 'received_date': datetime.today().strftime('%Y-%m-%d')})
-        # if self.is_local == True:
-
-        return True
-
-    def action_review(self):
-        if any(letter.state not in ['receive'] for letter in self):
-            raise UserError(
-                _('Зөвхөн хүлээн авсан төлөвтэй баримтыг "Судлаж байгаа" төлөвт оруулах боломжтой.'))
-        self.write({'state': 'review'})
-        return True
-
-    def action_transfer(self):
-        if any(letter.state not in ['review'] for letter in self):
-            raise UserError(
-                _('Зөвхөн судлаж байгаа төлөвтэй баримтыг "Шилжүүлсэн" төлөвт оруулах боломжтой.'))
-        self.write({'state': 'transfer'})
-        self.user_id.notify_info(message='Таньд 1 шинэ бичиг шилжиж ирлээ.')
-        self.activity_update()
-        return True
-
-    def action_validate(self):
-        if any(letter.state not in ['transfer', 'review', 'receive'] for letter in self):
-            raise UserError(
-                _('Зөвхөн хүлээн авсан, шилжүүлсэн төлөвтэй баримтыг "Зөвшөөрсөн" төлөвт оруулах боломжтой.'))
-        self.write({'state': 'validate'})
-        return True
-
-    def action_refuse(self):
-        if any(letter.state in ['validate', 'conflict'] for letter in self):
-            raise UserError(
-                _('Зөвхөн шийдвэрлэсэн төлөвтэй баримтыг "Буцаасан" төлөвт оруулах боломжгүй.'))
-        self.write({'state': 'refuse'})
-        return True
 
     @api.model
     def check_new_letters(self, user={}):
@@ -364,7 +314,7 @@ class UbiLetterComing(models.Model):
                 if result['status'] == '200':
                     letter.write(
                         {"state": "receive", 
-                        'receive_user_id': received_user,
+                        'user_id': received_user,
                         'received_date': datetime.today.strftime('%Y-%m-%d')
                         })
                 else:
@@ -407,31 +357,108 @@ class UbiLetterComing(models.Model):
         else:
             return {'status': 'ERROR', 'data': 'Сүлжээний алдаа гарлаа.'}
 
+    def action_receive(self):
+        if any(letter.state not in ['draft'] for letter in self):
+            raise UserError(
+                _('Зөвхөн ирсэн төлөвтэй баримтыг "Хүлээн авсан" төлөвт оруулах боломжтой.'))
+        self.write({'state': 'receive', 'user_id': self.env.user, 'received_date': datetime.today().strftime('%Y-%m-%d')})
+        # if self.is_local == True:
+        self.activity_update()
+
+        if self.follow_id:
+            going_letter = self.env['ubi.letter.going'].browse(self.follow_id.id)
+            going_letter.write({'state': 'receive'})
+            user_name = self.env.user.employee_id.name if self.env.user.employee_id else self.env.user.name     
+
+            note = _("%s дугаартай албан бичгийг 'Хүлээн авсан' төлөвт '%s' орууллаа.") % (going_letter.letter_number, user_name)    
+            going_letter.message_post(body=note)
+        return True
+
+    def action_review(self):
+        if any(letter.state not in ['receive'] for letter in self):
+            raise UserError(
+                _('Зөвхөн хүлээн авсан төлөвтэй баримтыг "Судлаж байгаа" төлөвт оруулах боломжтой.'))
+        self.write({'state': 'review'})
+        self.activity_update()
+        return True
+
+    def action_transfer(self):
+        if any(letter.state not in ['review'] for letter in self):
+            raise UserError(
+                _('Зөвхөн судлаж байгаа төлөвтэй баримтыг "Шилжүүлсэн" төлөвт оруулах боломжтой.'))
+        self.write({'state': 'transfer'})
+        if self.responsible_employee_id:
+            self.responsible_employee_id.user_id.notify_info(message='Таньд 1 шинэ бичиг шилжиж ирлээ.')
+        self.activity_update()
+
+        if self.follow_id:
+            going_letter = self.env['ubi.letter.going'].browse(self.follow_id.id)
+            going_letter.write({'state': 'validate'})
+            user_name = self.env.user.employee_id.name if self.env.user.employee_id else self.env.user.name
+            note = _("%s дугаартай албан бичгийг 'Шийдвэрлэсэн' төлөвт '%s' орууллаа.") % (going_letter.letter_number, user_name)    
+            going_letter.message_post(body=note)
+        return True
+
+    def action_validate(self):
+        if any(letter.state not in ['transfer', 'review', 'receive'] for letter in self):
+            raise UserError(
+                _('Зөвхөн хүлээн авсан, шилжүүлсэн төлөвтэй баримтыг "Зөвшөөрсөн" төлөвт оруулах боломжтой.'))
+        self.write({'state': 'validate'})
+        self.activity_update()
+
+        if self.follow_id:
+            going_letter = self.env['ubi.letter.going'].browse(self.follow_id.id)
+            going_letter.write({'state': 'validate'})
+            user_name = self.env.user.employee_id.name if self.env.user.employee_id else self.env.user.name     
+
+            note = _("%s дугаартай албан бичгийг 'Шилжүүлсэн' төлөвт '%s' орууллаа.") % (going_letter.letter_number, user_name)    
+            going_letter.message_post(body=note)
+        return True
+
+    def action_refuse(self):
+        if any(letter.state in ['validate', 'conflict'] for letter in self):
+            raise UserError(
+                _('Зөвхөн шийдвэрлэсэн төлөвтэй баримтыг "Буцаасан" төлөвт оруулах боломжгүй.'))
+        self.write({'state': 'refuse'})
+
+        if self.follow_id:
+            going_letter = self.env['ubi.letter.going'].browse(self.follow_id.id)
+            going_letter.write({'state': 'refuse'})
+            user_name = self.env.user.employee_id.name if self.env.user.employee_id else self.env.user.name     
+
+            format_name = 'ubisol_letters.mail_act_letter_refuse'
+            note = _("%s дугаартай албан бичиг '%s'-с 'Буцаасан' төлөвт орууллаа.") % (going_letter.letter_number, user_name)    
+            going_letter.activity_schedule(format_name, note=note, user_id=going_letter.responsible_employee_id.user_id) 
+        return True    
 
     def activity_update(self):
         to_clean, to_do = self.env['ubi.letter.going'], self.env['ubi.letter.going']
         for letter in self:
-            if letter.state == 'draft':
-                next_state = 'Хүлээн авсан'
-                format_name = 'ubisol_letters.mail_act_letter_receive'
-                flag = self.env['res.users'].has_group('hr_contract.group_hr_contract_manager')
-                _logger.info(flag)
-                to_do |= letter
-            elif letter.state == 'receive':
-                next_state = 'Зөвшөөрсөн'
-                format_name = 'ubisol_letters.mail_act_letter_validate1'
-                to_do |= letter
-            elif letter.state == 'review':
-                next_state = 'Шилжүүлсэн'
-                format_name = 'ubisol_letters.mail_act_letter_validate'
-                to_do |= letter
+            user_name = self.env.user.employee_id.name if self.env.user.employee_id else self.env.user.name
 
-            user_name = self.next_step_user.employee_id.name if self.next_step_user.employee_id else self.next_step_user.name
-            note = _("%s дугаартай албан бичиг '%s' төлөвт шилжүүлэгдэхээр хүлээгдэж байна.") % (letter.letter_number, user_name, next_state)    
-            letter.activity_schedule(
-                format_name,
-                note=note,
-                user_id=self.next_step_user.id or self.env.user.id)
+            if letter.state == 'draft':
+                format_name = 'ubisol_letters.mail_act_letter_receive'
+                category = self.env['ir.module.category'].browse(39)
+                group_name = self.env['res.groups'].search([('category_id', 'in', category.ids)])
+                user_ids = group_name.users.ids
+
+                note = _("%s дугаартай албан бичиг шинээр ирсэн байна.") % (letter.letter_number)
+                letter.activity_schedule(format_name, note=note, user_id=user_ids)
+            elif letter.state == 'receive':
+                note = _("%s дугаартай албан бичгийг '%s' 'Хүлээн авсан' төлөвт орууллаа.") % (letter.letter_number, user_name)    
+                letter.message_post(body=note)
+                # holiday.message_post(body=note, partner_ids=holiday.employee_id.user_id.partner_id.ids)
+            elif letter.state == 'review':
+                note = _("%s дугаартай албан бичгийг '%s' 'Судлаж буй' төлөвт орууллаа.") % (letter.letter_number, user_name)    
+                letter.message_post(body=note)
+            elif letter.state == 'transfer':
+                if letter.responsible_employee_id:
+                    format_name = 'ubisol_letters.mail_act_letter_transfer'
+                    note = _("%s дугаартай албан бичиг '%s'-с шилжиж ирлээ.") % (letter.letter_number, user_name)    
+                    letter.activity_schedule(format_name, note=note, user_id=letter.responsible_employee_id.user_id)
+            elif letter.state == 'validate':
+                note = _("%s дугаартай албан бичгийг '%s' 'Шийдвэрлэсэн' төлөвт орууллаа.") % (letter.letter_number, user_name)    
+                letter.message_post(body=note)
 
         return True
 
@@ -443,3 +470,17 @@ class UbiLetterComing(models.Model):
         if 'state' in init_values and self.state == 'transfer':
             return self.env.ref('ubisol_letters.mt_transferred')
         return super(UbiLetterComing, self)._track_subtype(init_values)
+
+    def add_follower(self, employee_id):
+        employee = self.env['hr.employee'].browse(employee_id.id)
+        if employee.user_id:
+            self.message_subscribe(partner_ids=employee.user_id.partner_id.ids)
+
+    def message_subscribe(self, partner_ids=None, channel_ids=None, subtype_ids=None):
+        # due to record rule can not allow to add follower and mention on validated leave so subscribe through sudo
+        if self.state in ['validate', 'validate1']:
+            self.check_access_rights('read')
+            self.check_access_rule('read')
+            return super(UbiLetterComing, self.sudo()).message_subscribe(partner_ids=partner_ids, channel_ids=channel_ids, subtype_ids=subtype_ids)
+        return super(UbiLetterComing, self).message_subscribe(partner_ids=partner_ids, channel_ids=channel_ids, subtype_ids=subtype_ids)
+        
