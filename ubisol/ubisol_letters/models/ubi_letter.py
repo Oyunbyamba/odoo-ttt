@@ -47,7 +47,7 @@ class UbiLetter(models.AbstractModel):
     department_id = fields.Many2one(
         'hr.department', string='Хариуцах Хэлтэс', related='responsible_employee_id.department_id', groups="base.group_user")
 
-    to_user = fields.Char('Хэнд', compute='_compute_to_user', groups='base.group_user')    
+    to_user = fields.Char(compute='_compute_to_user', groups='base.group_user')    
     
     responsible_employee_id = fields.Many2one('hr.employee', string='Хэнд')
     request_employee_id = fields.Many2one('hr.employee', string='Хүсэлт илгээсэн ажилтан')
@@ -75,9 +75,9 @@ class UbiLetter(models.AbstractModel):
     computed_letter_type = fields.Char(
         string='Хариу бичгийн төрөл', compute='_computed_letter_type', groups="base.group_user")
     computed_letter_subject = fields.Char(
-        string='Хариу бичгийн агуулга', compute='_computed_letter_subject', groups="base.group_user")
+        string='Хариу бичгийн тэргүү', compute='_computed_letter_subject', groups="base.group_user")
     computed_letter_desc = fields.Char(
-        string='Агуулга', compute='_computed_letter_desc', groups="base.group_user")
+        string='Хариу бичгийн агуулга', compute='_computed_letter_desc', groups="base.group_user")
     src_document_number = fields.Char(
         string='Эх бичгийн дугаар', groups="base.group_user")
     src_document_code = fields.Char(

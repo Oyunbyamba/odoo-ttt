@@ -6,7 +6,10 @@
         <field name="name">ubi.letter.going.subject.tree</field>
         <field name="model">ubi.letter.going</field>
         <field name="arch" type="xml">
-            <tree string="Ubi Letter" default_order='id desc' import='false' export_xlsx='false' decoration-success="state == 'sent'" decoration-danger="state == 'refuse'" decoration-info="state == 'expected'">
+            <tree string="Ubi Letter" default_order='id desc' import='false' export_xlsx='false' delete='false'
+                    decoration-success="state == 'sent'" 
+                    decoration-danger="state == 'refuse'" 
+                    decoration-info="state == 'expected'">
                 <field name="letter_subject_id"/>
                 <field name="letter_type_id"/>
                 <field name="letter_number"/>
@@ -33,7 +36,7 @@
         <field name="name">ubi.letter.going.subject.form</field>
         <field name="model">ubi.letter.going</field>
         <field name="arch" type="xml">
-            <form string="Ubi Letter">
+            <form string="Ubi Letter" delete='false'>
                 <header>
                     <button string="Буцаах" name="cancel_sending" type="object" 
                         attrs="{'invisible': ['|', ('state', 'not in', ['sent']), ('is_local', '=', True)]}"/>

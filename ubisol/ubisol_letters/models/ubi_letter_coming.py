@@ -21,7 +21,7 @@ class UbiLetterComing(models.Model):
     _rec_name = 'letter_number'
     _mail_post_access = 'read'
 
-    follow_id = fields.Many2one('ubi.letter.going', string='Явсан бичгийн хариу', groups="base.group_user")
+    follow_id = fields.Many2one('ubi.letter.going', groups="base.group_user")
     letter_attachment_ids = fields.Many2many(
         'ir.attachment', 'letter_coming_doc_attach', 'letter_id', 'doc_id', string="Хавсралт", copy=False)
     state = fields.Selection([
@@ -94,6 +94,9 @@ class UbiLetterComing(models.Model):
             self.add_follower(self.request_employee_id)
         if self.responsible_employee_id:
             self.add_follower(self.responsible_employee_id)    
+
+        self.activity_update()
+    
         return letter
 
     def call_return_wizard(self):
@@ -362,12 +365,11 @@ class UbiLetterComing(models.Model):
             raise UserError(
                 _('Зөвхөн ирсэн төлөвтэй баримтыг "Хүлээн авсан" төлөвт оруулах боломжтой.'))
         self.write({'state': 'receive', 'user_id': self.env.user, 'received_date': datetime.today().strftime('%Y-%m-%d')})
-        # if self.is_local == True:
         self.activity_update()
 
         if self.follow_id:
             going_letter = self.env['ubi.letter.going'].browse(self.follow_id.id)
-            going_letter.write({'state': 'receive'})
+            # going_letter.write({'state': 'receive'})
             user_name = self.env.user.employee_id.name if self.env.user.employee_id else self.env.user.name     
 
             note = _("%s дугаартай албан бичгийг 'Хүлээн авсан' төлөвт '%s' орууллаа.") % (going_letter.letter_number, user_name)    
@@ -391,12 +393,6 @@ class UbiLetterComing(models.Model):
             self.responsible_employee_id.user_id.notify_info(message='Таньд 1 шинэ бичиг шилжиж ирлээ.')
         self.activity_update()
 
-        if self.follow_id:
-            going_letter = self.env['ubi.letter.going'].browse(self.follow_id.id)
-            going_letter.write({'state': 'validate'})
-            user_name = self.env.user.employee_id.name if self.env.user.employee_id else self.env.user.name
-            note = _("%s дугаартай албан бичгийг 'Шийдвэрлэсэн' төлөвт '%s' орууллаа.") % (going_letter.letter_number, user_name)    
-            going_letter.message_post(body=note)
         return True
 
     def action_validate(self):
@@ -408,11 +404,11 @@ class UbiLetterComing(models.Model):
 
         if self.follow_id:
             going_letter = self.env['ubi.letter.going'].browse(self.follow_id.id)
-            going_letter.write({'state': 'validate'})
+            # going_letter.write({'state': 'validate'})
             user_name = self.env.user.employee_id.name if self.env.user.employee_id else self.env.user.name     
-
-            note = _("%s дугаартай албан бичгийг 'Шилжүүлсэн' төлөвт '%s' орууллаа.") % (going_letter.letter_number, user_name)    
+            note = _("%s дугаартай албан бичгийг 'Шийдвэрлэсэн' төлөвт '%s' орууллаа.") % (going_letter.letter_number, user_name)    
             going_letter.message_post(body=note)
+            
         return True
 
     def action_refuse(self):
@@ -443,7 +439,8 @@ class UbiLetterComing(models.Model):
                 user_ids = group_name.users.ids
 
                 note = _("%s дугаартай албан бичиг шинээр ирсэн байна.") % (letter.letter_number)
-                letter.activity_schedule(format_name, note=note, user_id=user_ids)
+                # letter.activity_schedule(format_name, note=note, user_id=user_ids)
+                letter.message_post(body=note)
             elif letter.state == 'receive':
                 note = _("%s дугаартай албан бичгийг '%s' 'Хүлээн авсан' төлөвт орууллаа.") % (letter.letter_number, user_name)    
                 letter.message_post(body=note)

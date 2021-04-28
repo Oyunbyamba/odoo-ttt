@@ -370,7 +370,11 @@ class UbiLetterGoing(models.Model):
             del before_letter_vals['letter_template_text']
             del before_letter_vals['custom_letter_template']
 
-            coming_letter = self.env['ubi.letter.coming'].with_context(local_transfer=True).create(before_letter_vals)
+            incoming_letter = self.env['ubi.letter.coming'].search([('follow_id', '=', letter.id)])
+            if incoming_letter:
+                incoming_letter.write(before_letter_vals)
+            else:
+                coming_letter = self.env['ubi.letter.coming'].with_context(local_transfer=True).create(before_letter_vals)
 
         return True
 
@@ -378,6 +382,13 @@ class UbiLetterGoing(models.Model):
         if any(letter.state in ['receive'] for letter in self):
             raise UserError(_('Хүлээн авсан бичгийг "Буцаах" төлөвт оруулах боломжгүй байна.'))
         self.write({'state': 'refuse'})
+        incoming_letter = self.env['ubi.letter.coming'].search([('follow_id', '=', self.id)])
+        if incoming_letter:
+            incoming_letter.write({'state': 'refuse'})
+            user_name = self.env.user.employee_id.name if self.env.user.employee_id else self.env.user.name     
+            note = _("%s дугаартай албан бичгийг 'Буцаасан' төлөвт '%s' орууллаа.") % (incoming_letter.letter_number, user_name)    
+            incoming_letter.message_post(body=note)
+
         return True
 
     def action_draft(self):
