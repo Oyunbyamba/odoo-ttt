@@ -95,7 +95,7 @@ class UbiLetterComing(models.Model):
         if self.responsible_employee_id:
             self.add_follower(self.responsible_employee_id)    
 
-        self.activity_update()
+        # self.activity_update()
     
         return letter
 
@@ -400,16 +400,16 @@ class UbiLetterComing(models.Model):
             raise UserError(
                 _('Зөвхөн хүлээн авсан, шилжүүлсэн төлөвтэй баримтыг "Зөвшөөрсөн" төлөвт оруулах боломжтой.'))
         self.write({'state': 'validate'})
-        self.activity_update()
 
-        if self.follow_id:
-            going_letter = self.env['ubi.letter.going'].browse(self.follow_id.id)
-            # going_letter.write({'state': 'validate'})
-            user_name = self.env.user.employee_id.name if self.env.user.employee_id else self.env.user.name     
-            note = _("%s дугаартай албан бичгийг 'Шийдвэрлэсэн' төлөвт '%s' орууллаа.") % (going_letter.letter_number, user_name)    
-            going_letter.message_post(body=note)
-            
-        return True
+        return {
+                'type': 'ir.actions.act_window',
+                'name': _('Ирсэн бичиг шийдвэрлэх'),
+                'res_model': 'letter.validate.wizard',
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {'active_id': self.id},
+                'views': [[False, 'form']]
+            }
 
     def action_refuse(self):
         if any(letter.state in ['validate', 'conflict'] for letter in self):

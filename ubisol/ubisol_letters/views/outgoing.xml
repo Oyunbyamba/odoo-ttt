@@ -36,7 +36,7 @@
         <field name="name">ubi.letter.going.subject.form</field>
         <field name="model">ubi.letter.going</field>
         <field name="arch" type="xml">
-            <form string="Ubi Letter" delete='false'>
+            <form string="Ubi Letter" delete='false' create="false">
                 <header>
                     <button string="Буцаах" name="cancel_sending" type="object" 
                         attrs="{'invisible': ['|', ('state', 'not in', ['sent']), ('is_local', '=', True)]}"/>

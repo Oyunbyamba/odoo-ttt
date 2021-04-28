@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<odoo>
+
+    <record id="letter_validate_wizard_form" model="ir.ui.view">
+        <field name="model">letter.validate.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="comment" widget="text" required="1"/>
+                </group>
+                <footer>
+                    <button name="action_validate" type="object" string="Хадгалах" class="oe_highlight" />
+                    <button special="cancel" string="Болих" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+</odoo>

@@ -42,7 +42,7 @@
         <field name="name">ubi.letter.coming.subject.tree</field>
         <field name="model">ubi.letter.coming</field>
         <field name="arch" type="xml">
-            <tree string="Ubi Letter" default_order='id desc' import='false' export_xlsx='false' decoration-success="state == 'validate'" decoration-info="state == 'receive'" decoration-primary="state == 'transfer'" decoration-warning="state == 'draft'" decoration-danger="state == 'refuse'" decoration-bf="state == 'receive'" decoration-it="state == 'receive'" banner_route="/docs/incoming_graph">
+            <tree string="Ubi Letter" default_order='id desc' import='false' export_xlsx='false' delete='false' decoration-success="state == 'validate'" decoration-info="state == 'receive'" decoration-primary="state == 'transfer'" decoration-warning="state == 'draft'" decoration-danger="state == 'refuse'" decoration-bf="state == 'receive'" decoration-it="state == 'receive'" banner_route="/docs/incoming_graph">
                 <field name="letter_subject_id"/>
                 <field name="letter_type_id"/>
                 <field name="letter_number"/>
@@ -66,7 +66,7 @@
         <field name="name">ubi.letter.coming.subject.form</field>
         <field name="model">ubi.letter.coming</field>   
         <field name="arch" type="xml">
-            <form string="Ubi Letter">
+            <form string="Ubi Letter" delete='false' create='false'>
                 <header>
                     <button string="Хүлээн авах" name="letter_receiving" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', 'not in', ('draft')), ('is_local', '=', True)]}"/>
                     <button string="Хүлээн авах" name="action_receive" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', 'not in', ('draft')), ('is_local', '=', False)]}"/>

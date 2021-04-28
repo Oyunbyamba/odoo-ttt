@@ -20,11 +20,10 @@
         'views/res_partner.xml',
         'views/menu.xml',
         'wizards/letter_return_wizard.xml',
+        'wizards/letter_validate_wizard.xml',
         'report/letter_detail_a4.xml',
         'report/letter_detail_a5.xml',
         'report/report.xml',
-
-
     ],
     'demo': [],
     'qweb': [
