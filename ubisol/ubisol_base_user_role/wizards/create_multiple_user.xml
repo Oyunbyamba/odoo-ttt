@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="create_multiple_user_form" model="ir.ui.view">
+        <field name="name">create.multiple.user.wizard</field>
+        <field name="model">create.multiple.user</field>
+        <field name="arch" type="xml">
+        <form string="Хэрэглэгч олноор үүсгэх">
+            <group>
+                <field name="department_ids"/>
+            </group>
+            
+            <footer>
+                <button name="create_users" string="Үүсгэх" type="object" class="btn-primary"/>
+                <button string="Цуцлах" class="btn-secondary" special="cancel"/>
+            </footer>
+        </form>
+        </field>
+    </record>
+
+    <record id="create_multiple_user_wizard" model="ir.actions.act_window">
+        <field name="name">Хэрэглэгч олноор үүсгэх</field>
+        <field name="res_model">create.multiple.user</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="create_multiple_user_form"/>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="base.model_res_users"/>
+    </record>
+
+</odoo>

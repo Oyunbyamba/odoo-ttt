@@ -29,7 +29,7 @@ class ResUsersRole(models.Model):
     )
     group_category_id = fields.Many2one(
         related="group_id.category_id",
-        default=lambda cls: cls.env.ref("base_user_role.ir_module_category_role").id,
+        default=lambda cls: cls.env.ref("ubisol_base_user_role.ir_module_category_role").id,
         string="Associated category",
         help="Associated group's category",
         readonly=False,

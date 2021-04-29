@@ -26,6 +26,7 @@
             </xpath>
         </field>
     </record>
+    
     <record id="view_res_users_search_inherit" model="ir.ui.view">
         <field name="name">res.users.search.inherit</field>
         <field name="model">res.users</field>
