@@ -24,5 +24,6 @@ class CreateMultipleUser(models.TransientModel):
                                 'email': employee.work_email
                                 }
                             user = self.env['res.users'].create(before_user) 
-                            employee.write({'user_id': user.id}) 
-        return {}
+                            employee.write({'user_id': user.id})
+
+        return True

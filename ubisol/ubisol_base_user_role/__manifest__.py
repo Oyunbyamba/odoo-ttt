@@ -10,7 +10,7 @@
     "license": "LGPL-3",
     "maintainers": ["sebalix", "jcdrubay", "novawish"],
     "website": "https://github.com/OCA/server-backend",
-    "depends": ["base",'hr'],
+    "depends": ["base",'hr','ubisol_hr_employee_upgrade'],
     "data": [
         "security/ir.model.access.csv",
         "data/ir_cron.xml",

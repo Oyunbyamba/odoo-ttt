@@ -229,13 +229,12 @@ class HrEmployee(models.Model):
                     date_to = datetime.strftime(shift.date_to, '%Y-%m-%d')
                     prev_schedule = self.env['hr.employee.schedule'].search(
                         [('hr_employee', '=', self.id), ('work_day', '>=', date_from), ('work_day', '<=', date_to)]).unlink()         
-                    # log_obj._check_duplicated_schedules(values)
                     log_obj._create_schedules(values, shift)        
 
+        # set child employees leave manager 
         if vals.get('user_id'):
             child_employees = self.env['hr.employee'].search([('parent_id', '=', self.id)], order='id asc')
-            for child_employee in child_employees:
-                child_employee.leave_manager_id = self.user_id
+            child_employees.write({'leave_manager_id': self.user_id.id})
 
         return employee    
 

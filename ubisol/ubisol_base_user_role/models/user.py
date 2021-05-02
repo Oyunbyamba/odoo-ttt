@@ -16,6 +16,8 @@ class ResUsers(models.Model):
         comodel_name="res.users.role", string="Roles", compute="_compute_role_ids"
     )
 
+    surname = fields.Char(related='employee_id.surname')
+
     @api.model
     def _default_role_lines(self):
         default_user = self.env.ref("base.default_user", raise_if_not_found=False)
