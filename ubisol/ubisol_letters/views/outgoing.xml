@@ -15,7 +15,7 @@
                 <field name="letter_number"/>
                 <field name="letter_date"/>
                 <field name="letter_total_num"/>
-                <field name="partner_id" string='Хаана'/>
+                <field name="to_address" string='Хаана'/>
                 <field name="to_user" string='Хэнд'/>
                 <field name="is_local"/>
                 <field name="state" string='Төлөв'/>
@@ -37,13 +37,17 @@
         <field name="model">ubi.letter.going</field>
         <field name="arch" type="xml">
             <form string="Ubi Letter" create="false">
+                <field name="can_approve" invisible='1'/>
                 <header>
                     <button string="Буцаах" name="cancel_sending" type="object" 
                         attrs="{'invisible': ['|', ('state', 'not in', ['sent']), ('is_local', '=', True)]}"/>
                     <button string="Буцаах" name="action_refuse" type="object" 
                         attrs="{'invisible': ['|', ('state', 'not in', ['sent']), ('is_local', '=', False)]}"/>
                     <button string="Хүлээлэгт оруулах" name="action_expected" type="object" attrs="{'invisible': [('state', 'not in', ['refuse'])]}"/>
-                    <button string="Илгээх" name="action_sent" type="object" class="oe_highlight" attrs="{'invisible': [('state', 'not in', ['expected'])]}"/>
+                    <button string="Илгээх" name="action_sent" type="object" class="oe_highlight" 
+                                attrs="{'invisible': ['|', '|', ('can_approve', '=', False), ('state', 'not in', ['expected']), ('is_local', '=', False)]}"/>
+                    <button string="Илгээх" name="prepare_sending" type="object" class="oe_highlight" 
+                                attrs="{'invisible': ['|', '|', ('can_approve', '=', False), ('state', 'not in', ['expected']), ('is_local', '=', True)]}"/>
                     <field name="state" widget="statusbar" statusbar_visible="expected,sent,receive,resolved"/>
                 </header>
                 <sheet>

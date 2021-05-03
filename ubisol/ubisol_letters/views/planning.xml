@@ -44,7 +44,7 @@
                 <field name="letter_number"/>
                 <field name="registered_date"/>
                 <field name="letter_total_num"/>
-                <field name="partner_id" string='Хаана'/>
+                <field name="to_address" string='Хаана'/>
                 <field name="to_user" string='Хэнд'/>
                 <field name="is_local"/>
                 <field name="state" string='Төлөв'/>
@@ -62,11 +62,11 @@
                     <button string="Ноорог" name="action_draft" type="object" 
                         attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'in', ('draft','expected','confirm'))]}"/>
                     <button string="Хянах" name="action_confirm" type="object" class="oe_highlight" 
-                        attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'not in', ('draft'))]}"/>
+                        attrs="{'invisible': ['|', '|', ('is_local', '=', True), ('can_approve', '=', False), ('state', '!=', 'draft')]}"/>
                     <button string="Зөвшөөрөх" name="action_validate1" type="object" class="oe_highlight" 
-                        attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'not in', ('confirm'))]}"/>
+                        attrs="{'invisible': ['|', '|', ('is_local', '=', True), ('can_approve', '=', False), ('state', '!=', 'confirm')]}"/>
                     <button string="Батлах" name="action_validate" type="object" class="oe_highlight"
-                        attrs="{'invisible': [('can_approve', '=', False)]}"/>
+                        attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'not in', ('draft','validate1'))]}"/>
                     <button string="Хүлээлэгт оруулах" name="action_expected" type="object" class="oe_highlight"
                         attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'not in', ('validate'))]}"/>
 
@@ -118,9 +118,9 @@
                                 options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="validate_user_id" string='Гарын үсэг зурсан' 
                                 attrs="{
-                                    'invisible': [('state', 'in', ['confirm'])], 
-                                    'readonly': [('state', '!=', 'validate1')], 
-                                    'required': [('state', '=', ('validate1','draft')), ('is_local', '=', False)]}"
+                                    'invisible': [('state', '=', 'confirm')], 
+                                    'readonly': [('state', 'not in', ('draft','validate1'))], 
+                                    'required': [('state', 'in', ('draft','validate1'))]}"
                                 options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             
                         </group>
@@ -148,7 +148,7 @@
                     </group>
                     <notebook>
                         <page string="Харагдац">
-                            <field name="custom_letter_template" widget="html" readonly='1'/>
+                            <field name="custom_letter_template" widget="html" attrs="{'readonly': [('state', 'in', ('validate','validate1','expected'))]}"/>
                         </page>
                     </notebook>
                 </sheet>

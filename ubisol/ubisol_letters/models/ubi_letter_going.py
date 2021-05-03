@@ -136,11 +136,13 @@ class UbiLetterGoing(models.Model):
             self.next_step_user = self.validate1_user_id
         elif self.state == 'validate1' and self.validate_user_id:
             self.next_step_user = self.validate_user_id
+        elif self.state == 'draft' and self.validate_user_id:
+            self.next_step_user = self.validate_user_id
 
     @api.model
     def create(self, vals):
         letter = super(UbiLetterGoing, self).create(vals)
-        if vals.get('confirm_user_id'):
+        if vals.get('confirm_user_id') or vals.get('validate_user_id'):
             self.next_step_user.notify_info(
                 message='Таньд 1 тушаал шилжиж ирлээ.')
             self.activity_update()
@@ -181,14 +183,12 @@ class UbiLetterGoing(models.Model):
             elif self.is_local == True and self.state == 'draft' and current_user == self.validate_user_id:
                 can_approve = True 
             elif self.state == 'validate' and current_user == self.user_id:
-                can_approve = True        
+                can_approve = True  
+            elif self.state == 'expected':
+                if self.request_employee_id.user_id and current_user == self.request_employee_id.user_id:
+                    can_approve = True 
         else:
-            if self.is_local == True and self.state == 'draft':
-                can_approve = True
-            elif self.is_local == False and self.state == 'validate1':
-                can_approve = True      
-            elif self.state == 'validate' and current_user == self.user_id:
-                can_approve = True                 
+            can_approve = True                 
         self.can_approve = can_approve
 
     def print_report(self):
@@ -367,18 +367,20 @@ class UbiLetterGoing(models.Model):
 
     def action_sent(self):
         if any(letter.state not in ['expected'] for letter in self):
-            raise UserError(
-                _('Зөвхөн хүлээгдэж буй бичгийг "Илгээх" төлөвт оруулах боломжтой.'))
-        self.write({'state': 'sent', "send_date": datetime.today().strftime(
-            '%Y-%m-%d'), "user_id": self.env.user.id})
+            raise UserError(_('Зөвхөн хүлээгдэж буй бичгийг "Илгээх" төлөвт оруулах боломжтой.'))
+
+        if  any(letter.is_local == False for letter in self):
+                raise UserError(_('Зөвхөн дотоод бичгийг эндээс илгээх боломжтой.'))
+
+        self.write({'state': 'sent', "send_date": datetime.today().strftime('%Y-%m-%d'), "user_id": self.env.user.id})
 
         for letter in self:
             before_letter_vals = letter.copy_data({
                 'letter_date': datetime.today().strftime('%Y-%m-%d'),
                 'state': 'draft',
                 'follow_id': letter.id,
-                'desc': letter.letter_template_text
-
+                'desc': letter.letter_template_text,
+                'letter_attachment_ids': letter.letter_attachment_ids
             })[0]
             del before_letter_vals['send_date']
             del before_letter_vals['coming_letter']
@@ -466,19 +468,19 @@ class UbiLetterGoing(models.Model):
         to_clean, to_do = self.env['ubi.letter.going'], self.env['ubi.letter.going']
 
         for letter in self:
-            if letter.state == 'draft':
+            if letter.state == 'draft' and letter.is_local == False:
                 next_state = 'Хянасан'
                 format_name = 'ubisol_letters.mail_act_letter_confirm'
                 to_do |= letter
-            elif letter.state == 'confirm':
+            elif letter.state == 'confirm' and letter.is_local == False:
                 next_state = 'Зөвшөөрсөн'
                 format_name = 'ubisol_letters.mail_act_letter_validate1'
                 to_do |= letter
-            elif letter.state == 'validate1':
+            elif (letter.state == 'validate1' and letter.is_local == False) or (letter.state == 'draft' and letter.is_local == True):
                 next_state = 'Баталсан'
                 format_name = 'ubisol_letters.mail_act_letter_validate'
                 to_do |= letter
-
+        
             user_name = self.next_step_user.employee_id.name if self.next_step_user.employee_id else self.next_step_user.name
             note = _("%s дугаартай албан бичиг %s -р '%s' төлөвт шилжүүлэгдэхээр хүлээгдэж байна.") % (
                 letter.letter_number, user_name, next_state)

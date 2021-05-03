@@ -48,9 +48,15 @@ class UbiLetter(models.AbstractModel):
         'hr.department', string='Хариуцах Хэлтэс', related='responsible_employee_id.department_id', groups="base.group_user")
 
     to_user = fields.Char(compute='_compute_to_user', groups='base.group_user')    
+    to_address = fields.Char(compute='_compute_to_address', groups='base.group_user')    
     
     responsible_employee_id = fields.Many2one('hr.employee', string='Хэнд')
-    request_employee_id = fields.Many2one('hr.employee', string='Хүсэлт илгээсэн ажилтан')
+
+    def _get_default_employee(self):
+        if self.env.user.employee_id:
+            return self.env.user.employee_id
+
+    request_employee_id = fields.Many2one('hr.employee', string='Төлөвлөсөн ажилтан', default=_get_default_employee)
 
     official_person = fields.Char('Албан тушаалтан', groups="base.group_user")
     user_id = fields.Many2one('res.users', groups="base.group_user")
@@ -92,9 +98,8 @@ class UbiLetter(models.AbstractModel):
 
     def _compute_to_user(self):
         for letter in self:
-            to_user = ''
-            if letter.is_local:
-                to_user = letter.responsible_employee_id.name
-            else:
-                to_user = letter.official_person
-            letter.to_user = to_user
+            letter.to_user = letter.responsible_employee_id.name if letter.is_local == True else letter.official_person
+
+    def _compute_to_address(self):
+        for letter in self:
+            letter.to_address = letter.department_id.name if letter.is_local == True else letter.partner_id.name
