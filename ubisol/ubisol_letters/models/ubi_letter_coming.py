@@ -154,8 +154,6 @@ class UbiLetterComing(models.Model):
 
                 data = json.loads(find.text.strip())
                 count = 0
-
-                _logger.info(data)
                 for doc in data:
 
                     already_received = self.env['ubi.letter.coming'].search(
@@ -294,7 +292,6 @@ class UbiLetterComing(models.Model):
                 './/{https://docx.gov.mn/document/dto}data')
             msg = mytree.find(
                 './/{https://docx.gov.mn/document/dto}responseMessage')
-            _logger.info(data)
 
             if(status.text.strip() == '200'):
                 return {'status': status.text.strip(), 'data': []}
@@ -346,7 +343,6 @@ class UbiLetterComing(models.Model):
         result = requests.post(target_url, data=data.encode(
             encoding='utf-8'), headers=headers, verify=False)
 
-        _logger.info(data)
         if result.status_code == 200:
             mytree = ET.fromstring(result.content)
 
