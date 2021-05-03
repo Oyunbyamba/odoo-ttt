@@ -422,8 +422,7 @@ class UbiLetterComing(models.Model):
         self.write({'state': 'refuse'})
 
         if self.follow_id:
-            going_letter = self.env['ubi.letter.going'].browse(
-                self.follow_id.id)
+            going_letter = self.env['ubi.letter.going'].browse(self.follow_id.id)
             going_letter.write({'state': 'refuse'})
             user_name = self.env.user.employee_id.name if self.env.user.employee_id else self.env.user.name
 
@@ -431,7 +430,7 @@ class UbiLetterComing(models.Model):
             note = _("%s дугаартай албан бичиг '%s'-с 'Буцаасан' төлөвт орууллаа.") % (
                 going_letter.letter_number, user_name)
             going_letter.activity_schedule(
-                format_name, note=note, user_id=going_letter.responsible_employee_id.user_id)
+                format_name, note=note, user_id=going_letter.request_employee_id.user_id.id or going_letter.user_id.id)
         return True
 
     def activity_update(self):
@@ -465,7 +464,7 @@ class UbiLetterComing(models.Model):
                     note = _(
                         "%s дугаартай албан бичиг '%s'-с шилжиж ирлээ.") % (letter.letter_number, user_name)
                     letter.activity_schedule(
-                        format_name, note=note, user_id=letter.responsible_employee_id.user_id)
+                        format_name, note=note, user_id=letter.responsible_employee_id.user_id.id)
             elif letter.state == 'validate':
                 note = _("%s дугаартай албан бичгийг '%s' 'Шийдвэрлэсэн' төлөвт орууллаа.") % (
                     letter.letter_number, user_name)

@@ -462,6 +462,7 @@ class UbiLetterGoing(models.Model):
 
         self.write({'state': 'expected'})
         self.activity_feedback(['ubisol_letters.mail_act_letter_expected'])
+        self.activity_feedback(['ubisol_letters.mail_act_letter_refuse'])
         return True
 
     def activity_update(self):
