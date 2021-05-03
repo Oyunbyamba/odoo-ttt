@@ -29,7 +29,7 @@ class UbiLetter(models.AbstractModel):
         string='Бүртгэлийн дугаар', help="Бүртгэлийн дугаар", groups="base.group_user")
     letter_total_num = fields.Integer(
         string='Хуудасны тоо', help="Хуудасны тоо", groups="base.group_user")
-    desc = fields.Char(string='Товч утга', groups="base.group_user")
+    desc = fields.Html(string='Товч утга', groups="base.group_user")
     must_return_date = fields.Date(
         string='Хариу ирүүлэх огноо', default=datetime.now().strftime('%Y-%m-%d'), groups="base.group_user")
     received_date = fields.Date(

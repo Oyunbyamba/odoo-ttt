@@ -26,6 +26,7 @@ class LetterValidate(models.TransientModel):
 
             if ubi_letter.follow_id:
                 going_letter = self.env['ubi.letter.going'].browse(ubi_letter.follow_id.id)
+                going_letter.write({'state': 'resolved'})
                 going_letter.activity_schedule(format_name, note=note)
                 going_letter.activity_feedback([format_name], feedback=self.comment)    
 

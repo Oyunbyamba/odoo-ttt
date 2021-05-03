@@ -37,7 +37,7 @@
         <field name="name">ubi.letter.going.subject.tree</field>
         <field name="model">ubi.letter.going</field>
         <field name="arch" type="xml">
-            <tree string="Ubi Letter" default_order='id desc' import='false' export_xlsx='false' delete='false'
+            <tree string="Ubi Letter" default_order='id desc' import='false' export_xlsx='false'
                     decoration-info="state == 'draft'">
                 <field name="letter_subject_id"/>
                 <field name="letter_type_id"/>
@@ -56,7 +56,7 @@
         <field name="name">ubi.letter.going.subject.form</field>
         <field name="model">ubi.letter.going</field>
         <field name="arch" type="xml">
-            <form string="Ubi Letter" delete='false' create="false">
+            <form string="Ubi Letter" create="false">
                 <field name="can_approve" invisible='1'/>
                 <header>
                     <button string="Ноорог" name="action_draft" type="object" 
@@ -66,7 +66,7 @@
                     <button string="Зөвшөөрөх" name="action_validate1" type="object" class="oe_highlight" 
                         attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'not in', ('confirm'))]}"/>
                     <button string="Батлах" name="action_validate" type="object" class="oe_highlight"
-                        attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'not in', ('validate1'))]}"/>
+                        attrs="{'invisible': [('can_approve', '=', False)]}"/>
                     <button string="Хүлээлэгт оруулах" name="action_expected" type="object" class="oe_highlight"
                         attrs="{'invisible': ['|', ('can_approve', '=', False), ('state', 'not in', ('validate'))]}"/>
 
@@ -89,7 +89,7 @@
                         </group>
 
                         <group string="Нэмэлт">
-                            <field name="request_employee_id" attrs="{'invisible': [('is_local', '=', False)], 
+                            <field name="request_employee_id" string='Төлөвлөсөн ажилтан' attrs="{'invisible': [('is_local', '=', False)], 
                                 'required': [('is_local', '=', True)],
                                 'readonly': [('state', 'in', ('validate','validate1','expected'))]}"
                                 options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
@@ -106,19 +106,21 @@
                                 'readonly': [('state', 'in', ('validate','validate1','expected'))]}"/>
 
                             <field name="confirm_user_id" string='Хянасан' 
-                                attrs="{'readonly': [('state', 'in', ('validate','validate1','expected'))], 'required': [('state', '=', 'draft')]}"
+                                attrs="{'readonly': [('state', 'in', ('validate','validate1','expected'))], 
+                                        'required': [('state', '=', 'draft'), ('is_local', '=', False)],
+                                        'invisible': [('is_local', '=', True)]}"
                                 options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="validate1_user_id" string='Зөвшөөрсөн' 
                                 attrs="{
-                                    'invisible': [('state', '=', 'draft')], 
+                                    'invisible': ['|', ('state', '=', 'draft'), ('is_local', '=', True)], 
                                     'readonly': [('state', '!=', 'confirm')], 
                                     'required': [('state', '=', 'confirm')]}"
                                 options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             <field name="validate_user_id" string='Гарын үсэг зурсан' 
                                 attrs="{
-                                    'invisible': [('state', 'in', ['draft', 'confirm'])], 
+                                    'invisible': [('state', 'in', ['confirm'])], 
                                     'readonly': [('state', '!=', 'validate1')], 
-                                    'required': [('state', '=', 'validate1')]}"
+                                    'required': [('state', '=', ('validate1','draft')), ('is_local', '=', False)]}"
                                 options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
                             
                         </group>

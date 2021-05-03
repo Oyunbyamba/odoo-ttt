@@ -29,11 +29,12 @@ class UbiLetterGoing(models.Model):
         ('draft', 'Бүртгэсэн'),
         ('confirm', 'Хянасан'),
         ('validate1', 'Зөвшөөрсөн'),
+        ('validate', 'Баталсан'),
         ('expected', 'Хүлээгдэж буй'),
         ('sent', 'Илгээсэн'),
         ('refuse', 'Буцаасан'),
         ('receive', 'Хүлээн авсан'),
-        ('validate', 'Баталсан')
+        ('resolved', 'Шийдвэрлэсэн')
         ],
         groups="base.group_user",
         default='draft',
@@ -169,14 +170,23 @@ class UbiLetterGoing(models.Model):
         is_manager = self.env.user.has_group('hr.group_hr_manager')
         can_approve = False
         if not is_manager:
-            if self.state == 'draft' and current_user == self.confirm_user_id:
+            if self.is_local == False and self.state == 'draft' and current_user == self.confirm_user_id:
                 can_approve = True
-            elif self.state == 'confirm' and current_user == self.validate1_user_id:
+            elif self.is_local == False and self.state == 'confirm' and current_user == self.validate1_user_id:
                 can_approve = True
-            elif self.state == 'validate1' and current_user == self.validate_user_id:
+            elif self.is_local == False and self.state == 'validate1' and current_user == self.validate_user_id:
                 can_approve = True
+            elif self.is_local == True and self.state == 'draft' and current_user == self.validate_user_id:
+                can_approve = True 
+            elif self.state == 'validate' and current_user == self.user_id:
+                can_approve = True        
         else:
-            can_approve = True        
+            if self.is_local == True and self.state == 'draft':
+                can_approve = True
+            elif self.is_local == False and self.state == 'validate1':
+                can_approve = True      
+            elif self.state == 'validate' and current_user == self.user_id:
+                can_approve = True                 
         self.can_approve = can_approve
 
     def print_report(self):
@@ -420,9 +430,12 @@ class UbiLetterGoing(models.Model):
         return True
 
     def action_validate(self):
-        if any(letter.state not in ['validate1'] for letter in self):
+        if any(letter.is_local == False and letter.state not in ['validate1'] for letter in self):
             raise UserError(_('Зөвхөн зөвшөөрсөн төлөвтэй албан бичгийг "Баталсан" төлөвт оруулах боломжтой.'))
-        
+
+        if any(letter.is_local == True and letter.state not in ['draft'] for letter in self):
+            raise UserError(_('Зөвхөн бүртгэсэн төлөвтэй албан бичгийг "Баталсан" төлөвт оруулах боломжтой.'))
+
         self.write({'state': 'validate'})
         self.activity_feedback(['ubisol_letters.mail_act_letter_validate'])  
         return True

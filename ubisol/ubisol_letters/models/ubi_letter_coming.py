@@ -369,7 +369,7 @@ class UbiLetterComing(models.Model):
 
         if self.follow_id:
             going_letter = self.env['ubi.letter.going'].browse(self.follow_id.id)
-            # going_letter.write({'state': 'receive'})
+            going_letter.write({'state': 'receive'})
             user_name = self.env.user.employee_id.name if self.env.user.employee_id else self.env.user.name     
 
             note = _("%s дугаартай албан бичгийг 'Хүлээн авсан' төлөвт '%s' орууллаа.") % (going_letter.letter_number, user_name)    
