@@ -50,9 +50,9 @@ class UbiLetterGoing(models.Model):
     custom_letter_template = fields.Html('Template', groups="base.group_user")
     paper_size = fields.Selection(
         'Paper size', related="letter_template_id.paper_size")
-    next_step_user = fields.Many2one('res.users', compute='_compute_next_step_user')
+    next_step_user = fields.Many2one(
+        'res.users', compute='_compute_next_step_user')
     can_approve = fields.Boolean('Can Approve', compute='_compute_can_approve')
-
 
     def _set_custom_template(self):
         if self.custom_letter_template:
@@ -135,13 +135,14 @@ class UbiLetterGoing(models.Model):
         elif self.state == 'confirm' and self.validate1_user_id:
             self.next_step_user = self.validate1_user_id
         elif self.state == 'validate1' and self.validate_user_id:
-            self.next_step_user = self.validate_user_id            
+            self.next_step_user = self.validate_user_id
 
     @api.model
     def create(self, vals):
         letter = super(UbiLetterGoing, self).create(vals)
         if vals.get('confirm_user_id'):
-            self.next_step_user.notify_info(message='Таньд 1 тушаал шилжиж ирлээ.')
+            self.next_step_user.notify_info(
+                message='Таньд 1 тушаал шилжиж ирлээ.')
             self.activity_update()
 
         if letter.request_employee_id:
@@ -154,9 +155,10 @@ class UbiLetterGoing(models.Model):
     def write(self, vals):
         letter = super(UbiLetterGoing, self).write(vals)
         if vals.get('confirm_user_id') or vals.get('validate1_user_id') or (vals.get('validate_user_id') and self.state != 'expected'):
-            self.next_step_user.notify_info(message='Таньд 1 тушаал шилжиж ирлээ.')
+            self.next_step_user.notify_info(
+                message='Таньд 1 тушаал шилжиж ирлээ.')
             self.activity_update()
-            
+
         if self.request_employee_id:
             self.add_follower(self.request_employee_id)
         if self.responsible_employee_id:
@@ -192,10 +194,12 @@ class UbiLetterGoing(models.Model):
     def print_report(self):
         if self.letter_template_id:
             if self.letter_template_id.paper_size == 'a4':
-                report = self.env.ref('ubisol_letters.letter_detail_report_a4_pdf')
+                report = self.env.ref(
+                    'ubisol_letters.letter_detail_report_a4_pdf')
             elif self.letter_template_id.paper_size == 'a5':
-                report = self.env.ref('ubisol_letters.letter_detail_report_a5_pdf')
-            
+                report = self.env.ref(
+                    'ubisol_letters.letter_detail_report_a5_pdf')
+
             return report.report_action(self.ids)
 
     def prepare_sending(self):
@@ -206,7 +210,7 @@ class UbiLetterGoing(models.Model):
                     _('Зөвхөн хүлээгдэж буй төлөвтэй баримтыг "Илгээх" төлөвт оруулах боломжтой.'))
 
             if letter.is_local == True:
-                raise UserError(    
+                raise UserError(
                     _('Зөвхөн гадаад баримтыг "ТАБС-р" илгээх боломжтой.'))
 
             if letter.state == 'expected':
@@ -291,11 +295,11 @@ class UbiLetterGoing(models.Model):
         mytree = ET.fromstring(result.content)
 
         status = mytree.find(
-            './/{https://dev.docx.gov.mn/document/dto}responseCode')
+            './/{https://docx.gov.mn/document/dto}responseCode')
         find = mytree.find(
-            './/{https://dev.docx.gov.mn/document/dto}data')
+            './/{https://docx.gov.mn/document/dto}data')
         msg = mytree.find(
-            './/{https://dev.docx.gov.mn/document/dto}responseMessage')
+            './/{https://docx.gov.mn/document/dto}responseMessage')
 
         if(status.text.strip() == '200'):
             data = json.loads(find.text.strip())
@@ -344,11 +348,11 @@ class UbiLetterGoing(models.Model):
             mytree = ET.fromstring(result.content)
 
             status = mytree.find(
-                './/{https://dev.docx.gov.mn/document/dto}responseCode')
+                './/{https://docx.gov.mn/document/dto}responseCode')
             find = mytree.find(
-                './/{https://dev.docx.gov.mn/document/dto}data')
+                './/{https://docx.gov.mn/document/dto}data')
             msg = mytree.find(
-                './/{https://dev.docx.gov.mn/document/dto}responseMessage')
+                './/{https://docx.gov.mn/document/dto}responseMessage')
 
             if(status.text.strip() == '200'):
                 return {'status': status.text.strip(), 'data': []}
@@ -357,15 +361,16 @@ class UbiLetterGoing(models.Model):
         else:
             return {'status': 'ERROR', 'data': 'Сүлжээний алдаа гарлаа.'}
 
-
     # ------------------------------------------------------------
     # Activity methods
     # ------------------------------------------------------------
 
     def action_sent(self):
         if any(letter.state not in ['expected'] for letter in self):
-            raise UserError(_('Зөвхөн хүлээгдэж буй бичгийг "Илгээх" төлөвт оруулах боломжтой.'))
-        self.write({'state': 'sent', "send_date": datetime.today().strftime('%Y-%m-%d'), "user_id": self.env.user.id})
+            raise UserError(
+                _('Зөвхөн хүлээгдэж буй бичгийг "Илгээх" төлөвт оруулах боломжтой.'))
+        self.write({'state': 'sent', "send_date": datetime.today().strftime(
+            '%Y-%m-%d'), "user_id": self.env.user.id})
 
         for letter in self:
             before_letter_vals = letter.copy_data({
@@ -373,6 +378,7 @@ class UbiLetterGoing(models.Model):
                 'state': 'draft',
                 'follow_id': letter.id,
                 'desc': letter.letter_template_text
+
             })[0]
             del before_letter_vals['send_date']
             del before_letter_vals['coming_letter']
@@ -380,23 +386,28 @@ class UbiLetterGoing(models.Model):
             del before_letter_vals['letter_template_text']
             del before_letter_vals['custom_letter_template']
 
-            incoming_letter = self.env['ubi.letter.coming'].search([('follow_id', '=', letter.id)])
+            incoming_letter = self.env['ubi.letter.coming'].search(
+                [('follow_id', '=', letter.id)])
             if incoming_letter:
                 incoming_letter.write(before_letter_vals)
             else:
-                coming_letter = self.env['ubi.letter.coming'].with_context(local_transfer=True).create(before_letter_vals)
+                coming_letter = self.env['ubi.letter.coming'].with_context(
+                    local_transfer=True).create(before_letter_vals)
 
         return True
 
     def action_refuse(self):
         if any(letter.state in ['receive'] for letter in self):
-            raise UserError(_('Хүлээн авсан бичгийг "Буцаах" төлөвт оруулах боломжгүй байна.'))
+            raise UserError(
+                _('Хүлээн авсан бичгийг "Буцаах" төлөвт оруулах боломжгүй байна.'))
         self.write({'state': 'refuse'})
-        incoming_letter = self.env['ubi.letter.coming'].search([('follow_id', '=', self.id)])
+        incoming_letter = self.env['ubi.letter.coming'].search(
+            [('follow_id', '=', self.id)])
         if incoming_letter:
             incoming_letter.write({'state': 'refuse'})
-            user_name = self.env.user.employee_id.name if self.env.user.employee_id else self.env.user.name     
-            note = _("%s дугаартай албан бичгийг 'Буцаасан' төлөвт '%s' орууллаа.") % (incoming_letter.letter_number, user_name)    
+            user_name = self.env.user.employee_id.name if self.env.user.employee_id else self.env.user.name
+            note = _("%s дугаартай албан бичгийг 'Буцаасан' төлөвт '%s' орууллаа.") % (
+                incoming_letter.letter_number, user_name)
             incoming_letter.message_post(body=note)
 
         return True
@@ -414,7 +425,8 @@ class UbiLetterGoing(models.Model):
 
     def action_confirm(self):
         if self.filtered(lambda letter: letter.state != 'draft'):
-            raise UserError(_('Зөвхөн ноорог төлөвтэй албан бичгийг "Боловсруулсан" төлөвт оруулах боломжтой.'))
+            raise UserError(
+                _('Зөвхөн ноорог төлөвтэй албан бичгийг "Боловсруулсан" төлөвт оруулах боломжтой.'))
         self.write({'state': 'confirm'})
 
         self.activity_feedback(['ubisol_letters.mail_act_letter_confirm'])
@@ -422,7 +434,8 @@ class UbiLetterGoing(models.Model):
 
     def action_validate1(self):
         if any(letter.state != 'confirm' for letter in self):
-            raise UserError(_('Зөвхөн боловсруулсан төлөвтэй албан бичгийг "Зөвшөөрсөн" төлөвт оруулах боломжтой.'))
+            raise UserError(
+                _('Зөвхөн боловсруулсан төлөвтэй албан бичгийг "Зөвшөөрсөн" төлөвт оруулах боломжтой.'))
         self.write({'state': 'validate1'})
 
         self.activity_feedback(['ubisol_letters.mail_act_letter_validate1'])
@@ -437,21 +450,21 @@ class UbiLetterGoing(models.Model):
             raise UserError(_('Зөвхөн бүртгэсэн төлөвтэй албан бичгийг "Баталсан" төлөвт оруулах боломжтой.'))
 
         self.write({'state': 'validate'})
-        self.activity_feedback(['ubisol_letters.mail_act_letter_validate'])  
+        self.activity_feedback(['ubisol_letters.mail_act_letter_validate'])
         return True
 
     def action_expected(self):
-        if any(letter.state not in ['validate','refuse'] for letter in self):
-            raise UserError(_('Зөвхөн баталсан төлөвтэй албан бичгийг "Хүлээгдэж буй" төлөвт оруулах боломжтой.'))
-        
-        self.write({'state': 'expected'})
-        self.activity_feedback(['ubisol_letters.mail_act_letter_expected'])  
-        return True
+        if any(letter.state not in ['validate', 'refuse'] for letter in self):
+            raise UserError(
+                _('Зөвхөн баталсан төлөвтэй албан бичгийг "Хүлээгдэж буй" төлөвт оруулах боломжтой.'))
 
+        self.write({'state': 'expected'})
+        self.activity_feedback(['ubisol_letters.mail_act_letter_expected'])
+        return True
 
     def activity_update(self):
         to_clean, to_do = self.env['ubi.letter.going'], self.env['ubi.letter.going']
-        
+
         for letter in self:
             if letter.state == 'draft':
                 next_state = 'Хянасан'
@@ -467,7 +480,8 @@ class UbiLetterGoing(models.Model):
                 to_do |= letter
 
             user_name = self.next_step_user.employee_id.name if self.next_step_user.employee_id else self.next_step_user.name
-            note = _("%s дугаартай албан бичиг %s -р '%s' төлөвт шилжүүлэгдэхээр хүлээгдэж байна.") % (letter.letter_number, user_name, next_state)    
+            note = _("%s дугаартай албан бичиг %s -р '%s' төлөвт шилжүүлэгдэхээр хүлээгдэж байна.") % (
+                letter.letter_number, user_name, next_state)
             letter.activity_schedule(
                 format_name,
                 note=note,
@@ -496,4 +510,3 @@ class UbiLetterGoing(models.Model):
             self.check_access_rule('read')
             return super(UbiLetterGoing, self.sudo()).message_subscribe(partner_ids=partner_ids, channel_ids=channel_ids, subtype_ids=subtype_ids)
         return super(UbiLetterGoing, self).message_subscribe(partner_ids=partner_ids, channel_ids=channel_ids, subtype_ids=subtype_ids)
-            

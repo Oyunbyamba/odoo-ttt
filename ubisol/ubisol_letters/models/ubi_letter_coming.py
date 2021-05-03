@@ -36,7 +36,7 @@ class UbiLetterComing(models.Model):
         default='draft',
         string='Ирсэн бичгийн төлөв', store=True, readonly=True, copy=False, tracking=True)
     going_letter = fields.Many2one(
-        'ubi.letter.going', string='Явсан бичгийн хариу', groups="base.group_user")    
+        'ubi.letter.going', string='Явсан бичгийн хариу', groups="base.group_user")
     cancel_employee = fields.Char(
         string="Цуцалсан ажилтан", groups="base.group_user", help="Ажилтан")
     cancel_position = fields.Char(
@@ -52,7 +52,7 @@ class UbiLetterComing(models.Model):
             self.going_letter = self.going_letter.id
             self.computed_letter_type = self.going_letter.letter_type_id.name if self.going_letter.letter_type_id else ''
             # category = self.env['ir.module.category'].search([('name', '=', 'Contracts')])
-           
+
     @api.onchange('going_letter')
     def _computed_letter_subject(self):
         self.computed_letter_subject = ''
@@ -75,14 +75,14 @@ class UbiLetterComing(models.Model):
         letter = super(UbiLetterComing, self).create(vals)
         if letter.is_local == True:
             if not self._context.get('local_transfer'):
-                letter.state = 'receive' 
+                letter.state = 'receive'
                 letter.user_id = self.env.user
                 letter.received_date = datetime.today().strftime('%Y-%m-%d')
 
         if letter.request_employee_id:
             self.add_follower(letter.request_employee_id)
         if letter.responsible_employee_id:
-            self.add_follower(letter.responsible_employee_id) 
+            self.add_follower(letter.responsible_employee_id)
 
         self.activity_update()
 
@@ -93,10 +93,10 @@ class UbiLetterComing(models.Model):
         if self.request_employee_id:
             self.add_follower(self.request_employee_id)
         if self.responsible_employee_id:
-            self.add_follower(self.responsible_employee_id)    
+            self.add_follower(self.responsible_employee_id)
 
         # self.activity_update()
-    
+
         return letter
 
     def call_return_wizard(self):
@@ -155,8 +155,10 @@ class UbiLetterComing(models.Model):
                 data = json.loads(find.text.strip())
                 count = 0
                 for doc in data:
+
                     already_received = self.env['ubi.letter.coming'].search(
                         [('tabs_id', '=', doc['id']), ('partner_id.ubi_letter_org_id', '=', doc['orgId'])], limit=1)
+
                     # umnu orj irseng shalgah
                     if(already_received):
                         pass
@@ -177,13 +179,13 @@ class UbiLetterComing(models.Model):
         vals = {}
         vals['letter_date'] = doc['documentDate'] if 'documentDate' in doc else datetime.strftime(
             datetime.today(), '%Y-%m-%d')
-        vals['tabs_id'] = doc['id'] if 'id' in doc else ''
+        vals['tabs_id'] = doc['id']
         vals['letter_type_id'] = doc['documentTypeId'] if 'documentTypeId' in doc else ''
         vals['letter_number'] = doc['documentNumber'] if 'documentNumber' in doc else ''
         vals['letter_subject_id'] = self.check_subject(
             doc['documentName']) if 'documentName' in doc else ''
         vals['official_person'] = doc['signName'] if 'signName' in doc else ''
-        vals['draft_user_id'] = self.env.user.id
+        # vals['user_id'] = self.env.user.id
         vals['partner_id'] = self.check_partners(doc).id or ''
         vals['is_reply_doc'] = doc['isReplyDoc'] if 'isReplyDoc' in doc else ''
         vals['must_return'] = doc['isNeedReply'] if 'isNeedReply' in doc else ''
@@ -290,7 +292,6 @@ class UbiLetterComing(models.Model):
                 './/{https://docx.gov.mn/document/dto}data')
             msg = mytree.find(
                 './/{https://docx.gov.mn/document/dto}responseMessage')
-            _logger.info(data)
 
             if(status.text.strip() == '200'):
                 return {'status': status.text.strip(), 'data': []}
@@ -316,10 +317,10 @@ class UbiLetterComing(models.Model):
                 result = self.letter_received(params)
                 if result['status'] == '200':
                     letter.write(
-                        {"state": "receive", 
-                        'user_id': received_user,
-                        'received_date': datetime.today.strftime('%Y-%m-%d')
-                        })
+                        {"state": "receive",
+                         'user_id': received_user,
+                         'received_date': datetime.today().strftime('%Y-%m-%d')
+                         })
                 else:
                     raise UserError(_(result['data']))
         return True
@@ -364,7 +365,8 @@ class UbiLetterComing(models.Model):
         if any(letter.state not in ['draft'] for letter in self):
             raise UserError(
                 _('Зөвхөн ирсэн төлөвтэй баримтыг "Хүлээн авсан" төлөвт оруулах боломжтой.'))
-        self.write({'state': 'receive', 'user_id': self.env.user, 'received_date': datetime.today().strftime('%Y-%m-%d')})
+        self.write({'state': 'receive', 'user_id': self.env.user,
+                    'received_date': datetime.today().strftime('%Y-%m-%d')})
         self.activity_update()
 
         if self.follow_id:
@@ -372,7 +374,8 @@ class UbiLetterComing(models.Model):
             going_letter.write({'state': 'receive'})
             user_name = self.env.user.employee_id.name if self.env.user.employee_id else self.env.user.name     
 
-            note = _("%s дугаартай албан бичгийг 'Хүлээн авсан' төлөвт '%s' орууллаа.") % (going_letter.letter_number, user_name)    
+            note = _("%s дугаартай албан бичгийг 'Хүлээн авсан' төлөвт '%s' орууллаа.") % (
+                going_letter.letter_number, user_name)
             going_letter.message_post(body=note)
         return True
 
@@ -390,7 +393,8 @@ class UbiLetterComing(models.Model):
                 _('Зөвхөн судлаж байгаа төлөвтэй баримтыг "Шилжүүлсэн" төлөвт оруулах боломжтой.'))
         self.write({'state': 'transfer'})
         if self.responsible_employee_id:
-            self.responsible_employee_id.user_id.notify_info(message='Таньд 1 шинэ бичиг шилжиж ирлээ.')
+            self.responsible_employee_id.user_id.notify_info(
+                message='Таньд 1 шинэ бичиг шилжиж ирлээ.')
         self.activity_update()
 
         return True
@@ -402,14 +406,14 @@ class UbiLetterComing(models.Model):
         self.write({'state': 'validate'})
 
         return {
-                'type': 'ir.actions.act_window',
-                'name': _('Ирсэн бичиг шийдвэрлэх'),
-                'res_model': 'letter.validate.wizard',
-                'view_mode': 'form',
-                'target': 'new',
-                'context': {'active_id': self.id},
-                'views': [[False, 'form']]
-            }
+            'type': 'ir.actions.act_window',
+            'name': _('Ирсэн бичиг шийдвэрлэх'),
+            'res_model': 'letter.validate.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'active_id': self.id},
+            'views': [[False, 'form']]
+        }
 
     def action_refuse(self):
         if any(letter.state in ['validate', 'conflict'] for letter in self):
@@ -418,14 +422,17 @@ class UbiLetterComing(models.Model):
         self.write({'state': 'refuse'})
 
         if self.follow_id:
-            going_letter = self.env['ubi.letter.going'].browse(self.follow_id.id)
+            going_letter = self.env['ubi.letter.going'].browse(
+                self.follow_id.id)
             going_letter.write({'state': 'refuse'})
-            user_name = self.env.user.employee_id.name if self.env.user.employee_id else self.env.user.name     
+            user_name = self.env.user.employee_id.name if self.env.user.employee_id else self.env.user.name
 
             format_name = 'ubisol_letters.mail_act_letter_refuse'
-            note = _("%s дугаартай албан бичиг '%s'-с 'Буцаасан' төлөвт орууллаа.") % (going_letter.letter_number, user_name)    
-            going_letter.activity_schedule(format_name, note=note, user_id=going_letter.responsible_employee_id.user_id) 
-        return True    
+            note = _("%s дугаартай албан бичиг '%s'-с 'Буцаасан' төлөвт орууллаа.") % (
+                going_letter.letter_number, user_name)
+            going_letter.activity_schedule(
+                format_name, note=note, user_id=going_letter.responsible_employee_id.user_id)
+        return True
 
     def activity_update(self):
         to_clean, to_do = self.env['ubi.letter.going'], self.env['ubi.letter.going']
@@ -435,26 +442,33 @@ class UbiLetterComing(models.Model):
             if letter.state == 'draft':
                 format_name = 'ubisol_letters.mail_act_letter_receive'
                 category = self.env['ir.module.category'].browse(39)
-                group_name = self.env['res.groups'].search([('category_id', 'in', category.ids)])
+                group_name = self.env['res.groups'].search(
+                    [('category_id', 'in', category.ids)])
                 user_ids = group_name.users.ids
 
-                note = _("%s дугаартай албан бичиг шинээр ирсэн байна.") % (letter.letter_number)
+                note = _("%s дугаартай албан бичиг шинээр ирсэн байна.") % (
+                    letter.letter_number)
                 # letter.activity_schedule(format_name, note=note, user_id=user_ids)
                 letter.message_post(body=note)
             elif letter.state == 'receive':
-                note = _("%s дугаартай албан бичгийг '%s' 'Хүлээн авсан' төлөвт орууллаа.") % (letter.letter_number, user_name)    
+                note = _("%s дугаартай албан бичгийг '%s' 'Хүлээн авсан' төлөвт орууллаа.") % (
+                    letter.letter_number, user_name)
                 letter.message_post(body=note)
                 # holiday.message_post(body=note, partner_ids=holiday.employee_id.user_id.partner_id.ids)
             elif letter.state == 'review':
-                note = _("%s дугаартай албан бичгийг '%s' 'Судлаж буй' төлөвт орууллаа.") % (letter.letter_number, user_name)    
+                note = _("%s дугаартай албан бичгийг '%s' 'Судлаж буй' төлөвт орууллаа.") % (
+                    letter.letter_number, user_name)
                 letter.message_post(body=note)
             elif letter.state == 'transfer':
                 if letter.responsible_employee_id:
                     format_name = 'ubisol_letters.mail_act_letter_transfer'
-                    note = _("%s дугаартай албан бичиг '%s'-с шилжиж ирлээ.") % (letter.letter_number, user_name)    
-                    letter.activity_schedule(format_name, note=note, user_id=letter.responsible_employee_id.user_id)
+                    note = _(
+                        "%s дугаартай албан бичиг '%s'-с шилжиж ирлээ.") % (letter.letter_number, user_name)
+                    letter.activity_schedule(
+                        format_name, note=note, user_id=letter.responsible_employee_id.user_id)
             elif letter.state == 'validate':
-                note = _("%s дугаартай албан бичгийг '%s' 'Шийдвэрлэсэн' төлөвт орууллаа.") % (letter.letter_number, user_name)    
+                note = _("%s дугаартай албан бичгийг '%s' 'Шийдвэрлэсэн' төлөвт орууллаа.") % (
+                    letter.letter_number, user_name)
                 letter.message_post(body=note)
 
         return True
@@ -480,4 +494,3 @@ class UbiLetterComing(models.Model):
             self.check_access_rule('read')
             return super(UbiLetterComing, self.sudo()).message_subscribe(partner_ids=partner_ids, channel_ids=channel_ids, subtype_ids=subtype_ids)
         return super(UbiLetterComing, self).message_subscribe(partner_ids=partner_ids, channel_ids=channel_ids, subtype_ids=subtype_ids)
-        
