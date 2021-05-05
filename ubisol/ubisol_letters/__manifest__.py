@@ -21,6 +21,7 @@
         'views/menu.xml',
         'wizards/letter_return_wizard.xml',
         'wizards/letter_validate_wizard.xml',
+        'wizards/organization_list.xml',
         'report/letter_detail_a4.xml',
         'report/letter_detail_a5.xml',
         'report/report.xml',

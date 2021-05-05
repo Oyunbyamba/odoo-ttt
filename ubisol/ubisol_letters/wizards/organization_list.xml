@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<odoo>
+
+    <record id="view_organization_tree" model="ir.ui.view">
+        <field name="name">organization.list.wizard.tree</field>
+        <field name="model">organization.list.wizard</field>
+        <field eval="1" name="priority"/>
+        <field name="arch" type="xml">
+            <tree class='tabs_org' string="Organization List" create='false' import='false' export_xlsx='false'>
+                <button name="choose_organization" string="Сонгох" type="object" icon="fa-check text-success"/>
+                <field name="organization_name"/>
+                <field name="organization_code"/>
+            </tree>
+        </field>
+    </record>
+
+    <template id="assets_backend_org" name="ubisol letter assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" type="text/css" href="/ubisol_letters/static/src/css/menu_collapsible.css"/>
+        </xpath>
+    </template>
+
+</odoo>

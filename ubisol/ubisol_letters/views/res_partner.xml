@@ -21,6 +21,14 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
 
+        <xpath expr="//field[@name='name']" position="after">
+            <button name="search_organization" type="object" class="oe_highlight"
+                attrs="{'invisible': [('ubi_letter_org','=', False)]}">
+                    <span class="fa fa-plus-square"/>
+                    ТАБС-с хайх
+            </button>
+        </xpath>
+
         <xpath expr="//field[@name='vat']" position="after">
             <field name="ubi_letter_org_id" string='Байгууллагын дугаар' attrs="{'required': [('ubi_letter_org', '=', True)], 'invisible': [('ubi_letter_org', '!=', True)]}"/>
             <field name="ubi_letter_org" invisible='1'/>
@@ -48,7 +56,8 @@
             <p class="o_view_nocontent_smiling_face">
             </p>
         </field>
-
     </record>
+
+    
 
 </odoo>
